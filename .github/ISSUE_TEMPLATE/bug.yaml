@@ -1,0 +1,87 @@
+name: "Bug report"
+description: "Report a defect in behavior"
+title: "[bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Please include enough detail that we can reproduce and fix it.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened and what did you expect?
+      placeholder: "When I…, I expected…, but…"
+    validations:
+      required: true
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Reproduction steps
+      description: Minimal steps to reproduce (ideally a minimal repo or snippet).
+      placeholder: |
+        1.
+        2.
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / output
+      description: Relevant logs, stack traces, or console output (redact secrets).
+      render: text
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: Version / commit
+      description: What version, tag, or commit hash are you on?
+      placeholder: "v1.2.3 / abcdef1"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: platform
+    attributes:
+      label: Platform
+      multiple: true
+      options:
+        - Linux
+        - macOS
+        - Windows
+        - Android
+        - iOS
+        - Web
+        - Other
+    validations:
+      required: false
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment details
+      description: Runtime, tooling, and environment info.
+      placeholder: |
+        - OS:
+        - Runtime (node/go/jvm/etc):
+        - Package manager:
+        - Container / k8s:
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and didn’t find a duplicate.
+          required: true
+        - label: I redacted any secrets from logs and examples.
+          required: true

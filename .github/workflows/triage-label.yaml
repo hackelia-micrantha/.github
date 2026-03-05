@@ -1,0 +1,20 @@
+name: triage-label
+on:
+  issues:
+    types: [opened]
+  pull_request_target:
+    types: [opened]
+
+permissions:
+  issues: write
+  pull-requests: write
+  contents: read
+
+jobs:
+  add_needs_triage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Add needs-triage label
+        uses: actions-ecosystem/action-add-labels@v1
+        with:
+          labels: needs-triage

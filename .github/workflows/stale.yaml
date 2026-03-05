@@ -1,0 +1,25 @@
+name: stale
+on:
+  schedule:
+    - cron: "0 16 * * 1" # Mondays
+
+permissions:
+  issues: write
+  pull-requests: write
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/stale@v9
+        with:
+          days-before-stale: 60
+          days-before-close: 14
+          stale-issue-label: stale
+          stale-pr-label: stale
+          exempt-issue-labels: security,priority:p0,priority:p1,help wanted
+          exempt-pr-labels: security,priority:p0,priority:p1
+          close-issue-message: >
+            Closing due to inactivity. If this is still relevant, please comment with an update and we can reopen.
+          close-pr-message: >
+            Closing due to inactivity. If you’d like to continue this work, comment and we can reopen.

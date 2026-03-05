@@ -1,0 +1,35 @@
+name: "Security report (private preferred)"
+description: "Report a security vulnerability (do not include sensitive details here)"
+title: "[security]: "
+labels: ["security"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ⚠️ Please do NOT include exploit details, secrets, or sensitive information in a public issue.
+        Use the instructions in SECURITY.md for private disclosure.
+
+  - type: textarea
+    id: highlevel
+    attributes:
+      label: High-level summary (non-sensitive)
+      description: A brief description without exploit steps or payloads.
+    validations:
+      required: true
+
+  - type: input
+    id: contact
+    attributes:
+      label: Contact info
+      description: Optional — how should we reach you privately?
+      placeholder: "email or preferred handle"
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: ack
+    attributes:
+      label: Confirmation
+      options:
+        - label: I understand detailed vulnerability reports should be sent privately per SECURITY.md.
+          required: true
