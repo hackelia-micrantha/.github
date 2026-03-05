@@ -108,7 +108,7 @@ flowchart LR
   H -->|cluster + GitOps| V
   B -->|template + build logic| E
   D -->|attestation + configuration| E
-  Y -->|tool registry| A
+  Y -->|tool registry| M
   A -->|governance patterns| H
 ```
 
