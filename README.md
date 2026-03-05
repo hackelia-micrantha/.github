@@ -52,19 +52,6 @@ The projects described later combine these domains in different ways to explore,
 * Secrets management and configuration hygiene
 * Observability‑first operations
 
-Typical system flow:
-
-```mermaid
-flowchart TB
-  Dev[Developer] --> GH[GitHub]
-  GH --> CI[CI / Build]
-  CI --> Reg[Container Registry]
-  Reg --> Flux[FluxCD]
-  Flux --> K8s[Kubernetes / K3s]
-  K8s --> Svc[Services / APIs / Workers]
-  Svc --> Users[Users]
-```
-
 ### Mobile systems
 
 * Android (Kotlin) and iOS (Swift)
@@ -105,6 +92,7 @@ flowchart LR
     M["Amaryllis<br/>Mobile inference SDK"]
     F["Fortunes<br/>Service + Slack"]
     V["Veil<br/>Image obfuscation"]
+    E["Eyespie<br/>Computer vision experiments"]
   end
 
   subgraph Lab[Laboratory]
@@ -113,14 +101,13 @@ flowchart LR
     B["Bluebell<br/>KMP SDK template"]
     D["Digitalis<br/>Attestation + config delivery"]
     Y["Mysotosis<br/>MCP / LLM tool registry"]
-    E["Eyespie<br/>Computer vision experiments"]
   end
 
   H -->|provision / deploy patterns| A
   H -->|cluster + GitOps| F
   H -->|cluster + GitOps| V
-  B -->|template + build logic| M
-  D -->|attestation + configuration| M
+  B -->|template + build logic| E
+  D -->|attestation + configuration| E
   Y -->|tool registry| A
   A -->|governance patterns| H
 ```
