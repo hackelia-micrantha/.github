@@ -110,6 +110,7 @@ flowchart LR
   D -->|attestation + configuration| E
   Y -->|tool registry| M
   A -->|governance patterns| H
+  V -->|privacy + image conceal| E
 ```
 
 ---
