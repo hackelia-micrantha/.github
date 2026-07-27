@@ -126,6 +126,7 @@ flowchart LR
 
   H -->|infrastructure patterns| DB
   H -->|provision / deploy patterns| A
+  A -->|governance patterns| H
   H -->|cluster + GitOps| F
   H -->|cluster + GitOps| V
 
