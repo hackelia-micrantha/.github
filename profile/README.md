@@ -2,9 +2,9 @@
 
 **Engineering resilient software systems.**
 
-Micrantha is an engineering studio and open‑source ecosystem focused on building secure, observable platforms and disciplined AI‑assisted development systems. Its work explores how modern software can remain **understandable, operable, and secure** as systems evolve over time.
+Micrantha is an engineering studio and open-source ecosystem focused on building secure, observable platforms and disciplined AI-assisted development systems. Its work explores how modern software can remain **understandable, operable, and secure** as systems evolve over time.
 
-Core areas of focus include **platform engineering**, **mobile systems**, **infrastructure automation**, and **governed AI‑assisted development**.
+Core areas of focus include **platform engineering**, **mobile systems**, **infrastructure automation**, and **governed agentic development**.
 
 🌐 [https://micrantha.com](https://micrantha.com)
 
@@ -12,7 +12,7 @@ Core areas of focus include **platform engineering**, **mobile systems**, **infr
 
 ## 🌱 Philosophy
 
-Micrantha treats software as a **living ecosystem**—one that evolves through observation, iteration, and refinement rather than a one‑time construction effort.
+Micrantha treats software as a **living ecosystem**—one that evolves through observation, iteration, and refinement rather than a one-time construction effort.
 
 Systems grow through a continuous engineering loop:
 
@@ -31,7 +31,7 @@ This reflects the Micrantha gardening metaphor, where systems develop and mature
 | Soil           | Infrastructure and architectural foundations |
 | Seed           | Initial design and constraints               |
 | Water          | Iteration and engineering effort             |
-| Sunlight       | Observability and real‑world feedback        |
+| Sunlight       | Observability and real-world feedback        |
 | Flower         | Delivered system                             |
 | Garden         | Ecosystem of systems maintained over time    |
 
@@ -47,10 +47,11 @@ The projects described later combine these domains in different ways to explore,
 
 ### Platform engineering
 
-* Reproducible environments
-* Safe delivery (GitOps / CI/CD)
+* Reproducible environments and opinionated distributions
+* Safe delivery through GitOps and CI/CD
 * Secrets management and configuration hygiene
-* Observability‑first operations
+* Observability-first operations
+* Explicit runtime, workload, and trust boundaries
 
 ### Mobile systems
 
@@ -58,60 +59,87 @@ The projects described later combine these domains in different ways to explore,
 * React Native with native module integration
 * Kotlin Multiplatform SDK development
 * Mobile authentication flows and platform hardening
-* On‑device inference experiments
-* Mobile security: pentest analysis, device attestation, code obfuscation, and cryptographic agility
+* On-device inference experiments
+* Mobile security: pentest analysis, device attestation, build-time obfuscation, and cryptographic agility
 
-### AI‑assisted development
+### Agentic development
 
-* Agent‑assisted workflows with **governance**
-* Traceability (RFCs → plans → tasks → implementation)
-* Deterministic and reviewable automation
-* Context engineering (prompt design, token‑efficient context management, reusable skills)
+* Local-first agentic systems and model routing
+* Agent-assisted workflows with deterministic governance
+* Traceability from RFCs through plans, tasks, implementation, and evidence
+* Bounded, reviewable, and reversible automation
+* Context engineering, reusable skills, and governed memory
 
 ### Security engineering
 
-* Authentication models (OAuth, PKCE, token strategies)
+* Authentication models (OAuth, PKCE, workload identity, and token strategies)
 * Threat modeling
 * Secure coding practices and dependency hygiene
-* Secrets management and supply‑chain awareness
+* Secrets management and supply-chain awareness
 * Security treated as a **system property** rather than a feature
 
 ---
 
 ## 🗺️ Architecture map
 
-This diagram illustrates how core Micrantha projects relate—showing how deployable **Solutions** and experimental **Laboratory** projects connect across infrastructure and platforms.
+This diagram illustrates how core Micrantha projects relate. **Solutions** are systems intended for deployment and reuse; **Laboratory** projects validate contracts, exercise integrations, and incubate new architectural approaches. Runtime and development relationships intentionally cross that boundary.
 
-High‑level relationships across the Micrantha ecosystem (not all repositories shown):
+High-level relationships across the Micrantha ecosystem (not all repositories shown):
 
 ```mermaid
 flowchart LR
+  subgraph Delivery[Distribution channels]
+    direction TB
+    CI["GitHub Actions + GitLab CI/CD<br/>licensed adapters"]
+  end
+
   subgraph Sol[Solutions]
     direction TB
-    A["Anthesis<br/>Governed AI SDLC"]
+    DB["Dubnium<br/>Agentic development distribution"]
+    A["Anthesis<br/>Governance + provenance"]
+    EN["Envuscator<br/>Mobile build-time obfuscation"]
     M["Amaryllis<br/>Mobile inference SDK"]
     F["Fortunes<br/>Service + Slack"]
     V["Veil<br/>Image obfuscation"]
-    E["Eyespie<br/>Computer vision experiments"]
   end
 
   subgraph Lab[Laboratory]
     direction TB
+    GL["Anthesis Governance Lab<br/>Contract testbed"]
+    GD["Governed Agent Demo<br/>Integration testbed"]
     H["Hyperion<br/>Reproducible infrastructure stack"]
     B["Bluebell<br/>KMP SDK template"]
     D["Digitalis<br/>Attestation + config delivery"]
-    Y["Mysotosis<br/>MCP / LLM tool registry"]
+    Y["Myosotis<br/>MCP / LLM tool registry"]
+    E["Eyespie<br/>Computer vision experiments"]
   end
 
+  DB -->|proposed effects| A
+  A -->|allow / approval / deny| DB
+
+  GL -->|public contracts + scenarios| A
+  GL -->|integration fixtures| GD
+  DB -->|planning + bounded execution| GD
+  A -->|deterministic decisions| GD
+  GD -->|integration findings| DB
+  GD -->|compatibility findings| A
+
+  H -->|infrastructure patterns| DB
   H -->|provision / deploy patterns| A
+  A -->|governance patterns| H
   H -->|cluster + GitOps| F
   H -->|cluster + GitOps| V
+
+  CI -->|entitlement + delivery| EN
+  EN -->|build-time configuration protection| E
   B -->|template + build logic| E
-  D -->|attestation + configuration| E
+  D -->|attestation + secure configuration| E
+  V -->|privacy + image concealment| E
+  Y -->|tool registry| DB
   Y -->|tool registry| M
-  A -->|governance patterns| H
-  V -->|privacy + image conceal| E
 ```
+
+> Some Micrantha implementations and reference integrations currently live under [`ryjen`](https://github.com/ryjen) while their ownership and public distribution boundaries are consolidated into the Micrantha organization. Repository placement is transitional; architectural responsibility is documented explicitly.
 
 ---
 
@@ -123,8 +151,8 @@ Micrantha projects move through practical development stages that reflect increa
 | -------------- | -------------------------------------------------- |
 | **Prototype**  | Early exploration or architectural experimentation |
 | **Incubating** | Active development with stabilizing architecture   |
-| **Stable**     | Production‑ready system with reliable interfaces   |
-| **Maintained** | Mature system supported long‑term                  |
+| **Stable**     | Production-ready system with reliable interfaces   |
+| **Maintained** | Mature system supported long-term                  |
 
 ---
 
@@ -132,23 +160,29 @@ Micrantha projects move through practical development stages that reflect increa
 
 Projects are organized into two groups:
 
-* **Solutions** — deployable systems and platforms
-* **Laboratory** — experimental projects exploring new capabilities and architectural approaches
+* **Solutions** — deployable systems, distributions, tools, and platforms
+* **Laboratory** — testbeds and experimental projects that validate contracts, integrations, and emerging capabilities
+
+These groups describe product intent rather than strict dependency direction. Laboratory projects may exercise Solutions, and findings from those integrations may change Solution architecture.
 
 ### Solutions
 
-* **[Anthesis](anthesis.micrantha.com)** *(Incubating)* — governed AI‑assisted SDLC platform focused on traceable decisions and disciplined automation
-* **[Amaryllis](amaryllis.micrantha.com)** *(Prototype)* — mobile inference toolkit exploring privacy‑preserving on‑device ML
-* **[Fortunes](fortunes.micrantha.com)** *(Stable)* — lightweight microservice and Slack integration used to explore deployment patterns
-* **[Veil](veil.micrantha.com)** *(Prototype)* — experimental service for image obfuscation and privacy utilities
+* **[Dubnium](https://github.com/hackelia-micrantha/dubnium-community)** *(Incubating)* — Micrantha's reproducible, local-first distribution for agentic software development and operations, combining model routing, development environments, governed automation, bounded execution, and auditable workflows
+* **[Anthesis](https://anthesis.micrantha.com)** *(Incubating)* — deterministic governance and provenance platform for evaluating proposed agent actions, requiring approvals, and retaining traceable decision evidence
+* **[Envuscator](https://github.com/hackelia-micrantha/envuscator-community)** *(Incubating)* — mobile build-time configuration obfuscation delivered through a provider-neutral engine, local CLI, and licensed GitHub Actions and GitLab CI/CD adapters; customer build content remains on customer-controlled runners
+* **[Amaryllis](https://amaryllis.micrantha.com)** *(Prototype)* — mobile inference toolkit exploring privacy-preserving on-device ML
+* **[Fortunes](https://fortunes.micrantha.com)** *(Stable)* — lightweight microservice and Slack integration used to explore deployment patterns
+* **[Veil](https://veil.micrantha.com)** *(Prototype)* — experimental service for image obfuscation and privacy utilities
 
 ### Laboratory
 
-* **[Hyperion](hyperion.micrantha.com)** *(Incubating)* — reproducible infrastructure stack built around K3s and GitOps workflows
-* **[Bluebell](github.com/hackelia-micrantha/bluebell)** *(Stable)* — Kotlin Multiplatform SDK template supporting cross‑platform library development
-* **Digitalis** *(Prototype)* — mobile attestation and secure configuration delivery system
-* **Mysotosis** *(Prototype)* — experimental MCP / LLM registry for agent tool discovery
-* **Eyespie** *(Prototype)* — computer‑vision‑driven gameplay experiments
+* **[Anthesis Governance Lab](https://github.com/ryjen/anthesis-governance-lab)** *(Incubating)* — public executable testbed for Anthesis contracts, canonical policy scenarios, adversarial cases, and integration compatibility
+* **Dubnium Governed Agent Demo** *(Prototype)* — vertical integration testbed demonstrating Anthesis policy decisions and approvals in front of Dubnium's bounded executor
+* **[Hyperion](https://hyperion.micrantha.com)** *(Incubating)* — reproducible infrastructure stack built around K3s and GitOps workflows
+* **[Bluebell](https://github.com/hackelia-micrantha/bluebell)** *(Stable)* — Kotlin Multiplatform SDK template supporting cross-platform library development
+* **[Digitalis](https://github.com/hackelia-micrantha/digitalis-community)** *(Prototype)* — mobile attestation and secure configuration delivery system
+* **[Myosotis](https://github.com/hackelia-micrantha/myosotis-community)** *(Prototype)* — experimental MCP and LLM registry for agent tool discovery
+* **Eyespie** *(Prototype)* — computer-vision-driven gameplay and mobile inference experiments
 
 ---
 
@@ -168,13 +202,13 @@ Credentials and trajectory:
 
 ## 📊 Operational posture
 
-Micrantha projects treat **operability as a first‑class design constraint**. Systems are expected to be observable, diagnosable, and recoverable in production.
+Micrantha projects treat **operability as a first-class design constraint**. Systems are expected to be observable, diagnosable, and recoverable in production.
 
 Typical operational practices include:
 
 * **GitOps deployments** using declarative infrastructure
 * **Reproducible environments** through infrastructure as code
-* **Observability‑first design** (logs, metrics, and traces)
+* **Observability-first design** through logs, metrics, traces, and structured evidence
 * **Operational runbooks** for known failure modes
 * **Incident learning loops** to prevent recurrence
 
@@ -189,7 +223,7 @@ For systems reaching **Stable** or **Maintained** maturity, projects typically i
 
 * service health checks
 * monitoring and alerting
-* SLO‑informed operational decisions
+* SLO-informed operational decisions
 
 ---
 
@@ -200,23 +234,25 @@ Micrantha treats security as an **architectural property of the system**, not an
 Security practices commonly emphasized include:
 
 * **Threat modeling during system design**
-* **Secure authentication models** (OAuth, PKCE, token lifecycle management)
+* **Secure authentication models** including OAuth, PKCE, workload identity, and bounded token lifecycles
 * **Secrets management and rotation**
-* **Clear trust boundaries between services**
-* **Supply‑chain awareness** for dependencies and build pipelines
+* **Clear trust boundaries between services, agents, policy engines, and executors**
+* **Supply-chain awareness** for dependencies, adapters, engines, and build pipelines
 
 Security goals:
 
 * minimize attack surface
 * isolate trust domains
 * prevent secret leakage
+* fail closed at authorization and verification boundaries
 * enable rapid patching when vulnerabilities emerge
 
 Where appropriate, projects may also incorporate:
 
 * SBOM generation
-* artifact signing
+* artifact signing and immutable release identities
 * dependency auditing
+* provenance and evidence capture
 
 These practices help ensure systems remain **secure as they evolve and scale**.
 
@@ -224,7 +260,7 @@ These practices help ensure systems remain **secure as they evolve and scale**.
 
 ## 📬 Contact
 
-Ryan Jennings
+Ryan Jennings  
 Micrantha Software Solutions
 
 🌐 [https://micrantha.com](https://micrantha.com)
