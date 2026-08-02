@@ -2,6 +2,8 @@
 
 These prompts provide a shared Micrantha method for evidence-backed project reviews, backlog correction, and dependency-ordered prioritization.
 
+See the [complete engineering prompt library](../README.md) for merge-gate, CI, planning, issue, decision, completeness, boundary, release, documentation, and security workflows that follow from a project review.
+
 ## Choose a prompt
 
 | Prompt | Use when | Expected output |
