@@ -17,7 +17,7 @@ Priority is **not** severity, size, status, confidence, or architectural importa
 | **P0 — interrupt** | Active work must be displaced because a critical repository capability, security boundary, release path, or required validation gate is currently broken or dangerously exposed. | exploitable vulnerability; data or secret exposure; required branch gate unavailable; production or release blocker; corruption or irreversible-loss risk |
 | **P1 — next** | The issue belongs in the repository's small next-up queue. It materially unlocks the current product milestone, removes a high-leverage dependency, or closes a significant security or operability gap. | current milestone blocker; contract required by an active integration; security architecture prerequisite; external-trial readiness |
 | **P2 — planned** | Important work with clear value, but it does not displace the current P0/P1 queue. It should be groomed enough to schedule when capacity opens. | bounded architectural improvement; adoption documentation; performance work without an active outage; dependency modernization |
-| **P3 — later / explore** | Valid work without a current delivery commitment, or work that remains exploratory, duplicated, blocked, or insufficiently defined. | research spike; optional integration; speculative abstraction; source issue awaiting consolidation |
+| **P3 — later / explore** | Valid work without a current delivery commitment, or work that remains exploratory, duplicated, or insufficiently defined. | research spike; optional integration; speculative abstraction; source issue awaiting consolidation |
 
 ### Hard rules
 
