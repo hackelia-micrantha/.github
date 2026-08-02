@@ -115,9 +115,9 @@ Use the Micrantha organization model:
 - **P0 — interrupt:** active work must be displaced because a critical capability, security boundary, release path, or required validation gate is broken or dangerously exposed.
 - **P1 — next:** belongs in the small next-up queue because it unlocks the current milestone, removes a high-leverage dependency, or closes a significant security or operability gap.
 - **P2 — planned:** important, groomed work that should not displace the current P0/P1 queue.
-- **P3 — later / explore:** valid but uncommitted, exploratory, duplicated, blocked, or insufficiently defined work.
+- **P3 — later / explore:** valid but uncommitted, exploratory, duplicated, or insufficiently defined work.
 
-Priority is not severity, status, size, confidence, age, or architectural importance. `Blocked` is a status, not a priority.
+Priority is not severity, status, size, confidence, age, or architectural importance. `Blocked` is a status, not a priority; preserve the underlying priority and record the blocker separately.
 
 For each proposed item record priority rationale, observable outcome, impact, urgency, dependency leverage, readiness, risk of change, strategic fit, effort, dependencies, blockers, acceptance criteria, and non-goals.
 
