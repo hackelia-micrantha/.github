@@ -6,6 +6,9 @@
   "additionalProperties": false,
   "required": ["schemaVersion", "organization", "repositories"],
   "properties": {
+    "$schema": {
+      "type": "string"
+    },
     "schemaVersion": {
       "const": 1
     },
@@ -100,7 +103,8 @@
           }
         },
         "notes": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         }
       }
     }
