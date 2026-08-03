@@ -1,6 +1,6 @@
 # Micrantha organization defaults
 
-This repository contains shared governance, community health files, contribution conventions, issue and pull-request templates, engineering prompts, standards, and reusable guidance for repositories in the `hackelia-micrantha` organization.
+This repository contains shared governance, community health files, contribution conventions, issue and pull-request templates, engineering prompts, standards, automation, and reusable guidance for repositories in the `hackelia-micrantha` organization.
 
 Repositories may refine these defaults when their product, legal, security, or operating model requires it, but should document the difference explicitly. Repository-local implementation and evidence remain authoritative within the boundaries assigned by the organization governance model.
 
@@ -29,6 +29,20 @@ The repository catalogue distinguishes architectural authority from runtime depe
   - [Labels and work-item taxonomy](docs/standards/labels.md)
 
 The standards define minimum outcomes according to repository classification, maturity, risk, supported surface, and deployment model. Repository-local standards may be stricter or may document a justified alternative control, but cannot silently weaken security, compatibility, release, support, or public-maturity claims.
+
+## Shared automation and metadata
+
+- [Automation foundation](docs/automation/README.md)
+- [Machine-readable repository registry](metadata/repositories.json)
+- [Repository registry schema](metadata/repositories.schema.json)
+- [Workflow starter templates](workflow-templates/)
+- [Reusable mise CI workflow](.github/workflows/reusable-mise-ci.yml)
+- [Reusable Nix CI workflow](.github/workflows/reusable-nix-ci.yml)
+- [Repository-health workflow](.github/workflows/repository-health.yml)
+
+The automation layer is read-only by default. Starter templates help repositories adopt common workflow structure; repositories still own their tasks, test coverage, runner trust decisions, required checks, and release policy. Shared reusable workflows do not inherit secrets or perform deployment, release, approval, label, or repository-setting mutations.
+
+The repository registry is an advisory machine-readable projection of the canonical responsibility catalogue. A weekly health report checks registered location, visibility, default branch, archival state, and minimal required files without opening issues or modifying repositories. Private-repository coverage requires an explicitly configured read-only token.
 
 ## Engineering work and decisions
 
@@ -110,4 +124,4 @@ Maturity is evidence-based and separate from repository classification:
 - **Superseded**
 - **Archived**
 
-The public aliases `Prototype` and `Maintained` map to `Experimental` and `Maintenance`. Lifecycle changes should update the repository, the [catalogue](docs/architecture/repository-catalogue.md), and relevant public documentation together.
+The public aliases `Prototype` and `Maintained` map to `Experimental` and `Maintenance`. Lifecycle changes should update the repository, the [catalogue](docs/architecture/repository-catalogue.md), registry, and relevant public documentation together.

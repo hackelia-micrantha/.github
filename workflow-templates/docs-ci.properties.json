@@ -1,0 +1,7 @@
+{
+  "name": "Micrantha Documentation CI",
+  "description": "Run a repository-defined docs-ci mise task through the shared read-only workflow.",
+  "iconName": "octicon book",
+  "categories": ["Continuous integration"],
+  "filePatterns": [".*\\.md$", "^mdbook\\.toml$", "^mkdocs\\.yml$"]
+}

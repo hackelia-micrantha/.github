@@ -1,0 +1,21 @@
+name: Nix flake CI
+
+on:
+  pull_request:
+    branches: [$default-branch]
+  push:
+    branches: [$default-branch]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: nix-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    # Pin this reusable workflow to a reviewed tag or commit before making it required.
+    uses: hackelia-micrantha/.github/.github/workflows/reusable-nix-ci.yml@main
+    with:
+      command: nix flake check --print-build-logs

@@ -1,0 +1,21 @@
+name: Mise CI
+
+on:
+  pull_request:
+    branches: [$default-branch]
+  push:
+    branches: [$default-branch]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mise-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    # Pin this reusable workflow to a reviewed tag or commit before making it required.
+    uses: hackelia-micrantha/.github/.github/workflows/reusable-mise-ci.yml@main
+    with:
+      task: ci
