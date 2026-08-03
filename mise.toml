@@ -5,10 +5,14 @@ python = "3.13"
 description = "Validate repository metadata and workflow-template layout"
 run = "python tools/repository_health.py validate"
 
+[tasks.test]
+description = "Run automation unit tests"
+run = "python -m unittest discover -s tests -v"
+
 [tasks.health]
 description = "Generate a read-only repository-health report"
 run = "python tools/repository_health.py health"
 
 [tasks.ci]
-description = "Run meta-repository validation"
-depends = ["validate"]
+description = "Run meta-repository validation and tests"
+depends = ["validate", "test"]
