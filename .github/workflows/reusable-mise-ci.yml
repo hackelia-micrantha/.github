@@ -1,0 +1,54 @@
+name: Reusable mise CI
+
+on:
+  workflow_call:
+    inputs:
+      task:
+        description: Mise task to run
+        required: false
+        type: string
+        default: ci
+      runner:
+        description: GitHub runner label or JSON-compatible runner expression
+        required: false
+        type: string
+        default: ubuntu-latest
+      working-directory:
+        description: Repository-relative working directory
+        required: false
+        type: string
+        default: .
+      mise-version:
+        description: Mise version to install
+        required: false
+        type: string
+        default: 2026.7.13
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    name: mise / ${{ inputs.task }}
+    runs-on: ${{ inputs.runner }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Install tools with mise
+        uses: jdx/mise-action@7e36c90d9ab29c415a2384db3006f3ec8a8cc654 # v4.2.4
+        with:
+          version: ${{ inputs.mise-version }}
+          working_directory: ${{ inputs.working-directory }}
+          install: true
+          cache: true
+
+      - name: Run mise task
+        env:
+          MISE_TASK: ${{ inputs.task }}
+        run: mise run "$MISE_TASK"
