@@ -180,7 +180,7 @@ Restoration requires an accountable owner, current security and dependency revie
 
 ## Lifecycle transitions
 
-The repository steward proposes maturity changes. The organization owner authorizes repository creation, transfer, supersession, archival, and restoration. Stable and Maintenance transitions should include a focused readiness review.
+The repository steward proposes maturity changes. The organization owner authorizes repository creation, transfer, all maturity-stage changes, supersession, archival, and restoration. Stable and Maintenance transitions should include a focused readiness review.
 
 A transition record should state:
 
