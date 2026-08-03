@@ -1,0 +1,72 @@
+name: Repository health
+
+on:
+  workflow_dispatch:
+    inputs:
+      fail-on:
+        description: Optional severity that should fail the workflow
+        required: true
+        type: choice
+        default: none
+        options:
+          - none
+          - error
+          - warning
+  schedule:
+    - cron: "0 16 * * 1"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: repository-health
+  cancel-in-progress: false
+
+jobs:
+  report:
+    name: registry health report
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.ORG_REPOSITORY_READ_TOKEN || github.token }}
+      FAIL_ON: ${{ inputs.fail-on || 'none' }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.13"
+
+      - name: Generate health report
+        id: health
+        continue-on-error: true
+        run: >-
+          python tools/repository_health.py health
+          --fail-on "$FAIL_ON"
+          --output-json artifacts/repository-health.json
+          --output-markdown artifacts/repository-health.md
+
+      - name: Add report to workflow summary
+        if: always()
+        run: |
+          if [[ -f artifacts/repository-health.md ]]; then
+            cat artifacts/repository-health.md >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "Repository health report was not generated." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload health report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: repository-health
+          path: artifacts/repository-health.*
+          if-no-files-found: warn
+          retention-days: 14
+
+      - name: Enforce selected threshold
+        if: steps.health.outcome == 'failure'
+        run: exit 1
