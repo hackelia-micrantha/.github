@@ -2,8 +2,8 @@
 name: Design proposal
 about: Explore or propose a substantial architectural, security, governance, or cross-system change
 title: "[design]: "
-labels: []
-assignees: []
+labels: ""
+assignees: ""
 ---
 
 ## Summary
