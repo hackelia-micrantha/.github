@@ -2,8 +2,8 @@
 name: Epic or plan
 about: Coordinate a larger outcome across decisions, repositories, workstreams, or delivery slices
 title: "[epic]: "
-labels: []
-assignees: []
+labels: ""
+assignees: ""
 ---
 
 ## Outcome
