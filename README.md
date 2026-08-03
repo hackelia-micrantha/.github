@@ -1,6 +1,6 @@
 # Micrantha organization defaults
 
-This repository contains shared governance, community health files, contribution conventions, issue and pull-request templates, engineering prompts, and reusable guidance for repositories in the `hackelia-micrantha` organization.
+This repository contains shared governance, community health files, contribution conventions, issue and pull-request templates, engineering prompts, standards, and reusable guidance for repositories in the `hackelia-micrantha` organization.
 
 Repositories may refine these defaults when their product, legal, security, or operating model requires it, but should document the difference explicitly. Repository-local implementation and evidence remain authoritative within the boundaries assigned by the organization governance model.
 
@@ -17,6 +17,18 @@ Repositories may refine these defaults when their product, legal, security, or o
 The governance model defines accountable roles, decision authority, repository and contract ownership, security-risk acceptance, release authority, lifecycle control, and boundaries for AI-assisted or agentic engineering.
 
 The repository catalogue distinguishes architectural authority from runtime dependency. A laboratory produces evidence without silently redefining a product contract; a distribution composes components without assuming their internal authority; a public site projects evidence rather than creating product truth.
+
+## Engineering standards
+
+- [Standards overview](docs/standards/README.md)
+  - [Testing and validation](docs/standards/testing.md)
+  - [CI/CD](docs/standards/ci-cd.md)
+  - [Security engineering](docs/standards/security.md)
+  - [Releases and versioning](docs/standards/releases.md)
+  - [Documentation](docs/standards/documentation.md)
+  - [Labels and work-item taxonomy](docs/standards/labels.md)
+
+The standards define minimum outcomes according to repository classification, maturity, risk, supported surface, and deployment model. Repository-local standards may be stricter or may document a justified alternative control, but cannot silently weaken security, compatibility, release, support, or public-maturity claims.
 
 ## Engineering work and decisions
 
