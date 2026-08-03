@@ -66,7 +66,7 @@ Require:
 - release verification and integrity instructions;
 - operational runbooks where deployed;
 - security response and patch expectations;
-- archived or superseded documentation preserved and linked.
+- archived or superseded documentation preserved and linked when it exists.
 
 ## Public claims
 
