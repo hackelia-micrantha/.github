@@ -1,0 +1,7 @@
+{
+  "name": "Micrantha Nix Flake CI",
+  "description": "Run nix flake check through the shared read-only Nix workflow.",
+  "iconName": "octicon package",
+  "categories": ["Continuous integration", "Nix"],
+  "filePatterns": ["^flake\\.nix$", "^flake\\.lock$"]
+}
