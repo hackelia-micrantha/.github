@@ -43,11 +43,11 @@ Use the comprehensive project review when a project lacks a trustworthy baseline
 
 For new work, classify the material first, resolve open alternatives through QART, use an RFC only when broad review is warranted, record accepted durable decisions in ADRs, coordinate larger outcomes through epics or plans, and deliver bounded implementation slices with validation evidence.
 
-All prompts and issue templates use the organization priority model defined in [`CONTRIBUTING.md`](CONTRIBUTING.md):
+Prioritization for tracked engineering work follows the organization model in [`CONTRIBUTING.md`](CONTRIBUTING.md):
 
 - `P0` — active interrupt;
 - `P1` — small executable next-up queue;
 - `P2` — planned work;
 - `P3` — later or exploratory work.
 
-Priority remains distinct from severity, status, size, confidence, age, and architectural importance. Blocking is recorded as status while preserving the underlying priority.
+Priority remains distinct from severity, status, size, confidence, age, and architectural importance. Blocking is recorded as status while preserving the underlying priority. Intake reporters are not expected to determine repository-global priority; maintainers assign it during grooming and triage.
