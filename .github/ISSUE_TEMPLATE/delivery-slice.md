@@ -1,6 +1,6 @@
 ---
 name: Engineering delivery slice
-description: Deliver a bounded cross-cutting implementation, integration, migration, infrastructure, or refactoring outcome
+about: Deliver a bounded cross-cutting implementation, integration, migration, infrastructure, or refactoring outcome
 title: "[delivery]: "
 labels: []
 assignees: []
