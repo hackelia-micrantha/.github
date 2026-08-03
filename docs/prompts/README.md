@@ -10,10 +10,13 @@ This directory contains reusable prompts for evidence-backed engineering review,
 | `review the project` | [Comprehensive project status review](project-review/comprehensive-status-review.md) | The implementation, architecture, maturity, or backlog needs broad reconciliation |
 | `review to fix or merge` | [Pull-request merge-gate review](pull-requests/merge-gate-review.md) | A pull request needs a concrete merge, fix, block, or close decision |
 | `check CI to fix or merge` | [CI failure triage and repair](ci/ci-failure-triage.md) | A workflow or required check is failing, flaky, cancelled, or unexpectedly skipped |
+| `classify this work` | [Classify and route engineering work](planning/classify-and-route.md) | Raw notes or mixed planning material must become the minimum responsible artifact set |
 | `what is next?` | [Next executable slice](planning/next-executable-slice.md) | A priority, issue, epic, or design needs conversion into one bounded implementation slice |
 | `make this issue well groomed` | [Issue grooming](issues/issue-grooming.md) | An issue or small backlog needs an observable outcome, scope, acceptance criteria, and priority |
 | `do QART` | [QART decision analysis](decisions/qart-analysis.md) | Alternatives and trade-offs remain open |
+| `draft an RFC` | [RFC development](decisions/rfc-development.md) | A consequential proposal may require broad review or cross-boundary coordination |
 | `convert this to an ADR` | [QART-to-ADR conversion](decisions/qart-to-adr.md) | A decision is sufficiently understood to become authoritative |
+| `review this artifact` | [Engineering artifact review](reviews/engineering-artifact-review.md) | A QART, RFC, ADR, specification, design, plan, epic, or issue needs critical review |
 | `is this capability actually complete?` | [Implementation completeness review](reviews/implementation-completeness.md) | Merged slices must be reconciled into a delivered capability or closed epic |
 | `review repository boundaries` | [Cross-repository boundary review](architecture/cross-repository-boundaries.md) | Ownership, contracts, editions, adapters, labs, or migrations overlap across repositories |
 | `ready to release?` | [Release readiness review](releases/release-readiness.md) | A version, artifact, site, package, or public capability is approaching release |
@@ -57,15 +60,26 @@ Use the smallest artifact that resolves the uncertainty or delivers the outcome:
 
 | Need | Artifact |
 | --- | --- |
-| Observable implementation outcome | Task, bug, or vertical-slice issue |
-| Coordination across bounded child work | Epic |
-| Unknown feasibility or evidence | Spike |
+| Observable implementation outcome | Specialized bug, feature, or security issue; otherwise an engineering delivery slice |
+| Coordination across bounded child work | Epic or plan |
+| Unknown feasibility or evidence | Spike or investigation |
 | Alternatives and trade-offs remain open | QART analysis |
 | A proposal needs broader review | RFC |
 | A decision is understood and should become authoritative | ADR |
+| Normative behavior or conformance boundary | Specification |
 | Threats or controls require focused analysis | Security review or threat model |
 
 Do not generate one issue or decision document per observation. Consolidate related findings into coherent, independently verifiable outcomes.
+
+## Work-item and decision templates
+
+The [engineering work-item guide](../engineering/work-items.md) defines the decision-to-delivery model and links reusable templates:
+
+- [QART template](../engineering/templates/qart.md)
+- [RFC template](../engineering/templates/rfc.md)
+- [ADR template](../engineering/templates/adr.md)
+
+Repositories that do not define local issue templates inherit the organization bug, feature, security, engineering delivery slice, design proposal, and epic or plan forms.
 
 ## Review-to-write workflow
 
