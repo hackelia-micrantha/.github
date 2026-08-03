@@ -1,12 +1,25 @@
 # Micrantha organization defaults
 
-This repository contains shared community health files, contribution conventions, workflows, issue forms, and reusable engineering guidance for repositories in the `hackelia-micrantha` organization.
+This repository contains shared governance, community health files, contribution conventions, issue and pull-request templates, engineering prompts, and reusable guidance for repositories in the `hackelia-micrantha` organization.
 
-Repositories may refine these defaults when their product, security, or operating model requires it, but should document the difference explicitly.
+Repositories may refine these defaults when their product, legal, security, or operating model requires it, but should document the difference explicitly. Repository-local implementation and evidence remain authoritative within the boundaries assigned by the organization governance model.
 
-## Shared guidance
+## Governance and ownership
 
+- [Organization governance](GOVERNANCE.md)
 - [Contribution and issue-prioritization standard](CONTRIBUTING.md)
+- [Repository lifecycle and maturity](docs/governance/repository-lifecycle.md)
+- [Repository responsibility catalogue](docs/architecture/repository-catalogue.md)
+- [Security policy](.github/SECURITY.md)
+- [Support guidance](.github/SUPPORT.md)
+- [Code of conduct](.github/CODE_OF_CONDUCT.md)
+
+The governance model defines accountable roles, decision authority, repository and contract ownership, security-risk acceptance, release authority, lifecycle control, and boundaries for AI-assisted or agentic engineering.
+
+The repository catalogue distinguishes architectural authority from runtime dependency. A laboratory produces evidence without silently redefining a product contract; a distribution composes components without assuming their internal authority; a public site projects evidence rather than creating product truth.
+
+## Engineering work and decisions
+
 - [Engineering work-item guide and decision templates](docs/engineering/work-items.md)
   - [QART template](docs/engineering/templates/qart.md)
   - [RFC template](docs/engineering/templates/rfc.md)
@@ -27,23 +40,43 @@ Repositories may refine these defaults when their product, security, or operatin
   - [Release readiness review](docs/prompts/releases/release-readiness.md)
   - [Public documentation consistency review](docs/prompts/documentation/public-consistency-review.md)
   - [Agentic workflow security review](docs/prompts/security/agentic-workflow-security-review.md)
-- [Security policy](.github/SECURITY.md)
-- [Support guidance](.github/SUPPORT.md)
-- [Code of conduct](.github/CODE_OF_CONDUCT.md)
 
-## Inherited issue forms
+## Inherited issue and pull-request defaults
 
-Repositories without local overrides inherit specialized forms for bugs, features, security intake, engineering delivery slices, design proposals, and epics or plans.
+Repositories without local overrides inherit specialized forms for bugs, features, security intake, engineering delivery slices, design proposals, and epics or plans, plus the organization pull-request template and issue chooser guidance.
 
-Use the most specific form that fits. The engineering delivery form is for bounded cross-cutting implementation, integration, migration, infrastructure, or refactoring work; it should not replace a direct bug, feature, or security report.
+Use the most specific issue form that fits:
+
+- bug for an observable defect;
+- feature for a requested capability;
+- security for non-sensitive public intake, with detailed reports handled privately;
+- engineering delivery slice for bounded cross-cutting implementation, integration, migration, infrastructure, or refactoring work;
+- design proposal for material unresolved design questions without prematurely assuming RFC status;
+- epic or plan for coordination across bounded workstreams and outcomes.
+
+A repository that defines local files under `.github/ISSUE_TEMPLATE/` may stop inheriting the organization issue-template directory. Local overrides should therefore copy or deliberately replace the shared chooser and required forms rather than accidentally removing them.
+
+The pull-request template requires the outcome, authority and related decisions, scope, validation evidence, security and governance impact, compatibility and rollback behavior, documentation and release effects, and remaining work.
 
 ## Decision-to-delivery workflow
 
 Use the comprehensive project review when a project lacks a trustworthy baseline, has unclear architecture or maturity, or needs backlog reconciliation. Use the status refresh after meaningful merges, releases, incidents, milestone changes, or planning cycles.
 
-For new work, classify the material first, resolve open alternatives through QART, use an RFC only when broad review is warranted, record accepted durable decisions in ADRs, coordinate larger outcomes through epics or plans, and deliver bounded implementation slices with validation evidence.
+For new work:
 
-Prioritization for tracked engineering work follows the organization model in [`CONTRIBUTING.md`](CONTRIBUTING.md):
+```text
+classify the material
+  -> gather evidence or run a bounded spike when facts are missing
+  -> use QART when credible alternatives remain open
+  -> use an RFC only when broad or cross-boundary review is warranted
+  -> obtain accountable disposition
+  -> record accepted durable decisions in ADRs
+  -> coordinate larger outcomes through epics or plans
+  -> deliver bounded implementation slices
+  -> validate, release, operate, and update public evidence
+```
+
+Prioritization for tracked engineering work follows [`CONTRIBUTING.md`](CONTRIBUTING.md):
 
 - `P0` — active interrupt;
 - `P1` — small executable next-up queue;
@@ -51,3 +84,18 @@ Prioritization for tracked engineering work follows the organization model in [`
 - `P3` — later or exploratory work.
 
 Priority remains distinct from severity, status, size, confidence, age, and architectural importance. Blocking is recorded as status while preserving the underlying priority. Intake reporters are not expected to determine repository-global priority; maintainers assign it during grooming and triage.
+
+## Repository lifecycle
+
+Maturity is evidence-based and separate from repository classification:
+
+- **Proposed**
+- **Experimental**
+- **Incubating**
+- **Active**
+- **Stable**
+- **Maintenance**
+- **Superseded**
+- **Archived**
+
+The public aliases `Prototype` and `Maintained` map to `Experimental` and `Maintenance`. Lifecycle changes should update the repository, the [catalogue](docs/architecture/repository-catalogue.md), and relevant public documentation together.
