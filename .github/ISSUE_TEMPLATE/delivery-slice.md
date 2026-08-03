@@ -2,8 +2,8 @@
 name: Engineering delivery slice
 about: Deliver a bounded cross-cutting implementation, integration, migration, infrastructure, or refactoring outcome
 title: "[delivery]: "
-labels: []
-assignees: []
+labels: ""
+assignees: ""
 ---
 
 > Use the bug, feature, or security form when one of those describes the work directly. Use this form for a bounded engineering outcome that crosses concerns or implements an already-understood decision.
