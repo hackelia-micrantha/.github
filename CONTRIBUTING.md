@@ -80,6 +80,8 @@ Use organization-standard labels when available:
 - `type:epic`
 - `type:spike`
 
+The complete shared naming and adoption rules are defined in the [label and work-item taxonomy](docs/standards/labels.md). Repositories should create only the subset they can maintain and must document any changed meanings.
+
 Issue-body priority text remains the durable explanation; labels support filtering and automation.
 
 ### Execution order
