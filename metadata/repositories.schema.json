@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/hackelia-micrantha/.github/blob/main/metadata/repositories.schema.json",
+  "title": "Micrantha repository registry",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "organization", "repositories"],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "organization": {
+      "const": "hackelia-micrantha"
+    },
+    "repositories": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/repository"
+      }
+    }
+  },
+  "$defs": {
+    "repository": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "repository",
+        "classification",
+        "maturity",
+        "visibility",
+        "defaultBranch",
+        "archived",
+        "monitor",
+        "authority",
+        "requiredFiles"
+      ],
+      "properties": {
+        "repository": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
+        },
+        "classification": {
+          "enum": [
+            "organization-meta",
+            "public-website",
+            "solution",
+            "distribution",
+            "service",
+            "library-sdk",
+            "adapter",
+            "laboratory",
+            "community-surface",
+            "infrastructure",
+            "repository-tool"
+          ]
+        },
+        "maturity": {
+          "enum": [
+            "proposed",
+            "experimental",
+            "incubating",
+            "active",
+            "stable",
+            "maintenance",
+            "superseded",
+            "archived"
+          ]
+        },
+        "visibility": {
+          "enum": ["public", "private", "internal"]
+        },
+        "defaultBranch": {
+          "type": "string",
+          "minLength": 1
+        },
+        "archived": {
+          "type": "boolean"
+        },
+        "monitor": {
+          "type": "boolean"
+        },
+        "authority": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "requiredFiles": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "not": {
+              "pattern": "^/"
+            }
+          }
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
