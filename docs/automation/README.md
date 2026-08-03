@@ -2,6 +2,8 @@
 
 This directory documents the shared automation surfaces maintained by the Micrantha organization meta repository.
 
+See [automation security boundaries](SECURITY.md) for the caller, input, secret, runner, and token trust model.
+
 ## Scope
 
 The automation foundation provides:
