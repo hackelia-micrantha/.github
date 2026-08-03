@@ -1,0 +1,59 @@
+name: Reusable Nix CI
+
+on:
+  workflow_call:
+    inputs:
+      command:
+        description: Nix command to run
+        required: false
+        type: string
+        default: nix flake check --print-build-logs
+      runner:
+        description: GitHub runner label
+        required: false
+        type: string
+        default: ubuntu-latest
+      working-directory:
+        description: Repository-relative working directory
+        required: false
+        type: string
+        default: .
+      extra-nix-config:
+        description: Additional nix.conf settings
+        required: false
+        type: string
+        default: ""
+      enable-kvm:
+        description: Enable KVM when supported by the runner
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: nix / check
+    runs-on: ${{ inputs.runner }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@8aa03977d8d733052d78f4e008a241fd1dbf36b3 # v31.10.6
+        with:
+          github_access_token: ${{ github.token }}
+          extra_nix_config: ${{ inputs.extra-nix-config }}
+          enable_kvm: ${{ inputs.enable-kvm }}
+
+      - name: Run Nix validation
+        env:
+          NIX_COMMAND: ${{ inputs.command }}
+        shell: bash
+        run: bash -euo pipefail -c "$NIX_COMMAND"
