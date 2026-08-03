@@ -1,0 +1,21 @@
+name: Documentation CI
+
+on:
+  pull_request:
+    branches: [$default-branch]
+  push:
+    branches: [$default-branch]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docs:
+    # Define a repository-owned `docs-ci` task, then pin this reusable workflow.
+    uses: hackelia-micrantha/.github/.github/workflows/reusable-mise-ci.yml@main
+    with:
+      task: docs-ci
