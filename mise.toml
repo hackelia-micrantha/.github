@@ -1,0 +1,14 @@
+[tools]
+python = "3.13"
+
+[tasks.validate]
+description = "Validate repository metadata and workflow-template layout"
+run = "python tools/repository_health.py validate"
+
+[tasks.health]
+description = "Generate a read-only repository-health report"
+run = "python tools/repository_health.py health"
+
+[tasks.ci]
+description = "Run meta-repository validation"
+depends = ["validate"]
