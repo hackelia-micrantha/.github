@@ -71,6 +71,38 @@
       "notes": "Does not redefine private-source contracts or release evidence."
     },
     {
+      "repository": "hackelia-micrantha/invokrum",
+      "classification": "library-sdk",
+      "maturity": "incubating",
+      "visibility": "public",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": [
+        "deterministic prompt and context composition",
+        "context manifests, lockfiles, and composition integrity",
+        "read-only host integration contracts"
+      ],
+      "requiredFiles": ["README.md"],
+      "notes": "Mechanism, not policy; does not own workflow state, authorization, execution, or task completion."
+    },
+    {
+      "repository": "hackelia-micrantha/keylix",
+      "classification": "library-sdk",
+      "maturity": "experimental",
+      "visibility": "public",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": [
+        "sender-constrained OAuth and DPoP primitives",
+        "verified sender-binding contracts and conformance",
+        "experimental MCP HTTP authorization adapters"
+      ],
+      "requiredFiles": ["README.md"],
+      "notes": "Proof of possession and sender binding do not establish application authorization, policy, or task correctness."
+    },
+    {
       "repository": "hackelia-micrantha/hyperion",
       "classification": "infrastructure",
       "maturity": "incubating",
