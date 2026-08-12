@@ -273,20 +273,6 @@
         "image obfuscation and privacy service experiments"
       ],
       "requiredFiles": ["README.md"]
-    },
-    {
-      "repository": "ryjen/governed-agent-evolution",
-      "classification": "laboratory",
-      "maturity": "proposed",
-      "visibility": "private",
-      "defaultBranch": "main",
-      "archived": false,
-      "monitor": false,
-      "authority": [
-        "governed agent evolution scenarios, fixtures, conformance behavior, reference integration glue, and generated laboratory evidence"
-      ],
-      "requiredFiles": [],
-      "notes": "Transitional private contract laboratory. It does not own organization architecture or Dubnium, Invokrum, Keylix, or Anthesis production contracts. Reassess placement, visibility, licensing, monitoring, and required files after the first executable cross-project conformance scenario."
     }
   ]
 }
