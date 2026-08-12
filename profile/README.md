@@ -93,6 +93,9 @@ flowchart TB
   I --> M
   L -.-> C
   C -.-> M
+
+  D -.- DN["OS · VPN · agents"]:::note
+  classDef note stroke-dasharray: 4 4;
 ```
 
 The boxes are **families, not layers that every system must traverse**:
@@ -118,6 +121,12 @@ flowchart LR
   A -->|allow| D
   D -.->|PoP| K["Keylix"]
   K --> S["External service"]
+
+  D -.- DN["runtime · routing"]:::note
+  I -.- IN["context · attest"]:::note
+  A -.- AN["policy · approval"]:::note
+  K -.- KN["DPoP · sender bind"]:::note
+  classDef note stroke-dasharray: 4 4;
 ```
 
 Each project answers a different question:
@@ -144,6 +153,11 @@ flowchart LR
   RN["React Native"] --> AM["Amaryllis"] --> LM["Local model"]
   NA["Native SDK"] --> MY["Myosotis"] --> DEV["Device capability"]
   KM["KMP"] --> BL["Bluebell"]
+
+  AM -.- AMN["RN · local AI"]:::note
+  MY -.- MYN["native · governed ops"]:::note
+  BL -.- BLN["KMP · shared SDK"]:::note
+  classDef note stroke-dasharray: 4 4;
 ```
 
 * **React Native / local AI:** Amaryllis is the concrete Micrantha runtime for on-device multimodal inference and governed AI-enabled UI.
@@ -161,6 +175,10 @@ flowchart LR
   B["Build"] --> E["Envuscator"] --> A["App artifact"] --> R["Running app"]
   R -->|attest| D["Digitalis"]
   D -->|config| R
+
+  E -.- EN["build hardening"]:::note
+  D -.- DN["runtime trust"]:::note
+  classDef note stroke-dasharray: 4 4;
 ```
 
 * **Envuscator is a build-time boundary:** it hardens selected mobile configuration during Android/iOS delivery. It does not provide runtime authorization, application attestation, or secure backend design.
@@ -175,6 +193,10 @@ Micrantha currently has two distinct mobile/AI integration patterns:
 flowchart LR
   RN["RN app"] --> AM["Amaryllis"] --> LM["On-device model"]
   AG["Agent runtime"] --> MY["Myosotis"] --> P["Local policy"] --> C["Device capability"]
+
+  AM -.- AMN["local inference"]:::note
+  MY -.- MYN["agent → device"]:::note
+  classDef note stroke-dasharray: 4 4;
 ```
 
 * **Local inference:** Amaryllis keeps model execution inside the mobile application and treats model output as untrusted input behind application-owned contracts.
@@ -198,6 +220,9 @@ flowchart LR
   D --> V["VPN"]
   D --> S["Security + privacy"]
   D --> A["Agentic runtime"]
+
+  D -.- DN["managed device baseline"]:::note
+  classDef note stroke-dasharray: 4 4;
 ```
 
 The intended device baseline combines:
@@ -219,6 +244,9 @@ Hyperion owns a different infrastructure boundary:
 flowchart LR
   H["Hyperion"] --> T["OpenTofu"] --> A["Ansible"]
   A --> K["K3s"] --> F["Flux"] --> W["Workloads"]
+
+  H -.- HN["cluster · GitOps"]:::note
+  classDef note stroke-dasharray: 4 4;
 ```
 
 Hyperion provides reproducible provisioned infrastructure, Kubernetes, and GitOps workload convergence. It can host Micrantha services without becoming part of their application-level trust model.
@@ -234,6 +262,10 @@ flowchart LR
   GL["Governance Lab"] --> A["Anthesis"]
   GD["Governed Agent Demo"] --> D["Dubnium"]
   GD --> A
+
+  GL -.- GLN["adversarial governance"]:::note
+  GD -.- GDN["vertical integration"]:::note
+  classDef note stroke-dasharray: 4 4;
 ```
 
 The Governance Lab exercises policy contracts and adversarial scenarios independently. Governed-agent demos provide vertical integration evidence across runtime and governance boundaries.
