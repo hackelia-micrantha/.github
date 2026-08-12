@@ -79,19 +79,27 @@ Micrantha is easier to understand as several **project families** rather than on
 
 ```mermaid
 flowchart TB
-  C["Governed agentic systems<br/>Dubnium · Invokrum · Anthesis · Keylix"]
-  M["Mobile and edge<br/>Myosotis · Amaryllis · Digitalis · Envuscator · Bluebell · Eyespie"]
-  I["Infrastructure<br/>Hyperion"]
-  L["Laboratories and conformance<br/>Anthesis Governance Lab · Governed Agent Demo"]
-  X["Stable / compost candidates<br/>Fortunes · Veil"]
+  C["Agentic"]
+  M["Mobile + edge"]
+  I["Infrastructure"]
+  L["Labs + conformance"]
+  X["Stable / compost"]
 
-  I -->|runtime foundation| C
-  I -->|deployment patterns| M
-  L -.->|tests contracts and integrations| C
-  C -.->|can consume governed device capabilities| M
+  I --> C
+  I --> M
+  L -.-> C
+  C -.-> M
 ```
 
-The boxes are **families, not layers that every system must traverse**. Most projects intentionally solve one narrow problem and remain independently useful.
+The boxes are **families, not layers that every system must traverse**:
+
+* **Agentic:** Dubnium, Invokrum, Anthesis, and Keylix
+* **Mobile + edge:** Myosotis, Amaryllis, Digitalis, Envuscator, Bluebell, and Eyespie
+* **Infrastructure:** Hyperion
+* **Labs + conformance:** Anthesis Governance Lab and governed-agent demos
+* **Stable / compost:** Fortunes and Veil
+
+Most projects intentionally solve one narrow problem and remain independently useful.
 
 ### 1. Governed agentic control plane
 
@@ -99,21 +107,13 @@ The core agentic path has four distinct responsibilities:
 
 ```mermaid
 flowchart LR
-  D["Dubnium<br/>runtime · supervisor · bounded execution"]
-  I["Invokrum<br/>compose + attest context"]
-  R["Agent / model"]
-  A["Anthesis<br/>policy · approval · evidence"]
-  K["Keylix<br/>sender binding / DPoP"]
-  S["External service / MCP endpoint"]
-  N["No external effect"]
-
-  D -->|profile + overlays| I
-  I -->|effective context + manifest| R
-  R -->|proposed effect| A
-  A -->|deny| N
-  A -->|allow / approved| D
-  D -.->|when sender-constrained OAuth is used| K
-  K -->|proof-bound request| S
+  D["Dubnium"] -->|compose| I["Invokrum"]
+  I -->|context| R["Agent / model"]
+  R -->|effect| A["Anthesis"]
+  A -->|deny| N["No effect"]
+  A -->|allow| D
+  D -.->|PoP| K["Keylix"]
+  K --> S["External service"]
 ```
 
 Each project answers a different question:
@@ -135,25 +135,15 @@ Mobile projects form a separate family. They may integrate with agentic systems,
 
 ```mermaid
 flowchart LR
-  APP["Mobile application"]
-  MY["Myosotis<br/>governed mobile capabilities"]
-  AM["Amaryllis<br/>on-device multimodal AI"]
-  DI["Digitalis<br/>application trust + secure config"]
-  EN["Envuscator<br/>build-time obfuscation"]
-  BL["Bluebell<br/>KMP SDK patterns"]
-  EY["Eyespie<br/>computer-vision experiments"]
-  DEV["Device capabilities"]
-  MODEL["On-device models"]
-
-  APP --> MY
-  MY -->|narrow governed operations| DEV
-  APP --> AM
-  AM --> MODEL
-  DI -.->|strengthens runtime trust| APP
-  EN -.->|hardens delivered configuration| APP
-  BL -.->|reusable SDK patterns| MY
-  BL -.->|reusable SDK patterns| DI
-  EY -.->|exercises mobile / vision patterns| AM
+  APP["Mobile app"] --> MY["Myosotis"]
+  MY --> DEV["Device"]
+  APP --> AM["Amaryllis"]
+  AM --> MODEL["Model"]
+  DI["Digitalis"] -.-> APP
+  EN["Envuscator"] -.-> APP
+  BL["Bluebell"] -.-> MY
+  BL -.-> DI
+  EY["Eyespie"] -.-> AM
 ```
 
 **Myosotis is not an MCP/LLM tool registry.** Its current direction is healthcare-first governed mobile capabilities for agentic systems: narrow device operations, device-local policy, explicit operator consent, attributable execution, and deterministic failure behavior.
@@ -181,9 +171,9 @@ Laboratory projects exist to **challenge architecture rather than become hidden 
 
 ```mermaid
 flowchart LR
-  GL["Anthesis Governance Lab"] -->|contract + adversarial scenarios| A["Anthesis"]
-  GD["Governed Agent Demo"] -->|integration findings| D["Dubnium"]
-  GD -->|integration findings| A
+  GL["Governance Lab"] --> A["Anthesis"]
+  GD["Governed Agent Demo"] --> D["Dubnium"]
+  GD --> A
 ```
 
 The Governance Lab exercises policy contracts and adversarial scenarios independently. Governed-agent demos provide vertical integration evidence across runtime and governance boundaries.
