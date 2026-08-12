@@ -41,6 +41,8 @@ The objective is simple: build systems that **remain understandable and maintain
 ### Platform engineering
 
 * Reproducible environments and opinionated distributions
+* Rebuildable workstation and operating-system configuration
+* Secure host and private-network connectivity
 * Safe delivery through GitOps and CI/CD
 * Secrets management and configuration hygiene
 * Observability-first operations
@@ -75,17 +77,19 @@ The objective is simple: build systems that **remain understandable and maintain
 
 ## 🗺️ How the projects fit together
 
-Micrantha is easier to understand as several **project families** rather than one dependency graph.
+Micrantha is easier to understand as several **project families** rather than one dependency graph. Some projects deliberately cross family boundaries.
 
 ```mermaid
 flowchart TB
   C["Agentic"]
-  M["Mobile + edge"]
+  D["Dubnium"]
   I["Infrastructure"]
+  M["Mobile + edge"]
   L["Labs + conformance"]
   X["Stable / compost"]
 
-  I --> C
+  C --- D
+  D --- I
   I --> M
   L -.-> C
   C -.-> M
@@ -95,11 +99,11 @@ The boxes are **families, not layers that every system must traverse**:
 
 * **Agentic:** Dubnium, Invokrum, Anthesis, and Keylix
 * **Mobile + edge:** Myosotis, Amaryllis, Digitalis, Envuscator, Bluebell, and Eyespie
-* **Infrastructure:** Hyperion
+* **Infrastructure:** Dubnium for the workstation/OS and private-network substrate; Hyperion for provisioned cluster and GitOps infrastructure
 * **Labs + conformance:** Anthesis Governance Lab and governed-agent demos
 * **Stable / compost:** Fortunes and Veil
 
-Most projects intentionally solve one narrow problem and remain independently useful.
+Most projects intentionally solve one narrow problem and remain independently useful. **Dubnium is intentionally cross-cutting:** the agentic runtime is built into the same reproducible workstation and platform environment that hosts it.
 
 ### 1. Governed agentic control plane
 
@@ -180,20 +184,46 @@ flowchart LR
 
 **Eyespie** remains an experimental consumer of mobile and computer-vision techniques rather than a foundational mobile runtime.
 
-### 3. Infrastructure and deployment
+### 3. Infrastructure and managed devices
 
-Hyperion is infrastructure rather than an application-domain dependency.
+Micrantha has two complementary infrastructure scopes rather than one infrastructure stack.
+
+#### Dubnium: workstation, OS, and private-network substrate
+
+Dubnium is a rebuildable workstation and operating environment as well as an AI control plane. A **Dubnium OS device** is intended to provide a consistent trusted-device baseline for the primary operator, trusted collaborators, and future team members where appropriate.
 
 ```mermaid
 flowchart LR
-  H["Hyperion"] --> T["OpenTofu / Terraform"]
-  T --> A["Ansible"]
-  A --> K["K3s"]
-  K --> F["Flux + Kustomize"]
-  F --> W["Micrantha workloads"]
+  U["Trusted user"] --> D["Dubnium OS"]
+  D --> V["VPN"]
+  D --> S["Security + privacy"]
+  D --> A["Agentic runtime"]
 ```
 
-It provides reproducible infrastructure and GitOps patterns that can host Micrantha services without becoming part of their application-level trust model.
+The intended device baseline combines:
+
+* reproducible operating-system and workstation configuration;
+* VPN / private-network connectivity and machine identity;
+* security and privacy defaults at the host boundary;
+* local development tooling and reproducible environments;
+* local and routed model execution;
+* governed agentic capabilities, memory, scheduling, and bounded automation.
+
+This makes Dubnium useful beyond a single personal workstation: a provisioned Dubnium device can give a trusted user a known environment and network/security posture while also providing the agentic development surface. Broader multi-user distribution is a direction, not a claim that Dubnium currently provides enterprise MDM or fleet management.
+
+#### Hyperion: cluster and GitOps substrate
+
+Hyperion owns a different infrastructure boundary:
+
+```mermaid
+flowchart LR
+  H["Hyperion"] --> T["OpenTofu"] --> A["Ansible"]
+  A --> K["K3s"] --> F["Flux"] --> W["Workloads"]
+```
+
+Hyperion provides reproducible provisioned infrastructure, Kubernetes, and GitOps workload convergence. It can host Micrantha services without becoming part of their application-level trust model.
+
+The distinction is intentional: **Dubnium manages the trusted workstation/device environment; Hyperion manages provisioned service infrastructure.** They can interoperate without one subsuming the other.
 
 ### 4. Laboratories and conformance
 
@@ -218,9 +248,9 @@ Composting means retiring the active project while preserving useful patterns, l
 
 ## 🔭 Current engineering direction — August 2026
 
+* **Dubnium** spans the agentic and infrastructure families: it is a rebuildable workstation/OS environment, private-network substrate, and local agentic control plane. The longer-term direction includes provisioned devices for trusted collaborators and future team members, without claiming current enterprise fleet-management maturity.
 * **Invokrum v0.1.0** establishes deterministic local composition, lockfile verification, provenance, and attestable effective context.
 * **Keylix** has an accepted v0.1 security design for OAuth DPoP and sender-constrained agent/MCP workloads; implementation remains pre-release.
-* **Dubnium** continues to own the local-first runtime, supervisor, model-routing, specialist, memory, scheduling, and bounded-execution concerns.
 * **Anthesis** remains the policy, approval, evidence, and provenance authority rather than absorbing runtime responsibilities.
 * **Myosotis** is positioned around governed mobile capabilities, with an Android-native Kotlin reference SDK first and a Swift interoperability checkpoint before any shared-core decision.
 * **Amaryllis** is an active 0.1.x React Native foundation for on-device multimodal AI and governed AI-enabled UI.
@@ -228,7 +258,7 @@ Composting means retiring the active project while preserving useful patterns, l
 * **Digitalis** and **Envuscator** address different mobile-security phases: runtime/application trust versus build-time hardening.
 * **Fortunes** and **Veil** are stable, complete work with no planned feature trajectory and are future compost candidates.
 
-The recurring design principle is **separation of authority**: context composition, policy, execution, credentials, application trust, and infrastructure should remain explicit boundaries rather than collapse into one agent platform.
+The recurring design principle is **separation of authority**: context composition, policy, execution, credentials, application trust, workstation trust, network trust, and service infrastructure should remain explicit boundaries rather than collapse into one platform.
 
 ---
 
@@ -259,7 +289,7 @@ The recurring design principle is **separation of authority**: context compositi
 
 | Project | Family | Role | Maturity | Lifecycle |
 | --- | --- | --- | --- | --- |
-| **[Dubnium](https://github.com/hackelia-micrantha/dubnium-community)** | Agentic | Local-first agentic development and operations runtime | Incubating | Active |
+| **[Dubnium](https://github.com/hackelia-micrantha/dubnium-community)** | Agentic / Infrastructure | Rebuildable workstation/OS, private-network substrate, and local agentic control plane | Incubating | Active |
 | **[Invokrum](https://github.com/hackelia-micrantha/invokrum)** | Agentic | Deterministic prompt-overlay composition and attestation | Incubating | Active |
 | **[Anthesis](https://anthesis.micrantha.com)** | Agentic | Governance, approval, provenance, and evidence | Incubating | Active |
 | **[Keylix](https://github.com/hackelia-micrantha/keylix)** | Agentic / Security | Sender-constrained OAuth and proof-of-possession primitives | Prototype | Active |
@@ -300,6 +330,8 @@ Micrantha treats **operability as a first-class design constraint**.
 Typical practices include:
 
 * GitOps and reproducible infrastructure
+* rebuildable workstation and device baselines
+* private-network connectivity for trusted hosts
 * logs, metrics, traces, and structured evidence
 * runbooks for known failure modes
 * small blast radii and reversible changes
@@ -319,6 +351,7 @@ Common principles include:
 * fail-closed authorization and verification
 * sender-constrained credentials where replay resistance matters
 * deterministic and attestable agent context where instructions affect authority
+* secure host and private-network defaults for managed workstations
 * secrets management and rotation
 * dependency and supply-chain hygiene
 * SBOMs, artifact signing, provenance, and evidence where appropriate
