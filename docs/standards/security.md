@@ -31,7 +31,7 @@ Use the smallest artifact that resolves the risk: issue analysis, QART slice, th
 ### Least privilege and authority
 
 - Grant only the capability, resource, scope, and lifetime required.
-- Separate proposal, authorization, execution, and evidence responsibilities where material.
+- Separate proposal, authorization, execution, verification, and evidence responsibilities where material.
 - Prevent confused-deputy behavior by binding requests to the initiating actor, intended resource, and approved parameters.
 - Make delegation explicit, bounded, revocable, and attributable.
 - Treat administrative, release, signing, and deployment authority as separate capabilities.
@@ -40,8 +40,9 @@ Use the smallest artifact that resolves the risk: issue analysis, QART slice, th
 
 - Default to denial or a safe non-effect state at authorization and verification boundaries.
 - Define fail-open, fail-closed, quarantine, retry, override, and recovery behavior explicitly.
-- Avoid silent fallback that weakens authentication, policy, integrity, or encryption.
+- Avoid silent fallback that weakens authentication, policy, integrity, verification, or encryption.
 - Bound retries, resource consumption, and recursive or agentic execution.
+- Represent unavailable or insufficient verification as unresolved or indeterminate rather than silently converting it to success.
 
 ### Input and data handling
 
@@ -84,8 +85,11 @@ Agentic workflows require explicit control boundaries:
 3. **Policy** — the rules and context used to evaluate it.
 4. **Approval** — accountable authorization where required.
 5. **Execution** — the bounded capability that performs the effect.
-6. **Evidence** — attributable records of inputs, decisions, approvals, execution, and result.
-7. **Recovery** — cancellation, rollback, containment, or remediation.
+6. **Result claim** — what the executor or provider reports it produced or changed.
+7. **Verification** — independent, deterministic, external-system, or human checks against the exact relevant subject where required.
+8. **Governed outcome** — the accepted, rejected, superseded, or indeterminate interpretation of the result.
+9. **Evidence** — attributable records of inputs, decisions, approvals, execution, verification, and result.
+10. **Recovery** — cancellation, rollback, containment, reconciliation, or remediation.
 
 Required properties should include, according to risk:
 
@@ -98,15 +102,26 @@ Required properties should include, according to risk:
 - provenance and tamper-evident evidence;
 - bounded memory access and sensitive-context handling;
 - bypass detection and fail-closed behavior;
-- human override that is authenticated, attributable, and auditable.
+- human override that is authenticated, attributable, and auditable;
+- explicit separation between executor/provider claims and trusted completion where verification is required;
+- verification bound to the exact task, candidate, artifact, source baseline, or effect revision being evaluated;
+- invalidation of stale verification after a material subject change;
+- preservation of rejected, superseded, and indeterminate outcomes rather than treating missing evidence as success;
+- durable task or workflow state that does not depend on a complete model transcript, scratch context, or advisory memory.
 
-A supervisor/specialist pattern does not by itself provide authorization. The supervisor, memory system, policy authority, and executor must have separate, explicit responsibilities.
+A supervisor/specialist pattern does not by itself provide authorization or independent verification. The supervisor, memory system, policy authority, executor, verifier, and evidence store must have separate, explicit responsibilities where the risk model depends on that separation.
+
+A component that produces a result must not, by its own assertion alone, satisfy a verification requirement intended to establish that result as trusted. The same process or deployment may implement several stages when the risk permits it, but self-report must remain distinguishable from accepted verification evidence.
+
+Cryptographic sender binding, signatures, attestations, receipts, checksums, and evidence-bundle integrity prove only the properties they actually verify. They must not be represented as task correctness, application authorization, successful external realization, or trusted-state promotion unless the governing contract explicitly establishes that conclusion.
 
 ## Logging, evidence, and privacy
 
-Security evidence should answer who requested, who approved, what was evaluated, what changed, when it occurred, and which code/configuration/policy versions were involved.
+Security evidence should answer who requested, who approved, what was evaluated, what changed, what the executor claimed, how the exact result was verified where required, when it occurred, and which code/configuration/policy versions were involved.
 
 Logs and evidence must not become a second secret store. Apply classification, access control, redaction, retention, integrity protection, and deletion rules. Record hashes or references instead of sensitive payloads when sufficient.
+
+Where completion verification matters, evidence should identify the exact verification subject and verifier class or identity so stale, substituted, or self-certified results can be detected.
 
 ## Security validation
 
@@ -115,6 +130,10 @@ Validation should test protected invariants and denial behavior, including appli
 - unauthorized and cross-tenant access;
 - malformed, oversized, stale, replayed, or tampered input;
 - approval mismatch and bypass attempts;
+- executor self-certification where independent verification is required;
+- stale verification replay against a changed candidate or effect;
+- unavailable verifier or insufficient evidence producing indeterminate rather than success;
+- restart or retry from structured state without requiring the prior model transcript;
 - secret and sensitive-data leakage;
 - dependency, runner, and build-boundary failures;
 - degraded dependencies and partial execution;

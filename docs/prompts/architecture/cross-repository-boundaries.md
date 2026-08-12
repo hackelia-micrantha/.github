@@ -28,6 +28,7 @@ Determine:
 - where implementation or documentation overlaps;
 - which dependencies are intentional and which represent drift;
 - how public, private, customer-controlled, and experimental boundaries should work;
+- where context identity, runtime execution, governance, cryptographic sender binding, domain observation, verification, and trusted-state promotion belong when an agentic workflow spans repositories;
 - what should consolidate, migrate, remain separate, or be archived.
 
 ## Evidence to inspect
@@ -77,18 +78,31 @@ Classify each repository as one or more of:
 
 Explain mixed roles and whether they should remain mixed.
 
-### 3. Dependency and contract direction
+### 3. Dependency, authority, and contract direction
 
 Map:
 
 - build-time and runtime dependencies;
 - control, data, and artifact flows;
 - API, schema, protocol, and event ownership;
-- policy, approval, evidence, and execution boundaries where applicable;
+- policy, approval, evidence, verification, and execution boundaries where applicable;
 - release and synchronization flows;
 - circular dependencies or reverse ownership.
 
 Prefer explicit contracts over shared internal implementation when repositories require independent evolution.
+
+For agentic systems, map the **authority chain separately from the runtime dependency graph**. At minimum identify which repository or component owns:
+
+- prompt/context composition identity;
+- execution and operational run state;
+- policy and approval decisions;
+- verifier/check execution and verifier identity;
+- governance interpretation and trusted-state promotion;
+- cryptographic sender or workload binding;
+- domain-specific postcondition observation;
+- evidence storage/provenance and replay semantics.
+
+A consumer dependency does not transfer the producer's authority. A runtime that calls a governance service does not become policy authority; a context-integrity library does not become workflow truth; a sender-binding library does not become application authorization; a domain observer does not become governance authority.
 
 ### 4. Overlap classification
 
@@ -115,10 +129,38 @@ Review:
 - credentials, signing keys, entitlements, and release permissions;
 - artifact provenance and synchronization;
 - laboratory data and production data separation;
-- agent, policy, approval, and executor trust domains;
+- agent, policy, approval, executor, verifier, and observer trust domains;
 - dependency compromise and repository takeover blast radius.
 
-### 6. Migration and lifecycle
+### 6. Agentic state-integrity and authority drift
+
+Where repositories participate in one long-running or effectful agent workflow, check for boundary collapse such as:
+
+- executor or provider self-report directly becoming trusted completion;
+- supervisor synthesis being treated as independent verification merely because it aggregates specialist output;
+- verifier/evaluator roles silently inheriting executor mutation authority where separation is security-relevant;
+- context manifests, lockfiles, prompt attestations, or memory summaries being treated as task truth or authorization;
+- sender binding, signatures, attestations, checksums, or evidence-bundle integrity being overclaimed as semantic task correctness or application authorization;
+- provider submission receipts being treated as proof that the intended external state was realized;
+- evidence, prior success, replay, or recovery state minting new authority;
+- verification for one task/candidate/artifact/effect revision being reused after the subject materially changes;
+- unavailable or inconclusive verification being converted into success;
+- full transcripts or model scratch history becoming the canonical cross-repository workflow state.
+
+When verification is required, identify:
+
+- the exact verification subject;
+- who produced the result;
+- who or what verified it;
+- what capability the verifier had;
+- which repository defines the acceptance/evidence requirement;
+- which repository interprets the verification result;
+- how rejected, superseded, and indeterminate outcomes remain attributable;
+- how retry or recovery reconstructs current state without relying on ambiguous transcript interpretation.
+
+The producing component must not, by its own assertion alone, satisfy a verification requirement intended to establish its result as trusted.
+
+### 7. Migration and lifecycle
 
 For transitional boundaries identify:
 
@@ -132,7 +174,7 @@ For transitional boundaries identify:
 
 Avoid indefinite dual authority.
 
-### 7. Work tracking
+### 8. Work tracking
 
 Check whether issues are filed in the repository that owns the outcome. Identify duplicated epics, cross-repository blockers without explicit relationships, and umbrella work that lacks bounded repository-local slices.
 
@@ -156,7 +198,7 @@ State the ecosystem outcome, current boundary health, principal ambiguity, large
 
 ### D. Architecture map
 
-Provide a Mermaid diagram showing relevant control, data, contract, artifact, and release flows. Distinguish authoritative dependencies from transitional or test relationships.
+Provide a Mermaid diagram showing relevant control, data, authority, contract, artifact, verification, and release flows. Distinguish authoritative dependencies from transitional or test relationships.
 
 ### E. Overlap and boundary findings
 
@@ -165,7 +207,7 @@ Provide a Mermaid diagram showing relevant control, data, contract, artifact, an
 
 ### F. Target boundary model
 
-Describe the recommended responsibility, contract, dependency, trust, public/private, and lifecycle model. Prefer the smallest change that removes material ambiguity.
+Describe the recommended responsibility, contract, dependency, trust, verification, public/private, and lifecycle model. Prefer the smallest change that removes material ambiguity.
 
 ### G. Migration or consolidation plan
 
@@ -190,6 +232,7 @@ Choose exactly one:
 - **Focused migration or consolidation required**
 - **Contract extraction required**
 - **Repository roles require architectural clarification**
+- **Agentic authority or state-integrity boundary requires clarification**
 - **Public/private or trust boundary requires security remediation**
 - **One or more repositories should be superseded or archived**
 - **Insufficient evidence**

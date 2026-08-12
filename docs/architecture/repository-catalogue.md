@@ -4,7 +4,7 @@ This catalogue records organization-level project classification, maturity, auth
 
 Detailed implementation, support, licensing, and release evidence remains in each authoritative repository. When this catalogue conflicts with current repository evidence, treat the conflict as governance drift: correct the catalogue or explicitly change ownership through review rather than silently relying on the inconsistency.
 
-**Catalogue baseline:** 2026-08-03
+**Catalogue baseline:** 2026-08-12
 
 ## How to use this catalogue
 
@@ -61,12 +61,19 @@ Where a project has source and community repositories:
 
 | Project and locations | Classification | Maturity | Authoritative responsibility | Does not own |
 | --- | --- | --- | --- | --- |
-| **Anthesis** — [`anthesis`](https://github.com/hackelia-micrantha/anthesis), public/community surfaces including [`anthesis-community`](https://github.com/hackelia-micrantha/anthesis-community) | Governance and provenance solution | Incubating | Actor, policy, capability, approval, decision, evidence, attribution, and provenance contracts for authorizing agentic effects | Agent planning, model routing, general memory, operating-system distribution, or effect execution itself |
-| **Dubnium** — [`dubnium`](https://github.com/hackelia-micrantha/dubnium), [`dubnium-community`](https://github.com/hackelia-micrantha/dubnium-community) | Agentic development distribution | Incubating | Reproducible distribution composition, model/runtime integration, supervisor-specialist orchestration, bounded executor integration, operator experience, and distribution defaults | Anthesis policy authority, independent laboratory truth, or internal contracts of composed components |
+| **Anthesis** — [`anthesis`](https://github.com/hackelia-micrantha/anthesis), public/community surfaces including [`anthesis-community`](https://github.com/hackelia-micrantha/anthesis-community) | Governance and provenance solution | Incubating | Actor, policy, capability, approval, decision, evidence, attribution, provenance, and trusted-state promotion contracts for governed agentic effects | Agent planning, model routing, general memory, operating-system distribution, or effect execution itself |
+| **Dubnium** — [`dubnium`](https://github.com/hackelia-micrantha/dubnium), [`dubnium-community`](https://github.com/hackelia-micrantha/dubnium-community) | Agentic development distribution | Incubating | Reproducible distribution composition, model/runtime integration, supervisor-specialist orchestration, bounded executor integration, operator experience, and distribution defaults | Anthesis policy or trusted-state authority, independent laboratory truth, or internal contracts of composed components |
 | **Envuscator** — source and community surfaces including [`envuscator-community`](https://github.com/hackelia-micrantha/envuscator-community) | Mobile build-time configuration-obfuscation solution | Incubating | Provider-neutral obfuscation model, local execution, protected configuration transformation, and customer-controlled build boundary | General application security, hosted custody of customer source by implication, or provider-specific adapter behavior outside delegated contracts |
 | **Amaryllis** — [`amaryllis`](https://github.com/hackelia-micrantha/amaryllis) and public surfaces | Mobile inference SDK and toolkit | Experimental | Mobile/on-device inference APIs, SDK behavior, packaging, and supported platform integrations | General tool registry, unrelated computer-vision applications, or governance authority for agentic effects |
 | **Fortunes** — source and public service surfaces | Service and Slack integration | Stable | Fortune service behavior, Slack integration, and its deployment contract | Organization-wide service architecture standards or unrelated chat integrations |
 | **Veil** — source and public service surfaces | Image privacy and obfuscation service | Experimental | Image concealment/privacy utility behavior and service integration | Mobile build obfuscation, general computer-vision inference, or security guarantees beyond its declared scope |
+
+## Reusable context and security components
+
+| Project and locations | Classification | Maturity | Authoritative responsibility | Does not own |
+| --- | --- | --- | --- | --- |
+| **Invokrum** — [`invokrum`](https://github.com/hackelia-micrantha/invokrum) | Prompt/context composition library and host contract | Incubating | Deterministic prompt-overlay composition, strict schema and compatibility validation, canonical manifests, lockfiles, context integrity, and read-only host integration contracts | Governance or approval policy, task/workflow truth, execution authority, verifier conclusions, or task completion |
+| **Keylix** — [`keylix`](https://github.com/hackelia-micrantha/keylix) | Sender-constrained security library and adapters | Experimental | JWK/thumbprint primitives, OAuth DPoP proof construction and verification, replay/nonce contracts, verified sender binding, conformance, and experimental MCP HTTP authorization adapters | Identity-provider policy, token-validity decisions by itself, application authorization, task correctness, workflow state, or trusted-state promotion |
 
 ## Laboratory, infrastructure, templates, and reference integrations
 
@@ -74,7 +81,7 @@ Where a project has source and community repositories:
 | --- | --- | --- | --- | --- |
 | **Anthesis Governance Lab** — currently transitional at [`ryjen/anthesis-governance-lab`](https://github.com/ryjen/anthesis-governance-lab) | Contract laboratory and executable testbed | Incubating | Canonical scenarios, fixtures, test harness behavior, compatibility reports, evidence bundles, and laboratory release artifacts | Anthesis product contracts, risk acceptance, or production policy decisions |
 | **Dubnium Governed Agent Demo** — integration material currently spans Dubnium and Anthesis work | Reference integration and governed-agent testbed | Experimental | End-to-end demonstration evidence for planning, governance, approval, bounded execution, and audit flow | Independent product authority; it does not redefine Anthesis or Dubnium contracts |
-| **Hyperion** — [`hyperion`](https://github.com/hackelia-micrantha/hyperion) | Reproducible infrastructure laboratory and stack | Incubating | K3s, GitOps, cluster, infrastructure, deployment, and operational patterns declared by the repository | Product-level governance semantics or application contracts deployed onto the infrastructure |
+| **Hyperion** — [`hyperion`](https://github.com/hackelia-micrantha/hyperion) | Reproducible infrastructure laboratory and stack | Incubating | K3s, GitOps, cluster, infrastructure, deployment, operational patterns, and domain-specific deployment-state observation declared by the repository | Product-level governance semantics, trusted-state promotion, or application contracts deployed onto the infrastructure |
 | **Bluebell** — [`bluebell`](https://github.com/hackelia-micrantha/bluebell) | Kotlin Multiplatform SDK template | Stable | Reusable KMP project structure, build conventions, publishing pattern, and template validation | Product behavior of repositories generated from or inspired by the template |
 | **Digitalis** — source and [`digitalis-community`](https://github.com/hackelia-micrantha/digitalis-community) | Mobile attestation and secure-configuration laboratory | Experimental | Attestation experiments, secure configuration-delivery contracts under test, fixtures, and public laboratory material | General mobile identity, Eyespie product behavior, or organization-wide configuration policy |
 | **Myosotis** — source and [`myosotis-community`](https://github.com/hackelia-micrantha/myosotis-community) | MCP and LLM tool-registry laboratory | Experimental | Tool metadata, discovery, registry experiments, and related integration evidence | Dubnium orchestration, Amaryllis inference behavior, or tool execution authorization |
@@ -89,6 +96,30 @@ Where a project has source and community repositories:
 - Dubnium must not treat model intent or supervisor authority as a substitute for Anthesis decisions where governance is required.
 - Anthesis must not silently become a general agent runtime, planner, or executor.
 - Shared integration contracts require accepted decisions in both authoritative projects.
+
+### Agentic context, execution, governance, sender binding, and observed state
+
+For agentic workflows that span several Micrantha repositories, keep these authority categories explicit:
+
+- **Invokrum** may establish reproducible context identity and attest what prompt/configuration entered an executor. Its manifests and locks are evidence about context composition, not workflow truth, authorization, or completion.
+- **Dubnium** owns runtime execution, bounded executor/specialist lifecycle, operational run state, runtime observations, and execution of accepted verifier/check profiles. Executor or supervisor claims remain claims rather than governance truth.
+- **Anthesis** owns policy and approval semantics, required evidence/verification profiles, governance interpretation, provenance, and promotion of accepted evidence into trusted governed state.
+- **Keylix** may establish cryptographic sender binding and proof-of-possession for workloads. Sender binding proves which constrained actor presented a request; it does not prove application authorization or semantic task correctness.
+- **Hyperion and other domain providers** may observe deployment, reconciliation, health, or other domain-specific postconditions. Provider receipts and observed state are evidence inputs; they do not independently define governance meaning.
+
+The durable state-integrity rule is:
+
+> A component that produces a result must not, by its own assertion alone, satisfy a verification requirement intended to establish that result as trusted.
+
+Where verification is required:
+
+- bind it to the exact task, candidate, artifact, source baseline, or effect revision being evaluated;
+- reject stale verification after a material subject change;
+- preserve `rejected`, `superseded`, and `indeterminate` outcomes instead of converting missing evidence into success;
+- keep evidence separate from authority so receipts, logs, prior success, or proof-of-possession cannot mint a new permission;
+- keep durable task/workflow state distinct from complete transcripts, model scratch context, or advisory memory.
+
+Runtime composition may place several of these responsibilities in one deployment, but repository authority and security semantics remain distinct unless an explicit reviewed decision changes them.
 
 ### Anthesis and Governance Lab
 

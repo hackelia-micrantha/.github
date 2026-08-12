@@ -24,16 +24,16 @@ Do not invoke external effects, change policies, modify approvals, or alter cred
 
 ## Security objective
 
-Determine whether the system keeps observation, proposed intent, policy evaluation, human approval, capability authorization, execution, validation, evidence, and recovery as explicit bounded stages with defensible trust transitions.
+Determine whether the system keeps observation, proposed intent, policy evaluation, human approval, capability authorization, execution, result claims, verification, governed outcome, evidence, and recovery as explicit bounded stages with defensible trust transitions.
 
 ## System model
 
 Map applicable:
 
-- human users, service identities, agents, models, supervisors, specialists, policy engines, approval services, tool registries, memory stores, queues, executors, runners, external APIs, and audit stores;
-- control, data, credential, artifact, approval, and evidence flows;
+- human users, service identities, agents, models, supervisors, specialists, policy engines, approval services, tool registries, memory stores, queues, executors, verifiers, runners, external APIs, and audit stores;
+- control, data, credential, artifact, approval, verification, and evidence flows;
 - trust domains and deployment boundaries;
-- who can propose, approve, execute, observe, replay, revoke, and administer;
+- who can propose, approve, execute, observe, verify, promote trusted state, replay, revoke, and administer;
 - model and tool supply chains;
 - failure and recovery paths.
 
@@ -48,6 +48,12 @@ Identify the invariants the design must preserve, such as:
 - execution cannot broaden an approved effect;
 - credentials are least-privileged and context-bound;
 - memory cannot override policy or confer permissions;
+- executor or provider self-report is a claim rather than trusted completion when verification is required;
+- required verification binds the exact task, candidate, artifact, source baseline, or effect revision being evaluated;
+- stale verification cannot be replayed after a material subject change;
+- unavailable or insufficient verification remains indeterminate rather than becoming success;
+- evidence, receipts, signatures, attestations, or proof-of-possession cannot mint new authority;
+- durable task or workflow truth does not depend on a complete model transcript, scratch context, or advisory memory;
 - evidence is sufficient to reconstruct and reconcile effects;
 - policy or evidence failure stops high-impact execution safely;
 - partial effects can be detected, contained, and recovered.
@@ -69,10 +75,11 @@ Verify that:
 
 Review:
 
-- human, service, workload, agent, and tool identities;
+- human, service, workload, agent, executor, verifier, and tool identities;
 - token audience, scope, lifetime, rotation, storage, and delegation;
 - ambient credential use and identity confusion;
-- identity binding across proposal, approval, capability issuance, execution, and evidence;
+- identity binding across proposal, approval, capability issuance, execution, verification, and evidence;
+- whether executor and verifier identities/capabilities are separated where the claimed independence depends on that separation;
 - cross-user, cross-project, and cross-environment separation.
 
 ### 3. Capability and tool authorization
@@ -88,7 +95,7 @@ Check:
 - network, filesystem, process, package, deployment, and protected-data access;
 - capability revocation and expiry.
 
-### 4. Planning and effect separation
+### 4. Planning, execution, verification, and effect separation
 
 Determine whether the system separates:
 
@@ -98,10 +105,12 @@ Determine whether the system separates:
 4. human approval where required;
 5. capability issuance;
 6. execution;
-7. validation;
-8. evidence and reconciliation.
+7. executor/provider result claim;
+8. verification of the exact relevant result or external postcondition where required;
+9. governed outcome or trusted-state promotion;
+10. evidence and reconciliation.
 
-Identify hidden effects during planning, validation that unexpectedly mutates state, and executors that can expand an approved plan.
+Identify hidden effects during planning, validation that unexpectedly mutates state, executors that can expand an approved plan, and result-producing components that can self-certify completion without satisfying the required verifier boundary.
 
 ### 5. Policy and governance integrity
 
@@ -109,11 +118,12 @@ Review:
 
 - deterministic versus model-influenced policy decisions;
 - binding among policy version, inputs, decision, rationale, and evidence;
-- safe behavior when policy, identity, context, or evidence is unavailable;
+- safe behavior when policy, identity, context, verification, or evidence is unavailable;
 - alternate paths that may bypass the intended policy boundary;
 - conflict resolution among policies;
 - policy administration and change control;
-- handling of composite, nested, retried, and delegated actions.
+- handling of composite, nested, retried, and delegated actions;
+- whether a verification result is interpreted under an explicit policy rather than treated as self-interpreting authority.
 
 ### 6. Human approval
 
@@ -139,7 +149,30 @@ Review:
 - stale state, concurrency, ordering, and replay controls;
 - blast-radius limits and recovery ownership.
 
-### 8. Memory, context, and privacy
+### 8. State integrity and completion verification
+
+Determine whether the workflow can distinguish:
+
+- what the executor says it completed;
+- what the runtime or provider observed;
+- what an independent, deterministic, external-system, or human verifier established;
+- what the governance layer accepted as the current trusted outcome.
+
+Check that:
+
+- executor output cannot directly mark a required independently verified task as complete;
+- supervisor synthesis or specialist consensus is not treated as independent verification merely because it aggregates model output;
+- the verification subject binds the exact task/intent revision, candidate or artifact identity, source/dependency baseline, and acceptance profile needed to prevent substitution;
+- changing a material verification subject invalidates stale verifier results;
+- verifier failure, timeout, or missing evidence yields an explicit rejected, blocked, or indeterminate state rather than success;
+- rejected and superseded attempts remain attributable where needed for audit and recovery;
+- generated tests or checks are not assumed independent solely because the same executor generated and ran them;
+- provider receipts distinguish submission/acceptance from externally observed realization or health;
+- cryptographic sender binding, signatures, checksums, attestations, and evidence-bundle integrity are not overclaimed as semantic correctness or authorization;
+- retries or replans can reconstruct bounded current state without requiring a complete failed model conversation;
+- durable trusted state contains structured accepted facts and references, not merely compressed execution history.
+
+### 9. Memory, context, and privacy
 
 Assess:
 
@@ -148,9 +181,10 @@ Assess:
 - poisoning, stale-memory, and cross-context risks;
 - protected-data exposure through model output;
 - whether memory can influence authority or policy;
+- whether memory or transcript summaries can be mistaken for authoritative current workflow state;
 - context minimization and purpose limitation.
 
-### 9. Tool and model supply chain
+### 10. Tool and model supply chain
 
 Review:
 
@@ -161,34 +195,35 @@ Review:
 - provider fallback behavior;
 - routing policy, data location, and compatibility.
 
-### 10. Evidence and auditability
+### 11. Evidence and auditability
 
 Confirm evidence records applicable:
 
 - actor and identity;
 - policy and model versions;
 - trusted and untrusted inputs or privacy-safe digests;
-- proposal, plan digest, approval, issued capability, execution request, result, and validation;
-- timestamps, ordering, retries, failures, overrides, and revocations;
+- proposal, plan digest, approval, issued capability, execution request, executor/provider claim, result, verification subject, verifier identity/class, verification result, and governed outcome;
+- timestamps, ordering, retries, failures, overrides, supersession, and revocations;
 - artifact identities and external side effects.
 
-Evidence should be tamper-evident, queryable, privacy-aware, and sufficient to explain why an effect occurred.
+Evidence should be tamper-evident, queryable, privacy-aware, and sufficient to explain why an effect occurred and why a result is or is not considered complete.
 
-### 11. Failure and incident handling
+### 12. Failure and incident handling
 
 Check behavior when:
 
-- a model, policy service, tool, or evidence store is unavailable;
+- a model, policy service, tool, verifier, or evidence store is unavailable;
 - approval expires or cannot be verified;
 - execution partially succeeds;
+- a candidate changes after verification;
 - a queued action becomes stale;
 - authority must be revoked;
 - unsafe behavior is discovered after an effect;
 - an agent loops, floods requests, or consumes excessive resources.
 
-Require safe stop, containment, reconciliation, recovery, and evidence preservation.
+Require safe stop, containment, reconciliation, recovery, evidence preservation, and an explicit non-success state when required verification cannot be established.
 
-### 12. Defensive validation
+### 13. Defensive validation
 
 Assess whether tests cover:
 
@@ -196,6 +231,10 @@ Assess whether tests cover:
 - authorization and policy enforcement;
 - identity and delegation boundaries;
 - plan changes after approval;
+- executor self-certification attempts;
+- stale verification replay against a changed task, candidate, artifact, or effect;
+- verifier unavailable or inconclusive outcomes;
+- fresh-context retry/replan from structured state without the prior full transcript;
 - stale approval, replay, ordering, and concurrency;
 - malformed or incomplete model output;
 - protected-data and tenant separation;
@@ -211,6 +250,7 @@ Classify each finding as:
 - **Authorization or trust-boundary flaw**
 - **Governance integrity gap**
 - **Approval integrity gap**
+- **Verification or state-integrity gap**
 - **Execution isolation or recovery gap**
 - **Privacy or memory risk**
 - **Supply-chain risk**
@@ -227,7 +267,7 @@ State the system outcome, actors, highest-trust component, primary effect bounda
 
 ### B. Trust and effect map
 
-Provide a Mermaid diagram showing actors, models, policy, approvals, capability issuance, tools, executors, data, memory, and evidence stores. Mark trust boundaries and untrusted-input flows.
+Provide a Mermaid diagram showing actors, models, policy, approvals, capability issuance, tools, executors, verifiers, data, memory, and evidence stores. Mark trust boundaries and untrusted-input flows.
 
 ### C. Asset and invariant model
 
@@ -267,6 +307,7 @@ Choose exactly one:
 - **Acceptable for stated prototype or laboratory use**
 - **Acceptable after bounded hardening**
 - **Requires focused authorization or governance remediation**
+- **Requires verification or state-integrity remediation**
 - **Requires execution isolation or recovery remediation**
 - **Requires privacy or evidence redesign**
 - **Unsafe for high-impact or production effects**
@@ -282,5 +323,5 @@ When issue creation or bounded fixes are authorized:
 3. Create the smallest coherent remediation issues in the owning repositories.
 4. Implement only approved bounded fixes.
 5. Add defensive regression tests.
-6. Re-review the trust and effect boundary before closing findings.
+6. Re-review the trust, verification, and effect boundary before closing findings.
 ```
