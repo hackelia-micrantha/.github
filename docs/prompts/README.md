@@ -39,9 +39,25 @@ Do not reproduce credentials, tokens, keys, personal data, or other secret value
 Access only the repositories and connected systems required by the stated scope. Identify evidence that could not be inspected instead of inferring access, validation, or completion.
 
 Separate verified facts, reasonable inferences, open questions, and recommendations.
+
+Resolve ambiguity from available evidence before asking for clarification. Ask concise, targeted questions before proceeding when unresolved ambiguity could materially change scope, interpretation, authority, priority, security posture, public claims, or an authorized mutation. Do not guess across conflicting authoritative evidence. If uncertainty is non-blocking, state the assumption and proceed. If interaction is unavailable, stop at the affected decision or mutation boundary and report the clarification required.
 ```
 
 For an authorized write pass, preserve the review result as the baseline, restate the exact approved mutations, apply only those bounded actions, and report the resulting evidence.
+
+## Shared ambiguity and clarification contract
+
+All prompts in this library use the following decision rule:
+
+1. **Inspect before asking.** Resolve missing context from repository evidence, linked authoritative sources, prior accepted decisions, and the invocation itself. Do not ask questions that available evidence can answer reliably.
+2. **Ask on material ambiguity.** Ask before proceeding when two or more plausible interpretations could materially change the review scope, intended outcome, authoritative source, maturity expectation, security or trust assumptions, priority, architecture decision, public claim, destructive action, or requested mutation.
+3. **Do not invent authority.** When evidence conflicts and no authoritative source can be established, present the conflict and ask which source or interpretation governs rather than silently choosing one.
+4. **Make questions decision-oriented.** Group related questions, keep them few and targeted, explain what decision each question controls, and provide bounded options or a recommended default when evidence supports one.
+5. **Proceed on non-blocking uncertainty.** If the ambiguity does not materially affect the current safe step, state the assumption, confidence, and evidence gap, then continue. Preserve the unresolved question for the point where it becomes consequential.
+6. **Treat writes more strictly than reads.** Never mutate repository or external state when the target, scope, ownership, acceptance criteria, or requested effect is materially ambiguous. Clarify first unless the invocation already defines a safe bounded default.
+7. **Fail safely without interaction.** In unattended or non-interactive execution, continue through unambiguous read-only work, but stop at the affected decision or mutation boundary and report the smallest clarification needed to resume.
+
+The goal is not to maximize questions. It is to prevent plausible but materially different interpretations from being converted into confident findings, decisions, priorities, or mutations.
 
 ## Shared priority model
 
