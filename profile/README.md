@@ -39,7 +39,7 @@ The objective is simple: build systems that **remain understandable and maintain
 
 ---
 
-## ⚙️ What we build
+## ⚙️ What Micrantha builds
 
 These domains represent the primary areas of engineering focus across Micrantha projects and research. Together they form the foundation of the Micrantha ecosystem and shape how platforms, infrastructure, and experimental systems evolve and interact.
 
@@ -65,6 +65,7 @@ The projects described later combine these domains in different ways to explore,
 ### Agentic development
 
 * Local-first agentic systems and model routing
+* Deterministic prompt-overlay composition and attestation
 * Agent-assisted workflows with deterministic governance
 * Traceability from RFCs through plans, tasks, implementation, and evidence
 * Bounded, reviewable, and reversible automation
@@ -72,11 +73,27 @@ The projects described later combine these domains in different ways to explore,
 
 ### Security engineering
 
-* Authentication models (OAuth, PKCE, workload identity, and token strategies)
+* Authentication models (OAuth, PKCE, workload identity, sender constraints, and token strategies)
+* OAuth DPoP and proof-of-possession for MCP and agentic workloads
 * Threat modeling
 * Secure coding practices and dependency hygiene
 * Secrets management and supply-chain awareness
 * Security treated as a **system property** rather than a feature
+
+---
+
+## 🔭 Current engineering direction — August 2026
+
+Recent work is making the agentic security model more explicit by separating mechanisms that are often collapsed into a single "agent security" layer:
+
+* **Dubnium** remains the local-first agentic development distribution and bounded execution environment.
+* **Invokrum v0.1.0** adds deterministic prompt-overlay composition, lockfile verification, provenance, and attestable effective context before an agent or model is invoked.
+* **Anthesis** remains the governance and provenance boundary for proposed effects: policy evaluation, approvals, decisions, and retained evidence.
+* **Keylix** adds sender-constrained authorization and proof-of-possession primitives for OAuth, DPoP, MCP, and agentic workloads. Its v0.1 security design is accepted, while implementation remains pre-release.
+* **Anthesis Governance Lab** provides executable contract and adversarial scenarios so governance behavior can be tested independently of the agent runtime.
+* The mobile-security track continues to separate concerns across **Envuscator** for build-time configuration protection and **Digitalis** for application attestation and secure configuration delivery.
+
+The result is a layered model: **compose and attest context, govern effects, constrain credential use, and retain evidence**. These are complementary controls rather than interchangeable implementations of the same boundary.
 
 ---
 
@@ -96,7 +113,9 @@ flowchart LR
   subgraph Sol[Solutions]
     direction TB
     DB["Dubnium<br/>Agentic development distribution"]
+    I["Invokrum<br/>Prompt composition + attestation"]
     A["Anthesis<br/>Governance + provenance"]
+    K["Keylix<br/>Sender constraints + proof of possession"]
     EN["Envuscator<br/>Mobile build-time obfuscation"]
     M["Amaryllis<br/>Mobile inference SDK"]
     F["Fortunes<br/>Service + Slack"]
@@ -114,8 +133,17 @@ flowchart LR
     E["Eyespie<br/>Computer vision experiments"]
   end
 
+  subgraph External[External trust boundary]
+    direction TB
+    S["OAuth / MCP services"]
+  end
+
+  DB -->|profile + overlays| I
+  I -->|resolved context + manifest| DB
   DB -->|proposed effects| A
   A -->|allow / approval / deny| DB
+  DB -->|approved OAuth / MCP request| K
+  K -->|sender-constrained request| S
 
   GL -->|public contracts + scenarios| A
   GL -->|integration fixtures| GD
@@ -135,9 +163,34 @@ flowchart LR
   B -->|template + build logic| E
   D -->|attestation + secure configuration| E
   V -->|privacy + image concealment| E
-  Y -->|tool registry| DB
+  Y -->|tool discovery| DB
   Y -->|tool registry| M
 ```
+
+### Governed agent execution path
+
+The governed agent path makes the control boundaries more explicit:
+
+```mermaid
+flowchart LR
+  Y["Myosotis<br/>tool discovery"] -->|tool metadata| DB["Dubnium<br/>runtime + bounded execution"]
+  DB -->|profile + overlay set| I["Invokrum<br/>compose + attest context"]
+  I -->|effective context + manifest| R["Agent / model runtime"]
+  R -->|proposed effect| A["Anthesis<br/>policy + approval + evidence"]
+  A -->|deny| N["No external effect"]
+  A -->|allow / approved| DB
+  DB -->|authorized OAuth / MCP request| K["Keylix<br/>DPoP / sender binding"]
+  K -->|sender-constrained request| S["Service / MCP endpoint"]
+  S -->|result| R
+```
+
+The boundaries answer different questions:
+
+* **Invokrum:** what exact instruction and context set is being executed, and can it be reproduced and attested?
+* **Anthesis:** is the proposed effect permitted, approved when necessary, and captured as evidence?
+* **Keylix:** is credential use cryptographically bound to the intended sender/key rather than replayable as a bearer credential?
+
+Keylix does not replace identity, token validation, scopes, policy, TLS, or Anthesis authorization decisions. It adds proof-of-possession as a defense-in-depth boundary around credential use.
 
 > Some Micrantha implementations and reference integrations currently live under [`ryjen`](https://github.com/ryjen) while their ownership and public distribution boundaries are consolidated into the Micrantha organization. Repository placement is transitional; architectural responsibility is documented explicitly.
 
@@ -168,7 +221,9 @@ These groups describe product intent rather than strict dependency direction. La
 ### Solutions
 
 * **[Dubnium](https://github.com/hackelia-micrantha/dubnium-community)** *(Incubating)* — Micrantha's reproducible, local-first distribution for agentic software development and operations, combining model routing, development environments, governed automation, bounded execution, and auditable workflows
+* **[Invokrum](https://github.com/hackelia-micrantha/invokrum)** *(Incubating)* — deterministic prompt-overlay composition and attestation engine for governed AI contexts, with reproducible manifests, lockfile verification, provenance, and a host-independent integration contract
 * **[Anthesis](https://anthesis.micrantha.com)** *(Incubating)* — deterministic governance and provenance platform for evaluating proposed agent actions, requiring approvals, and retaining traceable decision evidence
+* **[Keylix](https://github.com/hackelia-micrantha/keylix)** *(Prototype)* — sender-constrained authorization and proof-of-possession primitives for OAuth, DPoP, MCP, and agentic workloads; the v0.1 security design is accepted and implementation remains pre-release
 * **[Envuscator](https://github.com/hackelia-micrantha/envuscator-community)** *(Incubating)* — mobile build-time configuration obfuscation delivered through a provider-neutral engine, local CLI, and licensed GitHub Actions and GitLab CI/CD adapters; customer build content remains on customer-controlled runners
 * **[Amaryllis](https://amaryllis.micrantha.com)** *(Prototype)* — mobile inference toolkit exploring privacy-preserving on-device ML
 * **[Fortunes](https://fortunes.micrantha.com)** *(Stable)* — lightweight microservice and Slack integration used to explore deployment patterns
@@ -234,16 +289,18 @@ Micrantha treats security as an **architectural property of the system**, not an
 Security practices commonly emphasized include:
 
 * **Threat modeling during system design**
-* **Secure authentication models** including OAuth, PKCE, workload identity, and bounded token lifecycles
+* **Secure authentication models** including OAuth, PKCE, workload identity, sender constraints, and bounded token lifecycles
+* **Deterministic and attestable agent context** where instructions affect authority or execution behavior
+* **Proof-of-possession** for credential use where bearer-token replay is an unacceptable risk
 * **Secrets management and rotation**
-* **Clear trust boundaries between services, agents, policy engines, and executors**
+* **Clear trust boundaries between services, agents, policy engines, executors, and credential holders**
 * **Supply-chain awareness** for dependencies, adapters, engines, and build pipelines
 
 Security goals:
 
 * minimize attack surface
 * isolate trust domains
-* prevent secret leakage
+* prevent secret leakage and credential replay
 * fail closed at authorization and verification boundaries
 * enable rapid patching when vulnerabilities emerge
 
