@@ -2,7 +2,7 @@
 
 **Engineering resilient software systems.**
 
-Micrantha is an engineering studio and open-source ecosystem focused on building secure, observable platforms and disciplined AI-assisted development systems. Its work explores how modern software can remain **understandable, operable, and secure** as systems evolve over time.
+Micrantha is an engineering studio and open-source ecosystem focused on secure, observable platforms and disciplined AI-assisted development systems. The work explores how modern software can remain **understandable, operable, and secure** as systems evolve over time.
 
 Core areas of focus include **platform engineering**, **mobile systems**, **infrastructure automation**, and **governed agentic development**.
 
@@ -14,8 +14,6 @@ Core areas of focus include **platform engineering**, **mobile systems**, **infr
 
 Micrantha treats software as a **living ecosystem**—one that evolves through observation, iteration, and refinement rather than a one-time construction effort.
 
-Systems grow through a continuous engineering loop:
-
 ```mermaid
 flowchart LR
   D[Design] --> I[Implementation]
@@ -24,26 +22,21 @@ flowchart LR
   R --> D
 ```
 
-This reflects the Micrantha gardening metaphor, where systems develop and mature through careful cultivation and iteration.
-
-| Garden element | Engineering meaning                          |
-| -------------- | -------------------------------------------- |
-| Soil           | Infrastructure and architectural foundations |
-| Seed           | Initial design and constraints               |
-| Water          | Iteration and engineering effort             |
-| Sunlight       | Observability and real-world feedback        |
-| Flower         | Delivered system                             |
-| Garden         | Ecosystem of systems maintained over time    |
+| Garden element | Engineering meaning |
+| --- | --- |
+| Soil | Infrastructure and architectural foundations |
+| Seed | Initial design and constraints |
+| Water | Iteration and engineering effort |
+| Sunlight | Observability and real-world feedback |
+| Flower | Delivered system |
+| Garden | Ecosystem of systems maintained over time |
+| Compost | Completed work whose useful ideas feed newer systems |
 
 The objective is simple: build systems that **remain understandable and maintainable as they grow**.
 
 ---
 
-## ⚙️ What Micrantha builds
-
-These domains represent the primary areas of engineering focus across Micrantha projects and research. Together they form the foundation of the Micrantha ecosystem and shape how platforms, infrastructure, and experimental systems evolve and interact.
-
-The projects described later combine these domains in different ways to explore, prototype, and operate real systems.
+## ⚙️ Engineering focus
 
 ### Platform engineering
 
@@ -55,263 +48,261 @@ The projects described later combine these domains in different ways to explore,
 
 ### Mobile systems
 
-* Android (Kotlin) and iOS (Swift)
-* React Native with native module integration
-* Kotlin Multiplatform SDK development
+* Android, iOS, React Native, and Kotlin Multiplatform
 * Mobile authentication flows and platform hardening
-* On-device inference experiments
-* Mobile security: pentest analysis, device attestation, build-time obfuscation, and cryptographic agility
+* On-device inference and governed device capabilities
+* Application attestation and secure configuration
+* Build-time obfuscation and cryptographic agility
 
 ### Agentic development
 
 * Local-first agentic systems and model routing
 * Deterministic prompt-overlay composition and attestation
-* Agent-assisted workflows with deterministic governance
-* Traceability from RFCs through plans, tasks, implementation, and evidence
+* Deterministic governance of proposed effects
 * Bounded, reviewable, and reversible automation
+* Traceability from design through execution and evidence
 * Context engineering, reusable skills, and governed memory
 
 ### Security engineering
 
-* Authentication models (OAuth, PKCE, workload identity, sender constraints, and token strategies)
-* OAuth DPoP and proof-of-possession for MCP and agentic workloads
-* Threat modeling
-* Secure coding practices and dependency hygiene
-* Secrets management and supply-chain awareness
+* OAuth, PKCE, workload identity, sender constraints, and bounded token lifecycles
+* Proof-of-possession for OAuth, MCP, and agentic workloads
+* Threat modeling and secure SDLC practices
+* Secrets management and supply-chain security
 * Security treated as a **system property** rather than a feature
+
+---
+
+## 🗺️ How the projects fit together
+
+Micrantha is easier to understand as several **project families** rather than one dependency graph.
+
+```mermaid
+flowchart TB
+  C["Governed agentic systems<br/>Dubnium · Invokrum · Anthesis · Keylix"]
+  M["Mobile and edge<br/>Myosotis · Amaryllis · Digitalis · Envuscator · Bluebell · Eyespie"]
+  I["Infrastructure<br/>Hyperion"]
+  L["Laboratories and conformance<br/>Anthesis Governance Lab · Governed Agent Demo"]
+  X["Stable / compost candidates<br/>Fortunes · Veil"]
+
+  I -->|runtime foundation| C
+  I -->|deployment patterns| M
+  L -.->|tests contracts and integrations| C
+  C -.->|can consume governed device capabilities| M
+```
+
+The boxes are **families, not layers that every system must traverse**. Most projects intentionally solve one narrow problem and remain independently useful.
+
+### 1. Governed agentic control plane
+
+The core agentic path has four distinct responsibilities:
+
+```mermaid
+flowchart LR
+  D["Dubnium<br/>runtime · supervisor · bounded execution"]
+  I["Invokrum<br/>compose + attest context"]
+  R["Agent / model"]
+  A["Anthesis<br/>policy · approval · evidence"]
+  K["Keylix<br/>sender binding / DPoP"]
+  S["External service / MCP endpoint"]
+  N["No external effect"]
+
+  D -->|profile + overlays| I
+  I -->|effective context + manifest| R
+  R -->|proposed effect| A
+  A -->|deny| N
+  A -->|allow / approved| D
+  D -.->|when sender-constrained OAuth is used| K
+  K -->|proof-bound request| S
+```
+
+Each project answers a different question:
+
+| Project | Responsibility |
+| --- | --- |
+| **Dubnium** | Where does the agent run, how is work routed, and how are allowed effects executed within bounded capabilities? |
+| **Invokrum** | What exact instruction/context set entered the invocation, and can it be reproduced and attested? |
+| **Anthesis** | Is a proposed effect permitted, does it require approval, and what evidence records the decision? |
+| **Keylix** | When credentials are used, can their use be cryptographically bound to the intended sender instead of remaining replayable bearer credentials? |
+
+**Keylix is conditional defense in depth**, not a mandatory hop for every agent action. It does not replace identity, OAuth token validation, scopes, TLS, or Anthesis policy.
+
+Model routing, specialist selection, memory, and scheduling remain Dubnium capabilities rather than additional peer layers in this diagram.
+
+### 2. Mobile and edge systems
+
+Mobile projects form a separate family. They may integrate with agentic systems, but they are not part of the core agent execution path.
+
+```mermaid
+flowchart LR
+  APP["Mobile application"]
+  MY["Myosotis<br/>governed mobile capabilities"]
+  AM["Amaryllis<br/>on-device multimodal AI"]
+  DI["Digitalis<br/>application trust + secure config"]
+  EN["Envuscator<br/>build-time obfuscation"]
+  BL["Bluebell<br/>KMP SDK patterns"]
+  EY["Eyespie<br/>computer-vision experiments"]
+  DEV["Device capabilities"]
+  MODEL["On-device models"]
+
+  APP --> MY
+  MY -->|narrow governed operations| DEV
+  APP --> AM
+  AM --> MODEL
+  DI -.->|strengthens runtime trust| APP
+  EN -.->|hardens delivered configuration| APP
+  BL -.->|reusable SDK patterns| MY
+  BL -.->|reusable SDK patterns| DI
+  EY -.->|exercises mobile / vision patterns| AM
+```
+
+**Myosotis is not an MCP/LLM tool registry.** Its current direction is healthcare-first governed mobile capabilities for agentic systems: narrow device operations, device-local policy, explicit operator consent, attributable execution, and deterministic failure behavior.
+
+**Amaryllis** provides on-device multimodal AI and governed component/runtime primitives. **Digitalis** focuses on application trust, attestation, and secure configuration. **Envuscator** adds build-time protection. **Bluebell** provides reusable Kotlin Multiplatform SDK patterns. **Eyespie** remains an experimental consumer of mobile and computer-vision techniques.
+
+### 3. Infrastructure and deployment
+
+Hyperion is infrastructure rather than an application-domain dependency.
+
+```mermaid
+flowchart LR
+  H["Hyperion"] --> T["OpenTofu / Terraform"]
+  T --> A["Ansible"]
+  A --> K["K3s"]
+  K --> F["Flux + Kustomize"]
+  F --> W["Micrantha workloads"]
+```
+
+It provides reproducible infrastructure and GitOps patterns that can host Micrantha services without becoming part of their application-level trust model.
+
+### 4. Laboratories and conformance
+
+Laboratory projects exist to **challenge architecture rather than become hidden production dependencies**.
+
+```mermaid
+flowchart LR
+  GL["Anthesis Governance Lab"] -->|contract + adversarial scenarios| A["Anthesis"]
+  GD["Governed Agent Demo"] -->|integration findings| D["Dubnium"]
+  GD -->|integration findings| A
+```
+
+The Governance Lab exercises policy contracts and adversarial scenarios independently. Governed-agent demos provide vertical integration evidence across runtime and governance boundaries.
+
+### 5. Stable work and compost
+
+**Fortunes** and **Veil** are stable projects with no active product roadmap. They remain useful as completed reference systems, but both are candidates for **composting** when their remaining operational or reference value no longer justifies maintenance.
+
+Composting means retiring the active project while preserving useful patterns, lessons, or reusable components elsewhere in the ecosystem.
 
 ---
 
 ## 🔭 Current engineering direction — August 2026
 
-Recent work is making the agentic security model more explicit by separating mechanisms that are often collapsed into a single "agent security" layer:
+* **Invokrum v0.1.0** establishes deterministic local composition, lockfile verification, provenance, and attestable effective context.
+* **Keylix** has an accepted v0.1 security design for OAuth DPoP and sender-constrained agent/MCP workloads; implementation remains pre-release.
+* **Dubnium** continues to own the local-first runtime, supervisor, model-routing, specialist, memory, scheduling, and bounded-execution concerns.
+* **Anthesis** remains the policy, approval, evidence, and provenance authority rather than absorbing runtime responsibilities.
+* **Myosotis** is now positioned around governed mobile capabilities, especially healthcare and regulated field workflows.
+* **Amaryllis** is an active 0.1.x React Native foundation for on-device multimodal AI and governed AI-enabled UI.
+* **Digitalis** and **Envuscator** continue to address different mobile-security phases: runtime/application trust versus build-time hardening.
+* **Fortunes** and **Veil** are stable, complete work with no planned feature trajectory and are future compost candidates.
 
-* **Dubnium** remains the local-first agentic development distribution and bounded execution environment.
-* **Invokrum v0.1.0** adds deterministic prompt-overlay composition, lockfile verification, provenance, and attestable effective context before an agent or model is invoked.
-* **Anthesis** remains the governance and provenance boundary for proposed effects: policy evaluation, approvals, decisions, and retained evidence.
-* **Keylix** adds sender-constrained authorization and proof-of-possession primitives for OAuth, DPoP, MCP, and agentic workloads. Its v0.1 security design is accepted, while implementation remains pre-release.
-* **Anthesis Governance Lab** provides executable contract and adversarial scenarios so governance behavior can be tested independently of the agent runtime.
-* The mobile-security track continues to separate concerns across **Envuscator** for build-time configuration protection and **Digitalis** for application attestation and secure configuration delivery.
-
-The result is a layered model: **compose and attest context, govern effects, constrain credential use, and retain evidence**. These are complementary controls rather than interchangeable implementations of the same boundary.
-
----
-
-## 🗺️ Architecture map
-
-This diagram illustrates how core Micrantha projects relate. **Solutions** are systems intended for deployment and reuse; **Laboratory** projects validate contracts, exercise integrations, and incubate new architectural approaches. Runtime and development relationships intentionally cross that boundary.
-
-High-level relationships across the Micrantha ecosystem (not all repositories shown):
-
-```mermaid
-flowchart LR
-  subgraph Delivery[Distribution channels]
-    direction TB
-    CI["GitHub Actions + GitLab CI/CD<br/>licensed adapters"]
-  end
-
-  subgraph Sol[Solutions]
-    direction TB
-    DB["Dubnium<br/>Agentic development distribution"]
-    I["Invokrum<br/>Prompt composition + attestation"]
-    A["Anthesis<br/>Governance + provenance"]
-    K["Keylix<br/>Sender constraints + proof of possession"]
-    EN["Envuscator<br/>Mobile build-time obfuscation"]
-    M["Amaryllis<br/>Mobile inference SDK"]
-    F["Fortunes<br/>Service + Slack"]
-    V["Veil<br/>Image obfuscation"]
-  end
-
-  subgraph Lab[Laboratory]
-    direction TB
-    GL["Anthesis Governance Lab<br/>Contract testbed"]
-    GD["Governed Agent Demo<br/>Integration testbed"]
-    H["Hyperion<br/>Reproducible infrastructure stack"]
-    B["Bluebell<br/>KMP SDK template"]
-    D["Digitalis<br/>Attestation + config delivery"]
-    Y["Myosotis<br/>MCP / LLM tool registry"]
-    E["Eyespie<br/>Computer vision experiments"]
-  end
-
-  subgraph External[External trust boundary]
-    direction TB
-    S["OAuth / MCP services"]
-  end
-
-  DB -->|profile + overlays| I
-  I -->|resolved context + manifest| DB
-  DB -->|proposed effects| A
-  A -->|allow / approval / deny| DB
-  DB -->|approved OAuth / MCP request| K
-  K -->|sender-constrained request| S
-
-  GL -->|public contracts + scenarios| A
-  GL -->|integration fixtures| GD
-  DB -->|planning + bounded execution| GD
-  A -->|deterministic decisions| GD
-  GD -->|integration findings| DB
-  GD -->|compatibility findings| A
-
-  H -->|infrastructure patterns| DB
-  H -->|provision / deploy patterns| A
-  A -->|governance patterns| H
-  H -->|cluster + GitOps| F
-  H -->|cluster + GitOps| V
-
-  CI -->|entitlement + delivery| EN
-  EN -->|build-time configuration protection| E
-  B -->|template + build logic| E
-  D -->|attestation + secure configuration| E
-  V -->|privacy + image concealment| E
-  Y -->|tool discovery| DB
-  Y -->|tool registry| M
-```
-
-### Governed agent execution path
-
-The governed agent path makes the control boundaries more explicit:
-
-```mermaid
-flowchart LR
-  Y["Myosotis<br/>tool discovery"] -->|tool metadata| DB["Dubnium<br/>runtime + bounded execution"]
-  DB -->|profile + overlay set| I["Invokrum<br/>compose + attest context"]
-  I -->|effective context + manifest| R["Agent / model runtime"]
-  R -->|proposed effect| A["Anthesis<br/>policy + approval + evidence"]
-  A -->|deny| N["No external effect"]
-  A -->|allow / approved| DB
-  DB -->|authorized OAuth / MCP request| K["Keylix<br/>DPoP / sender binding"]
-  K -->|sender-constrained request| S["Service / MCP endpoint"]
-  S -->|result| R
-```
-
-The boundaries answer different questions:
-
-* **Invokrum:** what exact instruction and context set is being executed, and can it be reproduced and attested?
-* **Anthesis:** is the proposed effect permitted, approved when necessary, and captured as evidence?
-* **Keylix:** is credential use cryptographically bound to the intended sender/key rather than replayable as a bearer credential?
-
-Keylix does not replace identity, token validation, scopes, policy, TLS, or Anthesis authorization decisions. It adds proof-of-possession as a defense-in-depth boundary around credential use.
-
-> Some Micrantha implementations and reference integrations currently live under [`ryjen`](https://github.com/ryjen) while their ownership and public distribution boundaries are consolidated into the Micrantha organization. Repository placement is transitional; architectural responsibility is documented explicitly.
+The recurring design principle is **separation of authority**: context composition, policy, execution, credentials, application trust, and infrastructure should remain explicit boundaries rather than collapse into one agent platform.
 
 ---
 
-## 🌿 Project maturity model
+## 🌿 Maturity and lifecycle
 
-Micrantha projects move through practical development stages that reflect increasing stability and operational readiness.
+**Maturity** describes technical stability. **Lifecycle** describes whether Micrantha is actively investing in the project. They are deliberately separate.
 
-| Stage          | Meaning                                            |
-| -------------- | -------------------------------------------------- |
-| **Prototype**  | Early exploration or architectural experimentation |
-| **Incubating** | Active development with stabilizing architecture   |
-| **Stable**     | Production-ready system with reliable interfaces   |
-| **Maintained** | Mature system supported long-term                  |
+### Maturity
 
----
+| Stage | Meaning |
+| --- | --- |
+| **Prototype** | Early exploration or architectural experimentation |
+| **Incubating** | Active implementation with stabilizing contracts |
+| **Stable** | Reliable interfaces and demonstrated operational usefulness |
 
-## 📦 Projects
+### Lifecycle
 
-Projects are organized into two groups:
-
-* **Solutions** — deployable systems, distributions, tools, and platforms
-* **Laboratory** — testbeds and experimental projects that validate contracts, integrations, and emerging capabilities
-
-These groups describe product intent rather than strict dependency direction. Laboratory projects may exercise Solutions, and findings from those integrations may change Solution architecture.
-
-### Solutions
-
-* **[Dubnium](https://github.com/hackelia-micrantha/dubnium-community)** *(Incubating)* — Micrantha's reproducible, local-first distribution for agentic software development and operations, combining model routing, development environments, governed automation, bounded execution, and auditable workflows
-* **[Invokrum](https://github.com/hackelia-micrantha/invokrum)** *(Incubating)* — deterministic prompt-overlay composition and attestation engine for governed AI contexts, with reproducible manifests, lockfile verification, provenance, and a host-independent integration contract
-* **[Anthesis](https://anthesis.micrantha.com)** *(Incubating)* — deterministic governance and provenance platform for evaluating proposed agent actions, requiring approvals, and retaining traceable decision evidence
-* **[Keylix](https://github.com/hackelia-micrantha/keylix)** *(Prototype)* — sender-constrained authorization and proof-of-possession primitives for OAuth, DPoP, MCP, and agentic workloads; the v0.1 security design is accepted and implementation remains pre-release
-* **[Envuscator](https://github.com/hackelia-micrantha/envuscator-community)** *(Incubating)* — mobile build-time configuration obfuscation delivered through a provider-neutral engine, local CLI, and licensed GitHub Actions and GitLab CI/CD adapters; customer build content remains on customer-controlled runners
-* **[Amaryllis](https://amaryllis.micrantha.com)** *(Prototype)* — mobile inference toolkit exploring privacy-preserving on-device ML
-* **[Fortunes](https://fortunes.micrantha.com)** *(Stable)* — lightweight microservice and Slack integration used to explore deployment patterns
-* **[Veil](https://veil.micrantha.com)** *(Prototype)* — experimental service for image obfuscation and privacy utilities
-
-### Laboratory
-
-* **[Anthesis Governance Lab](https://github.com/ryjen/anthesis-governance-lab)** *(Incubating)* — public executable testbed for Anthesis contracts, canonical policy scenarios, adversarial cases, and integration compatibility
-* **Dubnium Governed Agent Demo** *(Prototype)* — vertical integration testbed demonstrating Anthesis policy decisions and approvals in front of Dubnium's bounded executor
-* **[Hyperion](https://hyperion.micrantha.com)** *(Incubating)* — reproducible infrastructure stack built around K3s and GitOps workflows
-* **[Bluebell](https://github.com/hackelia-micrantha/bluebell)** *(Stable)* — Kotlin Multiplatform SDK template supporting cross-platform library development
-* **[Digitalis](https://github.com/hackelia-micrantha/digitalis-community)** *(Prototype)* — mobile attestation and secure configuration delivery system
-* **[Myosotis](https://github.com/hackelia-micrantha/myosotis-community)** *(Prototype)* — experimental MCP and LLM registry for agent tool discovery
-* **Eyespie** *(Prototype)* — computer-vision-driven gameplay and mobile inference experiments
+| State | Meaning |
+| --- | --- |
+| **Active** | Current design or implementation investment |
+| **Maintenance** | Supported with limited feature work |
+| **Complete** | No planned feature trajectory; retained while useful |
+| **Compost** | Retired as an active project after useful ideas or components are preserved |
 
 ---
 
-## 🧠 Technical credibility
+## 📦 Project map
 
-* 15+ years of engineering across mobile, backend, infrastructure, and security
-* Experience delivering production mobile systems used by millions of users across enterprise and consumer platforms
-* Strong emphasis on operational learning: CI/CD guardrails, observability, and incident feedback loops
+| Project | Family | Role | Maturity | Lifecycle |
+| --- | --- | --- | --- | --- |
+| **[Dubnium](https://github.com/hackelia-micrantha/dubnium-community)** | Agentic | Local-first agentic development and operations runtime | Incubating | Active |
+| **[Invokrum](https://github.com/hackelia-micrantha/invokrum)** | Agentic | Deterministic prompt-overlay composition and attestation | Incubating | Active |
+| **[Anthesis](https://anthesis.micrantha.com)** | Agentic | Governance, approval, provenance, and evidence | Incubating | Active |
+| **[Keylix](https://github.com/hackelia-micrantha/keylix)** | Agentic / Security | Sender-constrained OAuth and proof-of-possession primitives | Prototype | Active |
+| **[Myosotis](https://github.com/hackelia-micrantha/myosotis-community)** | Mobile / Agentic | Governed mobile capabilities for healthcare and regulated workflows | Prototype | Active |
+| **[Amaryllis](https://amaryllis.micrantha.com)** | Mobile / AI | On-device multimodal AI and governed component/runtime primitives | Incubating | Active |
+| **[Digitalis](https://github.com/hackelia-micrantha/digitalis-community)** | Mobile / Security | Application attestation, trust, and secure configuration | Prototype | Active |
+| **[Envuscator](https://github.com/hackelia-micrantha/envuscator-community)** | Mobile / Security | Build-time configuration obfuscation and delivery hardening | Incubating | Active |
+| **[Bluebell](https://github.com/hackelia-micrantha/bluebell)** | Mobile | Kotlin Multiplatform SDK template and patterns | Stable | Maintenance |
+| **Eyespie** | Mobile / Lab | Computer-vision and mobile inference experiments | Prototype | Active |
+| **[Hyperion](https://hyperion.micrantha.com)** | Infrastructure | Reproducible K3s/GitOps infrastructure stack | Incubating | Active |
+| **[Anthesis Governance Lab](https://github.com/ryjen/anthesis-governance-lab)** | Laboratory | Executable governance contracts and adversarial scenarios | Incubating | Active |
+| **Dubnium Governed Agent Demo** | Laboratory | Vertical runtime/governance integration testbed | Prototype | Active |
+| **[Fortunes](https://fortunes.micrantha.com)** | Reference | Lightweight service and Slack integration | Stable | Complete → Compost |
+| **[Veil](https://veil.micrantha.com)** | Reference | Image-obfuscation and privacy experiment | Stable | Complete → Compost |
 
-Credentials and trajectory:
+> Some Micrantha implementations and reference integrations currently live under [`ryjen`](https://github.com/ryjen) while ownership and public distribution boundaries are consolidated. Repository placement is transitional; architectural responsibility should remain explicit.
 
-* CSSLP (Associate)
-* Kubernetes CKA / CKS (planned)
-* Azure certifications (planned)
+---
+
+## 🧠 Engineering background and development
+
+Micrantha is informed by more than 15 years of engineering across mobile, backend, infrastructure, platform engineering, and software security, including production mobile systems used by millions of users.
+
+Current public credential and development trajectory:
+
+* **Associate of ISC2** — verified public designation supporting secure-SDLC, secure-design, threat-modeling, and application-security governance work
+* **Agentic / AI governance credential** — planned; specific program or provider to be selected
+* Continued practical development through Micrantha's governed-agent, application-security, platform, and secure-AI projects
+
+Credential names are kept conservative: planned study is not presented as certification, and public designation follows issuer requirements.
 
 ---
 
 ## 📊 Operational posture
 
-Micrantha projects treat **operability as a first-class design constraint**. Systems are expected to be observable, diagnosable, and recoverable in production.
+Micrantha treats **operability as a first-class design constraint**.
 
-Typical operational practices include:
+Typical practices include:
 
-* **GitOps deployments** using declarative infrastructure
-* **Reproducible environments** through infrastructure as code
-* **Observability-first design** through logs, metrics, traces, and structured evidence
-* **Operational runbooks** for known failure modes
-* **Incident learning loops** to prevent recurrence
-
-Operational priorities:
-
-* predictable deployments
-* rapid fault isolation
-* minimal blast radius
-* reversible changes
-
-For systems reaching **Stable** or **Maintained** maturity, projects typically introduce:
-
-* service health checks
-* monitoring and alerting
-* SLO-informed operational decisions
+* GitOps and reproducible infrastructure
+* logs, metrics, traces, and structured evidence
+* runbooks for known failure modes
+* small blast radii and reversible changes
+* CI/CD guardrails and supply-chain validation
+* incident and integration feedback loops
 
 ---
 
 ## 🔐 Security posture
 
-Micrantha treats security as an **architectural property of the system**, not an afterthought.
+Micrantha treats security as an **architectural property of the system**.
 
-Security practices commonly emphasized include:
+Common principles include:
 
-* **Threat modeling during system design**
-* **Secure authentication models** including OAuth, PKCE, workload identity, sender constraints, and bounded token lifecycles
-* **Deterministic and attestable agent context** where instructions affect authority or execution behavior
-* **Proof-of-possession** for credential use where bearer-token replay is an unacceptable risk
-* **Secrets management and rotation**
-* **Clear trust boundaries between services, agents, policy engines, executors, and credential holders**
-* **Supply-chain awareness** for dependencies, adapters, engines, and build pipelines
+* threat modeling during system design
+* explicit trust and authority boundaries
+* fail-closed authorization and verification
+* sender-constrained credentials where replay resistance matters
+* deterministic and attestable agent context where instructions affect authority
+* secrets management and rotation
+* dependency and supply-chain hygiene
+* SBOMs, artifact signing, provenance, and evidence where appropriate
 
-Security goals:
-
-* minimize attack surface
-* isolate trust domains
-* prevent secret leakage and credential replay
-* fail closed at authorization and verification boundaries
-* enable rapid patching when vulnerabilities emerge
-
-Where appropriate, projects may also incorporate:
-
-* SBOM generation
-* artifact signing and immutable release identities
-* dependency auditing
-* provenance and evidence capture
-
-These practices help ensure systems remain **secure as they evolve and scale**.
+The goal is not to make every project depend on every security component. The goal is to make the applicable trust boundaries **visible, composable, and independently testable**.
 
 ---
 
