@@ -66,6 +66,14 @@ The RFC owns the durable architectural decision: why the boundary exists, what i
 5. **Evidence closes work.** Completion requires the validation appropriate to the decision; an issue checkbox or model assertion is not evidence by itself.
 6. **Prefer issues over planning documents for mutable sequencing.** Plans change frequently; durable decisions belong in version-controlled RFCs while sequencing belongs in issues.
 
+## Design notes
+
+Non-normative notes may be used to map an emerging cross-repository boundary before its interoperability contract is stable enough for an RFC:
+
+- [Model-neutral agent state boundaries](model-neutral-agent-state-boundaries.md) — separates canonical task/workflow state, portable invocation context, runtime-private working state, authenticated execution identity, durable execution state, and governance evidence.
+
+A design note should graduate to an RFC only when review identifies a durable organization-level decision that cannot remain repository-local.
+
 ## RFCs
 
 See the [RFC index and lifecycle](rfcs/README.md).
