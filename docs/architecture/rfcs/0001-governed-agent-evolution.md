@@ -340,7 +340,7 @@ Initial rollout:
 
 1. Accept architecture and repository boundaries.
 2. Reconcile existing component issues and identify only missing contracts.
-3. Add the `governed-agent-evolution` lab as a Proposed transitional repository in the catalogue/registry.
+3. Add the `governed-agent-evolution` lab as a Proposed transitional repository in the repository catalogue. The organization registry intentionally remains scoped to `hackelia-micrantha/*` repositories.
 4. Implement one deterministic low-risk context-evolution scenario.
 5. Add adversarial exact-binding and stale-authority scenarios.
 6. Expand to runtime/config evolution.
@@ -439,4 +439,4 @@ These questions should be answered through component-owned contract reconciliati
 - **Conditions of acceptance:** Cross-repository responsibility review; no conflicting authority model introduced; catalogue classification accepted.
 - **Required ADRs:** Determine after review; avoid duplicating the accepted RFC unless a narrower durable decision needs separate recording.
 - **Required specifications:** None initially; component-specific contracts only as demonstrated necessary.
-- **Next executable slice:** Classify `ryjen/governed-agent-evolution` in the repository catalogue/registry and reconcile existing Anthesis, Dubnium, Invokrum, and Keylix work against this RFC.
+- **Next executable slice:** Classify `ryjen/governed-agent-evolution` in the repository catalogue, reconcile existing Anthesis, Dubnium, Invokrum, and Keylix work against this RFC, then execute the first deterministic lab scenario after RFC disposition.
