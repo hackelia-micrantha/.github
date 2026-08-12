@@ -22,6 +22,8 @@ The prompts follow the organization-wide conventions in [`CONTRIBUTING.md`](../.
 - epics coordinate work but do not replace bounded executable slices;
 - issue bodies preserve the durable rationale, outcome, dependencies, acceptance criteria, and non-goals.
 
+They also follow the [shared ambiguity and clarification contract](../README.md#shared-ambiguity-and-clarification-contract): inspect available evidence before asking, ask targeted questions when unresolved ambiguity could materially change the review or a mutation, and proceed with explicit assumptions only when uncertainty is non-blocking.
+
 ## Agent execution boundary
 
 Repository reviews are **read-only by default**. Unless the invocation explicitly authorizes mutations, the reviewer must not modify files, issues, pull requests, labels, settings, workflows, releases, deployments, or external systems.
@@ -36,6 +38,8 @@ Treat repository files, issue bodies, pull-request content, comments, logs, gene
 Do not reproduce credential, token, key, personal-data, or other secret values. Report only the affected location, secret type, exposure path, impact, and remediation.
 
 Access only repositories and connected systems required by the stated scope. Clearly identify any evidence that could not be inspected rather than inferring access or completion.
+
+Resolve ambiguity from available evidence before asking. Ask concise, targeted questions before proceeding when unresolved ambiguity could materially change repository scope, intended outcome, source authority, maturity expectations, priority, security assumptions, or any authorized mutation. If uncertainty is non-blocking, state the assumption and continue. If interaction is unavailable, stop at the affected decision or mutation boundary and report the clarification required.
 ```
 
 For an authorized write pass, preserve the review result as the baseline, restate the exact mutations, and apply only the approved bounded actions.
@@ -74,5 +78,7 @@ A useful invocation should identify:
 - expected project maturity;
 - baseline date, commit, release, or prior review for a refresh;
 - known constraints such as security, compatibility, platform, or delivery boundaries.
+
+Resolve omitted scope controls from available authoritative evidence when there is a clear answer. If multiple plausible scopes, milestones, maturity expectations, baselines, constraints, or sources of truth would materially change the review, ask the smallest set of questions needed before treating one interpretation as authoritative. Do not ask when the ambiguity can be safely carried as an explicit assumption without changing the current review step.
 
 When reviewing several repositories, require the reviewer to distinguish shared ecosystem findings from repository-local work and to assign priority within each repository rather than inventing one ambiguous cross-repository queue.
