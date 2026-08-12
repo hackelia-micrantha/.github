@@ -4,6 +4,8 @@ This directory contains RFCs for consequential proposals that cross Micrantha re
 
 Repository-local RFCs remain authoritative for component-specific contracts. Organization RFCs define cross-repository composition and responsibility boundaries and must not silently redefine an authoritative component contract.
 
+Transitional repositories outside `hackelia-micrantha` are recorded in the responsibility catalogue when architecturally relevant; the machine repository registry remains scoped to organization-owned repositories.
+
 ## RFCs
 
 | RFC | Status | Summary |
