@@ -4,7 +4,7 @@ This catalogue records organization-level project classification, maturity, auth
 
 Detailed implementation, support, licensing, and release evidence remains in each authoritative repository. When this catalogue conflicts with current repository evidence, treat the conflict as governance drift: correct the catalogue or explicitly change ownership through review rather than silently relying on the inconsistency.
 
-**Catalogue baseline:** 2026-08-03
+**Catalogue baseline:** 2026-08-12
 
 ## How to use this catalogue
 
@@ -73,7 +73,7 @@ Where a project has source and community repositories:
 | Project and locations | Classification | Maturity | Authoritative responsibility | Does not own |
 | --- | --- | --- | --- | --- |
 | **Anthesis Governance Lab** — currently transitional at [`ryjen/anthesis-governance-lab`](https://github.com/ryjen/anthesis-governance-lab) | Contract laboratory and executable testbed | Incubating | Canonical scenarios, fixtures, test harness behavior, compatibility reports, evidence bundles, and laboratory release artifacts | Anthesis product contracts, risk acceptance, or production policy decisions |
-| **Dubnium Governed Agent Demo** — integration material currently spans Dubnium and Anthesis work | Reference integration and governed-agent testbed | Experimental | End-to-end demonstration evidence for planning, governance, approval, bounded execution, and audit flow | Independent product authority; it does not redefine Anthesis or Dubnium contracts |
+| **Governed Agent Evolution Lab** — transitional at [`ryjen/governed-agent-evolution`](https://github.com/ryjen/governed-agent-evolution) | Cross-project contract laboratory and reference integration | Proposed | End-to-end scenarios, fixtures, adversarial cases, conformance tests, reference glue, and generated evidence for governed evolution across Dubnium, Invokrum, Keylix, and Anthesis | Organization architecture; Anthesis policy/approval/evidence contracts; Dubnium runtime contracts; Invokrum context contracts; Keylix sender-binding contracts; independent production authority |
 | **Hyperion** — [`hyperion`](https://github.com/hackelia-micrantha/hyperion) | Reproducible infrastructure laboratory and stack | Incubating | K3s, GitOps, cluster, infrastructure, deployment, and operational patterns declared by the repository | Product-level governance semantics or application contracts deployed onto the infrastructure |
 | **Bluebell** — [`bluebell`](https://github.com/hackelia-micrantha/bluebell) | Kotlin Multiplatform SDK template | Stable | Reusable KMP project structure, build conventions, publishing pattern, and template validation | Product behavior of repositories generated from or inspired by the template |
 | **Digitalis** — source and [`digitalis-community`](https://github.com/hackelia-micrantha/digitalis-community) | Mobile attestation and secure-configuration laboratory | Experimental | Attestation experiments, secure configuration-delivery contracts under test, fixtures, and public laboratory material | General mobile identity, Eyespie product behavior, or organization-wide configuration policy |
@@ -89,6 +89,21 @@ Where a project has source and community repositories:
 - Dubnium must not treat model intent or supervisor authority as a substitute for Anthesis decisions where governance is required.
 - Anthesis must not silently become a general agent runtime, planner, or executor.
 - Shared integration contracts require accepted decisions in both authoritative projects.
+
+### Governed agent evolution
+
+The organization-level governed-agent-evolution architecture composes existing authorities rather than creating a new product authority:
+
+- Dubnium owns runtime observation, candidate proposal, runtime-generation identity, activation, health, recovery, and rollback.
+- Invokrum owns deterministic prompt/context composition, manifests, lockfiles, and exact drift evidence where context identity is relevant.
+- Keylix owns sender-constrained authorization primitives and proof-of-possession identities where protected network boundaries use them; sender proof does not establish runtime approval or application authorization.
+- Anthesis owns policy evaluation, capability and approval semantics, exact authorization decisions, evidence requirements, attribution, provenance, and governance interpretation.
+- `hackelia-micrantha/.github` owns the cross-repository architecture, responsibility matrix, and accepted organization-level decisions.
+- `ryjen/governed-agent-evolution` validates the composition through scenarios and conformance evidence and must not redefine any component contract.
+
+The governing invariant is that an evolving system may propose its successor but may not independently authorize the transition that gives the successor effect. See `docs/architecture/rfcs/0001-governed-agent-evolution.md` and issue #12.
+
+The former **Dubnium Governed Agent Demo** catalogue concept is consolidated into the Governed Agent Evolution Lab rather than maintained as a second overlapping reference integration. Existing Dubnium/Anthesis demonstration material may become a scenario or fixture source, but authority remains in the owning projects.
 
 ### Anthesis and Governance Lab
 
@@ -124,6 +139,15 @@ Transitional placement must be recorded with:
 - issue and release handling during transition;
 - public link that should remain stable;
 - date or trigger for reassessment.
+
+For `ryjen/governed-agent-evolution`:
+
+- current location: `ryjen/governed-agent-evolution`;
+- intended authority: none beyond laboratory-owned scenarios, fixtures, conformance behavior, and generated evidence;
+- transfer condition: reassess after the first executable cross-project conformance scenario and once visibility/licensing posture is intentionally selected;
+- issues/releases during transition: laboratory work stays in the lab; component contract changes are filed and accepted in the owning repositories;
+- public link: none is promised while the repository remains private;
+- reassessment trigger: first end-to-end deterministic governed-evolution scenario or a decision to make the laboratory a supported public project.
 
 Repository location alone does not override documented architectural responsibility. Conversely, intended future ownership must not be described as completed until transfer and operational responsibility actually change.
 
