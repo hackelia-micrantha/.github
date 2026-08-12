@@ -131,24 +131,54 @@ Model routing, specialist selection, memory, and scheduling remain Dubnium capab
 
 ### 2. Mobile and edge systems
 
-Mobile projects form a separate family. They may integrate with agentic systems, but they are not part of the core agent execution path.
+The mobile family contains **parallel implementation streams**, not one shared cross-platform stack.
+
+#### Implementation streams
 
 ```mermaid
 flowchart LR
-  APP["Mobile app"] --> MY["Myosotis"]
-  MY --> DEV["Device"]
-  APP --> AM["Amaryllis"]
-  AM --> MODEL["Model"]
-  DI["Digitalis"] -.-> APP
-  EN["Envuscator"] -.-> APP
-  BL["Bluebell"] -.-> MY
-  BL -.-> DI
-  EY["Eyespie"] -.-> AM
+  RN["React Native"] --> AM["Amaryllis"] --> LM["Local model"]
+  NA["Native SDK"] --> MY["Myosotis"] --> DEV["Device capability"]
+  KM["KMP"] --> BL["Bluebell"]
 ```
 
-**Myosotis is not an MCP/LLM tool registry.** Its current direction is healthcare-first governed mobile capabilities for agentic systems: narrow device operations, device-local policy, explicit operator consent, attributable execution, and deterministic failure behavior.
+* **React Native / local AI:** Amaryllis is the concrete Micrantha runtime for on-device multimodal inference and governed AI-enabled UI.
+* **Native SDK / governed capabilities:** Myosotis is protocol-neutral but currently proves its first reference runtime with native Kotlin on Android. Swift interoperability is the next platform checkpoint; a shared KMP core is deliberately deferred until the protocol boundary is better proven.
+* **Kotlin Multiplatform:** Bluebell is the reusable KMP architecture and SDK foundation across Android, iOS, JVM, and Linux. It is model-ready, but it is not an AI inference engine equivalent to Amaryllis.
 
-**Amaryllis** provides on-device multimodal AI and governed component/runtime primitives. **Digitalis** focuses on application trust, attestation, and secure configuration. **Envuscator** adds build-time protection. **Bluebell** provides reusable Kotlin Multiplatform SDK patterns. **Eyespie** remains an experimental consumer of mobile and computer-vision techniques.
+These streams may share patterns and integrations, but **React Native, native platform SDKs, and KMP should not be collapsed into one implementation path**.
+
+#### Mobile security boundaries
+
+Digitalis and Envuscator are cross-cutting security controls rather than application frameworks:
+
+```mermaid
+flowchart LR
+  B["Build"] --> E["Envuscator"] --> A["App artifact"] --> R["Running app"]
+  R -->|attest| D["Digitalis"]
+  D -->|config| R
+```
+
+* **Envuscator is a build-time boundary:** it hardens selected mobile configuration during Android/iOS delivery. It does not provide runtime authorization, application attestation, or secure backend design.
+* **Digitalis is a runtime trust-bootstrap boundary:** the application presents bounded attestation evidence to a backend-authoritative verifier before protected configuration is released. Attestation does not replace user identity, authorization, local policy, or consent.
+* Both controls can apply to multiple mobile implementation streams. Concrete adapters may differ by platform; neither implies React Native, KMP, or Myosotis as a mandatory dependency.
+
+#### AI integration paths
+
+Micrantha currently has two distinct mobile/AI integration patterns:
+
+```mermaid
+flowchart LR
+  RN["RN app"] --> AM["Amaryllis"] --> LM["On-device model"]
+  AG["Agent runtime"] --> MY["Myosotis"] --> P["Local policy"] --> C["Device capability"]
+```
+
+* **Local inference:** Amaryllis keeps model execution inside the mobile application and treats model output as untrusted input behind application-owned contracts.
+* **Agent-to-device capabilities:** Myosotis lets an external or local agent request narrow mobile capabilities while the device retains authority over policy, operator consent, execution, and audit. Dubnium is a natural Micrantha-side agent runtime integration, but Myosotis does not depend on Dubnium.
+* **Bluebell** can host model-ready KMP application architecture, but no dedicated Micrantha KMP inference runtime is currently presented as equivalent to Amaryllis.
+* **Digitalis** can strengthen the trust bootstrap around a mobile application; **Envuscator** can harden its delivered configuration. Neither grants an AI model or agent additional authority.
+
+**Eyespie** remains an experimental consumer of mobile and computer-vision techniques rather than a foundational mobile runtime.
 
 ### 3. Infrastructure and deployment
 
@@ -192,9 +222,10 @@ Composting means retiring the active project while preserving useful patterns, l
 * **Keylix** has an accepted v0.1 security design for OAuth DPoP and sender-constrained agent/MCP workloads; implementation remains pre-release.
 * **Dubnium** continues to own the local-first runtime, supervisor, model-routing, specialist, memory, scheduling, and bounded-execution concerns.
 * **Anthesis** remains the policy, approval, evidence, and provenance authority rather than absorbing runtime responsibilities.
-* **Myosotis** is now positioned around governed mobile capabilities, especially healthcare and regulated field workflows.
+* **Myosotis** is positioned around governed mobile capabilities, with an Android-native Kotlin reference SDK first and a Swift interoperability checkpoint before any shared-core decision.
 * **Amaryllis** is an active 0.1.x React Native foundation for on-device multimodal AI and governed AI-enabled UI.
-* **Digitalis** and **Envuscator** continue to address different mobile-security phases: runtime/application trust versus build-time hardening.
+* **Bluebell** remains the Kotlin Multiplatform architecture and SDK foundation rather than being conflated with the React Native AI runtime.
+* **Digitalis** and **Envuscator** address different mobile-security phases: runtime/application trust versus build-time hardening.
 * **Fortunes** and **Veil** are stable, complete work with no planned feature trajectory and are future compost candidates.
 
 The recurring design principle is **separation of authority**: context composition, policy, execution, credentials, application trust, and infrastructure should remain explicit boundaries rather than collapse into one agent platform.
@@ -232,11 +263,11 @@ The recurring design principle is **separation of authority**: context compositi
 | **[Invokrum](https://github.com/hackelia-micrantha/invokrum)** | Agentic | Deterministic prompt-overlay composition and attestation | Incubating | Active |
 | **[Anthesis](https://anthesis.micrantha.com)** | Agentic | Governance, approval, provenance, and evidence | Incubating | Active |
 | **[Keylix](https://github.com/hackelia-micrantha/keylix)** | Agentic / Security | Sender-constrained OAuth and proof-of-possession primitives | Prototype | Active |
-| **[Myosotis](https://github.com/hackelia-micrantha/myosotis-community)** | Mobile / Agentic | Governed mobile capabilities for healthcare and regulated workflows | Prototype | Active |
-| **[Amaryllis](https://amaryllis.micrantha.com)** | Mobile / AI | On-device multimodal AI and governed component/runtime primitives | Incubating | Active |
-| **[Digitalis](https://github.com/hackelia-micrantha/digitalis-community)** | Mobile / Security | Application attestation, trust, and secure configuration | Prototype | Active |
+| **[Myosotis](https://github.com/hackelia-micrantha/myosotis-community)** | Mobile / Agentic | Native-first governed mobile capability protocol and SDK | Prototype | Active |
+| **[Amaryllis](https://amaryllis.micrantha.com)** | Mobile / React Native / AI | On-device multimodal AI and governed component/runtime primitives | Incubating | Active |
+| **[Digitalis](https://github.com/hackelia-micrantha/digitalis-community)** | Mobile / Security | Runtime application trust, attestation, and protected configuration | Prototype | Active |
 | **[Envuscator](https://github.com/hackelia-micrantha/envuscator-community)** | Mobile / Security | Build-time configuration obfuscation and delivery hardening | Incubating | Active |
-| **[Bluebell](https://github.com/hackelia-micrantha/bluebell)** | Mobile | Kotlin Multiplatform SDK template and patterns | Stable | Maintenance |
+| **[Bluebell](https://github.com/hackelia-micrantha/bluebell)** | Mobile / KMP | Kotlin Multiplatform SDK architecture and reusable patterns | Stable | Maintenance |
 | **Eyespie** | Mobile / Lab | Computer-vision and mobile inference experiments | Prototype | Active |
 | **[Hyperion](https://hyperion.micrantha.com)** | Infrastructure | Reproducible K3s/GitOps infrastructure stack | Incubating | Active |
 | **[Anthesis Governance Lab](https://github.com/ryjen/anthesis-governance-lab)** | Laboratory | Executable governance contracts and adversarial scenarios | Incubating | Active |
