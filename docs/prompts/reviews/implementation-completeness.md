@@ -2,6 +2,8 @@
 
 Use this prompt after multiple pull requests, before closing an epic, or whenever merged code may not yet represent a delivered capability.
 
+Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when assessing executable software, build logic, configuration, or delivery behavior.
+
 ```markdown
 # Implementation Completeness Review
 
@@ -21,7 +23,7 @@ Begin read-only. Treat issue status, pull-request descriptions, release notes, d
 
 ## Completion principle
 
-A capability is not complete merely because code merged. Completion requires the applicable implementation, integration, validation, documentation, packaging, user path, security, and operational behavior to agree with the stated outcome and maturity.
+A capability is not complete merely because code merged. Completion requires the applicable implementation, integration, layered validation, static analysis, documentation, packaging, user path, security, and operational behavior to agree with the stated outcome and maturity.
 
 Apply expectations appropriate to the declared maturity. A prototype may intentionally lack production operations, but must not be represented as stable.
 
@@ -32,7 +34,9 @@ Inspect applicable:
 - original requirements, acceptance criteria, issue hierarchy, and non-goals;
 - all pull requests and commits claimed to deliver the outcome;
 - current implementation and integration paths;
-- unit, integration, contract, end-to-end, security, migration, and failure-path tests;
+- unit/component, contract/integration, end-to-end, security, migration, compatibility, and failure-path tests;
+- repository build/task tooling and canonical test/static-analysis commands;
+- compile/type checks, linting, source/configuration static analyzers or SAST, and configuration/IaC analysis where applicable;
 - CI/CD, packaging, release artifacts, deployment, and configuration;
 - README, API, CLI, examples, website, book, one-pager, and demo claims;
 - monitoring, logging, audit evidence, rollback, recovery, and ownership;
@@ -65,9 +69,15 @@ Confirm:
 - transitional dual paths have a documented lifecycle;
 - downstream examples or consumers use the current contract.
 
-### 4. Validation
+### 4. Validation and static analysis
 
-Assess whether tests prove meaningful behavior, including important negative, failure, migration, security, and platform cases. Identify validation that exists only locally, is skipped in CI, or differs from release conditions.
+Assess whether the capability has an appropriate test pyramid: strong fast unit/component coverage at the base, targeted contract/integration coverage at important boundaries, and a smaller end-to-end set for critical supported user or operator paths. Add important negative, failure, migration, security, compatibility, performance, or operational validation according to risk.
+
+Do not demand a layer mechanically when its boundary does not exist. Identify the applicable layers, what meaningful behavior each proves, and any material behavior left unverified.
+
+Assess language- and stack-appropriate compile/type checks, linting, source/configuration static analyzers or SAST, and configuration/IaC analysis where applicable. Verify canonical checks are available through repository build/task tooling and/or CI/CD, and that repositories beyond experimental maturity enforce material checks in CI/CD or an equivalent protected build gate.
+
+Identify validation that exists only locally, is CI-only without a reproducible equivalent, is skipped, stale, disabled, incorrectly scoped, or unexpectedly non-blocking. A green aggregate status does not compensate for a missing required layer or analyzer.
 
 ### 5. Security and privacy
 
@@ -137,7 +147,7 @@ State the authoritative intended outcome, actual current behavior, intended user
 | Outcome and reachability | | | | |
 | Functional behavior | | | | |
 | Integration and contracts | | | | |
-| Validation | | | | |
+| Validation and static analysis | | | | |
 | Security and privacy | | | | |
 | Delivery and operations | | | | |
 | Documentation and claims | | | | |
@@ -145,7 +155,7 @@ State the authoritative intended outcome, actual current behavior, intended user
 
 ### C. Material findings
 
-List only findings that affect completion, maturity, safety, usability, or truthful representation.
+List only findings that affect completion, maturity, safety, usability, truthful representation, the applicable test pyramid, or required static-analysis/build/CI gates.
 
 ### D. Remaining work
 
@@ -175,7 +185,7 @@ Choose exactly one:
 - **Supersede or archive**
 - **Insufficient evidence**
 
-Support the conclusion with verified evidence.
+Support the conclusion with verified evidence, including the applicable test-pyramid and static-analysis status for executable capabilities.
 
 ## Authorized reconciliation mode
 
@@ -185,5 +195,5 @@ When tracking or documentation mutations are authorized:
 2. Preserve unique requirements before closing duplicates or superseded work.
 3. Update maturity and public claims conservatively.
 4. Create only coherent material follow-up issues.
-5. Report the resulting issue, milestone, and documentation state.
+5. Report the resulting issue, milestone, documentation, validation, and static-analysis state.
 ```

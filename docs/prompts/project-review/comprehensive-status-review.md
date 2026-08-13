@@ -2,7 +2,7 @@
 
 Use this prompt for a first review, a major milestone review, or when the existing backlog and documentation may no longer reflect the implementation.
 
-When using a tool-enabled agent, prepend the [agent execution guardrails](README.md#agent-execution-boundary).
+When using a tool-enabled agent, prepend the [agent execution guardrails](README.md#agent-execution-boundary). Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) to implementation, build, CI/CD, and completion findings.
 
 ```markdown
 # Comprehensive Project Status Review
@@ -48,7 +48,7 @@ Never mutate repository or external state when the target, scope, ownership, acc
 Establish:
 
 1. what the project is intended to accomplish;
-2. what is implemented, integrated, tested, documented, released, and usable today;
+2. what is implemented, integrated, tested, statically analyzed, documented, released, and usable today;
 3. what is incomplete, blocked, duplicated, inconsistent, obsolete, or missing;
 4. whether tracked issues and pull requests represent reality;
 5. which risks, decisions, and dependencies matter most;
@@ -63,12 +63,14 @@ Review relevant available evidence, including:
 - open and recently closed issues and pull requests;
 - commits, releases, tags, milestones, and roadmaps;
 - CI/CD workflows, recent runs, artifacts, deployment configuration, and operational runbooks;
-- unit, integration, end-to-end, contract, security, regression, migration, and failure-path tests;
+- repository build/task tooling and canonical format, compile/type-check, lint, static-analysis, test, build, and validation commands;
+- unit/component, integration, end-to-end, contract, security, regression, migration, and failure-path tests;
+- source/configuration static analyzers or SAST and relevant configuration/IaC analysis;
 - security policies, threat models, permissions, dependencies, provenance, and secret handling;
 - UI, UX, CLI, API, onboarding, and developer workflows;
 - related repositories, editions, adapters, demos, testbeds, and integration points.
 
-Do not treat a closed issue, merged pull request, passing workflow, or documented capability as proof of completion by itself. Verify the outcome across implementation, integration, validation, documentation, packaging, and user access where applicable.
+Do not treat a closed issue, merged pull request, passing workflow, or documented capability as proof of completion by itself. Verify the outcome across implementation, integration, layered validation, static analysis, documentation, packaging, and user access where applicable.
 
 ## Review rules
 
@@ -163,18 +165,23 @@ Perform a threat-oriented review appropriate to the project's maturity:
 
 Classify findings as an exploitable vulnerability, active exposure, architectural security risk, missing security requirement, hardening opportunity, or defense-in-depth improvement. Assign severity only when supported by a plausible threat and impact.
 
-## 6. Testing, delivery, and operations
+## 6. Testing, static analysis, delivery, and operations
 
 Assess:
 
 - meaningful behavior coverage rather than generic coverage percentages;
-- unit, integration, end-to-end, contract, regression, adversarial, failure-path, migration, compatibility, accessibility, and performance tests where applicable;
-- flaky, shallow, skipped, or disabled tests;
+- whether the repository has an appropriate test pyramid: strong fast unit/component coverage, targeted contract/integration coverage at important boundaries, and a smaller end-to-end set for critical supported user or operator paths;
+- negative, adversarial, failure-path, migration, compatibility, accessibility, performance, and operational tests where risk requires them;
+- whether an omitted test layer is genuinely inapplicable or a material coverage gap;
+- flaky, shallow, skipped, disabled, stale, or incorrectly scoped tests;
+- language- and stack-appropriate compile/type checks, linting, source/configuration static analyzers or SAST, and configuration/IaC analysis where applicable;
+- whether canonical test and static-analysis entry points are available through repository build/task tooling, CI/CD, or both, and whether developers can reproduce required checks locally or in a documented equivalent environment;
+- whether repositories beyond experimental maturity enforce material test layers and static-analysis checks in CI/CD or an equivalent protected build gate;
 - differences between local, CI, demo, staging, and release environments;
 - build reproducibility, required checks, branch protections, security scanning, artifacts, signing, provenance, and SBOMs;
 - deployment, promotion, monitoring, alerting, rollback, backup, recovery, release notes, and ownership.
 
-Prioritize missing validation for critical paths over broad test-count growth.
+Treat a missing, skipped, stale, non-blocking, or incorrectly scoped required test/static-analysis check as an evidence gap rather than success. Prioritize missing validation for critical paths over broad test-count growth or indiscriminate end-to-end expansion.
 
 ## 7. UI, UX, CLI, API, and developer experience
 
@@ -193,7 +200,7 @@ Identify:
 - duplicate, overlapping, stale, abandoned, or incorrectly prioritized work;
 - issues that should be split, combined, rewritten, or converted into an epic, executable task, spike, bug, QART, RFC, ADR, or security review;
 - implementation without tracked requirements or decisions;
-- missing dependencies, acceptance criteria, validation plans, rollout plans, or non-goals.
+- missing dependencies, acceptance criteria, validation plans, test-pyramid/static-analysis requirements, rollout plans, or non-goals.
 
 An epic is a coordination surface, not executable work. Identify its next bounded slice.
 
@@ -253,7 +260,7 @@ Use:
 
 ### F. Key findings
 
-Group only meaningful findings under applicable headings: goals and requirements; implementation; architecture and boundaries; security and privacy; testing and CI/CD; operations; UI/UX and developer experience; documentation and consistency; issues and pull requests; overlap and opportunities.
+Group only meaningful findings under applicable headings: goals and requirements; implementation; architecture and boundaries; security and privacy; testing, static analysis, and CI/CD; operations; UI/UX and developer experience; documentation and consistency; issues and pull requests; overlap and opportunities.
 
 For each finding include evidence, impact, recommendation, priority, confidence, and whether it is verified or inferred.
 
@@ -302,6 +309,7 @@ The review must answer:
 - What is complete?
 - What is missing or misleading?
 - What is risky?
+- Is the applicable test pyramid adequate, and are required static-analysis checks integrated into build/task tooling and/or CI/CD?
 - What must be clarified before a material decision or mutation?
 - What should be closed, merged, removed, consolidated, or deferred?
 - What should happen next, and in what dependency order?

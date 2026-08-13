@@ -2,6 +2,8 @@
 
 Use this prompt for requests such as **“make this issue well groomed,” “review the issue,”** or **“reconcile these issues.”**
 
+Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when the issue changes executable software, build logic, configuration, or delivery behavior.
+
 ```markdown
 # Issue Grooming
 
@@ -37,7 +39,7 @@ Do not preserve vague scope merely because it already exists in the issue.
 Inspect applicable:
 
 - current issue body, comments, labels, milestone, assignees, and linked work;
-- relevant implementation, tests, documentation, architecture, and CI;
+- relevant implementation, tests, documentation, architecture, CI, build/task tooling, and static-analysis configuration;
 - duplicate, overlapping, parent, child, or superseding issues;
 - recently merged pull requests that may have completed part or all of the outcome;
 - QART, RFC, ADR, threat-model, and release artifacts;
@@ -95,11 +97,14 @@ Acceptance criteria must be observable and verifiable. Cover applicable:
 - errors and failure handling;
 - compatibility, migration, and rollback;
 - security and privacy boundaries;
-- tests and CI;
+- test-pyramid coverage: strong fast unit/component tests, targeted contract/integration tests at affected boundaries, and a small end-to-end set for critical supported paths where those layers apply;
+- language- and stack-appropriate static analysis, with canonical checks available through repository build/task tooling and/or enforced by CI/CD;
 - documentation and user access;
 - packaging, release, deployment, and observability.
 
-Avoid criteria such as “code complete,” “works,” or “tests added” without specifying the behavior proved.
+State explicitly when a test layer or static-analysis class is not applicable. Identify any required validation that remains local-only, CI-only, skipped, stale, or non-blocking.
+
+Avoid criteria such as “code complete,” “works,” “tests added,” or “lint passes” without specifying the behavior or property proved.
 
 ### 6. Priority
 
@@ -201,7 +206,7 @@ Only applicable concerns.
 
 #### Validation
 
-Behavioral proof required.
+Describe the applicable test pyramid, static-analysis checks, and canonical build/task or CI/CD entry points that provide behavioral proof.
 
 #### Acceptance criteria
 

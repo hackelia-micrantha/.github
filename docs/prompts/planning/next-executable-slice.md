@@ -2,6 +2,8 @@
 
 Use this prompt for requests such as **“what is next?” “proceed,”** or **“turn this epic into the next PR.”**
 
+Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when the selected slice changes executable software, build logic, configuration, or delivery behavior.
+
 ```markdown
 # Next Executable Slice
 
@@ -34,6 +36,7 @@ Inspect applicable:
 - open and recently merged pull requests;
 - architecture, QART, RFC, and ADR artifacts;
 - relevant code, tests, CI, documentation, and release state;
+- repository build/task tooling and existing static-analysis entry points;
 - blockers, external dependencies, and repository boundaries;
 - recent implementation slices and remaining acceptance criteria.
 
@@ -128,11 +131,13 @@ Identify trust boundaries, permissions, failure handling, observability, rollbac
 
 #### Validation
 
-Specify meaningful unit, integration, contract, end-to-end, negative, migration, security, or CI checks.
+Specify the applicable test pyramid: fast unit or component tests at the base, targeted contract and integration tests for affected boundaries, and a small end-to-end set for critical supported paths. Add negative, migration, security, compatibility, performance, or operational tests when the risk warrants them. State explicitly when a layer is not applicable rather than adding it mechanically.
+
+Specify language- and stack-appropriate static analysis such as compile/type checks, linting, source/configuration analyzers or SAST, and where the canonical checks run: repository build/task tooling, CI/CD, or both. Identify any material validation that would remain local-only, CI-only, skipped, or non-blocking.
 
 #### Acceptance criteria
 
-Use verifiable checklist items.
+Use verifiable checklist items, including the required test layers and static-analysis/build or CI gates when applicable.
 
 #### Dependencies and follow-up
 
@@ -170,9 +175,9 @@ When implementation is explicitly authorized:
 
 1. Preserve the selected scope and non-goals.
 2. Implement the smallest coherent outcome.
-3. Add required validation and documentation in the same slice.
+3. Add required test-pyramid coverage, static analysis, and documentation in the same slice when they are part of the outcome or required gate.
 4. Review the final diff against the issue-ready acceptance criteria.
-5. Run relevant checks.
+5. Run relevant canonical build/task and CI checks.
 6. Open or update one focused pull request.
 7. Return to the merge-gate review rather than merging automatically unless merge authorization was also explicit.
 ```
