@@ -2,7 +2,7 @@
 
 Use this prompt after a comprehensive review or another trustworthy baseline. It is intentionally narrower than the full audit and focuses on material changes, unresolved work, and the next executable priorities.
 
-When using a tool-enabled agent, prepend the [agent execution guardrails](README.md#agent-execution-boundary).
+When using a tool-enabled agent, prepend the [agent execution guardrails](README.md#agent-execution-boundary). Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) to recent implementation, build, and CI/CD changes.
 
 ```markdown
 # Project Status Refresh
@@ -50,7 +50,7 @@ Answer:
 1. What materially changed since the baseline?
 2. What became substantively complete?
 3. What remains incomplete, blocked, stale, superseded, regressed, or uncertain?
-4. Did recent work introduce security risk, architectural drift, contract divergence, overlap, or usability problems?
+4. Did recent work introduce security risk, architectural drift, contract divergence, overlap, test-pyramid gaps, static-analysis gaps, or usability problems?
 5. Do current issues and pull requests represent reality?
 6. Is the project closer to the milestone?
 7. What should happen next, in dependency order?
@@ -63,20 +63,23 @@ Inspect the most relevant recent:
 - open and recently merged or closed pull requests;
 - open and recently changed or closed issues;
 - CI/CD runs, artifacts, releases, tags, and milestones;
-- tests, schemas, interfaces, configuration, and documentation;
+- repository build/task tooling and canonical test/static-analysis commands;
+- unit/component, contract/integration, end-to-end, negative, security, migration, compatibility, and other risk-driven tests;
+- compile/type checks, linting, source/configuration static analyzers or SAST, and configuration/IaC analysis where applicable;
+- schemas, interfaces, configuration, and documentation;
 - security alerts, permissions, dependencies, provenance, and release controls;
 - related-repository and external integration changes;
 - unresolved findings from the previous review.
 
 Inspect older evidence only to resolve a dependency, contradiction, regression, or incomplete prior finding.
 
-Do not equate merged code, a closed issue, a passing workflow, or updated documentation with a delivered capability. Verify the observable outcome across implementation, integration, validation, documentation, packaging, and user access where applicable.
+Do not equate merged code, a closed issue, a passing workflow, or updated documentation with a delivered capability. Verify the observable outcome across implementation, integration, layered validation, static analysis, documentation, packaging, and user access where applicable.
 
 ## Review
 
 ### 1. Material changes and completed outcomes
 
-Summarize only changes that affect capabilities, architecture, repository boundaries, contracts, security, tests, delivery, operations, UI/UX, CLI/API behavior, developer experience, documentation, public messaging, or planning.
+Summarize only changes that affect capabilities, architecture, repository boundaries, contracts, security, tests, static analysis, build tooling, delivery, operations, UI/UX, CLI/API behavior, developer experience, documentation, public messaging, or planning.
 
 Classify relevant work as:
 
@@ -90,15 +93,16 @@ Classify relevant work as:
 - **Stale or no longer relevant**
 - **Unknown**
 
-For completed work, verify acceptance criteria, meaningful tests, integration, documentation, CI, packaging or release state, and the absence of blockers for the stated outcome.
+For completed work, verify acceptance criteria, the applicable test pyramid, static-analysis gates, integration, documentation, CI, packaging or release state, and the absence of blockers for the stated outcome.
 
 ### 2. Remaining work, regressions, and risk
 
 Identify material:
 
 - partial issues, pull requests, features, integrations, migrations, or cleanup;
-- missing tests, documentation, packaging, release, deployment, migration, rollback, monitoring, or recovery work;
+- missing test-pyramid layers, static-analysis gates, documentation, packaging, release, deployment, migration, rollback, monitoring, or recovery work;
 - TODOs, stubs, mocks, skipped tests, ignored failures, or temporary workarounds on critical paths;
+- missing, skipped, stale, incorrectly scoped, local-only, CI-only, or unexpectedly non-blocking validation that reduces confidence;
 - closed issues with unmet acceptance criteria or capabilities that are implemented but unusable;
 - functional, compatibility, performance, reliability, accessibility, or developer-experience regressions;
 - exploitable vulnerabilities, active exposure, weakened boundaries, unsafe defaults, excessive permissions, secret leakage, dependency or supply-chain risk, or fail-open behavior;
@@ -106,9 +110,13 @@ Identify material:
 
 Distinguish intentional deferral from accidental incompleteness. Do not overstate severity without a plausible failure or threat scenario.
 
-### 3. Architecture, testing, and consistency
+### 3. Architecture, testing, static analysis, and consistency
 
 Confirm that recent work remains consistent with project goals, current milestone, documented architecture, repository responsibilities, API and protocol contracts, naming, trust assumptions, and related systems.
+
+Review whether the repository maintains an appropriate test pyramid: strong fast unit/component coverage, targeted contract/integration coverage for affected boundaries, and a smaller end-to-end set for critical supported paths. Do not require a layer mechanically when its boundary does not exist; do identify material behavior left unverified.
+
+Review language- and stack-appropriate compile/type checks, linting, source/configuration static analysis or SAST, and configuration/IaC analysis where applicable. Confirm canonical checks are available through repository build/task tooling and/or CI/CD, and that repositories beyond experimental maturity enforce material checks in CI/CD or an equivalent protected gate.
 
 Review current CI status, recent failures, critical paths still untested, flaky or disabled tests, negative and failure-path coverage, environment differences, reproducibility, artifacts, security scanning, signing, provenance, SBOMs, deployment, and rollback where applicable.
 
@@ -160,7 +168,7 @@ Include only material changes and unresolved work.
 
 For each meaningful finding include:
 
-- category: implementation, architecture, security, testing/CI, operations, UI/UX/DX, documentation, issue/PR tracking, or overlap;
+- category: implementation, architecture, security, testing/static-analysis/CI, operations, UI/UX/DX, documentation, issue/PR tracking, or overlap;
 - verified fact or inference;
 - evidence;
 - impact;
@@ -211,9 +219,10 @@ Support the assessment with concrete evidence.
 - Do not repeat resolved findings unless they regressed or remain incomplete.
 - Explicitly state when the prior review, roadmap, or backlog is no longer authoritative.
 - Resolve evidence conflicts when possible; otherwise ask before silently choosing an authoritative interpretation that changes the result.
+- Treat applicable test-pyramid or static-analysis coverage lost since the baseline as a material regression even when aggregate CI remains green.
 - Keep recommendations dependency-ordered, bounded, and executable.
 ```
 
 Compact invocation:
 
-> Use the previous status review as the baseline. Focus on material changes since **[DATE / COMMIT]**, validate recently completed work, triage current issues and pull requests, ask only when unresolved ambiguity would materially change the result or a mutation, and return only material findings and the next executable priorities.
+> Use the previous status review as the baseline. Focus on material changes since **[DATE / COMMIT]**, validate recently completed work including the applicable test pyramid and static-analysis/build or CI gates, triage current issues and pull requests, ask only when unresolved ambiguity would materially change the result or a mutation, and return only material findings and the next executable priorities.
