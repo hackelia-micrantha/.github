@@ -59,6 +59,19 @@ All prompts in this library use the following decision rule:
 
 The goal is not to maximize questions. It is to prevent plausible but materially different interpretations from being converted into confident findings, decisions, priorities, or mutations.
 
+## Shared validation and static-analysis contract
+
+For prompts that plan, implement, review, merge, complete, or release software, verify validation as a layered system rather than a generic “tests pass” claim.
+
+1. **Assess the test pyramid.** Expect strong fast unit or component coverage at the base, targeted contract and integration coverage at important boundaries, and a smaller set of end-to-end tests for critical supported user or operator paths. Add security, negative-path, migration, compatibility, performance, or operational tests when risk requires them.
+2. **Do not apply the pyramid mechanically.** A repository may legitimately omit a layer when that boundary does not exist. Require the prompt to identify the applicable layers, meaningful behavior covered at each layer, and any material gap rather than chasing universal test counts or percentages.
+3. **Verify static analysis.** Check language- and stack-appropriate compile/type checks, linting, static analyzers or SAST, and configuration/IaC analyzers where applicable. Dependency and supply-chain analysis remains a complementary control, not a substitute for source/configuration static analysis.
+4. **Verify tooling integration.** Static analysis and test entry points should be available through reproducible repository build/task tooling and/or CI/CD. Prefer canonical commands that developers can run locally and that CI reuses or mirrors closely; identify CI-only or local-only validation gaps when they reduce confidence.
+5. **Verify gating.** For repositories beyond experimental maturity, material static-analysis checks and required test layers should normally be automated in CI/CD or an equivalent protected build gate. A missing, skipped, stale, non-blocking, or incorrectly scoped check is an evidence gap, not a passing result.
+6. **Keep checks risk-based.** Require the smallest durable validation set that covers the changed behavior and affected boundaries. Do not add expensive end-to-end suites or analyzers without a concrete risk or contract they protect.
+
+Use the organization [testing standard](../standards/testing.md) and [CI/CD standard](../standards/ci-cd.md) as the default evidence model unless a repository documents a justified local override.
+
 ## Shared priority model
 
 All prompts follow [`CONTRIBUTING.md`](../../CONTRIBUTING.md):
@@ -103,6 +116,6 @@ Repositories that do not define local issue templates inherit the organization b
 2. Identify the smallest number of material actions.
 3. Obtain or rely on explicit authorization for mutations.
 4. Apply bounded changes.
-5. Re-run relevant validation.
+5. Re-run relevant validation, including applicable test-pyramid layers and static analysis.
 6. Re-review the resulting diff, checks, and unresolved threads.
 7. Merge, release, or close only when the stated outcome is verified.
