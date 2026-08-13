@@ -2,6 +2,8 @@
 
 Use this prompt for requests such as **“review,” “review to fix or merge,”** or **“is this ready?”**
 
+Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when reviewing executable software, build logic, configuration, or delivery behavior.
+
 ```markdown
 # Pull-Request Merge-Gate Review
 
@@ -29,7 +31,8 @@ Inspect:
 - relevant surrounding implementation, not only changed lines;
 - review submissions, inline threads, and unresolved comments;
 - required checks, workflow runs, job steps, and causal logs when checks fail;
-- tests added or changed and the critical behavior they validate;
+- tests added or changed, the test-pyramid layer they occupy, and the critical behavior they validate;
+- repository build/task tooling and language- or stack-appropriate static-analysis commands and CI gates;
 - documentation, schemas, migrations, generated artifacts, release notes, and public interfaces;
 - recent related commits or pull requests when needed to understand intent or regression risk.
 
@@ -74,18 +77,21 @@ Check relevant:
 
 Classify security findings by plausible threat and impact. Do not label routine hardening as a merge blocker without a concrete reason.
 
-### 4. Tests and validation
+### 4. Tests, static analysis, and validation
 
 Determine whether validation:
 
 - proves the intended behavior rather than merely exercising code;
-- includes important negative, boundary, failure, migration, and regression cases;
+- has an appropriate test pyramid for the change: strong fast unit/component coverage, targeted contract/integration coverage at affected boundaries, and a small end-to-end set for critical supported paths where those layers apply;
+- includes important negative, boundary, failure, migration, security, compatibility, and regression cases when risk requires them;
 - would fail before the change and pass after it where appropriate;
 - avoids brittle implementation coupling and false-positive assertions;
 - covers platform, integration, or contract boundaries affected by the diff;
+- runs language- and stack-appropriate compile/type checks, linting, source/configuration static analyzers or SAST where applicable;
+- exposes canonical test and static-analysis entry points through repository build/task tooling and/or CI/CD, with CI enforcing material gates for repositories beyond experimental maturity;
 - is reproducible in the relevant CI and release environment.
 
-Do not require unrelated test expansion. Identify only missing validation material to the merge decision.
+Treat missing, skipped, stale, incorrectly scoped, or non-blocking required test/static-analysis jobs as evidence gaps rather than success. Do not require unrelated test expansion or mechanically demand a layer that has no meaningful boundary; identify only missing validation material to the merge decision.
 
 ### 5. Architecture and maintainability
 
@@ -117,8 +123,8 @@ Verify:
 
 - all material review comments are addressed or explicitly rejected with sound rationale;
 - unresolved threads are not silently ignored;
-- required checks are passing or an absence of checks is explicitly understood;
-- cancelled, skipped, neutral, or flaky checks are not mistaken for success;
+- required test-pyramid and static-analysis checks are passing or an absence of an applicable check is explicitly justified;
+- cancelled, skipped, neutral, stale, flaky, or informational checks are not mistaken for required validation success;
 - the reviewed commit is still the current head;
 - the branch is mergeable and current enough for the repository policy.
 
@@ -150,7 +156,7 @@ Say **“No merge-blocking findings”** when appropriate. Do not invent minor f
 
 ### C. Validation status
 
-Summarize tests, checks, unresolved threads, mergeability, and any evidence that could not be inspected.
+Summarize the applicable test-pyramid layers, static-analysis/build or CI gates, other checks, unresolved threads, mergeability, and any evidence that could not be inspected.
 
 ### D. Remaining work
 
@@ -173,7 +179,7 @@ Provide a concise rationale.
 When fixes and merge are explicitly authorized:
 
 1. Apply only blocker fixes and directly required validation or documentation.
-2. Re-run relevant checks.
+2. Re-run applicable test-pyramid layers, static analysis, and other relevant canonical checks.
 3. Re-read the final diff and unresolved review threads.
 4. Confirm the head commit has not changed unexpectedly.
 5. Merge only if the final decision is **Merge**.
