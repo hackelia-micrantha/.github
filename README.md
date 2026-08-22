@@ -10,6 +10,8 @@ Repositories may refine these defaults when their product, legal, security, or o
 - [Contribution and issue-prioritization standard](CONTRIBUTING.md)
 - [Repository lifecycle and maturity](docs/governance/repository-lifecycle.md)
 - [Repository responsibility catalogue](docs/architecture/repository-catalogue.md)
+- [Cross-repository architecture and planning](docs/architecture/README.md)
+- [Cross-repository RFC index](docs/architecture/rfcs/README.md)
 - [Security policy](.github/SECURITY.md)
 - [Support guidance](.github/SUPPORT.md)
 - [Code of conduct](.github/CODE_OF_CONDUCT.md)
