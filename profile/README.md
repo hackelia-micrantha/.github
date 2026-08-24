@@ -392,6 +392,20 @@ The goal is not to make every project depend on every security component. The go
 
 ---
 
+## 📐 How we work
+
+Micrantha engineering follows an evidence-backed methodology designed for systems that evolve over time.
+
+- [Governance model](https://github.com/hackelia-micrantha/.github/blob/main/GOVERNANCE.md) — decision authority, roles, AI-assisted work, and conflict resolution
+- [Contributing guidelines](https://github.com/hackelia-micrantha/.github/blob/main/CONTRIBUTING.md) — issue prioritization, execution order, and pull-request expectations
+- [Engineering standards](https://github.com/hackelia-micrantha/.github/blob/main/docs/standards/README.md) — testing, CI/CD, security, releases, documentation, and label taxonomy
+- [Engineering prompts](https://github.com/hackelia-micrantha/.github/blob/main/docs/prompts/README.md) — 22 reusable prompts for review, planning, decisions, delivery, security, and onboarding
+- [Decision-to-delivery guide](https://github.com/hackelia-micrantha/.github/blob/main/docs/engineering/work-items.md) — QART, RFC, ADR, epics, and bounded delivery slices
+
+New contributors can start with the [contributor onboarding prompt](https://github.com/hackelia-micrantha/.github/blob/main/docs/prompts/onboarding/contributor-onboarding.md).
+
+---
+
 ## 📬 Contact
 
 Ryan Jennings  

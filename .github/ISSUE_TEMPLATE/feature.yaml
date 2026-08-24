@@ -1,12 +1,35 @@
 name: "Feature request"
 description: "Propose an enhancement or new capability"
 title: "[feat]: "
-labels: ["enhancement"]
+labels: ["type:feature", "status:needs-grooming"]
 body:
   - type: markdown
     attributes:
       value: |
         Feature requests are welcome. Please focus on the problem, constraints, and tradeoffs.
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How soon should this consume limited engineering capacity? See CONTRIBUTING.md for the priority model.
+      options:
+        - P0 — interrupt (active break or dangerous exposure)
+        - P1 — next (unlocks milestone or closes significant risk)
+        - P2 — planned (important, does not displace P0/P1)
+        - P3 — later / explore (uncommitted or exploratory)
+      default: 2
+    validations:
+      required: true
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: What observable result changes when this request is complete?
+      placeholder: "When this is delivered, …"
+    validations:
+      required: true
 
   - type: textarea
     id: problem

@@ -1,0 +1,62 @@
+# Dependabot version updates
+#
+# This is an organization-default dependabot configuration.
+# Repositories may customize or disable specific ecosystems.
+#
+# Privileged, executable, and native dependencies require manual review
+# even when an update is available automatically.
+
+version: 2
+updates:
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "type:delivery"
+      - "area:ci"
+    # Review workflow and action changes carefully — see automation/SECURITY.md
+
+  # Node / npm
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "deps"
+    labels:
+      - "type:delivery"
+    # Privileged or build-time packages should be reviewed manually
+
+  # Python / pip
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "deps"
+    labels:
+      - "type:delivery"
+
+  # Rust / Cargo
+  - package-ecosystem: "cargo"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "deps"
+    labels:
+      - "type:delivery"
+
+  # Docker
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "deps"
+    labels:
+      - "type:delivery"

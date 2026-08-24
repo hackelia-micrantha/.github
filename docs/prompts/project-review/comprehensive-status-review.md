@@ -1,8 +1,14 @@
 # Comprehensive Project Status Review Prompt
 
-Use this prompt for a first review, a major milestone review, or when the existing backlog and documentation may no longer reflect the implementation.
+Use this prompt for a first review, a major milestone review, or when the existing backlog and documentation may no longer reflect the implementation. This is the broadest review — it establishes the baseline that [status refreshes](status-refresh.md) consume.
 
 When using a tool-enabled agent, prepend the [agent execution guardrails](README.md#agent-execution-boundary). Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) to implementation, build, CI/CD, and completion findings.
+
+Do **not** use this prompt for periodic check-ins when a trustworthy baseline already exists — use [status refresh](status-refresh.md). Do **not** use it to verify whether one specific capability is complete — use [implementation completeness](../reviews/implementation-completeness.md).
+
+Compact invocation:
+
+> Establish the full project baseline for **[PROJECT / REPOSITORY SET]**: reconcile implementation, integration, layered validation, static analysis, documentation, and tracked work against the intended outcome and maturity; surface active security, correctness, and completion risks first; correct the backlog; and return a small dependency-ordered P1 queue with exit criteria.
 
 ```markdown
 # Comprehensive Project Status Review
@@ -21,21 +27,7 @@ Review the current state of **[PROJECT / REPOSITORY / REPOSITORY SET]** and dete
 
 ## Ambiguity and clarification
 
-Resolve missing context from available repository evidence, linked authoritative sources, accepted decisions, and the invocation before asking questions.
-
-Ask concise, targeted questions before proceeding when unresolved ambiguity could materially change:
-
-- repository or system scope;
-- the intended outcome, users, milestone, or maturity expectation;
-- which source, issue, document, branch, release, or implementation is authoritative;
-- security, privacy, trust, compatibility, or operational assumptions;
-- architecture boundaries, ownership, or decision alternatives;
-- priority or the definition of a completed outcome;
-- any authorized mutation or externally visible claim.
-
-Do not ask questions that available evidence can answer reliably. When ambiguity is non-blocking, state the assumption, confidence, and evidence gap, then continue. When authoritative evidence conflicts and the conflict cannot be resolved from available evidence, present the conflict and ask which interpretation governs rather than silently choosing one.
-
-If interaction is unavailable, continue through unambiguous read-only analysis but stop at the affected decision or mutation boundary and report the smallest clarification required to resume.
+Apply the [shared ambiguity and clarification contract](../README.md#shared-ambiguity-and-clarification-contract). Resolve missing context from available repository evidence before asking.
 
 ## Execution boundary
 
@@ -167,16 +159,14 @@ Classify findings as an exploitable vulnerability, active exposure, architectura
 
 ## 6. Testing, static analysis, delivery, and operations
 
-Assess:
+Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract). Assess:
 
 - meaningful behavior coverage rather than generic coverage percentages;
-- whether the repository has an appropriate test pyramid: strong fast unit/component coverage, targeted contract/integration coverage at important boundaries, and a smaller end-to-end set for critical supported user or operator paths;
+- whether the repository has an appropriate test pyramid and static-analysis surface for its supported behavior and maturity;
 - negative, adversarial, failure-path, migration, compatibility, accessibility, performance, and operational tests where risk requires them;
 - whether an omitted test layer is genuinely inapplicable or a material coverage gap;
 - flaky, shallow, skipped, disabled, stale, or incorrectly scoped tests;
-- language- and stack-appropriate compile/type checks, linting, source/configuration static analyzers or SAST, and configuration/IaC analysis where applicable;
 - whether canonical test and static-analysis entry points are available through repository build/task tooling, CI/CD, or both, and whether developers can reproduce required checks locally or in a documented equivalent environment;
-- whether repositories beyond experimental maturity enforce material test layers and static-analysis checks in CI/CD or an equivalent protected build gate;
 - differences between local, CI, demo, staging, and release environments;
 - build reproducibility, required checks, branch protections, security scanning, artifacts, signing, provenance, and SBOMs;
 - deployment, promotion, monitoring, alerting, rollback, backup, recovery, release notes, and ownership.

@@ -4,6 +4,8 @@ Use this prompt after a comprehensive review or another trustworthy baseline. It
 
 When using a tool-enabled agent, prepend the [agent execution guardrails](README.md#agent-execution-boundary). Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) to recent implementation, build, and CI/CD changes.
 
+Do **not** use this prompt for a first review or when no trustworthy baseline exists — use [comprehensive project status review](comprehensive-status-review.md). Do **not** use it to verify whether one specific capability is complete — use [implementation completeness](../reviews/implementation-completeness.md).
+
 ```markdown
 # Project Status Refresh
 
@@ -21,21 +23,7 @@ When no baseline is supplied, select the most recent meaningful release, milesto
 
 ## Ambiguity and clarification
 
-Resolve missing context from available repository evidence, linked authoritative sources, accepted decisions, and the invocation before asking questions.
-
-Ask concise, targeted questions before proceeding when unresolved ambiguity could materially change:
-
-- the baseline or review window;
-- repository or system scope;
-- the current milestone, intended outcome, or maturity expectation;
-- which issue, document, branch, release, implementation, or external source is authoritative;
-- security, privacy, trust, compatibility, or operational assumptions;
-- priority, completion criteria, or the interpretation of a regression;
-- any authorized mutation or externally visible claim.
-
-Do not ask questions that available evidence can answer reliably. When ambiguity is non-blocking, state the assumption, confidence, and evidence gap, then continue. When authoritative evidence conflicts and the conflict cannot be resolved from available evidence, present the conflict and ask which interpretation governs rather than silently choosing one.
-
-If interaction is unavailable, continue through unambiguous read-only analysis but stop at the affected decision or mutation boundary and report the smallest clarification required to resume.
+Apply the [shared ambiguity and clarification contract](../README.md#shared-ambiguity-and-clarification-contract). Resolve missing context from available repository evidence before asking.
 
 ## Execution boundary
 
@@ -114,9 +102,7 @@ Distinguish intentional deferral from accidental incompleteness. Do not overstat
 
 Confirm that recent work remains consistent with project goals, current milestone, documented architecture, repository responsibilities, API and protocol contracts, naming, trust assumptions, and related systems.
 
-Review whether the repository maintains an appropriate test pyramid: strong fast unit/component coverage, targeted contract/integration coverage for affected boundaries, and a smaller end-to-end set for critical supported paths. Do not require a layer mechanically when its boundary does not exist; do identify material behavior left unverified.
-
-Review language- and stack-appropriate compile/type checks, linting, source/configuration static analysis or SAST, and configuration/IaC analysis where applicable. Confirm canonical checks are available through repository build/task tooling and/or CI/CD, and that repositories beyond experimental maturity enforce material checks in CI/CD or an equivalent protected gate.
+Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract). Review whether the repository maintains an appropriate test pyramid and whether canonical static-analysis checks are available and enforced.
 
 Review current CI status, recent failures, critical paths still untested, flaky or disabled tests, negative and failure-path coverage, environment differences, reproducibility, artifacts, security scanning, signing, provenance, SBOMs, deployment, and rollback where applicable.
 

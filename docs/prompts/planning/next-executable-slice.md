@@ -1,8 +1,14 @@
 # Next Executable Slice Prompt
 
-Use this prompt for requests such as **“what is next?” “proceed,”** or **“turn this epic into the next PR.”**
+Use this prompt for requests such as **"what is next?" "proceed,"** or **"turn this epic into the next PR."**
 
 Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when the selected slice changes executable software, build logic, configuration, or delivery behavior.
+
+Do **not** use this prompt for raw notes or discussions — use [classify and route](classify-and-route.md) first. Do **not** use it to review a pull request — use [merge-gate review](pull-requests/merge-gate-review.md).
+
+Compact invocation:
+
+> Select the next bounded implementation slice for **[PROJECT / EPIC]**: rank candidates by containment, dependency leverage, milestone value, readiness, and risk; define one slice with outcome, scope, non-goals, validation, and acceptance criteria; and return an issue-ready version plus the final decision.
 
 ```markdown
 # Next Executable Slice
@@ -131,9 +137,7 @@ Identify trust boundaries, permissions, failure handling, observability, rollbac
 
 #### Validation
 
-Specify the applicable test pyramid: fast unit or component tests at the base, targeted contract and integration tests for affected boundaries, and a small end-to-end set for critical supported paths. Add negative, migration, security, compatibility, performance, or operational tests when the risk warrants them. State explicitly when a layer is not applicable rather than adding it mechanically.
-
-Specify language- and stack-appropriate static analysis such as compile/type checks, linting, source/configuration analyzers or SAST, and where the canonical checks run: repository build/task tooling, CI/CD, or both. Identify any material validation that would remain local-only, CI-only, skipped, or non-blocking.
+Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract). Specify the applicable test pyramid layers, static-analysis checks, and canonical build/task or CI/CD entry points that provide behavioral proof. State explicitly when a layer is not applicable. Identify any material validation that would remain local-only, CI-only, skipped, or non-blocking.
 
 #### Acceptance criteria
 

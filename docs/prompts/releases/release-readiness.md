@@ -4,6 +4,12 @@ Use this prompt before publishing a version, package, image, binary, website, bo
 
 Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when the release contains executable software, build logic, configuration, or delivery behavior.
 
+Do **not** use this prompt to review a pull request — use [merge-gate review](pull-requests/merge-gate-review.md). Do **not** use it for general project status — use the [project reviews](project-review/README.md).
+
+Compact invocation:
+
+> Determine whether **[VERSION / ARTIFACT]** is ready to release: confirm source identity, scope completion, applicable test-pyramid layers, static-analysis gates, artifact integrity, security posture, install/upgrade/rollback paths, and documentation accuracy; classify findings as blocker, required disclosure, or follow-up; and choose exactly one release decision.
+
 ```markdown
 # Release Readiness Review
 
@@ -63,11 +69,7 @@ Verify the release delivers its stated outcome and that unresolved work is class
 
 ### 3. Validation and static analysis
 
-Confirm the release has an appropriate test pyramid for its supported behavior: strong fast unit/component coverage, targeted contract/integration coverage at important boundaries, and a smaller end-to-end or release-smoke set for critical supported user or operator paths. Include security, negative-path, migration, compatibility, platform, performance, or operational validation when risk requires it.
-
-Do not require a test layer mechanically when its boundary does not exist. Identify what each applicable layer proves and any material behavior that remains unverified.
-
-Confirm language- and stack-appropriate compile/type checks, linting, source/configuration static analyzers or SAST, and configuration/IaC analysis where applicable. Verify canonical checks are available through repository build/task tooling and/or CI/CD, and that material checks for repositories beyond experimental maturity are enforced in CI/CD or an equivalent protected release gate.
+Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract). Confirm the release has an appropriate test pyramid and static-analysis surface for its supported behavior and channel. Identify what each applicable layer proves and any material behavior that remains unverified.
 
 Distinguish required checks from informational jobs, and missing, skipped, cancelled, stale, incorrectly scoped, flaky, or non-blocking jobs from success. Confirm the validation evidence corresponds to the exact release source revision and supported platform matrix.
 

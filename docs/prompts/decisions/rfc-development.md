@@ -2,6 +2,8 @@
 
 Use this prompt when a consequential proposal may require broad review, cross-boundary coordination, or an authoritative disposition before implementation.
 
+Do **not** use this prompt for narrow, local, low-risk, easily reversible implementation choices — use an issue, QART analysis, or code review. Do **not** use it when alternatives remain unresolved — use [QART analysis](qart-analysis.md) first.
+
 ```markdown
 # RFC Development
 

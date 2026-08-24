@@ -2,7 +2,9 @@
 
 Use this prompt when a QART analysis or equivalent decision record appears ready to become an authoritative Architecture Decision Record.
 
-````markdown
+Do **not** use this prompt when alternatives remain unresolved or feasibility is unknown — use [QART analysis](qart-analysis.md) or a bounded spike first.
+
+```markdown
 # QART-to-ADR Conversion
 
 Review **[QART / RFC / DECISION DISCUSSION]** and convert it into an ADR only if the decision is actually resolved and implementable.
@@ -214,4 +216,4 @@ When creation or update is explicitly authorized:
 3. Create implementation issues separately; do not turn the ADR into a task list.
 4. Update supersession links where applicable.
 5. Report the created or updated path, status, and remaining follow-up.
-````
+```

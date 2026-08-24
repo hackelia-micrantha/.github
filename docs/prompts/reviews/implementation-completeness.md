@@ -1,8 +1,14 @@
 # Implementation Completeness Review Prompt
 
-Use this prompt after multiple pull requests, before closing an epic, or whenever merged code may not yet represent a delivered capability.
+Use this prompt after multiple pull requests, before closing an epic, or whenever merged code may not yet represent a delivered capability. Use it to verify a **specific claimed completion** — a capability, epic, milestone, or set of issues that someone says is done.
 
 Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when assessing executable software, build logic, configuration, or delivery behavior.
+
+Do **not** use this prompt for general project status or periodic check-ins — use [project status refresh](project-review/status-refresh.md) or the [comprehensive project status review](project-review/comprehensive-status-review.md).
+
+Compact invocation:
+
+> Verify whether **[CAPABILITY / EPIC]** is substantively complete for its stated maturity: reconcile the claimed outcome against implementation, integration, layered validation, static analysis, documentation, packaging, and user access; classify as complete, partial, blocked, or misrepresented; and return bounded follow-up or closure actions.
 
 ```markdown
 # Implementation Completeness Review
@@ -71,11 +77,7 @@ Confirm:
 
 ### 4. Validation and static analysis
 
-Assess whether the capability has an appropriate test pyramid: strong fast unit/component coverage at the base, targeted contract/integration coverage at important boundaries, and a smaller end-to-end set for critical supported user or operator paths. Add important negative, failure, migration, security, compatibility, performance, or operational validation according to risk.
-
-Do not demand a layer mechanically when its boundary does not exist. Identify the applicable layers, what meaningful behavior each proves, and any material behavior left unverified.
-
-Assess language- and stack-appropriate compile/type checks, linting, source/configuration static analyzers or SAST, and configuration/IaC analysis where applicable. Verify canonical checks are available through repository build/task tooling and/or CI/CD, and that repositories beyond experimental maturity enforce material checks in CI/CD or an equivalent protected build gate.
+Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract). Assess whether the capability has an appropriate test pyramid and static-analysis surface for its supported behavior and maturity. Identify the applicable layers, what meaningful behavior each proves, and any material behavior left unverified.
 
 Identify validation that exists only locally, is CI-only without a reproducible equivalent, is skipped, stale, disabled, incorrectly scoped, or unexpectedly non-blocking. A green aggregate status does not compensate for a missing required layer or analyzer.
 

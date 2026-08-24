@@ -1,8 +1,14 @@
 # Pull-Request Merge-Gate Review Prompt
 
-Use this prompt for requests such as **“review,” “review to fix or merge,”** or **“is this ready?”**
+Use this prompt for requests such as **"review," "review to fix or merge,"** or **"is this ready?"**
 
 Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when reviewing executable software, build logic, configuration, or delivery behavior.
+
+Do **not** use this prompt to investigate CI failures — use [CI failure triage](ci/ci-failure-triage.md). Do **not** use it for general project status or backlog triage — use the [project reviews](project-review/README.md).
+
+Compact invocation:
+
+> Review **[REPOSITORY] PR [#NUMBER]** for merge: verify the stated outcome against the diff, surrounding code, and validation evidence; classify findings as blocker, material follow-up, suggestion, or question; check applicable test-pyramid layers and CI gates; and choose exactly one decision (merge, fix before merge, blocked, supersede, or deeper review).
 
 ```markdown
 # Pull-Request Merge-Gate Review
@@ -79,19 +85,18 @@ Classify security findings by plausible threat and impact. Do not label routine 
 
 ### 4. Tests, static analysis, and validation
 
-Determine whether validation:
+Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract). Determine whether validation:
 
 - proves the intended behavior rather than merely exercising code;
-- has an appropriate test pyramid for the change: strong fast unit/component coverage, targeted contract/integration coverage at affected boundaries, and a small end-to-end set for critical supported paths where those layers apply;
+- has an appropriate test pyramid for the change;
 - includes important negative, boundary, failure, migration, security, compatibility, and regression cases when risk requires them;
 - would fail before the change and pass after it where appropriate;
 - avoids brittle implementation coupling and false-positive assertions;
 - covers platform, integration, or contract boundaries affected by the diff;
-- runs language- and stack-appropriate compile/type checks, linting, source/configuration static analyzers or SAST where applicable;
-- exposes canonical test and static-analysis entry points through repository build/task tooling and/or CI/CD, with CI enforcing material gates for repositories beyond experimental maturity;
+- exposes canonical test and static-analysis entry points through repository build/task tooling and/or CI/CD;
 - is reproducible in the relevant CI and release environment.
 
-Treat missing, skipped, stale, incorrectly scoped, or non-blocking required test/static-analysis jobs as evidence gaps rather than success. Do not require unrelated test expansion or mechanically demand a layer that has no meaningful boundary; identify only missing validation material to the merge decision.
+Treat missing, skipped, stale, incorrectly scoped, or non-blocking required test/static-analysis jobs as evidence gaps rather than success. Identify only missing validation material to the merge decision.
 
 ### 5. Architecture and maintainability
 

@@ -1,8 +1,10 @@
 # Classify and Route Engineering Work Prompt
 
-Use this prompt when raw notes, a discussion, a broad request, or mixed planning material must be converted into the minimum responsible artifact set.
+Use this prompt when raw notes, a discussion, a broad request, or mixed planning material must be converted into the minimum responsible artifact set. This is the upstream of [issue grooming](issues/issue-grooming.md): it produces the decision inventory and artifact map that issue grooming consumes.
 
 Apply the [shared ambiguity and clarification contract](../README.md#shared-ambiguity-and-clarification-contract) before routing work or creating artifacts.
+
+Do **not** use this prompt when an already-existing issue simply needs to be cleaned up, re-prioritized, or split. Use [issue grooming](issues/issue-grooming.md) instead.
 
 ```markdown
 # Classify and Route Engineering Work

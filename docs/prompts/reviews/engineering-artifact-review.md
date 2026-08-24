@@ -2,6 +2,12 @@
 
 Use this prompt to critically review a QART analysis, RFC, ADR, specification, design, investigation, plan, epic, or implementation issue.
 
+Do **not** use this prompt to review implementation code or a pull request diff — use [merge-gate review](pull-requests/merge-gate-review.md). Do **not** use it for general project status — use the [project reviews](project-review/README.md).
+
+Compact invocation:
+
+> Review **[ARTIFACT]** for decision quality, evidence, scope, architecture, security, and delivery readiness; choose a verdict (ready, needs evidence, needs decisions, wrong artifact type, etc.); list blocking, significant, and minor findings with evidence and correction; and recommend artifact routing across the QART → RFC → ADR → epic → delivery chain.
+
 ```markdown
 # Engineering Artifact Review
 

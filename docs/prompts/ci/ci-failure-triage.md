@@ -1,8 +1,10 @@
 # CI Failure Triage and Repair Prompt
 
-Use this prompt for requests such as **“check CI,” “fix the latest failure,”** or **“check CI to fix or merge.”**
+Use this prompt for requests such as **"check CI," "fix the latest failure,"** or **"check CI to fix or merge."**
 
 Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when evaluating required checks or repairing validation infrastructure.
+
+Do **not** use this prompt to review a pull request's code or decide whether to merge — use [merge-gate review](pull-requests/merge-gate-review.md). Do **not** use it for general project status — use the [project reviews](project-review/README.md).
 
 ```markdown
 # CI Failure Triage and Repair

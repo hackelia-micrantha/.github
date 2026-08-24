@@ -2,6 +2,8 @@
 
 Use this prompt when capability ownership, contracts, product/laboratory roles, public/private editions, adapters, migrations, or duplicated implementation span several repositories.
 
+Do **not** use this prompt for single-repository reviews or general project status — use the [project reviews](project-review/README.md). For agentic authority and state-integrity threats specifically, see the [agentic workflow security review](security/agentic-workflow-security-review.md).
+
 ```markdown
 # Cross-Repository Boundary Review
 

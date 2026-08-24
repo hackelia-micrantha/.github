@@ -1,13 +1,36 @@
 name: "Security report (private preferred)"
 description: "Report a security vulnerability (do not include sensitive details here)"
 title: "[security]: "
-labels: ["security"]
+labels: ["type:security", "status:needs-grooming"]
 body:
   - type: markdown
     attributes:
       value: |
         ⚠️ Please do NOT include exploit details, secrets, or sensitive information in a public issue.
         Use the instructions in SECURITY.md for private disclosure.
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      description: How soon should this consume limited engineering capacity? Security does not automatically mean P0 — see CONTRIBUTING.md.
+      options:
+        - P0 — interrupt (credible, immediate exposure or failure)
+        - P1 — next (significant security or operability gap)
+        - P2 — planned (hardening or architecture work)
+        - P3 — later / explore (defense-in-depth improvement)
+      default: 1
+    validations:
+      required: true
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: What observable security property changes when this is resolved?
+      placeholder: "When this is resolved, …"
+    validations:
+      required: true
 
   - type: textarea
     id: highlevel

@@ -1,8 +1,10 @@
 # Issue Grooming Prompt
 
-Use this prompt for requests such as **“make this issue well groomed,” “review the issue,”** or **“reconcile these issues.”**
+Use this prompt for requests such as **"make this issue well groomed," "review the issue,"** or **"reconcile these issues."** Use it when an existing issue needs its outcome, scope, acceptance criteria, priority, or artifact type corrected.
 
 Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when the issue changes executable software, build logic, configuration, or delivery behavior.
+
+Do **not** use this prompt for raw notes, discussions, or pre-issue material that has not yet been filed. Use [classify and route](planning/classify-and-route.md) first to establish the decision inventory and artifact map.
 
 ```markdown
 # Issue Grooming
@@ -49,19 +51,7 @@ Do not infer that an old issue remains valid without reconciling it against curr
 
 ## Artifact classification
 
-Choose the most appropriate form:
-
-- **Bug:** existing behavior violates an intended invariant or requirement.
-- **Task / vertical slice:** bounded work produces an observable outcome.
-- **Epic:** coordination surface for multiple independently executable outcomes.
-- **Spike:** time-bounded investigation resolves evidence or feasibility uncertainty.
-- **QART:** alternatives and trade-offs remain open.
-- **RFC:** a proposal requires broader review before commitment.
-- **ADR:** a resolved decision should become authoritative.
-- **Security review / threat model:** threats, trust boundaries, or controls require focused analysis.
-- **Close / supersede:** the outcome is complete, obsolete, duplicated, or no longer aligned.
-
-An epic is not executable work. Identify its next bounded child slice.
+Reclassify the issue against the [artifact rules](../planning/classify-and-route.md#artifact-rules). If the issue is currently the wrong artifact type (e.g., an epic filed as a task, or a QART filed as a feature), recommend conversion. An epic is not executable work — identify its next bounded child slice.
 
 ## Grooming checks
 
@@ -91,14 +81,13 @@ Blocking is a status, not a priority. Preserve the issue's underlying repository
 
 ### 5. Requirements and acceptance criteria
 
-Acceptance criteria must be observable and verifiable. Cover applicable:
+Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract). Acceptance criteria must be observable and verifiable. Cover applicable:
 
 - functional behavior;
 - errors and failure handling;
 - compatibility, migration, and rollback;
 - security and privacy boundaries;
-- test-pyramid coverage: strong fast unit/component tests, targeted contract/integration tests at affected boundaries, and a small end-to-end set for critical supported paths where those layers apply;
-- language- and stack-appropriate static analysis, with canonical checks available through repository build/task tooling and/or enforced by CI/CD;
+- the applicable test pyramid and static-analysis checks, with canonical entry points through repository build/task tooling and/or enforced by CI/CD;
 - documentation and user access;
 - packaging, release, deployment, and observability.
 

@@ -2,6 +2,8 @@
 
 Use this prompt to reconcile websites, READMEs, books, one-pagers, whitepapers, screenshots, demos, and release messaging with current implementation and maturity.
 
+Do **not** use this prompt for cross-repository ownership or boundary questions — use [cross-repository boundary review](architecture/cross-repository-boundaries.md). Do **not** use it for general project status — use the [project reviews](project-review/README.md).
+
 ```markdown
 # Public Documentation and Claims Consistency Review
 

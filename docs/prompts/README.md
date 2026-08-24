@@ -21,7 +21,11 @@ This directory contains reusable prompts for evidence-backed engineering review,
 | `review repository boundaries` | [Cross-repository boundary review](architecture/cross-repository-boundaries.md) | Ownership, contracts, editions, adapters, labs, or migrations overlap across repositories |
 | `ready to release?` | [Release readiness review](releases/release-readiness.md) | A version, artifact, site, package, or public capability is approaching release |
 | `review docs/site claims` | [Public consistency review](documentation/public-consistency-review.md) | READMEs, websites, books, one-pagers, or demos must match implementation and maturity |
-| `review agent security` | [Agentic workflow security review](security/agentic-workflow-security-review.md) | Agents, tools, approvals, policies, evidence, or execution boundaries require threat-oriented review |
+|| `review agent security` | [Agentic workflow security review](security/agentic-workflow-security-review.md) | Agents, tools, approvals, policies, evidence, or execution boundaries require threat-oriented review |
+|| `review dependency update` | [Dependency update review](dependencies/dependency-update-review.md) | Automated dependency updates (Renovate, Dependabot) or manual dependency changes where the risk surface is compatibility and supply-chain integrity |
+|| `incident retrospective` | [Incident retrospective](incidents/incident-retrospective.md) | After an incident is contained and the goal is a blameless retrospective with durable controls |
+|| `decompose this change` | [Large-change decomposition](pull-requests/large-change-decomposition.md) | A pull request or change set is too large for effective single-pass review |
+|| `onboard me` | [Contributor onboarding](onboarding/contributor-onboarding.md) | A new contributor needs to understand how to contribute, file work, or make decisions |
 
 ## Shared execution boundary
 

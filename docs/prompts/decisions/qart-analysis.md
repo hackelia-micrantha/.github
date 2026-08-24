@@ -2,6 +2,8 @@
 
 Use this prompt when an architectural, product, security, operational, or repository-boundary choice has meaningful alternatives and unresolved trade-offs.
 
+Do **not** use this prompt when the decision is already made — use [QART-to-ADR conversion](qart-to-adr.md) to record it. Do **not** use it when feasibility is unknown — run a bounded spike first.
+
 ```markdown
 # QART Decision Analysis
 

@@ -1,1 +1,11 @@
-* @hackelia-micrantha
+# Organization-wide defaults for the .github repository.
+# Repository steward: @ryjen (organization owner)
+
+# Default owner for everything in this repository
+* @ryjen
+
+# Shared automation and governance — require steward review
+/.github/workflows/ @ryjen
+/docs/ @ryjen
+/GOVERNANCE.md @ryjen
+/CONTRIBUTING.md @ryjen

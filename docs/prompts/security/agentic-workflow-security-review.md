@@ -2,6 +2,8 @@
 
 Use this prompt for systems where models or agents plan work, call tools, request approvals, execute effects, retain memory, or produce governance evidence.
 
+Do **not** use this prompt for general project status — use the [project reviews](project-review/README.md). Do **not** use it for cross-repository boundary questions — use [cross-repository boundary review](architecture/cross-repository-boundaries.md).
+
 ```markdown
 # Agentic Workflow Security Review
 
