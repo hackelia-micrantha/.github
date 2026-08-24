@@ -80,7 +80,7 @@ Where a project has source and community repositories:
 | Project and locations | Classification | Maturity | Authoritative responsibility | Does not own |
 | --- | --- | --- | --- | --- |
 | **Anthesis Governance Lab** — currently transitional at [`ryjen/anthesis-governance-lab`](https://github.com/ryjen/anthesis-governance-lab) | Contract laboratory and executable testbed | Incubating | Canonical scenarios, fixtures, test harness behavior, compatibility reports, evidence bundles, and laboratory release artifacts | Anthesis product contracts, risk acceptance, or production policy decisions |
-| **Dubnium Governed Agent Demo** — integration material currently spans Dubnium and Anthesis work | Reference integration and governed-agent testbed | Experimental | End-to-end demonstration evidence for planning, governance, approval, bounded execution, and audit flow | Independent product authority; it does not redefine Anthesis or Dubnium contracts |
+| **Governed Agent Evolution Lab** — transitional at [`ryjen/governed-agent-evolution`](https://github.com/ryjen/governed-agent-evolution) | Cross-project contract laboratory and reference integration | Proposed | End-to-end scenarios, fixtures, adversarial cases, conformance tests, reference glue, and generated evidence for governed evolution across Dubnium, Invokrum, Keylix, and Anthesis | Organization architecture; Anthesis policy/approval/evidence contracts; Dubnium runtime contracts; Invokrum context contracts; Keylix sender-binding contracts; independent production authority |
 | **Hyperion** — [`hyperion`](https://github.com/hackelia-micrantha/hyperion) | Reproducible infrastructure laboratory and stack | Incubating | K3s, GitOps, cluster, infrastructure, deployment, operational patterns, and domain-specific deployment-state observation declared by the repository | Product-level governance semantics, trusted-state promotion, or application contracts deployed onto the infrastructure |
 | **Bluebell** — [`bluebell`](https://github.com/hackelia-micrantha/bluebell) | Kotlin Multiplatform SDK template | Stable | Reusable KMP project structure, build conventions, publishing pattern, and template validation | Product behavior of repositories generated from or inspired by the template |
 | **Digitalis** — source and [`digitalis-community`](https://github.com/hackelia-micrantha/digitalis-community) | Mobile attestation and secure-configuration laboratory | Experimental | Attestation experiments, secure configuration-delivery contracts under test, fixtures, and public laboratory material | General mobile identity, Eyespie product behavior, or organization-wide configuration policy |
@@ -121,6 +121,25 @@ Where verification is required:
 
 Runtime composition may place several of these responsibilities in one deployment, but repository authority and security semantics remain distinct unless an explicit reviewed decision changes them.
 
+### Governed agent evolution
+
+Governed agent evolution is an organization-level composition of the authority categories above, not a fifth product authority.
+
+- **Dubnium** owns observation, candidate proposal, runtime-generation identity, activation, health, recovery, and rollback.
+- **Invokrum** owns exact prompt/context composition identity, manifests, lockfiles, and drift evidence when context is authority-relevant.
+- **Keylix** owns sender-constrained proof-of-possession identity where protected network boundaries use it; a valid sender proof does not establish that a runtime generation is approved.
+- **Anthesis** owns policy evaluation, capability/approval semantics, exact authorization decisions, evidence requirements, attribution, provenance, and governance interpretation.
+- **`hackelia-micrantha/.github`** owns the cross-repository architecture and responsibility matrix.
+- **`ryjen/governed-agent-evolution`** owns only laboratory scenarios, fixtures, conformance behavior, reference integration glue, and generated evidence.
+
+The governing invariant is:
+
+> An evolving system may propose its successor, but it must not independently authorize the transition that gives the successor effect.
+
+The former **Dubnium Governed Agent Demo** catalogue concept is consolidated into the Governed Agent Evolution Lab rather than maintained as an overlapping reference integration. Existing demonstration material may become laboratory scenarios or fixture sources, but component contracts remain authoritative in their owning repositories.
+
+See [`rfcs/0001-governed-agent-evolution.md`](rfcs/0001-governed-agent-evolution.md) and issue #12.
+
 ### Anthesis and Governance Lab
 
 - The lab validates public contracts, scenarios, evidence properties, and compatibility.
@@ -155,6 +174,15 @@ Transitional placement must be recorded with:
 - issue and release handling during transition;
 - public link that should remain stable;
 - date or trigger for reassessment.
+
+For `ryjen/governed-agent-evolution`:
+
+- current location: `ryjen/governed-agent-evolution`;
+- intended authority: laboratory scenarios, fixtures, conformance behavior, reference glue, and generated evidence only;
+- transfer condition: reassess after the first executable cross-project conformance scenario and once visibility/licensing posture is intentionally selected;
+- issue and release handling: laboratory work stays in the lab while component contract changes are filed and accepted in the owning repositories;
+- public link: none is promised while the repository remains private;
+- reassessment trigger: first deterministic end-to-end governed-evolution scenario or a decision to make the laboratory a supported public project.
 
 Repository location alone does not override documented architectural responsibility. Conversely, intended future ownership must not be described as completed until transfer and operational responsibility actually change.
 
