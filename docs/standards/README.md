@@ -7,6 +7,7 @@ These standards define organization-wide defaults for engineering evidence, secu
 - [Testing and validation](testing.md)
 - [CI/CD](ci-cd.md)
 - [Security engineering](security.md)
+- [CLI interoperability](cli-interoperability.md)
 - [Releases and versioning](releases.md)
 - [Documentation](documentation.md)
 - [Labels and work-item taxonomy](labels.md)
@@ -34,6 +35,7 @@ Exceptions do not authorize misleading maturity claims, weakened security bounda
 5. Preserve traceability from decisions and issues to code, validation, release evidence, and documentation.
 6. Prefer small, bounded, independently reviewable changes.
 7. Record limitations and residual risks instead of hiding them behind generic checklists.
+8. For command-line tools and multi-transport operations, preserve one canonical semantic contract while keeping transport-specific framing explicit.
 
 ## Maturity relationship
 
