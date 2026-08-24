@@ -8,6 +8,7 @@ This directory contains reusable prompts for evidence-backed engineering review,
 | --- | --- | --- |
 | `status?` | [Project status refresh](project-review/status-refresh.md) | A trustworthy baseline exists and the goal is to identify material changes and next work |
 | `review the project` | [Comprehensive project status review](project-review/comprehensive-status-review.md) | The implementation, architecture, maturity, or backlog needs broad reconciliation |
+| `review this research paper` | [Research paper relevance review](research/research-paper-relevance-review.md) | A paper, preprint, technical report, benchmark paper, or academic result may affect Micrantha architecture, security, governance, runtime, tooling, or roadmap |
 | `review to fix or merge` | [Pull-request merge-gate review](pull-requests/merge-gate-review.md) | A pull request needs a concrete merge, fix, block, or close decision |
 | `check CI to fix or merge` | [CI failure triage and repair](ci/ci-failure-triage.md) | A workflow or required check is failing, flaky, cancelled, or unexpectedly skipped |
 | `classify this work` | [Classify and route engineering work](planning/classify-and-route.md) | Raw notes or mixed planning material must become the minimum responsible artifact set |
