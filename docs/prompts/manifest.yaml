@@ -102,6 +102,14 @@ prompts:
     do_not_use_when: First review or no baseline (use comprehensive-status-review); verifying one specific capability (use implementation-completeness).
     output: status summary, change and work status, key findings, decisions, PR/issue actions, prioritized next work, execution sequence
 
+  - id: research-paper-relevance-review
+    name: Research Paper Relevance Review
+    file: research/research-paper-relevance-review.md
+    category: research
+    use_when: A paper, preprint, technical report, benchmark paper, or academic result may affect Micrantha architecture, security, governance, runtime, tooling, or roadmap.
+    do_not_use_when: General project status without an external research source; implementation or PR review.
+    output: executive assessment, evidence and limitations, key takeaways, Micrantha relevance matrix, architecture/security implications, current-state gaps, recommended actions, artifact routing, final recommendation
+
   - id: cross-repository-boundaries
     name: Cross-Repository Boundary Review
     file: architecture/cross-repository-boundaries.md
