@@ -70,6 +70,8 @@ Release artifacts should be:
 
 For mobile, native, container, Nix, package-registry, and provider-adapter releases, validate installation or consumption through the supported channel.
 
+For command-line tools, apply the [CLI interoperability standard](cli-interoperability.md). The supported package or release artifact must contain the same executable contract and section-1 man page validated by CI.
+
 ## Supply-chain evidence
 
 Use the level appropriate to the artifact and maturity:
@@ -95,6 +97,8 @@ Before release, identify:
 
 Breaking changes require an accepted decision or explicit release authority appropriate to their scope. Update consumers, community surfaces, and integration testbeds in dependency order.
 
+For stable operations exposed through more than one transport, compatibility review must confirm that CLI, orchestrator, RPC/service, CI, and library adapters reuse the same canonical versioned domain semantics. Divergent transport-specific domain models require an explicit compatibility decision.
+
 ## Security releases
 
 Security fixes should minimize disclosure risk while preserving enough information for users to assess urgency and affected versions.
@@ -115,7 +119,11 @@ Use the organization [release-readiness prompt](../prompts/releases/release-read
 - security and dependency findings are dispositioned;
 - compatibility, migration, rollback, and known limitations are documented;
 - public documentation matches the released capability;
-- publication credentials and targets are scoped correctly.
+- publication credentials and targets are scoped correctly;
+- command-line tools satisfy applicable Unix process, machine-output, non-interactive safety, man-page, and conformance requirements from the CLI interoperability standard;
+- multi-transport operations preserve one canonical domain contract rather than parallel CLI-versus-orchestrator semantics.
+
+Missing applicable CLI interoperability or cross-transport contract evidence is a release blocker for a surface claimed as supported or stable. Experimental channels may explicitly disclose unavailable pre-release behavior instead of claiming support.
 
 ## Publication authority across repositories
 
