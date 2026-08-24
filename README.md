@@ -24,6 +24,7 @@ The repository catalogue distinguishes architectural authority from runtime depe
   - [Testing and validation](docs/standards/testing.md)
   - [CI/CD](docs/standards/ci-cd.md)
   - [Security engineering](docs/standards/security.md)
+  - [CLI interoperability](docs/standards/cli-interoperability.md)
   - [Releases and versioning](docs/standards/releases.md)
   - [Documentation](docs/standards/documentation.md)
   - [Labels and work-item taxonomy](docs/standards/labels.md)
