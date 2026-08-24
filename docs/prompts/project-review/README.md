@@ -24,6 +24,8 @@ The prompts follow the organization-wide conventions in [`CONTRIBUTING.md`](../.
 
 They also follow the [shared ambiguity and clarification contract](../README.md#shared-ambiguity-and-clarification-contract): inspect available evidence before asking, ask targeted questions when unresolved ambiguity could materially change the review or a mutation, and proceed with explicit assumptions only when uncertainty is non-blocking.
 
+For repositories that ship command-line tools or expose the same stable operation through multiple transports, reviews MUST apply the [CLI interoperability standard](../../standards/cli-interoperability.md). Missing Unix process semantics, packaged man pages, machine-readable contracts, or divergent CLI-versus-orchestrator domain models are concrete readiness findings rather than optional polish.
+
 ## Agent execution boundary
 
 Repository reviews are **read-only by default**. Unless the invocation explicitly authorizes mutations, the reviewer must not modify files, issues, pull requests, labels, settings, workflows, releases, deployments, or external systems.
