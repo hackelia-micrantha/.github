@@ -64,6 +64,7 @@ The objective is simple: build systems that **remain understandable and maintain
 * Bounded, reviewable, and reversible automation
 * Traceability from design through execution and evidence
 * Context engineering, reusable skills, and governed memory
+* Compound engineering that turns repeated findings into durable controls without self-modifying authority
 
 ### Security engineering
 
@@ -141,6 +142,68 @@ Each project answers a different question:
 **Keylix is conditional defense in depth**, not a mandatory hop for every agent action. It does not replace identity, OAuth token validation, scopes, TLS, or Anthesis policy.
 
 Model routing, specialist selection, memory, and scheduling remain Dubnium capabilities rather than additional peer layers in this diagram.
+
+### Compound engineering and governed learning
+
+Micrantha uses an explicit engineering feedback loop:
+
+```text
+Plan → Work → Review → Compound → Repeat
+```
+
+The Compound step asks a practical question after meaningful work:
+
+> **Would the system catch or prevent this automatically next time?**
+
+The preferred outcome is the smallest durable control that reliably prevents recurrence: a test, schema, invariant, CI rule, safer tool/default, documentation, bounded prompt/context guidance, or policy proposal. `No reusable learning` is also a valid result.
+
+Persistent learning is deliberately split across components rather than handled by a self-modifying agent:
+
+```mermaid
+flowchart TD
+  R["Reviewed run / finding"] --> S["Dubnium Supervisor"]
+  S --> L["Run Ledger · exact evidence"]
+  S --> M["Memory · history / discovery"]
+  S --> C["Candidate learning"]
+  C --> T["Tests · schemas · tools"]
+  C --> I["Invokrum candidate pack / lock"]
+  C --> P["Policy proposal"]
+  I --> E["Evaluation"]
+  T --> E
+  P --> E
+  E --> SC["Sandcastle / native validation"]
+  SC --> A["Anthesis or repository authority"]
+  A --> X["Exact promoted artifact"]
+  X --> F["Future run"]
+```
+
+The boundaries are intentional:
+
+| Component | Compound responsibility |
+| --- | --- |
+| **Dubnium Supervisor** | Identify and route non-authoritative candidate learnings after reviewed/terminal work |
+| **Run Ledger** | Preserve exact run, finding, candidate, validation, promotion, and later-consumption lineage |
+| **Memory** | Retrieve historical observations and artifact references; never establish promotion or current authority |
+| **Invokrum** | Deterministically compose and identify exact candidate/promoted prompt-context packs and locks |
+| **Sandcastle** | Freeze exact candidate/checkpoint state and support independent/adversarial evaluation |
+| **Anthesis** | Govern promotion when a candidate changes trusted persistent guidance, policy, or other governance-relevant control |
+| **Scheduler/workflows** | Decide when Compound work runs; never decide semantic validity or promotion |
+
+Two invariants matter throughout:
+
+```text
+observation / candidate learning != authority
+historical Memory reference != current trusted guidance
+```
+
+Memory may discover or cache a promoted artifact reference, but trusted consumption re-resolves the exact current/not-revoked/not-superseded revision from the owning authoritative source. Invokrum lock identity and Sandcastle checkpoint identity prove **what exact context/state was evaluated**, not whether it is semantically correct or authorized. Promoted guidance can influence reasoning only within capabilities independently admitted by runtime/governance policy.
+
+Shared references:
+
+* [Compound engineering](https://github.com/hackelia-micrantha/.github/blob/main/docs/engineering/compound-engineering.md)
+* [Compound artifact routing](https://github.com/hackelia-micrantha/.github/blob/main/docs/engineering/compound-artifact-routing.md)
+* [Governed learning promotion](https://github.com/hackelia-micrantha/.github/blob/main/docs/architecture/governed-learning-promotion.md)
+* [Compound learning runtime boundaries](https://github.com/hackelia-micrantha/.github/blob/main/docs/architecture/compound-learning-runtime.md)
 
 ### 2. Mobile and edge systems
 
@@ -280,6 +343,7 @@ Composting means retiring the active project while preserving useful patterns, l
 
 ## 🔭 Current engineering direction — August 2026
 
+* **Compound Engineering** is being integrated as the shared Plan → Work → Review → Compound → Repeat workflow, with candidate learnings kept non-authoritative and routed toward deterministic controls, exact Invokrum guidance revisions, Sandcastle evaluation where useful, and Anthesis-governed promotion where trust or policy changes.
 * **Dubnium** spans the agentic and infrastructure families: it is a rebuildable workstation/OS environment, private-network substrate, and local agentic control plane. The longer-term direction includes provisioned devices for trusted collaborators and future team members, without claiming current enterprise fleet-management maturity.
 * **Invokrum v0.1.0** establishes deterministic local composition, lockfile verification, provenance, and attestable effective context.
 * **Keylix** has an accepted v0.1 security design for OAuth DPoP and sender-constrained agent/MCP workloads; implementation remains pre-release.
@@ -290,7 +354,7 @@ Composting means retiring the active project while preserving useful patterns, l
 * **Digitalis** and **Envuscator** address different mobile-security phases: runtime/application trust versus build-time hardening.
 * **Fortunes** and **Veil** are stable, complete work with no planned feature trajectory and are future compost candidates.
 
-The recurring design principle is **separation of authority**: context composition, policy, execution, credentials, application trust, workstation trust, network trust, and service infrastructure should remain explicit boundaries rather than collapse into one platform.
+The recurring design principle is **separation of authority**: context composition, policy, execution, credentials, application trust, workstation trust, network trust, service infrastructure, and persistent engineering learning should remain explicit boundaries rather than collapse into one platform.
 
 ---
 
@@ -383,6 +447,8 @@ Common principles include:
 * fail-closed authorization and verification
 * sender-constrained credentials where replay resistance matters
 * deterministic and attestable agent context where instructions affect authority
+* candidate learning remains evidence until separately validated/promoted
+* trusted guidance currentness is re-resolved from its owning authority rather than inferred from memory retrieval
 * secure host and private-network defaults for managed workstations
 * secrets management and rotation
 * dependency and supply-chain hygiene
@@ -399,8 +465,11 @@ Micrantha engineering follows an evidence-backed methodology designed for system
 - [Governance model](https://github.com/hackelia-micrantha/.github/blob/main/GOVERNANCE.md) — decision authority, roles, AI-assisted work, and conflict resolution
 - [Contributing guidelines](https://github.com/hackelia-micrantha/.github/blob/main/CONTRIBUTING.md) — issue prioritization, execution order, and pull-request expectations
 - [Engineering standards](https://github.com/hackelia-micrantha/.github/blob/main/docs/standards/README.md) — testing, CI/CD, security, releases, documentation, and label taxonomy
-- [Engineering prompts](https://github.com/hackelia-micrantha/.github/blob/main/docs/prompts/README.md) — 22 reusable prompts for review, planning, decisions, delivery, security, and onboarding
+- [Engineering prompts](https://github.com/hackelia-micrantha/.github/blob/main/docs/prompts/README.md) — reusable prompts for review, planning, decisions, delivery, security, onboarding, and Compound review
 - [Decision-to-delivery guide](https://github.com/hackelia-micrantha/.github/blob/main/docs/engineering/work-items.md) — QART, RFC, ADR, epics, and bounded delivery slices
+- [Compound engineering](https://github.com/hackelia-micrantha/.github/blob/main/docs/engineering/compound-engineering.md) — explicit post-review learning and durable prevention
+- [Compound artifact routing](https://github.com/hackelia-micrantha/.github/blob/main/docs/engineering/compound-artifact-routing.md) — choose tests, docs, Invokrum guidance, tooling, policy, or deferred evidence
+- [Governed learning promotion](https://github.com/hackelia-micrantha/.github/blob/main/docs/architecture/governed-learning-promotion.md) — exact validation, promotion, freshness, supersession, and authority boundaries
 
 New contributors can start with the [contributor onboarding prompt](https://github.com/hackelia-micrantha/.github/blob/main/docs/prompts/onboarding/contributor-onboarding.md).
 
