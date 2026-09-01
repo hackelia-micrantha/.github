@@ -86,6 +86,14 @@ prompts:
     do_not_use_when: General project status or periodic check-ins (use project-review prompts).
     output: intended vs delivered outcome, completeness matrix, material findings, remaining work, tracking actions, final assessment
 
+  - id: compound-review
+    name: Compound Review
+    file: reviews/compound-review.md
+    category: reviews
+    use_when: Meaningful implementation, review, merge, incident, or repeated finding may contain reusable lessons that should become durable controls.
+    do_not_use_when: The current outcome has not yet been reviewed or the task is trivial with no plausible reusable learning.
+    output: compound summary, candidate-learning dispositions, automatic-prevention opportunities, security/authority checks, tracking, effectiveness measures
+
   - id: comprehensive-status-review
     name: Comprehensive Project Status Review
     file: project-review/comprehensive-status-review.md
