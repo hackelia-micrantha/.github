@@ -4,11 +4,13 @@ Use this prompt for requests such as **"review," "review to fix or merge,"** or 
 
 Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when reviewing executable software, build logic, configuration, or delivery behavior.
 
+Every code review must **freshly re-read all related issue(s)** before assessing scope, correctness, completeness, or merge readiness. Re-check the current issue body, acceptance criteria, and material discussion or updates; do not rely on a previous review, the pull-request summary, or remembered issue state.
+
 Do **not** use this prompt to investigate CI failures — use [CI failure triage](ci/ci-failure-triage.md). Do **not** use it for general project status or backlog triage — use the [project reviews](project-review/README.md).
 
 Compact invocation:
 
-> Review **[REPOSITORY] PR [#NUMBER]** for merge: verify the stated outcome against the diff, surrounding code, and validation evidence; classify findings as blocker, material follow-up, suggestion, or question; check applicable test-pyramid layers and CI gates; and choose exactly one decision (merge, fix before merge, blocked, supersede, or deeper review).
+> Review **[REPOSITORY] PR [#NUMBER]** for merge: freshly re-read all related issue(s), current acceptance criteria, and material issue discussion; verify the stated outcome against the diff, surrounding code, and validation evidence; classify findings as blocker, material follow-up, suggestion, or question; check applicable test-pyramid layers and CI gates; and choose exactly one decision (merge, fix before merge, blocked, supersede, or deeper review).
 
 ```markdown
 # Pull-Request Merge-Gate Review
@@ -32,7 +34,9 @@ Do not modify or merge the pull request unless the invocation explicitly authori
 
 Inspect:
 
-- pull-request title, description, linked issue, labels, milestone, base, and head;
+- pull-request title, description, labels, milestone, base, and head;
+- **all related issues** identified by explicit links, closing references, pull-request or commit references, or other repository evidence that defines the requested outcome;
+- the current body, acceptance criteria, and material comments or updates for each related issue, freshly re-read for this review rather than inherited from an earlier review or summary;
 - the complete diff and changed-file list;
 - relevant surrounding implementation, not only changed lines;
 - review submissions, inline threads, and unresolved comments;
@@ -42,7 +46,7 @@ Inspect:
 - documentation, schemas, migrations, generated artifacts, release notes, and public interfaces;
 - recent related commits or pull requests when needed to understand intent or regression risk.
 
-Do not accept the pull-request description as proof. Verify claims against code and validation evidence.
+Do not accept the pull-request description as proof. Verify claims against the current related issue(s), code, and validation evidence.
 
 ## Review sequence
 
@@ -51,8 +55,9 @@ Do not accept the pull-request description as proof. Verify claims against code 
 Determine:
 
 - the observable outcome the pull request is intended to deliver;
-- whether the linked issue and acceptance criteria are still authoritative;
-- whether the diff fully delivers that outcome;
+- which related issue(s), acceptance criteria, and material issue updates currently define that outcome;
+- whether those issue requirements are still authoritative;
+- whether the diff fully delivers that outcome and satisfies every applicable acceptance criterion;
 - whether unrelated changes, speculative abstractions, generated noise, or hidden follow-up have entered scope;
 - whether the change belongs in this repository and pull request.
 
@@ -165,7 +170,7 @@ Summarize the applicable test-pyramid layers, static-analysis/build or CI gates,
 
 ### D. Remaining work
 
-Separate merge-blocking work from bounded follow-up. State whether linked issue acceptance criteria are fully satisfied.
+Separate merge-blocking work from bounded follow-up. State whether all related issue acceptance criteria are fully satisfied and identify any issue requirement intentionally deferred.
 
 ### E. Decision
 
@@ -185,10 +190,10 @@ When fixes and merge are explicitly authorized:
 
 1. Apply only blocker fixes and directly required validation or documentation.
 2. Re-run applicable test-pyramid layers, static analysis, and other relevant canonical checks.
-3. Re-read the final diff and unresolved review threads.
-4. Confirm the head commit has not changed unexpectedly.
+3. Freshly re-read the related issue(s), including current acceptance criteria and material discussion, then re-read the final diff and unresolved review threads.
+4. Confirm the final diff still satisfies every applicable issue requirement and that the head commit has not changed unexpectedly.
 5. Merge only if the final decision is **Merge**.
-6. Report the fixes, validation, merge method, and resulting commit.
+6. Report the fixes, validation, issue-criteria reconciliation, merge method, and resulting commit.
 
 Never weaken a meaningful check, delete a failing test, hide an error, or broaden permissions merely to obtain a green result.
 ```
