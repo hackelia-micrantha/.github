@@ -5,6 +5,7 @@ on:
     paths:
       - .github/workflows/**
       - docs/automation/**
+      - docs/prompts/**
       - metadata/**
       - tests/**
       - tools/repository_health.py
@@ -16,6 +17,7 @@ on:
     paths:
       - .github/workflows/**
       - docs/automation/**
+      - docs/prompts/**
       - metadata/**
       - tests/**
       - tools/repository_health.py
@@ -31,7 +33,7 @@ concurrency:
 
 jobs:
   validate:
-    name: registry, templates, and tests
+    name: registry, prompts, templates, and tests
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
