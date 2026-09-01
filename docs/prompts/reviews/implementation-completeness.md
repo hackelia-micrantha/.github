@@ -4,11 +4,11 @@ Use this prompt after multiple pull requests, before closing an epic, or wheneve
 
 Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when assessing executable software, build logic, configuration, or delivery behavior.
 
-Do **not** use this prompt for general project status or periodic check-ins — use [project status refresh](project-review/status-refresh.md) or the [comprehensive project status review](project-review/comprehensive-status-review.md).
+Do **not** use this prompt for general project status or periodic check-ins — use [project status refresh](../project-review/status-refresh.md) or the [comprehensive project status review](../project-review/comprehensive-status-review.md).
 
 Compact invocation:
 
-> Verify whether **[CAPABILITY / EPIC]** is substantively complete for its stated maturity: reconcile the claimed outcome against implementation, integration, layered validation, static analysis, documentation, packaging, and user access; classify as complete, partial, blocked, or misrepresented; and return bounded follow-up or closure actions.
+> Verify whether **[CAPABILITY / EPIC]** is substantively complete for its stated maturity: reconcile the claimed outcome against implementation, integration, layered validation, static analysis, documentation, packaging, and user access; classify as complete, partial, blocked, or misrepresented; return bounded closure/follow-up actions; then identify only material reusable lessons that should become durable controls.
 
 ```markdown
 # Implementation Completeness Review
@@ -25,7 +25,7 @@ Determine whether **[CAPABILITY / EPIC / MILESTONE / ISSUE SET]** is substantive
 
 ## Execution boundary
 
-Begin read-only. Treat issue status, pull-request descriptions, release notes, documentation, and demos as claims requiring verification. Do not close issues, change maturity labels, or update public claims unless explicitly authorized.
+Begin read-only. Treat issue status, pull-request descriptions, release notes, documentation, demos, model/tool output, and retrieved memory as claims/evidence requiring verification. Do not close issues, change maturity labels, update public claims, create follow-up work, or promote persistent guidance unless explicitly authorized.
 
 ## Completion principle
 
@@ -121,6 +121,25 @@ Reconcile:
 - missing bounded issues for material remaining work;
 - maturity labels and milestone status.
 
+### 9. Compound assessment
+
+After the completion classification is established, ask for material failures, repeated review findings, workarounds, manual interventions, or successful patterns:
+
+> Would the system catch or prevent this automatically next time?
+
+A valid result is **No reusable learning**. Do not manufacture work to populate this section.
+
+Prefer the weakest durable mechanism that reliably improves future behavior:
+
+- deterministic defect -> test/schema/invariant/static check/CI;
+- operator ambiguity -> docs/runbook/semantic help;
+- reusable reasoning guidance -> candidate prompt/context guidance;
+- bad runtime default -> owning tool/runtime change;
+- governance gap -> policy proposal;
+- uncertain pattern -> defer for evidence.
+
+Candidate learning is non-authoritative. For persistent prompt/context guidance, historical Memory/context is not promoted guidance; use exact candidate composition/lock + separate validation/promotion where Invokrum applies. Cached/indexed currentness is advisory and must be re-resolved from the owning authority before trusted consumption.
+
 ## Completion classification
 
 Classify the capability as:
@@ -189,6 +208,17 @@ Choose exactly one:
 
 Support the conclusion with verified evidence, including the applicable test-pyramid and static-analysis status for executable capabilities.
 
+### G. Compound assessment
+
+Report either **No reusable learning** or a compact table:
+
+| Candidate | Durable target | Evidence | Disposition |
+| --- | --- | --- | --- |
+
+Use only: `track`, `apply under current authorization`, `already covered`, `defer for evidence`, or `reject`.
+
+A Compound candidate is not automatically a reason to keep an otherwise complete capability open. It affects completion only when it identifies a real unmet requirement, safety defect, validation gap, or misleading claim in the current outcome.
+
 ## Authorized reconciliation mode
 
 When tracking or documentation mutations are authorized:
@@ -197,5 +227,6 @@ When tracking or documentation mutations are authorized:
 2. Preserve unique requirements before closing duplicates or superseded work.
 3. Update maturity and public claims conservatively.
 4. Create only coherent material follow-up issues.
-5. Report the resulting issue, milestone, documentation, validation, and static-analysis state.
+5. Do not auto-promote trusted prompt/policy changes; use the owning validation/authority path.
+6. Report the resulting issue, milestone, documentation, validation, static-analysis, and Compound disposition state.
 ```
