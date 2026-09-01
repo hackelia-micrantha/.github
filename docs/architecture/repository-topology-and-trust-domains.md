@@ -47,11 +47,13 @@ A descriptive boundary relevant to policy and disclosure, for example:
 - `public`
 - `recovery`
 
-Trust-domain labels do not grant authority. They describe topology/policy context.
+Trust-domain labels do not grant authority. They describe topology/policy context only.
+
+A label such as `trusted`, `canonical`, `internal`, `private`, or `agent` must never be interpreted as sufficient permission to read, write, project, promote, merge, publish, or otherwise mutate repository state. Classification may constrain policy; it cannot mint authority.
 
 ### Canonical
 
-The endpoint currently authoritative for a defined repository state. Canonical is a role, not a provider.
+The endpoint currently authoritative for a defined repository state. Canonical is a role, not a provider, and the role does not itself grant write authority.
 
 ### Mirror
 
@@ -69,6 +71,8 @@ private canonical -> clean public/community repository
 
 Projection is not history mirroring. Private source history, remotes, credentials, paths, or metadata do not cross the boundary unless explicitly included by a safe contract.
 
+Projection should bind both the exact source tree and the exact materialized target tree. A reviewed source revision alone is not sufficient to claim that the intended public representation was produced.
+
 ### Promotion
 
 A directed relationship that moves one exact candidate from a less-authoritative endpoint into a more-authoritative endpoint after review and any required governance.
@@ -79,15 +83,21 @@ Typical use:
 agent staging -> private canonical
 ```
 
-Promotion binds exact candidate/base/target state and is stale-safe. It is not implicit pulling or merging.
+Promotion binds exact candidate/base/target state and is stale-safe. It is not implicit pulling or merging, and endpoint role/trust-domain labels do not authorize it.
 
 ### Public contribution import
 
 A public contribution is imported as an exact candidate/proposal into the private development flow. It never gains reverse-sync authority over private canonical state.
 
+Where the public repository is a projection, a forward path/transform does not imply an inverse transform. Automatic import is permitted only for explicitly defined deterministic reverse mappings. Generated, many-to-one, one-to-many, lossy, transformed, unknown, or ambiguous mappings are non-importable by default.
+
+A non-importable public contribution may still be retained as a review proposal; it must not mutate private source state by guessing an inverse mapping.
+
 ### Archive
 
 A recovery representation such as a Git bundle plus manifest/digest. Archive is not a writable mirror and must not be confused with same-host redundancy.
+
+Archive claims must state their coverage. Git objects/refs may be recoverable while issues, pull requests, packages, actions, users, LFS content, or the forge database remain unsupported, partial, or indeterminate. `repository recoverable` must not be conflated with `forge recoverable`.
 
 ### Workspace
 
@@ -119,6 +129,8 @@ public/community
 
 Use when only an allowlisted deterministic subset or derived representation may be public.
 
+The projection should bind exact source, profile, materialized target tree, target/base state, and plan identity.
+
 ### Pattern C — agent staging
 
 ```text
@@ -148,7 +160,7 @@ private review/workspace
 private canonical
 ```
 
-Never implement this as automatic reverse mirroring.
+Never implement this as automatic reverse mirroring. If a public path came from a non-invertible projection, treat its change as review-only unless an explicit deterministic import mapping exists.
 
 ### Pattern E — sovereign resilience
 
@@ -158,7 +170,7 @@ canonical -> mirror
      +-> archive -> independent encrypted backup
 ```
 
-A same-host mirror improves availability but is not independently sufficient disaster recovery.
+A same-host mirror improves availability but is not independently sufficient disaster recovery. Archive manifests should identify exactly which Git and forge/application state classes are covered.
 
 ### Pattern F — public core / private overlay
 
@@ -183,12 +195,14 @@ Deferred as a standard executable pattern until a concrete project needs it.
 
 1. **No relationship implies its inverse.** A projection from private to public does not authorize public-to-private mutation.
 2. **Provider is not authority.** Hosting on Forgejo/GitHub/etc. does not establish trust level.
-3. **Observation is not authority.** A checkpoint, mirror status, public PR, or successful validation may be evidence but cannot independently authorize a consequential repository effect.
-4. **Exact state binding.** Promotion/projection decisions bind policy-relevant candidate, source, target, profile, and plan state.
-5. **Stale authority fails closed.** Changed candidate/base/target/policy-relevant state requires fresh planning/re-evaluation.
-6. **No ambient canonical credentials for agents where avoidable.** Prefer staging credentials plus a bounded effector.
-7. **Clean public materialization.** Private history and metadata do not cross disclosure boundaries by default.
-8. **Recovery is independently verified.** A copy on the same machine is not sufficient proof of recoverability.
+3. **Trust-domain/role is not authority.** Labels classify topology/policy context; they do not grant repository capabilities.
+4. **Observation is not authority.** A checkpoint, mirror status, public PR, or successful validation may be evidence but cannot independently authorize a consequential repository effect.
+5. **Exact state binding.** Promotion/projection decisions bind policy-relevant candidate, source, target, profile, plan state, and where applicable materialized target-tree identity.
+6. **Stale authority fails closed.** Changed candidate/base/target/materialization/policy-relevant state requires fresh planning/re-evaluation.
+7. **No ambient canonical credentials for agents where avoidable.** Prefer staging credentials plus a bounded effector.
+8. **Clean public materialization.** Private history and metadata do not cross disclosure boundaries by default.
+9. **Forward projection does not imply inverse import.** Ambiguous or generated transforms are non-importable unless an explicit deterministic reverse mapping exists.
+10. **Recovery is explicitly scoped and independently verified.** A copy on the same machine is not sufficient proof of recoverability, and Git recovery does not imply forge/application recovery.
 
 ## Initial Micrantha reference topology
 
@@ -208,7 +222,22 @@ private canonical
   -> independent backup
 ```
 
-CanForge should be modeled as a Forgejo installation/endpoint, not as a bespoke Repora provider type.
+CanForge should be modeled as a Forgejo installation/endpoint, not as a bespoke Repora provider type. Vanilla Forgejo remains the architectural compatibility target so CanForge is an integration target rather than a dependency.
+
+## Recommended adoption sequence
+
+For the initial Repora workstream:
+
+1. define repository/endpoint/trust-domain semantics and keep classification separate from authority;
+2. generalize canonical role semantics;
+3. support generic Forgejo installations without making any particular installation required;
+4. prove deterministic private-to-public projection first;
+5. add staging-to-canonical promotion after the lower-risk projection mechanics are understood;
+6. add public contribution import only after projection mappings can explicitly describe invertibility;
+7. add archive coverage independently;
+8. defer overlays until a concrete consumer exists.
+
+This is implementation guidance, not semantic coupling between the relationship types.
 
 ## Related work
 
@@ -217,6 +246,7 @@ CanForge should be modeled as a Forgejo installation/endpoint, not as a bespoke 
 - `hackelia-micrantha/repora#30` — optional Anthesis pre-apply integration.
 - `ryjen/dubnium#248` — sovereign Git hosting.
 - `ryjen/dubnium#528` / `#536` — private/public product boundary and publication gate.
+- `ryjen/dubnium#922` — constrained Forgejo staging endpoint.
 - `hackelia-micrantha/anthesis#203` — effect-time authority freshness/state dependencies.
 - `hackelia-micrantha/sandcastle#19` — checkpoint state identity for stale-state/TOCTOU detection.
 
