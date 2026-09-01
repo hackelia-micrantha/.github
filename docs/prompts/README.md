@@ -19,6 +19,7 @@ This directory contains reusable prompts for evidence-backed engineering review,
 | `convert this to an ADR` | [QART-to-ADR conversion](decisions/qart-to-adr.md) | A decision is sufficiently understood to become authoritative |
 | `review this artifact` | [Engineering artifact review](reviews/engineering-artifact-review.md) | A QART, RFC, ADR, specification, design, plan, epic, or issue needs critical review |
 | `is this capability actually complete?` | [Implementation completeness review](reviews/implementation-completeness.md) | Merged slices must be reconciled into a delivered capability or closed epic |
+| `compound this` | [Compound review](reviews/compound-review.md) | Meaningful reviewed work, an incident, or repeated finding may contain reusable lessons that should become durable controls |
 | `review repository boundaries` | [Cross-repository boundary review](architecture/cross-repository-boundaries.md) | Ownership, contracts, editions, adapters, labs, or migrations overlap across repositories |
 | `ready to release?` | [Release readiness review](releases/release-readiness.md) | A version, artifact, site, package, or public capability is approaching release |
 | `review docs/site claims` | [Public consistency review](documentation/public-consistency-review.md) | READMEs, websites, books, one-pagers, or demos must match implementation and maturity |
@@ -122,5 +123,20 @@ Repositories that do not define local issue templates inherit the organization b
 3. Obtain or rely on explicit authorization for mutations.
 4. Apply bounded changes.
 5. Re-run relevant validation, including applicable test-pyramid layers and static analysis.
-6. Re-review the resulting diff, checks, and unresolved threads.
-7. Merge, release, or close only when the stated outcome is verified.
+6. Re-review the resulting diff, checks, unresolved threads, and current authoritative work item.
+7. Decide merge, release, closure, fix, or block from the reviewed outcome.
+8. When meaningful reusable lessons exist, run a bounded [Compound review](reviews/compound-review.md) **after** the delivery decision; `No reusable learning` is valid.
+9. Route candidates to the weakest durable mechanism that reliably prevents recurrence and keep them non-authoritative until separately implemented/validated/promoted.
+
+The Compound pass must not retroactively turn an optional future improvement into a blocker unless it exposes a real correctness, security, or completeness defect in the current outcome. Prefer tests, schemas, invariants, CI checks, and safer tool behavior over prompt reminders when behavior is mechanically decidable.
+
+For reusable prompt/context guidance, preserve:
+
+```text
+historical Memory/context
+!= candidate guidance
+!= exact promoted guidance
+!= effect authority
+```
+
+Use an exact candidate Invokrum pack/overlay + lock, representative/adversarial evaluation, and separately authorized promotion rather than direct trusted-prompt mutation. Memory/index currentness is advisory; trusted consumption re-resolves current/not-revoked/not-superseded state from the owning authority.
