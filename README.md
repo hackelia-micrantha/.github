@@ -51,6 +51,10 @@ The repository registry is an advisory machine-readable projection of the canoni
   - [QART template](docs/engineering/templates/qart.md)
   - [RFC template](docs/engineering/templates/rfc.md)
   - [ADR template](docs/engineering/templates/adr.md)
+- [Compound engineering](docs/engineering/compound-engineering.md) — Plan → Work → Review → Compound → Repeat
+- [Compound artifact routing](docs/engineering/compound-artifact-routing.md) — route reusable lessons to the weakest durable control that reliably prevents recurrence
+- [Governed learning promotion](docs/architecture/governed-learning-promotion.md) — candidate learning, validation, exact promotion, supersession, and authority boundaries
+- [Compound learning runtime boundaries](docs/architecture/compound-learning-runtime.md) — Supervisor, Run Ledger, Memory, Invokrum, Sandcastle, Anthesis, and scheduler ownership
 - [Engineering prompt library](docs/prompts/README.md)
   - [Project review prompts](docs/prompts/project-review/README.md)
   - [Pull-request merge-gate review](docs/prompts/pull-requests/merge-gate-review.md)
@@ -63,6 +67,7 @@ The repository registry is an advisory machine-readable projection of the canoni
   - [QART-to-ADR conversion](docs/prompts/decisions/qart-to-adr.md)
   - [Engineering artifact review](docs/prompts/reviews/engineering-artifact-review.md)
   - [Implementation completeness review](docs/prompts/reviews/implementation-completeness.md)
+  - [Compound review](docs/prompts/reviews/compound-review.md)
   - [Cross-repository boundary review](docs/prompts/architecture/cross-repository-boundaries.md)
   - [Release readiness review](docs/prompts/releases/release-readiness.md)
   - [Public documentation consistency review](docs/prompts/documentation/public-consistency-review.md)
@@ -100,8 +105,22 @@ classify the material
   -> record accepted durable decisions in ADRs
   -> coordinate larger outcomes through epics or plans
   -> deliver bounded implementation slices
+  -> review against the current authoritative work item
+  -> Compound reusable lessons when meaningful
   -> validate, release, operate, and update public evidence
 ```
+
+The Compound stage asks: **Would the system catch or prevent this automatically next time?** Prefer tests, schemas, invariants, CI checks, safer tools, or other deterministic controls when the behavior is mechanically decidable. `No reusable learning` is a valid result.
+
+Candidate learning remains non-authoritative. In particular:
+
+```text
+historical Memory/context
+!= exact promoted guidance
+!= effect authority
+```
+
+Reusable prompt/context guidance should be composed as an exact candidate Invokrum pack/overlay and lock, evaluated, and separately promoted through the owning authority. Memory may index historical or promoted references but cannot establish currentness; trusted consumption re-resolves current/not-revoked/not-superseded state from the owner. Sandcastle may provide exact checkpoint/verifier isolation, while Anthesis governs promotion where persistent trusted control or policy is affected. Scheduler timing never creates semantic or promotion authority.
 
 Prioritization for tracked engineering work follows [`CONTRIBUTING.md`](CONTRIBUTING.md):
 
