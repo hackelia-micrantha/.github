@@ -23,9 +23,26 @@
         "CONTRIBUTING.md",
         ".github/SECURITY.md",
         "docs/architecture/repository-catalogue.md",
+        "docs/architecture/repository-topology-and-trust-domains.md",
         "docs/governance/repository-lifecycle.md",
         "docs/standards/README.md"
       ]
+    },
+    {
+      "repository": "hackelia-micrantha/hackelia-micrantha",
+      "classification": "organization-meta",
+      "maturity": "active",
+      "visibility": "private",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": [
+        "ecosystem project registry",
+        "cross-project relationship and lifecycle projection",
+        "distribution and aggregate status coordination"
+      ],
+      "requiredFiles": ["README.md", "registry/projects.yaml", "registry/schema.json"],
+      "notes": "Coordinates ecosystem identity and relationships; does not own organization GitHub policy or project implementation."
     },
     {
       "repository": "hackelia-micrantha/web",
@@ -35,9 +52,7 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": [
-        "micrantha.com implementation and deployment"
-      ],
+      "authority": ["micrantha.com implementation and deployment"],
       "requiredFiles": ["README.md"],
       "notes": "Public claims must remain projections of authoritative project evidence."
     },
@@ -64,9 +79,7 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": [
-        "public Anthesis documentation and community distribution"
-      ],
+      "authority": ["public Anthesis documentation and community distribution"],
       "requiredFiles": ["README.md"],
       "notes": "Does not redefine private-source contracts or release evidence."
     },
@@ -74,7 +87,7 @@
       "repository": "hackelia-micrantha/invokrum",
       "classification": "library-sdk",
       "maturity": "incubating",
-      "visibility": "public",
+      "visibility": "private",
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
@@ -87,10 +100,22 @@
       "notes": "Mechanism, not policy; does not own workflow state, authorization, execution, or task completion."
     },
     {
+      "repository": "hackelia-micrantha/invokrum-community",
+      "classification": "community-surface",
+      "maturity": "incubating",
+      "visibility": "public",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": ["public Invokrum documentation, examples, and community distribution"],
+      "requiredFiles": ["README.md"],
+      "notes": "Public surface does not independently redefine private implementation authority."
+    },
+    {
       "repository": "hackelia-micrantha/keylix",
       "classification": "library-sdk",
-      "maturity": "experimental",
-      "visibility": "public",
+      "maturity": "incubating",
+      "visibility": "private",
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
@@ -103,29 +128,47 @@
       "notes": "Proof of possession and sender binding do not establish application authorization, policy, or task correctness."
     },
     {
-      "repository": "hackelia-micrantha/hyperion",
-      "classification": "infrastructure",
-      "maturity": "incubating",
-      "visibility": "private",
-      "defaultBranch": "main",
-      "archived": false,
-      "monitor": true,
-      "authority": [
-        "reproducible infrastructure and GitOps implementation"
-      ],
-      "requiredFiles": ["README.md"]
-    },
-    {
-      "repository": "hackelia-micrantha/dubnium-community",
+      "repository": "hackelia-micrantha/keylix-community",
       "classification": "community-surface",
       "maturity": "incubating",
       "visibility": "public",
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": [
-        "public Dubnium documentation and community distribution"
-      ],
+      "authority": ["public Keylix documentation, examples, and community distribution"],
+      "requiredFiles": ["README.md"]
+    },
+    {
+      "repository": "hackelia-micrantha/hyperion",
+      "classification": "infrastructure",
+      "maturity": "active",
+      "visibility": "private",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": ["reproducible infrastructure and GitOps implementation"],
+      "requiredFiles": ["README.md"]
+    },
+    {
+      "repository": "hackelia-micrantha/hyperion-community",
+      "classification": "community-surface",
+      "maturity": "active",
+      "visibility": "public",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": ["public Hyperion documentation and community distribution"],
+      "requiredFiles": ["README.md"]
+    },
+    {
+      "repository": "hackelia-micrantha/dubnium-community",
+      "classification": "community-surface",
+      "maturity": "active",
+      "visibility": "public",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": ["public Dubnium documentation and community distribution"],
       "requiredFiles": ["README.md"],
       "notes": "Distribution composition does not transfer authority over Anthesis or component contracts."
     },
@@ -137,9 +180,7 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": [
-        "Envuscator engine and build-time obfuscation implementation"
-      ],
+      "authority": ["Envuscator engine and build-time obfuscation implementation"],
       "requiredFiles": ["README.md"]
     },
     {
@@ -150,62 +191,74 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": [
-        "public Envuscator documentation and community distribution"
-      ],
+      "authority": ["public Envuscator documentation and community distribution"],
       "requiredFiles": ["README.md"],
       "notes": "Licensed provider adapters and private engine behavior remain authoritative in their owning repositories."
     },
     {
-      "repository": "hackelia-micrantha/bluebell",
-      "classification": "library-sdk",
-      "maturity": "stable",
+      "repository": "hackelia-micrantha/achillea",
+      "classification": "laboratory",
+      "maturity": "incubating",
+      "visibility": "private",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": ["Achillea platform and SDK implementation for guided outdoor experiences"],
+      "requiredFiles": ["README.md"]
+    },
+    {
+      "repository": "hackelia-micrantha/achillea-community",
+      "classification": "community-surface",
+      "maturity": "incubating",
       "visibility": "public",
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": [
-        "public Kotlin Multiplatform SDK template"
-      ],
+      "authority": ["public Achillea documentation and community distribution"],
+      "requiredFiles": ["README.md"]
+    },
+    {
+      "repository": "hackelia-micrantha/bluebell",
+      "classification": "library-sdk",
+      "maturity": "incubating",
+      "visibility": "public",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": ["public Kotlin Multiplatform SDK and application foundation"],
       "requiredFiles": ["README.md"]
     },
     {
       "repository": "hackelia-micrantha/amaryllis",
       "classification": "library-sdk",
-      "maturity": "experimental",
+      "maturity": "active",
       "visibility": "public",
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": [
-        "mobile inference SDK experiments"
-      ],
+      "authority": ["React Native on-device multimodal inference and governed UI foundation"],
       "requiredFiles": ["README.md"]
     },
     {
       "repository": "hackelia-micrantha/digitalis",
       "classification": "laboratory",
-      "maturity": "experimental",
+      "maturity": "incubating",
       "visibility": "private",
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": [
-        "attestation and secure configuration implementation experiments"
-      ],
+      "authority": ["attestation and secure configuration implementation experiments"],
       "requiredFiles": ["README.md"]
     },
     {
       "repository": "hackelia-micrantha/digitalis-community",
       "classification": "community-surface",
-      "maturity": "experimental",
+      "maturity": "incubating",
       "visibility": "public",
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": [
-        "public Digitalis documentation and demonstrations"
-      ],
+      "authority": ["public Digitalis documentation and demonstrations"],
       "requiredFiles": ["README.md"]
     },
     {
@@ -216,9 +269,7 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": [
-        "MCP and LLM tool-registry implementation experiments"
-      ],
+      "authority": ["governed field-operated AI protocol and SDK experiments"],
       "requiredFiles": ["README.md"]
     },
     {
@@ -229,9 +280,18 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": [
-        "public Myosotis documentation and demonstrations"
-      ],
+      "authority": ["public Myosotis documentation and demonstrations"],
+      "requiredFiles": ["README.md"]
+    },
+    {
+      "repository": "hackelia-micrantha/morifolium",
+      "classification": "laboratory",
+      "maturity": "incubating",
+      "visibility": "public",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": ["mobile platform engineering golden path and reference distribution"],
       "requiredFiles": ["README.md"]
     },
     {
@@ -243,9 +303,102 @@
       "archived": false,
       "monitor": true,
       "authority": [
-        "repository topology and reconciliation tooling"
+        "repository topology and reconciliation tooling",
+        "managed repository artifacts and posture evidence"
       ],
       "requiredFiles": ["README.md"]
+    },
+    {
+      "repository": "hackelia-micrantha/calathea-community",
+      "classification": "library-sdk",
+      "maturity": "incubating",
+      "visibility": "public",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": ["canonical reusable Calathea core, product contracts, architecture, and executable"],
+      "requiredFiles": ["README.md"],
+      "notes": "This public repository is intentionally authoritative for reusable Calathea semantics."
+    },
+    {
+      "repository": "hackelia-micrantha/calathea",
+      "classification": "laboratory",
+      "maturity": "incubating",
+      "visibility": "private",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": ["private Calathea composition, portfolio data, dogfood operations, and non-public extensions"],
+      "requiredFiles": ["README.md", "public-core.lock.toml"],
+      "notes": "Must not fork the reusable semantics owned by calathea-community."
+    },
+    {
+      "repository": "hackelia-micrantha/modolia",
+      "classification": "library-sdk",
+      "maturity": "incubating",
+      "visibility": "private",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": ["deterministic model-surface registry, constraint evaluation, ranking, and route decisions"],
+      "requiredFiles": ["README.md"],
+      "notes": "Does not proxy model requests or own runtime provider execution."
+    },
+    {
+      "repository": "hackelia-micrantha/modolia-community",
+      "classification": "community-surface",
+      "maturity": "incubating",
+      "visibility": "public",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": ["public Modolia documentation and community distribution"],
+      "requiredFiles": ["README.md"]
+    },
+    {
+      "repository": "hackelia-micrantha/testule",
+      "classification": "library-sdk",
+      "maturity": "incubating",
+      "visibility": "public",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": ["portable testability contracts, native-tool adapters, gap analysis, and normalized test evidence"],
+      "requiredFiles": ["README.md"]
+    },
+    {
+      "repository": "hackelia-micrantha/sandcastle",
+      "classification": "infrastructure",
+      "maturity": "experimental",
+      "visibility": "private",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": ["persistent mutable-workspace checkpoint identity, lineage, save, restore, fork, inspect, and diff semantics"],
+      "requiredFiles": ["README.md"]
+    },
+    {
+      "repository": "hackelia-micrantha/sandcastle-community",
+      "classification": "community-surface",
+      "maturity": "experimental",
+      "visibility": "public",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": ["public Sandcastle documentation, schemas, examples, and interoperability guidance"],
+      "requiredFiles": ["README.md"]
+    },
+    {
+      "repository": "hackelia-micrantha/phyllotaxis",
+      "classification": "library-sdk",
+      "maturity": "experimental",
+      "visibility": "private",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": ["shared themeable Micrantha design-system and UI substrate contracts"],
+      "requiredFiles": ["docs/architecture/venation-layout-contract.md"],
+      "notes": "Current implementation work is contract-first; Venation layout/primitives are the first stabilized layer."
     },
     {
       "repository": "hackelia-micrantha/fortunes",
@@ -255,9 +408,7 @@
       "defaultBranch": "devel",
       "archived": false,
       "monitor": true,
-      "authority": [
-        "Fortunes application composition"
-      ],
+      "authority": ["Fortunes application composition"],
       "requiredFiles": ["README.md"],
       "notes": "The non-main default branch is recorded explicitly and should be treated as a migration candidate, not silently corrected by automation."
     },
@@ -269,9 +420,7 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": [
-        "image obfuscation and privacy service experiments"
-      ],
+      "authority": ["image obfuscation and privacy service experiments"],
       "requiredFiles": ["README.md"]
     }
   ]
