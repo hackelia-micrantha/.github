@@ -2,486 +2,149 @@
 
 **Engineering resilient software systems.**
 
-Micrantha is an engineering studio and open-source ecosystem focused on secure, observable platforms and disciplined AI-assisted development systems. The work explores how modern software can remain **understandable, operable, and secure** as systems evolve over time.
+Micrantha is an engineering studio and software ecosystem focused on secure, observable platforms and disciplined AI-assisted development. The work explores how software can remain **understandable, operable, composable, and secure** as systems evolve over time.
 
-Core areas of focus include **platform engineering**, **mobile systems**, **infrastructure automation**, and **governed agentic development**.
+Core areas include **platform engineering**, **mobile systems**, **infrastructure automation**, **developer tooling**, and **governed agentic development**.
 
-🌐 [https://micrantha.com](https://micrantha.com)
+🌐 [micrantha.com](https://micrantha.com)
 
 ---
 
-## 🌱 Philosophy
+## Engineering philosophy
 
-Micrantha treats software as a **living ecosystem**—one that evolves through observation, iteration, and refinement rather than a one-time construction effort.
+Micrantha treats software as a living ecosystem: systems evolve through design, implementation, observation, review, and refinement rather than a one-time construction effort.
 
 ```mermaid
 flowchart LR
-  D[Design] --> I[Implementation]
-  I --> O[Observation]
-  O --> R[Refinement]
-  R --> D
+  P[Plan] --> W[Work]
+  W --> R[Review]
+  R --> C[Compound]
+  C --> P
 ```
 
-| Garden element | Engineering meaning |
-| --- | --- |
-| Soil | Infrastructure and architectural foundations |
-| Seed | Initial design and constraints |
-| Water | Iteration and engineering effort |
-| Sunlight | Observability and real-world feedback |
-| Flower | Delivered system |
-| Garden | Ecosystem of systems maintained over time |
-| Compost | Completed work whose useful ideas feed newer systems |
+A few principles recur across the projects:
 
-The objective is simple: build systems that **remain understandable and maintainable as they grow**.
+- **Composable by default.** Command-line tools should work cleanly through process boundaries, structured stdin/stdout, meaningful exit semantics, and documented man pages.
+- **Explicit authority.** Identity, policy, evidence, execution, provenance, and observation are different concepts; one must not silently mint another.
+- **Reproducible where practical.** Environments, inputs, plans, artifacts, and important decisions should be attributable and replayable.
+- **Local-first where practical.** Local execution and user-controlled infrastructure are preferred when they materially improve privacy, operability, or resilience.
+- **Evidence over assertion.** Logs, signatures, receipts, model output, test results, and observations are evidence inputs, not automatic authorization or product truth.
+- **Small durable controls.** Repeated findings should become the weakest reliable control that prevents recurrence: tests, schemas, invariants, safer defaults, CI, policy, or bounded guidance.
+- **Trust domains are explicit.** Public/private repositories, mirrors, agent workspaces, recovery stores, and canonical endpoints are modeled as deliberate topology rather than inferred from provider names.
 
----
-
-## ⚙️ Engineering focus
-
-### Platform engineering
-
-* Reproducible environments and opinionated distributions
-* Rebuildable workstation and operating-system configuration
-* Secure host and private-network connectivity
-* Safe delivery through GitOps and CI/CD
-* Secrets management and configuration hygiene
-* Observability-first operations
-* Explicit runtime, workload, and trust boundaries
-
-### Mobile systems
-
-* Android, iOS, React Native, and Kotlin Multiplatform
-* Mobile authentication flows and platform hardening
-* On-device inference and governed device capabilities
-* Application attestation and secure configuration
-* Build-time obfuscation and cryptographic agility
-
-### Agentic development
-
-* Local-first agentic systems and model routing
-* Deterministic prompt-overlay composition and attestation
-* Deterministic governance of proposed effects
-* Bounded, reviewable, and reversible automation
-* Traceability from design through execution and evidence
-* Context engineering, reusable skills, and governed memory
-* Compound engineering that turns repeated findings into durable controls without self-modifying authority
-
-### Security engineering
-
-* OAuth, PKCE, workload identity, sender constraints, and bounded token lifecycles
-* Proof-of-possession for OAuth, MCP, and agentic workloads
-* Threat modeling and secure SDLC practices
-* Secrets management and supply-chain security
-* Security treated as a **system property** rather than a feature
+Shared standards and architecture live in [`hackelia-micrantha/.github`](https://github.com/hackelia-micrantha/.github). The ecosystem/project registry lives in [`hackelia-micrantha/hackelia-micrantha`](https://github.com/hackelia-micrantha/hackelia-micrantha).
 
 ---
 
-## 🗺️ How the projects fit together
+## Project families
 
-Micrantha is easier to understand as several **project families** rather than one dependency graph. Some projects deliberately cross family boundaries.
+Micrantha is easier to understand as overlapping project families than as one dependency graph. Most projects remain independently useful and retain their own implementation authority.
 
 ```mermaid
 flowchart TB
-  C["Agentic"]
-  D["Dubnium"]
-  I["Infrastructure"]
-  M["Mobile + edge"]
-  L["Labs + conformance"]
-  X["Stable / compost"]
+  A[Governed agentic systems]
+  T[Developer + repository tooling]
+  I[Infrastructure]
+  M[Mobile + edge]
+  S[Shared engineering substrate]
+  L[Labs + conformance]
 
-  C --- D
-  D --- I
-  I --> M
-  L -.-> C
-  C -.-> M
-
-  D -.- DN["OS · VPN · agents"]:::note
-  classDef note stroke-dasharray: 4 4;
+  A --- T
+  A --- I
+  T --- S
+  S --- M
+  L -. challenges .-> A
+  L -. challenges .-> M
 ```
 
-The boxes are **families, not layers that every system must traverse**:
+### Governed agentic systems
 
-* **Agentic:** Dubnium, Invokrum, Anthesis, and Keylix
-* **Mobile + edge:** Myosotis, Amaryllis, Digitalis, Envuscator, Bluebell, and Eyespie
-* **Infrastructure:** Dubnium for the workstation/OS and private-network substrate; Hyperion for provisioned cluster and GitOps infrastructure
-* **Labs + conformance:** Anthesis Governance Lab and governed-agent demos
-* **Stable / compost:** Fortunes and Veil
+- **Dubnium** — rebuildable workstation/runtime environment, local model execution, supervisor-specialist orchestration, memory, scheduling, and bounded automation.
+- **Anthesis** — policy, capability, approval, evidence, provenance, and trusted-state governance for consequential effects.
+- **Invokrum** — deterministic prompt/context composition, manifests, locks, and exact context identity.
+- **Modolia** — deterministic model-surface eligibility and routing decisions; runtime provider execution remains separate.
+- **Keylix** — sender-constrained OAuth/DPoP and proof-of-possession primitives.
+- **Sandcastle** — persistent checkpoint identity and mutable-workspace lineage for disposable execution environments.
+- **Testule** — portable testability contracts, native-tool adapters, verification requirements, and normalized testing evidence.
 
-Most projects intentionally solve one narrow problem and remain independently useful. **Dubnium is intentionally cross-cutting:** the agentic runtime is built into the same reproducible workstation and platform environment that hosts it.
-
-### 1. Governed agentic control plane
-
-The core agentic path has four distinct responsibilities:
-
-```mermaid
-flowchart LR
-  D["Dubnium"] -->|compose| I["Invokrum"]
-  I -->|context| R["Agent / model"]
-  R -->|effect| A["Anthesis"]
-  A -->|deny| N["No effect"]
-  A -->|allow| D
-  D -.->|PoP| K["Keylix"]
-  K --> S["External service"]
-
-  D -.- DN["runtime · routing"]:::note
-  I -.- IN["context · attest"]:::note
-  A -.- AN["policy · approval"]:::note
-  K -.- KN["DPoP · sender bind"]:::note
-  classDef note stroke-dasharray: 4 4;
-```
-
-Each project answers a different question:
-
-| Project | Responsibility |
-| --- | --- |
-| **Dubnium** | Where does the agent run, how is work routed, and how are allowed effects executed within bounded capabilities? |
-| **Invokrum** | What exact instruction/context set entered the invocation, and can it be reproduced and attested? |
-| **Anthesis** | Is a proposed effect permitted, does it require approval, and what evidence records the decision? |
-| **Keylix** | When credentials are used, can their use be cryptographically bound to the intended sender instead of remaining replayable bearer credentials? |
-
-**Keylix is conditional defense in depth**, not a mandatory hop for every agent action. It does not replace identity, OAuth token validation, scopes, TLS, or Anthesis policy.
-
-Model routing, specialist selection, memory, and scheduling remain Dubnium capabilities rather than additional peer layers in this diagram.
-
-### Compound engineering and governed learning
-
-Micrantha uses an explicit engineering feedback loop:
+The core boundary is deliberately non-collapsing:
 
 ```text
-Plan → Work → Review → Compound → Repeat
+context identity != execution authority
+sender proof      != application authorization
+verification      != promotion authority
+memory/history    != current trusted guidance
+evidence          != permission
 ```
 
-The Compound step asks a practical question after meaningful work:
+### Developer and repository tooling
 
-> **Would the system catch or prevent this automatically next time?**
+- **Repora / `repoctl`** — explicit repository topology, observation, exact plans, stale-safe reconciliation, managed artifacts, posture collection, and execution evidence.
+- **Calathea** — deterministic portfolio/workflow orientation and prioritization, with reusable public contracts separated from private portfolio data and dogfood composition.
 
-The preferred outcome is the smallest durable control that reliably prevents recurrence: a test, schema, invariant, CI rule, safer tool/default, documentation, bounded prompt/context guidance, or policy proposal. `No reusable learning` is also a valid result.
+Micrantha CLI tools follow the shared [CLI interoperability standard](https://github.com/hackelia-micrantha/.github/blob/main/docs/standards/cli-interoperability.md): machine-readable interfaces should remain usable through ordinary Unix composition as well as higher-level orchestration.
 
-Persistent learning is deliberately split across components rather than handled by a self-modifying agent:
+### Infrastructure
 
-```mermaid
-flowchart TD
-  R["Reviewed run / finding"] --> S["Dubnium Supervisor"]
-  S --> L["Run Ledger · exact evidence"]
-  S --> M["Memory · history / discovery"]
-  S --> C["Candidate learning"]
-  C --> T["Tests · schemas · tools"]
-  C --> I["Invokrum candidate pack / lock"]
-  C --> P["Policy proposal"]
-  I --> E["Evaluation"]
-  T --> E
-  P --> E
-  E --> SC["Sandcastle / native validation"]
-  SC --> A["Anthesis or repository authority"]
-  A --> X["Exact promoted artifact"]
-  X --> F["Future run"]
-```
+- **Dubnium** — trusted workstation/device environment, private-network substrate, development runtime, and local agentic control plane.
+- **Hyperion** — reproducible provisioned infrastructure, K3s, and GitOps workload convergence.
 
-The boundaries are intentional:
+These scopes complement each other: Dubnium owns the workstation/runtime environment; Hyperion owns provisioned service infrastructure.
 
-| Component | Compound responsibility |
-| --- | --- |
-| **Dubnium Supervisor** | Identify and route non-authoritative candidate learnings after reviewed/terminal work |
-| **Run Ledger** | Preserve exact run, finding, candidate, validation, promotion, and later-consumption lineage |
-| **Memory** | Retrieve historical observations and artifact references; never establish promotion or current authority |
-| **Invokrum** | Deterministically compose and identify exact candidate/promoted prompt-context packs and locks |
-| **Sandcastle** | Freeze exact candidate/checkpoint state and support independent/adversarial evaluation |
-| **Anthesis** | Govern promotion when a candidate changes trusted persistent guidance, policy, or other governance-relevant control |
-| **Scheduler/workflows** | Decide when Compound work runs; never decide semantic validity or promotion |
+### Mobile and edge
 
-Two invariants matter throughout:
+- **Amaryllis** — React Native foundation for on-device multimodal inference and governed AI-enabled UI.
+- **Achillea** — platform/SDK for guided outdoor experiences, with Asterwild as its first product consumer.
+- **Bluebell** — Kotlin Multiplatform SDK/application foundation.
+- **Digitalis** — mobile attestation and backend-authoritative secure-configuration experiments.
+- **Envuscator** — build-time mobile configuration obfuscation and delivery tooling.
+- **Myosotis** — governed field-operated AI tool protocols and SDK architecture.
+- **Morifolium** — versioned mobile platform-engineering golden path and reference distribution.
+
+These are parallel and composable capabilities rather than one mandatory mobile stack.
+
+### Shared engineering substrate
+
+- **Phyllotaxis** — shared, themeable design-system/UI substrate for Micrantha project sites. Current contract work starts with **Venation** layout/primitives; related concerns include **Chroma** themes/tokens, **Lamina** surfaces/cards, and **Cambium** migration/generation tooling.
+- **Organization standards and prompts** — shared engineering, security, testing, release, documentation, review, and Compound-engineering conventions in `.github`.
+
+A shared substrate defines reusable contracts; consuming projects retain their own content, product behavior, information architecture, deployment, and brand decisions.
+
+### Labs and conformance
+
+Laboratories exist to challenge product and architecture contracts rather than become hidden production dependencies. Governance labs, adversarial fixtures, and governed-agent reference integrations produce evidence that authoritative projects can accept, reject, or use to refine their own contracts.
+
+---
+
+## Repository topology and trust domains
+
+Provider and visibility are not authority models.
 
 ```text
-observation / candidate learning != authority
-historical Memory reference != current trusted guidance
+logical repository
+  -> endpoint(s)
+  -> explicit role / trust domain
+  -> directed mirror, projection, promotion, import, or archive relationship
 ```
 
-Memory may discover or cache a promoted artifact reference, but trusted consumption re-resolves the exact current/not-revoked/not-superseded revision from the owning authoritative source. Invokrum lock identity and Sandcastle checkpoint identity prove **what exact context/state was evaluated**, not whether it is semantically correct or authorized. Promoted guidance can influence reasoning only within capabilities independently admitted by runtime/governance policy.
-
-Shared references:
-
-* [Compound engineering](https://github.com/hackelia-micrantha/.github/blob/main/docs/engineering/compound-engineering.md)
-* [Compound artifact routing](https://github.com/hackelia-micrantha/.github/blob/main/docs/engineering/compound-artifact-routing.md)
-* [Governed learning promotion](https://github.com/hackelia-micrantha/.github/blob/main/docs/architecture/governed-learning-promotion.md)
-* [Compound learning runtime boundaries](https://github.com/hackelia-micrantha/.github/blob/main/docs/architecture/compound-learning-runtime.md)
-
-### 2. Mobile and edge systems
-
-The mobile family contains **parallel implementation streams**, not one shared cross-platform stack.
-
-#### Implementation streams
+A common private/public pattern is a **projection**, not informal bidirectional synchronization:
 
 ```mermaid
 flowchart LR
-  RN["React Native"] --> AM["Amaryllis"] --> LM["Local model"]
-  NA["Native SDK"] --> MY["Myosotis"] --> DEV["Device capability"]
-  KM["KMP"] --> BL["Bluebell"]
-
-  AM -.- AMN["RN · local AI"]:::note
-  MY -.- MYN["native · governed ops"]:::note
-  BL -.- BLN["KMP · shared SDK"]:::note
-  classDef note stroke-dasharray: 4 4;
+  P[Private canonical] -->|reviewed projection| C[Public/community]
+  P -->|build + attest| R[Release artifact]
+  C -. docs / examples .-> R
 ```
 
-* **React Native / local AI:** Amaryllis is the concrete Micrantha runtime for on-device multimodal inference and governed AI-enabled UI.
-* **Native SDK / governed capabilities:** Myosotis is protocol-neutral but currently proves its first reference runtime with native Kotlin on Android. Swift interoperability is the next platform checkpoint; a shared KMP core is deliberately deferred until the protocol boundary is better proven.
-* **Kotlin Multiplatform:** Bluebell is the reusable KMP architecture and SDK foundation across Android, iOS, JVM, and Linux. It is model-ready, but it is not an AI inference engine equivalent to Amaryllis.
+`canonical`, `private`, `public`, `agent`, `mirror`, and `recovery` describe topology or policy context. None grants read, write, publish, merge, or promotion authority by itself.
 
-These streams may share patterns and integrations, but **React Native, native platform SDKs, and KMP should not be collapsed into one implementation path**.
-
-#### Mobile security boundaries
-
-Digitalis and Envuscator are cross-cutting security controls rather than application frameworks:
-
-```mermaid
-flowchart LR
-  B["Build"] --> E["Envuscator"] --> A["App artifact"] --> R["Running app"]
-  R -->|attest| D["Digitalis"]
-  D -->|config| R
-
-  E -.- EN["build hardening"]:::note
-  D -.- DN["runtime trust"]:::note
-  classDef note stroke-dasharray: 4 4;
-```
-
-* **Envuscator is a build-time boundary:** it hardens selected mobile configuration during Android/iOS delivery. It does not provide runtime authorization, application attestation, or secure backend design.
-* **Digitalis is a runtime trust-bootstrap boundary:** the application presents bounded attestation evidence to a backend-authoritative verifier before protected configuration is released. Attestation does not replace user identity, authorization, local policy, or consent.
-* Both controls can apply to multiple mobile implementation streams. Concrete adapters may differ by platform; neither implies React Native, KMP, or Myosotis as a mandatory dependency.
-
-#### AI integration paths
-
-Micrantha currently has two distinct mobile/AI integration patterns:
-
-```mermaid
-flowchart LR
-  RN["RN app"] --> AM["Amaryllis"] --> LM["On-device model"]
-  AG["Agent runtime"] --> MY["Myosotis"] --> P["Local policy"] --> C["Device capability"]
-
-  AM -.- AMN["local inference"]:::note
-  MY -.- MYN["agent → device"]:::note
-  classDef note stroke-dasharray: 4 4;
-```
-
-* **Local inference:** Amaryllis keeps model execution inside the mobile application and treats model output as untrusted input behind application-owned contracts.
-* **Agent-to-device capabilities:** Myosotis lets an external or local agent request narrow mobile capabilities while the device retains authority over policy, operator consent, execution, and audit. Dubnium is a natural Micrantha-side agent runtime integration, but Myosotis does not depend on Dubnium.
-* **Bluebell** can host model-ready KMP application architecture, but no dedicated Micrantha KMP inference runtime is currently presented as equivalent to Amaryllis.
-* **Digitalis** can strengthen the trust bootstrap around a mobile application; **Envuscator** can harden its delivered configuration. Neither grants an AI model or agent additional authority.
-
-**Eyespie** remains an experimental consumer of mobile and computer-vision techniques rather than a foundational mobile runtime.
-
-### 3. Infrastructure and managed devices
-
-Micrantha has two complementary infrastructure scopes rather than one infrastructure stack.
-
-#### Dubnium: workstation, OS, and private-network substrate
-
-Dubnium is a rebuildable workstation and operating environment as well as an AI control plane. A **Dubnium OS device** is intended to provide a consistent trusted-device baseline for the primary operator, trusted collaborators, and future team members where appropriate.
-
-```mermaid
-flowchart LR
-  U["Trusted user"] --> D["Dubnium OS"]
-  D --> V["VPN"]
-  D --> S["Security + privacy"]
-  D --> A["Agentic runtime"]
-
-  D -.- DN["managed device baseline"]:::note
-  classDef note stroke-dasharray: 4 4;
-```
-
-The intended device baseline combines:
-
-* reproducible operating-system and workstation configuration;
-* VPN / private-network connectivity and machine identity;
-* security and privacy defaults at the host boundary;
-* local development tooling and reproducible environments;
-* local and routed model execution;
-* governed agentic capabilities, memory, scheduling, and bounded automation.
-
-This makes Dubnium useful beyond a single personal workstation: a provisioned Dubnium device can give a trusted user a known environment and network/security posture while also providing the agentic development surface. Broader multi-user distribution is a direction, not a claim that Dubnium currently provides enterprise MDM or fleet management.
-
-#### Hyperion: cluster and GitOps substrate
-
-Hyperion owns a different infrastructure boundary:
-
-```mermaid
-flowchart LR
-  H["Hyperion"] --> T["OpenTofu"] --> A["Ansible"]
-  A --> K["K3s"] --> F["Flux"] --> W["Workloads"]
-
-  H -.- HN["cluster · GitOps"]:::note
-  classDef note stroke-dasharray: 4 4;
-```
-
-Hyperion provides reproducible provisioned infrastructure, Kubernetes, and GitOps workload convergence. It can host Micrantha services without becoming part of their application-level trust model.
-
-The distinction is intentional: **Dubnium manages the trusted workstation/device environment; Hyperion manages provisioned service infrastructure.** They can interoperate without one subsuming the other.
-
-### 4. Laboratories and conformance
-
-Laboratory projects exist to **challenge architecture rather than become hidden production dependencies**.
-
-```mermaid
-flowchart LR
-  GL["Governance Lab"] --> A["Anthesis"]
-  GD["Governed Agent Demo"] --> D["Dubnium"]
-  GD --> A
-
-  GL -.- GLN["adversarial governance"]:::note
-  GD -.- GDN["vertical integration"]:::note
-  classDef note stroke-dasharray: 4 4;
-```
-
-The Governance Lab exercises policy contracts and adversarial scenarios independently. Governed-agent demos provide vertical integration evidence across runtime and governance boundaries.
-
-### 5. Stable work and compost
-
-**Fortunes** and **Veil** are stable projects with no active product roadmap. They remain useful as completed reference systems, but both are candidates for **composting** when their remaining operational or reference value no longer justifies maintenance.
-
-Composting means retiring the active project while preserving useful patterns, lessons, or reusable components elsewhere in the ecosystem.
+See [repository topology and trust-domain patterns](https://github.com/hackelia-micrantha/.github/blob/main/docs/architecture/repository-topology-and-trust-domains.md).
 
 ---
 
-## 🔭 Current engineering direction — August 2026
+## Where to look
 
-* **Compound Engineering** is being integrated as the shared Plan → Work → Review → Compound → Repeat workflow, with candidate learnings kept non-authoritative and routed toward deterministic controls, exact Invokrum guidance revisions, Sandcastle evaluation where useful, and Anthesis-governed promotion where trust or policy changes.
-* **Dubnium** spans the agentic and infrastructure families: it is a rebuildable workstation/OS environment, private-network substrate, and local agentic control plane. The longer-term direction includes provisioned devices for trusted collaborators and future team members, without claiming current enterprise fleet-management maturity.
-* **Invokrum v0.1.0** establishes deterministic local composition, lockfile verification, provenance, and attestable effective context.
-* **Keylix** has an accepted v0.1 security design for OAuth DPoP and sender-constrained agent/MCP workloads; implementation remains pre-release.
-* **Anthesis** remains the policy, approval, evidence, and provenance authority rather than absorbing runtime responsibilities.
-* **Myosotis** is positioned around governed mobile capabilities, with an Android-native Kotlin reference SDK first and a Swift interoperability checkpoint before any shared-core decision.
-* **Amaryllis** is an active 0.1.x React Native foundation for on-device multimodal AI and governed AI-enabled UI.
-* **Bluebell** remains the Kotlin Multiplatform architecture and SDK foundation rather than being conflated with the React Native AI runtime.
-* **Digitalis** and **Envuscator** address different mobile-security phases: runtime/application trust versus build-time hardening.
-* **Fortunes** and **Veil** are stable, complete work with no planned feature trajectory and are future compost candidates.
-
-The recurring design principle is **separation of authority**: context composition, policy, execution, credentials, application trust, workstation trust, network trust, service infrastructure, and persistent engineering learning should remain explicit boundaries rather than collapse into one platform.
-
----
-
-## 🌿 Maturity and lifecycle
-
-**Maturity** describes technical stability. **Lifecycle** describes whether Micrantha is actively investing in the project. They are deliberately separate.
-
-### Maturity
-
-| Stage | Meaning |
-| --- | --- |
-| **Prototype** | Early exploration or architectural experimentation |
-| **Incubating** | Active implementation with stabilizing contracts |
-| **Stable** | Reliable interfaces and demonstrated operational usefulness |
-
-### Lifecycle
-
-| State | Meaning |
-| --- | --- |
-| **Active** | Current design or implementation investment |
-| **Maintenance** | Supported with limited feature work |
-| **Complete** | No planned feature trajectory; retained while useful |
-| **Compost** | Retired as an active project after useful ideas or components are preserved |
-
----
-
-## 📦 Project map
-
-| Project | Family | Role | Maturity | Lifecycle |
-| --- | --- | --- | --- | --- |
-| **[Dubnium](https://github.com/hackelia-micrantha/dubnium-community)** | Agentic / Infrastructure | Rebuildable workstation/OS, private-network substrate, and local agentic control plane | Incubating | Active |
-| **[Invokrum](https://github.com/hackelia-micrantha/invokrum)** | Agentic | Deterministic prompt-overlay composition and attestation | Incubating | Active |
-| **[Anthesis](https://anthesis.micrantha.com)** | Agentic | Governance, approval, provenance, and evidence | Incubating | Active |
-| **[Keylix](https://github.com/hackelia-micrantha/keylix)** | Agentic / Security | Sender-constrained OAuth and proof-of-possession primitives | Prototype | Active |
-| **[Myosotis](https://github.com/hackelia-micrantha/myosotis-community)** | Mobile / Agentic | Native-first governed mobile capability protocol and SDK | Prototype | Active |
-| **[Amaryllis](https://amaryllis.micrantha.com)** | Mobile / React Native / AI | On-device multimodal AI and governed component/runtime primitives | Incubating | Active |
-| **[Digitalis](https://github.com/hackelia-micrantha/digitalis-community)** | Mobile / Security | Runtime application trust, attestation, and protected configuration | Prototype | Active |
-| **[Envuscator](https://github.com/hackelia-micrantha/envuscator-community)** | Mobile / Security | Build-time configuration obfuscation and delivery hardening | Incubating | Active |
-| **[Bluebell](https://github.com/hackelia-micrantha/bluebell)** | Mobile / KMP | Kotlin Multiplatform SDK architecture and reusable patterns | Stable | Maintenance |
-| **Eyespie** | Mobile / Lab | Computer-vision and mobile inference experiments | Prototype | Active |
-| **[Hyperion](https://hyperion.micrantha.com)** | Infrastructure | Reproducible K3s/GitOps infrastructure stack | Incubating | Active |
-| **[Anthesis Governance Lab](https://github.com/ryjen/anthesis-governance-lab)** | Laboratory | Executable governance contracts and adversarial scenarios | Incubating | Active |
-| **Dubnium Governed Agent Demo** | Laboratory | Vertical runtime/governance integration testbed | Prototype | Active |
-| **[Fortunes](https://fortunes.micrantha.com)** | Reference | Lightweight service and Slack integration | Stable | Complete → Compost |
-| **[Veil](https://veil.micrantha.com)** | Reference | Image-obfuscation and privacy experiment | Stable | Complete → Compost |
-
-> Some Micrantha implementations and reference integrations currently live under [`ryjen`](https://github.com/ryjen) while ownership and public distribution boundaries are consolidated. Repository placement is transitional; architectural responsibility should remain explicit.
-
----
-
-## 🧠 Engineering background and development
-
-Micrantha is informed by more than 15 years of engineering across mobile, backend, infrastructure, platform engineering, and software security, including production mobile systems used by millions of users.
-
-Current public credential and development trajectory:
-
-* **Associate of ISC2** — verified public designation supporting secure-SDLC, secure-design, threat-modeling, and application-security governance work
-* **Agentic / AI governance credential** — planned; specific program or provider to be selected
-* Continued practical development through Micrantha's governed-agent, application-security, platform, and secure-AI projects
-
-Credential names are kept conservative: planned study is not presented as certification, and public designation follows issuer requirements.
-
----
-
-## 📊 Operational posture
-
-Micrantha treats **operability as a first-class design constraint**.
-
-Typical practices include:
-
-* GitOps and reproducible infrastructure
-* rebuildable workstation and device baselines
-* private-network connectivity for trusted hosts
-* logs, metrics, traces, and structured evidence
-* runbooks for known failure modes
-* small blast radii and reversible changes
-* CI/CD guardrails and supply-chain validation
-* incident and integration feedback loops
-
----
-
-## 🔐 Security posture
-
-Micrantha treats security as an **architectural property of the system**.
-
-Common principles include:
-
-* threat modeling during system design
-* explicit trust and authority boundaries
-* fail-closed authorization and verification
-* sender-constrained credentials where replay resistance matters
-* deterministic and attestable agent context where instructions affect authority
-* candidate learning remains evidence until separately validated/promoted
-* trusted guidance currentness is re-resolved from its owning authority rather than inferred from memory retrieval
-* secure host and private-network defaults for managed workstations
-* secrets management and rotation
-* dependency and supply-chain hygiene
-* SBOMs, artifact signing, provenance, and evidence where appropriate
-
-The goal is not to make every project depend on every security component. The goal is to make the applicable trust boundaries **visible, composable, and independently testable**.
-
----
-
-## 📐 How we work
-
-Micrantha engineering follows an evidence-backed methodology designed for systems that evolve over time.
-
-- [Governance model](https://github.com/hackelia-micrantha/.github/blob/main/GOVERNANCE.md) — decision authority, roles, AI-assisted work, and conflict resolution
-- [Contributing guidelines](https://github.com/hackelia-micrantha/.github/blob/main/CONTRIBUTING.md) — issue prioritization, execution order, and pull-request expectations
-- [Engineering standards](https://github.com/hackelia-micrantha/.github/blob/main/docs/standards/README.md) — testing, CI/CD, security, releases, documentation, and label taxonomy
-- [Engineering prompts](https://github.com/hackelia-micrantha/.github/blob/main/docs/prompts/README.md) — reusable prompts for review, planning, decisions, delivery, security, onboarding, and Compound review
-- [Decision-to-delivery guide](https://github.com/hackelia-micrantha/.github/blob/main/docs/engineering/work-items.md) — QART, RFC, ADR, epics, and bounded delivery slices
-- [Compound engineering](https://github.com/hackelia-micrantha/.github/blob/main/docs/engineering/compound-engineering.md) — explicit post-review learning and durable prevention
-- [Compound artifact routing](https://github.com/hackelia-micrantha/.github/blob/main/docs/engineering/compound-artifact-routing.md) — choose tests, docs, Invokrum guidance, tooling, policy, or deferred evidence
-- [Governed learning promotion](https://github.com/hackelia-micrantha/.github/blob/main/docs/architecture/governed-learning-promotion.md) — exact validation, promotion, freshness, supersession, and authority boundaries
-
-New contributors can start with the [contributor onboarding prompt](https://github.com/hackelia-micrantha/.github/blob/main/docs/prompts/onboarding/contributor-onboarding.md).
-
----
-
-## 📬 Contact
-
-Ryan Jennings  
-Micrantha Software Solutions
-
-🌐 [https://micrantha.com](https://micrantha.com)
-
----
-
-> Systems that grow without discipline eventually collapse under their own complexity.
+- [Micrantha website](https://micrantha.com) — public project and engineering material
+- [Organization defaults](https://github.com/hackelia-micrantha/.github) — governance, engineering standards, prompts, templates, and shared automation
+- [Repository responsibility catalogue](https://github.com/hackelia-micrantha/.github/blob/main/docs/architecture/repository-catalogue.md) — authoritative organization-level responsibility map
+- [Ecosystem registry](https://github.com/hackelia-micrantha/hackelia-micrantha) — project identities, roles, lifecycle, relationships, and aggregate status model
