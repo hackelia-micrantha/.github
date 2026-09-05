@@ -4,12 +4,26 @@ This repository contains shared governance, community health files, contribution
 
 Repositories may refine these defaults when their product, legal, security, or operating model requires it, but should document the difference explicitly. Repository-local implementation and evidence remain authoritative within the boundaries assigned by the organization governance model.
 
+## Where to look
+
+Use the repository that owns the question:
+
+| Question | Source of truth |
+| --- | --- |
+| How should Micrantha repositories be governed and engineered? | This repository (`hackelia-micrantha/.github`) |
+| What Micrantha projects exist, what are their roles/lifecycles, and how do they relate? | [`hackelia-micrantha/hackelia-micrantha`](https://github.com/hackelia-micrantha/hackelia-micrantha) |
+| What does a specific product/library/tool implement? | The owning project repository |
+| What is presented publicly? | [`micrantha.com`](https://micrantha.com) and [`profile/README.md`](profile/README.md), as evidence-backed projections |
+
+The meta/registry repository coordinates ecosystem identity and relationships; it does not own organization GitHub policy. This repository defines shared defaults and responsibility boundaries; it does not become a second implementation source of truth for projects.
+
 ## Governance and ownership
 
 - [Organization governance](GOVERNANCE.md)
 - [Contribution and issue-prioritization standard](CONTRIBUTING.md)
 - [Repository lifecycle and maturity](docs/governance/repository-lifecycle.md)
 - [Repository responsibility catalogue](docs/architecture/repository-catalogue.md)
+- [Repository topology and trust-domain patterns](docs/architecture/repository-topology-and-trust-domains.md)
 - [Security policy](.github/SECURITY.md)
 - [Support guidance](.github/SUPPORT.md)
 - [Code of conduct](.github/CODE_OF_CONDUCT.md)
@@ -18,6 +32,8 @@ The governance model defines accountable roles, decision authority, repository a
 
 The repository catalogue distinguishes architectural authority from runtime dependency. A laboratory produces evidence without silently redefining a product contract; a distribution composes components without assuming their internal authority; a public site projects evidence rather than creating product truth.
 
+Repository topology is also explicit: provider, visibility, and labels such as `canonical`, `private`, `public`, `agent`, or `mirror` describe topology or policy context. They do not independently grant read, write, publication, merge, promotion, or synchronization authority.
+
 ## Engineering standards
 
 - [Standards overview](docs/standards/README.md)
@@ -25,11 +41,18 @@ The repository catalogue distinguishes architectural authority from runtime depe
   - [CI/CD](docs/standards/ci-cd.md)
   - [Security engineering](docs/standards/security.md)
   - [CLI interoperability](docs/standards/cli-interoperability.md)
+  - [Tool-result trust](docs/standards/tool-result-trust.md)
   - [Releases and versioning](docs/standards/releases.md)
   - [Documentation](docs/standards/documentation.md)
   - [Labels and work-item taxonomy](docs/standards/labels.md)
 
 The standards define minimum outcomes according to repository classification, maturity, risk, supported surface, and deployment model. Repository-local standards may be stricter or may document a justified alternative control, but cannot silently weaken security, compatibility, release, support, or public-maturity claims.
+
+### CLI and orchestration boundary
+
+Micrantha operator-facing command-line tools should remain ordinary composable tools rather than requiring an agent-specific invocation path. The shared CLI contract covers stable machine-readable stdin/stdout, human-vs-machine output separation, exit semantics, broken-pipe behavior, side-effect boundaries, and man-page expectations.
+
+The same semantic contracts may be consumed by supervisor/orchestration layers. Orchestration should not create a second incompatible result model merely because the caller is an agent.
 
 ## Shared automation and metadata
 
@@ -133,7 +156,7 @@ Priority remains distinct from severity, status, size, confidence, age, and arch
 
 ## Repository lifecycle
 
-Maturity is evidence-based and separate from repository classification:
+Maturity is evidence-based and separate from repository classification or architectural role:
 
 - **Proposed**
 - **Experimental**
@@ -144,4 +167,4 @@ Maturity is evidence-based and separate from repository classification:
 - **Superseded**
 - **Archived**
 
-The public aliases `Prototype` and `Maintained` map to `Experimental` and `Maintenance`. Lifecycle changes should update the repository, the [catalogue](docs/architecture/repository-catalogue.md), registry, and relevant public documentation together.
+The public aliases `Prototype` and `Maintained` map to `Experimental` and `Maintenance`. Lifecycle changes should update the repository, the [catalogue](docs/architecture/repository-catalogue.md), the appropriate registry projection, and relevant public documentation together.
