@@ -32,7 +32,7 @@ A few principles recur across the projects:
 - **Small durable controls.** Repeated findings should become the weakest reliable control that prevents recurrence: tests, schemas, invariants, safer defaults, CI, policy, or bounded guidance.
 - **Trust domains are explicit.** Public/private repositories, mirrors, agent workspaces, recovery stores, and canonical endpoints are modeled as deliberate topology rather than inferred from provider names.
 
-Shared standards and architecture live in [`hackelia-micrantha/.github`](https://github.com/hackelia-micrantha/.github). The ecosystem/project registry lives in [`hackelia-micrantha/hackelia-micrantha`](https://github.com/hackelia-micrantha/hackelia-micrantha).
+Shared standards, architecture guidance, and the public responsibility map live in [`hackelia-micrantha/.github`](https://github.com/hackelia-micrantha/.github). A separate internal meta repository maintains the machine-readable ecosystem registry and aggregate status model.
 
 ---
 
@@ -146,5 +146,4 @@ See [repository topology and trust-domain patterns](https://github.com/hackelia-
 
 - [Micrantha website](https://micrantha.com) — public project and engineering material
 - [Organization defaults](https://github.com/hackelia-micrantha/.github) — governance, engineering standards, prompts, templates, and shared automation
-- [Repository responsibility catalogue](https://github.com/hackelia-micrantha/.github/blob/main/docs/architecture/repository-catalogue.md) — authoritative organization-level responsibility map
-- [Ecosystem registry](https://github.com/hackelia-micrantha/hackelia-micrantha) — project identities, roles, lifecycle, relationships, and aggregate status model
+- [Repository responsibility catalogue](https://github.com/hackelia-micrantha/.github/blob/main/docs/architecture/repository-catalogue.md) — public organization-level responsibility map
