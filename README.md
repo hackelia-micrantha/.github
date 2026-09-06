@@ -75,6 +75,7 @@ The repository registry is an advisory machine-readable projection of the canoni
   - [RFC template](docs/engineering/templates/rfc.md)
   - [ADR template](docs/engineering/templates/adr.md)
 - [Compound engineering](docs/engineering/compound-engineering.md) — Plan → Work → Review → Compound → Repeat
+- [AI-assisted SDLC phase discipline](docs/engineering/ai-assisted-sdlc.md) — explicit phase-local context, durable handoffs, verification, review, and authority boundaries
 - [Compound artifact routing](docs/engineering/compound-artifact-routing.md) — route reusable lessons to the weakest durable control that reliably prevents recurrence
 - [Governed learning promotion](docs/architecture/governed-learning-promotion.md) — candidate learning, validation, exact promotion, supersession, and authority boundaries
 - [Compound learning runtime boundaries](docs/architecture/compound-learning-runtime.md) — Supervisor, Run Ledger, Memory, Invokrum, Sandcastle, Anthesis, and scheduler ownership
