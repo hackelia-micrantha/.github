@@ -130,17 +130,21 @@ During triage:
 
 ## Community UI and Phyllotaxis
 
-Phyllotaxis is the shared design-system and UI substrate for Micrantha projects. UI introduced or materially redesigned in community repositories should follow the shared visual directive unless the repository documents a concrete product, usability, or accessibility reason to diverge.
+Phyllotaxis is the shared design-system and UI substrate for Micrantha projects. UI introduced or materially redesigned in community repositories should follow the shared visual directive unless the repository documents a concrete product, usability, accessibility, or editorial reason to diverge.
 
-The governing rule is:
+The organization default is the **Utility** profile. Its governing rule is:
 
 > **1990s in visual character, not in capability.**
 
-That means deliberately plain, direct, lightweight, content-first interfaces: system typography, obvious links and controls, restrained colour, compact readable density, simple separators, natural document flow, and minimal decorative chrome. It does **not** mean reproducing historical browser limitations or inaccessible markup; semantic HTML, keyboard access, visible focus, responsive layout, appropriate contrast, reduced-motion support, text scaling, and modern form semantics remain expected.
+Utility means deliberately plain, direct, lightweight, content-first interfaces: system typography, obvious links and controls, restrained colour, compact readable density, simple separators, natural document flow, and minimal decorative chrome. It does **not** mean reproducing historical browser limitations or inaccessible markup; semantic HTML, keyboard access, visible focus, responsive layout, appropriate contrast, reduced-motion support, text scaling, and modern form semantics remain expected.
 
-Avoid adding gradients, glass/blur effects, ornamental elevation, rounded-card composition, oversized hero treatments, bespoke typography, hidden navigation, or decorative motion merely to make a community interface appear contemporary.
+Avoid adding gradients, glass/blur effects, ornamental elevation, rounded-card composition, oversized hero treatments, bespoke typography, hidden navigation, or decorative motion merely to make ordinary community UI appear contemporary.
 
-See the public [community UI design directive](docs/standards/ui-design.md) for the complete default and review heuristic.
+A bounded **Editorial** profile is permitted for genuine long-form, journal, article, narrative, or media surfaces. Editorial may use richer typography, imagery, hierarchy, and reading rhythm when those choices materially improve the publishing task. It is not a generic styling escape hatch and does not replace Utility as the default for project, tool, docs, support, status, or administrative surfaces.
+
+Both profiles retain the same accessibility, semantic, responsive, and interaction requirements.
+
+See the public [community UI design directive](docs/standards/ui-design.md) for the complete profile guidance and review heuristic.
 
 ## Pull requests
 
