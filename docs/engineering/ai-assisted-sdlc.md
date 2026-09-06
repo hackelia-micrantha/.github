@@ -37,7 +37,7 @@ Bounded implementation
 Deterministic verification
       |
       v
-Independent / semantic review when required
+Independent verification and/or semantic review when required
       |
       v
 Risk-appropriate human disposition
@@ -154,7 +154,7 @@ A useful default classification is:
 
 | Change class | Typical examples | Review posture |
 | --- | --- | --- |
-| Low consequence | docs, generated metadata, mechanical cleanup with strong deterministic checks | automated verification may be sufficient; spot review as appropriate |
+| Low consequence | non-normative documentation cleanup, generated metadata, mechanical cleanup with strong deterministic checks | strong automated verification; retain any human review required by repository standards, including evidence-backed human review for AI-generated documentation |
 | Normal engineering | ordinary feature/refactor/API work | focused human review of design, diff, and evidence |
 | High consequence | authentication, authorization, cryptography, policy, permissions, migrations, release/deployment controls, sensitive data, public compatibility, agent authority | explicit human review/approval plus independent evidence appropriate to the boundary |
 
