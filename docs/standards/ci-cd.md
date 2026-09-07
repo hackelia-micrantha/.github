@@ -42,6 +42,58 @@ Separate build and validation from publication. Untrusted code must not gain acc
 
 Avoid `pull_request_target` for executing pull-request code. When it is required for metadata-only automation, do not check out or execute untrusted changes with privileged credentials.
 
+## Source mutation and authoring boundary
+
+**CI validates authoritative source; it does not author or repair it.**
+
+Repository content should be classified by authority before automation is allowed to mutate it:
+
+1. **Authoritative source** — human- or agent-authored code, configuration, documentation, product content, policy, tests, and other reviewed inputs whose repository history is the source of truth.
+2. **Declared generated source** — deterministic, machine-owned paths produced from authoritative inputs by a documented generator contract.
+3. **Derived state** — build artifacts, packages, release assets, deployment state, reports, caches, provenance bundles, and other outputs that are not authoritative source inputs.
+
+The default rules are:
+
+- authoritative source enters repository history through an explicit actor commit on a branch and normal review;
+- pull-request validation must not rewrite, commit, push, or otherwise repair the branch it is validating;
+- validation workflows should not require `contents: write`; a pull-request-triggered workflow that requests repository-content write authority requires an explicit documented exception and must not use that authority to mutate authoritative source on the reviewed branch;
+- metadata-only pull-request automation should prefer scoped `pull-requests: write` or `issues: write` permissions and avoid repository-content write authority;
+- release or deployment automation may write derived state when writing that state is the workflow's declared purpose and the authority is scoped to the minimum target;
+- generated-source automation must declare the owned paths, generator, inputs, determinism/idempotency expectations, and accountable bot or actor identity;
+- a generator may be invoked explicitly by an authoring actor, or by a dedicated bot that opens or updates its own clearly identified generated-source pull request; it should not opportunistically modify an existing human- or agent-authored pull request;
+- CI should verify generated-source freshness by running the generator in a non-authoring mode and failing on an unexpected diff rather than silently committing the repair;
+- retries and re-runs must not create additional source mutations or make review state depend on workflow timing.
+
+Preferred mechanisms for substantial source transformations are, in order of fit:
+
+- direct file changes committed to a feature branch;
+- one atomic Git tree/commit for coordinated multi-file changes;
+- a trusted local or agent checkout that runs the transformation, validation, and explicit commit;
+- an explicit checked-in codemod or generator invoked by the authoring actor;
+- a dedicated generated-source bot pull request when the repository intentionally treats specific paths as machine-owned.
+
+A workflow whose purpose is validation must not become the mechanism that authors the change merely because direct source-edit tooling is inconvenient.
+
+### Generated-source exception contract
+
+When repository-tracked generated source is justified, document at minimum:
+
+```markdown
+## Generated-source contract
+
+- Owned paths:
+- Authoritative inputs:
+- Generator and version:
+- Invocation:
+- Determinism/idempotency expectation:
+- CI freshness check:
+- Bot/actor identity allowed to write:
+- Review boundary:
+- Regeneration/recovery procedure:
+```
+
+The exception does not permit arbitrary source writes outside the declared paths and does not convert generated output into independent authority over its inputs.
+
 ## Self-hosted runners
 
 Self-hosted runners are privileged infrastructure and require an explicit trust model.
@@ -118,4 +170,4 @@ When CI fails:
 
 ## Local overrides
 
-Repository-specific workflows may differ, but they should document required checks, runner trust, publication authority, release identity, and any reduced validation. A local override cannot silently redefine a green check as evidence for a boundary that did not run.
+Repository-specific workflows may differ, but they should document required checks, runner trust, publication authority, release identity, source-mutation exceptions, and any reduced validation. A local override cannot silently redefine a green check as evidence for a boundary that did not run.
