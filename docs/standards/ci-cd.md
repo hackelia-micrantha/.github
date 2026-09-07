@@ -57,6 +57,7 @@ The default rules are:
 - authoritative source enters repository history through an explicit actor commit on a branch and normal review;
 - pull-request validation must not rewrite, commit, push, or otherwise repair the branch it is validating;
 - validation workflows should not require `contents: write`; a pull-request-triggered workflow that requests repository-content write authority requires an explicit documented exception and must not use that authority to mutate authoritative source on the reviewed branch;
+- metadata-only pull-request automation should prefer scoped `pull-requests: write` or `issues: write` permissions and avoid repository-content write authority;
 - release or deployment automation may write derived state when writing that state is the workflow's declared purpose and the authority is scoped to the minimum target;
 - generated-source automation must declare the owned paths, generator, inputs, determinism/idempotency expectations, and accountable bot or actor identity;
 - a generator may be invoked explicitly by an authoring actor, or by a dedicated bot that opens or updates its own clearly identified generated-source pull request; it should not opportunistically modify an existing human- or agent-authored pull request;
@@ -67,7 +68,7 @@ Preferred mechanisms for substantial source transformations are, in order of fit
 
 - direct file changes committed to a feature branch;
 - one atomic Git tree/commit for coordinated multi-file changes;
-- a local, Codex, Work, or other trusted checkout that runs the transformation, validation, and explicit commit;
+- a trusted local or agent checkout that runs the transformation, validation, and explicit commit;
 - an explicit checked-in codemod or generator invoked by the authoring actor;
 - a dedicated generated-source bot pull request when the repository intentionally treats specific paths as machine-owned.
 
