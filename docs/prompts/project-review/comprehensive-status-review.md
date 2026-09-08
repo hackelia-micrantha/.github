@@ -25,6 +25,20 @@ Review the current state of **[PROJECT / REPOSITORY / REPOSITORY SET]** and dete
 - **Related systems:** [SYSTEMS]
 - **Important constraints:** [SECURITY / COMPATIBILITY / DELIVERY / PLATFORM]
 
+## Portfolio scope
+
+When the invocation asks to review, triage, prioritize, or establish status for **portfolio projects**, resolve the project set from the canonical Micrantha registry at `hackelia-micrantha/hackelia-micrantha/registry/projects.yaml` before expanding to repository evidence:
+
+- include registered projects with `portfolio: featured` or `portfolio: supporting`;
+- treat omitted `portfolio` as undecided and outside portfolio scope;
+- treat `portfolio: false` as explicitly excluded;
+- honor repository-family exclusions in `hackelia-micrantha/hackelia-micrantha/registry/inventory.md` and never infer portfolio membership from repository existence, visibility, recency, or activity;
+- keep **project != repository**: auxiliary, component, community, public-projection, and private companion repositories may be consulted as evidence for an included project without becoming separate portfolio projects;
+- preserve canonical/source versus community/projection authority boundaries when reconciling implementation, issues, PRs, CI, docs, and releases;
+- do not treat portfolio tier as lifecycle, priority, severity, readiness, maturity, or `solution`/`laboratory` classification.
+
+A deliberately broader organization-wide repository-health review may include non-portfolio repositories when the invocation explicitly requests that scope. State the broadened scope, keep repository-health findings separate from portfolio membership, and do not mutate portfolio tier as a side effect of review.
+
 ## Ambiguity and clarification
 
 Apply the [shared ambiguity and clarification contract](../README.md#shared-ambiguity-and-clarification-contract). Resolve missing context from available repository evidence before asking.
