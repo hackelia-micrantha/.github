@@ -2,7 +2,7 @@
 
 Use this prompt to evaluate a paper, preprint, technical report, benchmark paper, or academic result for concrete relevance to Micrantha projects.
 
-The goal is not to summarize the paper exhaustively. The goal is to determine what is credible, what is materially relevant, what changes the engineering model, and what—if anything—should happen next.
+The goal is not to summarize the paper exhaustively. The goal is to determine what is credible, what the reader should remember from the paper itself, what is materially relevant, what changes the engineering model, and what—if anything—should happen next.
 
 Apply the shared execution, ambiguity, priority, and artifact-selection contracts from [`../README.md`](../README.md).
 
@@ -15,7 +15,7 @@ Paper/source: <URL, identifier, PDF, citation, or uploaded file>
 Repositories/projects in scope: <optional; infer from authoritative Micrantha metadata when omitted>
 Current question or motivation: <optional>
 
-Produce an evidence-backed assessment that separates the paper's claims from demonstrated evidence, maps materially relevant findings to Micrantha projects, identifies gaps against current implementation and accepted design, and recommends only actions justified by the evidence.
+Produce an evidence-backed assessment that separates the paper's claims from demonstrated evidence, gives the paper-level key takeaways in plain engineering terms before project-specific interpretation, maps materially relevant findings to Micrantha projects, identifies gaps against current implementation and accepted design, and recommends only actions justified by the evidence.
 
 Do not create or modify repository state unless mutations are explicitly authorized.
 ```
@@ -42,9 +42,28 @@ For each major conclusion, classify confidence as:
 - **medium** — plausible and supported, but constrained by methodology or transfer risk;
 - **low** — speculative, weakly evaluated, or dependent on assumptions that do not map cleanly to Micrantha.
 
-### 2. Extract decision-relevant takeaways
+### 2. Extract paper-level key takeaways and decision-relevant implications
 
-Separate:
+First produce a compact set of **3–7 paper-level key takeaways** in plain engineering language. These must explain the paper on its own terms before Micrantha mapping and should be useful to a reader who stops after this section.
+
+Where relevant, cover:
+
+- the core conceptual shift or mental model;
+- the most important mechanism, architecture, or method;
+- the strongest empirical result or evidence;
+- a material limitation, caveat, or boundary condition;
+- the practical consequence for someone building, evaluating, or operating a similar system.
+
+For each takeaway, distinguish:
+
+- **paper takeaway** — what the paper establishes, demonstrates, or argues;
+- **why it matters** — the general engineering or research consequence;
+- **evidence / caveat** — the strongest supporting evidence and the main qualification;
+- **confidence** — high, medium, or low.
+
+Do not collapse paper understanding into Micrantha relevance. Do not label a Micrantha-specific implication as a paper takeaway unless the paper itself supports the general claim.
+
+Then separately identify Micrantha decision-relevant implications, including:
 
 - findings that materially alter an engineering or security mental model;
 - findings that validate an existing Micrantha direction;
@@ -52,7 +71,7 @@ Separate:
 - useful mechanisms, evaluation methods, metrics, datasets, or testing techniques;
 - interesting observations with no current engineering consequence.
 
-Prefer a small number of high-signal takeaways. Do not manufacture implications merely to populate every category.
+Prefer a small number of high-signal implications. Do not manufacture implications merely to populate every category.
 
 ### 3. Build a Micrantha relevance matrix
 
@@ -175,14 +194,25 @@ Provide:
 - the most important engineering consequence, if any;
 - a concise recommendation: act now, experiment, document, monitor, or no action.
 
+### Key takeaways from the paper
+
+Provide **3–7 concise, standalone takeaways** that explain what a technically informed reader should remember from the paper itself before any Micrantha-specific interpretation.
+
+Prefer:
+
+| Takeaway | Why it matters | Evidence / caveat | Confidence |
+| --- | --- | --- | --- |
+
+Include material negative results, limitations, or boundary conditions when they change how the positive findings should be interpreted. Do not make this section a project-action list.
+
 ### Evidence and limitations
 
 | Claim/finding | Evidence | Limitations / transfer risk | Confidence |
 | --- | --- | --- | --- |
 
-### Key takeaways
+### Micrantha decision-relevant implications
 
-List only decision-relevant takeaways, each with a short explanation of why it matters or why it does not.
+List only the paper-level takeaways that materially validate, challenge, or change a Micrantha engineering direction, plus useful evaluation methods or techniques. State explicitly when a strong paper takeaway has no current Micrantha consequence.
 
 ### Micrantha relevance matrix
 
