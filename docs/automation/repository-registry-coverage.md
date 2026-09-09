@@ -74,6 +74,22 @@ A repository moves from this exclusion list into `metadata/repositories.json` on
 
 An auxiliary repository may be registered with `monitor: false` when retaining topology/state in the registry is useful but health-file checks would create false positives.
 
+## Private repository coverage policy
+
+Routine scheduled and post-merge repository-health runs do **not** require a standing cross-repository credential merely to eliminate `unknown` results.
+
+The default baseline uses the workflow repository token. When that token cannot read a registered private/internal repository, the health tool reports the repository as `unknown`; this is an access limitation, not a warning, error, deletion claim, or lifecycle signal.
+
+A fuller private-repository audit is optional and should be enabled only when there is a concrete need for automated cross-repository verification. When enabled:
+
+- prefer a short-lived GitHub App installation token minted for the run;
+- scope it read-only to repository metadata and contents for the reviewed private repository set;
+- do not broaden mutation permissions to make health reporting convenient;
+- do not treat successful credentialed access as new authority over the inspected repository;
+- retain `unknown` rather than weakening or guessing around an access failure.
+
+A long-lived personal access token is not required for the routine baseline and should not be introduced solely to make the report visually all-green.
+
 ## Repository creation and lifecycle changes
 
 For a new repository, transfer, public/private split, supersession, or archive event:
@@ -86,6 +102,13 @@ For a new repository, transfer, public/private split, supersession, or archive e
 6. avoid adding required-file expectations until the repository's actual contract supports them;
 7. run repository health in non-blocking mode and review drift before making any threshold required.
 
-## Next baseline step
+## Baseline interpretation
 
-The monitored registry can now be treated as a bounded reviewed subset rather than an accidental partial inventory. The next step for issue #26 is to run and review `Repository health` with non-blocking failure semantics, then create repository-local issues only for justified drift findings.
+Repository health is a bounded evidence source, not an authority-transfer mechanism.
+
+- `ok` means the workflow could verify the registered GitHub metadata and required-file contract.
+- `warning` or `error` is actionable drift that should be reviewed and, when justified, routed to the owning repository.
+- `unknown` means the workflow could not establish the state, commonly because a private repository is inaccessible to its token.
+- `skipped` means monitoring is explicitly disabled for that registered repository.
+
+Only concrete warning/error findings should generate repository-local drift work. Unknown access state should generate credential-policy work only when complete private automation is actually required.
