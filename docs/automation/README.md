@@ -2,7 +2,7 @@
 
 This directory documents the shared automation surfaces maintained by the Micrantha organization meta repository.
 
-See [automation security boundaries](SECURITY.md) for the caller, input, secret, runner, and token trust model.
+See [automation security boundaries](SECURITY.md) for the caller, input, secret, runner, and token trust model and [shared automation versioning](versioning.md) for immutable caller pins, compatibility, pilots, and rollback.
 
 ## Scope
 
