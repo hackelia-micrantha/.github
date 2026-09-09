@@ -12,6 +12,15 @@ on:
           - none
           - error
           - warning
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/repository-health.yml
+      - docs/automation/repository-registry-coverage.md
+      - metadata/repositories.json
+      - metadata/repositories.schema.json
+      - tools/repository_health.py
   schedule:
     - cron: "0 16 * * 1"
 
