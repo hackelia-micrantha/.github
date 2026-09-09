@@ -67,6 +67,10 @@ The catalogue and repository-local evidence remain authoritative. Registry chang
 
 `metadata/repositories.schema.json` supports editors and external validation. `tools/repository_health.py validate` performs dependency-free structural and semantic checks used by CI.
 
+The registry is intentionally a **reviewed monitoring scope**, not an implicit list of every repository visible in the organization. [Repository registry coverage](repository-registry-coverage.md) records repositories intentionally excluded from health checks while ownership, lifecycle, or topology remains unresolved. Every organization repository should appear in exactly one of these two surfaces: the machine-readable registry or the reviewed exclusion record.
+
+For repository creation, transfer, public/private split, supersession, or archival, update the registry or exclusion record in the same reviewed change. Do not infer authority from repository naming, visibility, age, or a `-community` suffix.
+
 ## Repository-health reporting
 
 `.github/workflows/repository-health.yml` runs weekly and on manual dispatch. It is read-only and produces Markdown and JSON reports.
@@ -81,6 +85,8 @@ The report checks registered repositories for:
 The built-in `GITHUB_TOKEN` can reliably inspect the current repository and public repositories. To include private organization repositories, configure an organization or repository secret named `ORG_REPOSITORY_READ_TOKEN` containing a fine-grained token or GitHub App token with read-only access to the registered repositories and repository contents.
 
 The workflow never opens issues, changes labels, edits repositories, or alters settings. Health findings are evidence for human triage. A missing or inaccessible private repository is reported as unknown when the configured token cannot read it; it is not silently treated as deleted.
+
+Before a repository is monitored, required-file expectations must be justified by that repository's actual contract. A health baseline remains non-blocking until false positives, inaccessible private repositories, and known topology differences are reconciled.
 
 ## Metadata validation
 
