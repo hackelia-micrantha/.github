@@ -28,6 +28,11 @@ on:
         required: false
         type: boolean
         default: false
+      timeout_minutes:
+        description: Maximum minutes for the delegated Nix job
+        required: false
+        type: number
+        default: 30
 
 permissions:
   contents: read
@@ -36,6 +41,7 @@ jobs:
   check:
     name: nix / check
     runs-on: ${{ inputs.runner }}
+    timeout-minutes: ${{ inputs.timeout_minutes }}
     defaults:
       run:
         working-directory: ${{ inputs.working-directory }}
