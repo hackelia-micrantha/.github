@@ -28,7 +28,9 @@ The starter templates intentionally remain small:
 
 Repositories own the actual task definitions, test coverage, build graph, and required checks. A starter template is an adoption aid, not proof that the repository satisfies the organization standards.
 
-GitHub replaces `$default-branch` when a starter template is installed. Repositories should review generated event triggers, runner selection, concurrency, permissions, and task names before making the workflow required.
+GitHub replaces `$default-branch` when a starter template is installed. Repositories should review generated event triggers, runner selection, concurrency, permissions, task names, and the pinned shared-workflow revision before making the workflow required.
+
+The starter templates are pinned to the reviewed automation-v1 candidate commit `c0016c206607f6f101b8e6b70340ad7d4ab52837`. They must not be changed back to `@main`; advancing the pin is a reviewed shared-automation version change.
 
 ## Reusable workflows
 
@@ -42,11 +44,11 @@ They:
 - use read-only `contents` permission;
 - do not inherit or request caller secrets;
 - use GitHub-hosted runners by default;
-- expose bounded inputs for task, command, runner, and working directory;
+- expose bounded inputs for task, command, runner, working directory, and delegated-job timeout;
 - pin external actions to reviewed commit SHAs;
 - avoid deployment, release, mutation, or approval behavior.
 
-Callers should pin reusable workflows to a reviewed release tag or commit SHA before treating them as required production gates. The starter templates use `@main` only as an initial adoption path until a versioned automation release is published.
+Callers should pin reusable workflows to a reviewed immutable commit SHA or immutable release tag before treating them as required production gates. The execution identity is the commit SHA; a release tag is human-readable discovery metadata and must never move.
 
 Permissions can only be maintained or reduced across a reusable workflow chain. A caller remains responsible for granting the minimum permissions required by its complete workflow.
 
@@ -73,7 +75,7 @@ For repository creation, transfer, public/private split, supersession, or archiv
 
 ## Repository-health reporting
 
-`.github/workflows/repository-health.yml` runs weekly and on manual dispatch. It is read-only and produces Markdown and JSON reports.
+`.github/workflows/repository-health.yml` runs weekly and on reviewed registry/health changes to `main`, and remains manually dispatchable. It is read-only and produces Markdown and JSON reports.
 
 The report checks registered repositories for:
 
@@ -82,7 +84,7 @@ The report checks registered repositories for:
 - configured required files;
 - registry inconsistencies.
 
-The built-in `GITHUB_TOKEN` can reliably inspect the current repository and public repositories. To include private organization repositories, configure an organization or repository secret named `ORG_REPOSITORY_READ_TOKEN` containing a fine-grained token or GitHub App token with read-only access to the registered repositories and repository contents.
+The built-in `GITHUB_TOKEN` can reliably inspect the current repository and public repositories. Routine health runs do not require a standing cross-repository credential solely to remove `unknown` results. Private repositories inaccessible to the workflow token remain `unknown`, not warning/error/deletion/lifecycle claims. If a complete private audit is needed, prefer a short-lived read-only GitHub App installation token scoped to the reviewed repository set.
 
 The workflow never opens issues, changes labels, edits repositories, or alters settings. Health findings are evidence for human triage. A missing or inaccessible private repository is reported as unknown when the configured token cannot read it; it is not silently treated as deleted.
 
@@ -118,10 +120,10 @@ A future label-sync workflow should:
 1. Confirm repository classification, maturity, and authority in the catalogue and registry.
 2. Install the appropriate workflow starter template.
 3. Define repository-owned `mise` tasks or Nix checks.
-4. Review triggers, runners, permissions, and fork behavior.
+4. Review triggers, runners, permissions, fork behavior, and timeout expectations.
 5. Run the workflow without making it required.
 6. Reconcile failures and unsupported assumptions.
-7. Pin the reusable workflow to a reviewed version.
+7. Keep the reusable workflow pinned to a reviewed immutable revision.
 8. Make the stable check name required only after repeatable success.
 
 ## Change control
