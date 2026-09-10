@@ -10,8 +10,8 @@ description = "Run automation unit tests"
 run = "python -m unittest discover -s tests -v"
 
 [tasks.health]
-description = "Generate a read-only repository-health report"
-run = "python tools/repository_health.py health"
+description = "Generate read-only repository-health and source-posture reports"
+run = "python tools/repository_health.py health && python tools/source_posture.py --report metadata/repositories.json"
 
 [tasks.ci]
 description = "Run meta-repository validation and tests"

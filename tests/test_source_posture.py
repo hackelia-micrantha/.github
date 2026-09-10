@@ -208,6 +208,58 @@ class SourcePostureValidationTests(unittest.TestCase):
 
         self.assertTrue(any("must reference a public repository" in error for error in errors))
 
+    def test_report_lists_classification_coverage_and_topology_edges(self) -> None:
+        canonical = self.entry(
+            "hackelia-micrantha/invokrum",
+            visibility="private",
+            source_exposure="private",
+            repository_role="canonical",
+            distribution_mode="binary",
+            monitor=True,
+            publicDistributionRepository="hackelia-micrantha/invokrum-community",
+        )
+        distribution = self.entry(
+            "hackelia-micrantha/invokrum-community",
+            visibility="public",
+            source_exposure="none",
+            repository_role="distribution",
+            distribution_mode="binary",
+            monitor=True,
+            canonicalRepository="hackelia-micrantha/invokrum",
+        )
+
+        report = "\n".join(
+            source_posture.posture_report_lines(
+                self.registry(canonical, distribution)
+            )
+        )
+
+        self.assertIn("classified: 2/2 repositories", report)
+        self.assertIn("distribution/none/binary", report)
+        self.assertIn(
+            "invokrum-community --canonical--> hackelia-micrantha/invokrum",
+            report,
+        )
+        self.assertIn(
+            "invokrum --public-distribution--> hackelia-micrantha/invokrum-community",
+            report,
+        )
+
+    def test_report_surfaces_monitored_unclassified_as_non_failing_migration_warning(self) -> None:
+        data = self.registry(
+            self.entry(
+                "hackelia-micrantha/legacy",
+                visibility="private",
+                monitor=True,
+            )
+        )
+
+        report = "\n".join(source_posture.posture_report_lines(data))
+
+        self.assertIn("monitored but unclassified: 1", report)
+        self.assertIn("legacy: posture not yet classified", report)
+        self.assertEqual(source_posture.validate_registry_posture(data), [])
+
 
 if __name__ == "__main__":
     unittest.main()

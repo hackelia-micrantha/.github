@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Validate Micrantha source-exposure and repository-distribution posture.
+"""Validate and report Micrantha source/distribution posture.
 
-This validator is intentionally incremental: repositories without posture metadata are
+Validation is intentionally incremental: repositories without posture metadata are
 accepted while the organization rollout proceeds. Once any primary posture field is
 present, the complete primary triple is required and mechanically contradictory
 combinations fail closed.
@@ -33,6 +33,10 @@ def _prefix(index: int, repository: object) -> str:
     if isinstance(repository, str):
         return f"repositories[{index}] ({repository})"
     return f"repositories[{index}]"
+
+
+def _is_classified(item: dict[str, Any]) -> bool:
+    return bool(PRIMARY_FIELDS.intersection(item))
 
 
 def validate_repository_posture(
@@ -154,8 +158,89 @@ def validate_registry_posture(data: Any) -> list[str]:
     return errors
 
 
+def posture_report_lines(data: Any) -> list[str]:
+    """Return a migration-friendly source-posture coverage/topology report."""
+
+    if not isinstance(data, dict) or not isinstance(data.get("repositories"), list):
+        return ["Source posture report unavailable: registry shape is invalid"]
+
+    repositories = [
+        item for item in data["repositories"] if isinstance(item, dict)
+    ]
+    classified = [item for item in repositories if _is_classified(item)]
+    unclassified = [item for item in repositories if not _is_classified(item)]
+    monitored_unclassified = [
+        item for item in unclassified if item.get("monitor") is True
+    ]
+
+    lines = [
+        "Source/distribution posture",
+        f"  classified: {len(classified)}/{len(repositories)} repositories",
+        f"  monitored but unclassified: {len(monitored_unclassified)}",
+    ]
+
+    if classified:
+        lines.append("  classified repositories:")
+        for item in sorted(classified, key=lambda entry: str(entry.get("repository", ""))):
+            lines.append(
+                "    - "
+                f"{item.get('repository')}: "
+                f"{item.get('repositoryRole')}/"
+                f"{item.get('sourceExposure')}/"
+                f"{item.get('distributionMode')}"
+            )
+
+    edges: list[str] = []
+    for item in classified:
+        repository = item.get("repository")
+        if not isinstance(repository, str):
+            continue
+        for field, label in (
+            ("canonicalRepository", "canonical"),
+            ("publicDistributionRepository", "public-distribution"),
+            ("implementationAuthority", "implementation-authority"),
+            ("releaseAuthority", "release-authority"),
+        ):
+            target = item.get(field)
+            if isinstance(target, str) and target != repository:
+                edges.append(f"    - {repository} --{label}--> {target}")
+
+    if edges:
+        lines.append("  topology/authority edges:")
+        lines.extend(sorted(set(edges)))
+
+    if monitored_unclassified:
+        lines.append("  migration warnings (non-failing):")
+        for item in sorted(
+            monitored_unclassified,
+            key=lambda entry: str(entry.get("repository", "")),
+        ):
+            lines.append(f"    - {item.get('repository')}: posture not yet classified")
+
+    return lines
+
+
+def _read_registry(path: Path) -> Any:
+    try:
+        return json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        print(f"ERROR: file does not exist: {path}", file=sys.stderr)
+        raise SystemExit(2) from None
+    except json.JSONDecodeError as exc:
+        print(
+            f"ERROR: invalid JSON in {path}: line {exc.lineno}, column {exc.colno}: {exc.msg}",
+            file=sys.stderr,
+        )
+        raise SystemExit(2) from exc
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--report",
+        action="store_true",
+        help="print migration coverage and topology edges after validating",
+    )
     parser.add_argument(
         "registry",
         nargs="?",
@@ -164,18 +249,7 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    try:
-        data = json.loads(args.registry.read_text(encoding="utf-8"))
-    except FileNotFoundError:
-        print(f"ERROR: file does not exist: {args.registry}", file=sys.stderr)
-        return 2
-    except json.JSONDecodeError as exc:
-        print(
-            f"ERROR: invalid JSON in {args.registry}: line {exc.lineno}, column {exc.colno}: {exc.msg}",
-            file=sys.stderr,
-        )
-        return 2
-
+    data = _read_registry(args.registry)
     errors = validate_registry_posture(data)
     if errors:
         for error in errors:
@@ -185,11 +259,16 @@ def main() -> int:
     classified = sum(
         1
         for item in data.get("repositories", [])
-        if isinstance(item, dict) and PRIMARY_FIELDS.intersection(item)
+        if isinstance(item, dict) and _is_classified(item)
     )
     print(
         f"Validated source/distribution posture for {classified} classified repositories; unclassified entries remain permitted during rollout"
     )
+
+    if args.report:
+        for line in posture_report_lines(data):
+            print(line)
+
     return 0
 
 
