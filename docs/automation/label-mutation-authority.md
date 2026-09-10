@@ -13,7 +13,7 @@ For that same-repository pilot, prefer the ephemeral repository-scoped `GITHUB_T
 - preflight: `contents: read`, `issues: read`;
 - apply: `contents: read`, `issues: write`.
 
-No `contents: write`, `actions: write`, `workflows: write`, administration permission, organization permission, or inherited secret is required for label create/update operations.
+No `contents: write`, `actions: write`, `workflows: write`, administration permission, organization permission, or inherited secret is required for repository label creation.
 
 If synchronization later targets a different repository, the built-in token is no longer the intended authority boundary. Cross-repository mutation must use a short-lived GitHub App installation token with repository access limited to the reviewed target set and repository `Issues: write` only. A fine-grained personal access token is a fallback only when a GitHub App cannot provide the required capability; a classic PAT or broad personal credential is not acceptable.
 
@@ -24,6 +24,7 @@ If synchronization later targets a different repository, the built-in token is n
 - **Write-scoped token in the preflight/report job** — rejected because generating evidence does not require mutation authority.
 - **Write-scoped token on pull-request, push, schedule, or `pull_request_target` events** — rejected because unreviewed or ambient events must not create mutation authority.
 - **Cross-repository use of the default `GITHUB_TOKEN`** — rejected as an architecture assumption; cross-repository authority must be separately scoped and explicit.
+- **Metadata update in the first pilot** — rejected because GitHub does not document conditional/CAS semantics for the label `PATCH` endpoint. A read immediately before `PATCH` cannot eliminate the remaining read/write race, so the first pilot avoids an operation that could overwrite concurrent metadata changes.
 
 ## Event and approval boundary
 
@@ -47,11 +48,14 @@ The apply job is the only job with `issues: write`. It must:
 
 1. depend on successful preflight;
 2. repeat the repository/ref/revision allowlist checks rather than trusting only job outputs;
-3. re-fetch live labels after the apply job starts and regenerate the plan again;
-4. compare the regenerated digest to the same approved `plan_sha256` immediately before the first write;
-5. abort before mutation on any drift, collision, changed operation class, or changed manifest/control-plane revision;
-6. execute only operation classes separately authorized for the pilot;
-7. emit the mutation receipt even on rejection or partial failure.
+3. after any environment approval, query the live `refs/heads/main` tip and require it to equal both `expected_revision` and the dispatch `github.sha`; an advanced default branch makes the approved control plane stale and aborts the run;
+4. re-fetch live labels after the apply job starts and regenerate the complete plan again;
+5. compare the regenerated digest to the same approved `plan_sha256` before any write;
+6. abort before mutation on any drift, collision, changed operation class, changed manifest, or changed control-plane revision;
+7. execute only operation classes separately authorized for the pilot;
+8. immediately before **each** create, re-fetch that canonical name plus its configured aliases/case-equivalent names and require the exact approved create precondition to remain true;
+9. stop on the first API conflict/failure rather than retrying a changed state as though it were still approved;
+10. emit the mutation receipt even on rejection or partial failure.
 
 A protected environment named for label mutation should gate the apply job so approval occurs before the write-authorized job starts. If the repository cannot provide an equivalent approval gate, mutation remains blocked until an alternative is explicitly reviewed.
 
@@ -72,24 +76,29 @@ The planner should emit a canonical machine-readable plan record and compute `pl
 - desired canonical snapshots;
 - ordered action classifications and reasons.
 
-The mutation workflow must regenerate this plan twice: once in read-only preflight and again in the write-authorized apply job immediately before mutation. Any difference in relevant label name, color, description, alias/collision state, selected-label set, manifest digest, control-plane revision, or action classification changes the digest and must abort the run.
+The mutation workflow must regenerate this plan twice: once in read-only preflight and again in the write-authorized apply job after approval and before mutation. It must also compare the expected revision with the **live** default-branch tip at apply time. Any difference in relevant label name, color, description, alias/collision state, selected-label set, manifest digest, control-plane revision, or action classification changes the authorization condition and must abort the run.
 
 Unrelated out-of-scope repository labels are preserved and need not invalidate a plan unless their new name creates a selected canonical/alias/case collision.
 
-A timestamp alone is not a stale-plan control. A prior successful plan must never be applied without exact current-state revalidation.
+A timestamp alone is not a stale-plan control. A prior successful plan must never be applied without exact current-state and live-control-plane revalidation.
 
 ## Operation classes
 
-### Initial pilot: create and metadata update only
+### Initial pilot: create only
 
 The first implementation may authorize only:
 
-- `create` — create a selected canonical label that is still absent;
-- `update` — change color and/or description of an existing selected canonical label whose name is unchanged.
+- `create` — create a selected canonical label that is absent and has no configured alias/case-equivalent collision.
 
-Both operations require exact preconditions from the approved plan. A create must fail if any canonical, alias, or case-conflicting label appears after planning. An update must fail if the existing label snapshot differs from the approved snapshot.
+A create requires exact preconditions from the approved plan and an immediate per-operation read immediately before the `POST`. If another actor creates or changes a conflicting label between that read and the API request, the request must be treated as a conflict/failure and the run must stop; it must not reinterpret the new state or continue under broadened authority.
 
 Operation order must be deterministic and recorded in the plan. The runner stops on the first failed write and does not automatically attempt rollback.
+
+### Metadata update
+
+`update` remains report-only in the first mutation implementation.
+
+GitHub documents conditional requests primarily for safe reads and does not document a conditional compare-and-swap contract for the repository-label update endpoint. A later update capability therefore requires a separate reviewed decision that explicitly accepts or mitigates the remaining API-level read/write race, defines exact overwrite/rollback semantics, and demonstrates why the capability is needed. It must not be enabled merely because the planner can classify an `update` row.
 
 ### Migration and rename
 
@@ -119,10 +128,11 @@ Every attempted apply run must emit a durable JSON receipt, even when it aborts 
 - GitHub run ID and run attempt;
 - triggering actor;
 - workflow/ref/control-plane revision;
+- live default-branch revision observed after approval;
 - plan digest and manifest digest;
 - normalized pre-mutation label snapshots;
 - ordered requested operations;
-- per-operation outcome and API status;
+- per-operation immediate precondition snapshot, outcome, and API status;
 - normalized post-mutation snapshots;
 - overall result: `applied`, `no-op`, `rejected-stale`, `rejected-collision`, `failed`, or `partially-applied`;
 - rollback record derived from the captured pre-mutation state.
@@ -133,38 +143,39 @@ Secrets, token material, private-key material, and unrelated repository contents
 
 Rollback data is generated from captured state, not reconstructed later.
 
-For an `update`, the inverse record restores the exact previous color and description, but only if the live label still matches the mutation run's recorded post-state. Otherwise rollback must stop as stale.
-
 For a `create`, the inverse record identifies the created label and its exact post-state. Automatic deletion remains unsupported in the first implementation. A reviewed rollback may remove that label only if it still exactly matches the recorded post-state and has no issue or pull-request associations introduced after creation; otherwise it requires manual disposition.
+
+Because metadata `update` is not authorized in the first pilot, update rollback is also outside the first implementation. A future update design must define its inverse and stale-post-state check before update authority exists.
 
 A partially applied run must stop on the first failed operation, emit evidence for every completed and unattempted operation, and never guess at rollback. Rollback is a separate reviewed action, not an automatic failure handler.
 
 ## Idempotence and pilot evidence
 
-The current `.github` report includes legacy alias migrations that are deliberately outside the first mutation authority. Therefore pilot idempotence is measured over the **mutation-authorized create/update surface**, not over migration rows that remain report-only.
+The current `.github` report includes legacy alias migrations that are deliberately outside the first mutation authority. Therefore pilot idempotence is measured over the **mutation-authorized create surface**, not over update/migration rows that remain report-only.
 
 The first mutation pilot is complete only when all of the following evidence exists for `hackelia-micrantha/.github`:
 
 1. a reviewed dry-run from the exact merged control-plane revision with exact before/desired state and `plan_sha256`;
-2. the plan explicitly identifies which rows are mutation-authorized (`create`/`update`) and which rows remain non-mutating (`migration`, `collision`, `no-op`);
+2. the plan explicitly identifies which rows are mutation-authorized (`create`) and which rows remain non-mutating (`update`, `migration`, `collision`, `no-op`);
 3. explicit dispatch against that same reviewed revision and plan digest;
-4. successful writes for authorized create/update rows only;
-5. a post-run live inventory matching the desired state for the authorized create/update surface;
-6. a fresh planner run returning `no-op` for every row that the pilot was authorized to create or update;
-7. any remaining migration/collision rows are unchanged and explicitly dispositioned as deferred, blocked, or separately proposed work;
-8. a receipt containing deterministic rollback data;
-9. independent review of the run evidence before any second repository is allowlisted.
+4. after approval, the live `main` tip still equals the expected revision;
+5. successful writes for authorized create rows only, each with an immediate precondition check;
+6. a post-run live inventory matching the desired state for the authorized create surface;
+7. a fresh planner run returning `no-op` for every row that the pilot was authorized to create;
+8. any remaining update/migration/collision rows are unchanged and explicitly dispositioned as deferred, blocked, or separately proposed work;
+9. a receipt containing deterministic rollback data;
+10. independent review of the run evidence before any second repository is allowlisted.
 
-A pilot must not broaden its authority merely to make the whole report green. Deferred migration rows are valid evidence of a deliberately narrower capability boundary.
+A pilot must not broaden its authority merely to make the whole report green. Deferred update/migration rows are valid evidence of a deliberately narrower capability boundary.
 
 ## Broader rollout gate
 
-Do not expand beyond `.github` until the first pilot's authorized surface is idempotent and reviewed, and every remaining migration/collision row has an explicit disposition. Any cross-repository rollout additionally requires:
+Do not expand beyond `.github` until the first pilot's authorized create surface is idempotent and reviewed, and every remaining update/migration/collision row has an explicit disposition. Any cross-repository rollout additionally requires:
 
 - a GitHub App installation token scoped to the exact reviewed repositories and `Issues: write`;
 - token minting only in the approved apply job, after read-only preflight;
 - explicit repository opt-in in the manifest;
-- the same stale-plan and collision controls;
+- the same live-default-branch, stale-plan, per-operation precondition, and collision controls;
 - protected handling of App credentials/private keys;
 - repository-by-repository evidence and rollback records.
 
