@@ -9,6 +9,7 @@ on:
       - docs/prompts/**
       - metadata/**
       - tests/**
+      - tools/label_sync.py
       - tools/repository_health.py
       - tools/source_posture.py
       - workflow-templates/**
@@ -23,6 +24,7 @@ on:
       - docs/prompts/**
       - metadata/**
       - tests/**
+      - tools/label_sync.py
       - tools/repository_health.py
       - tools/source_posture.py
       - workflow-templates/**
@@ -37,7 +39,7 @@ concurrency:
 
 jobs:
   validate:
-    name: registry, posture, prompts, templates, and tests
+    name: registry, posture, prompts, templates, labels, and tests
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -55,6 +57,9 @@ jobs:
 
       - name: Validate source and distribution posture
         run: python tools/source_posture.py metadata/repositories.json
+
+      - name: Validate label synchronization metadata
+        run: python tools/label_sync.py validate
 
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
