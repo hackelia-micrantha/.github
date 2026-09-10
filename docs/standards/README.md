@@ -7,6 +7,7 @@ These standards define organization-wide defaults for engineering evidence, secu
 - [Testing and validation](testing.md)
 - [CI/CD](ci-cd.md)
 - [Security engineering](security.md)
+- [Source exposure and distribution](source-exposure-and-distribution.md)
 - [CLI interoperability](cli-interoperability.md)
 - [Tool result trust and observation](tool-result-trust.md)
 - [Releases and versioning](releases.md)
@@ -39,6 +40,7 @@ Exceptions do not authorize misleading maturity claims, weakened security bounda
 8. For command-line tools and multi-transport operations, preserve one canonical semantic contract while keeping transport-specific framing explicit.
 9. Treat externally influenced tool/connector/model content as data with preserved provenance; observations do not become authority by crossing an internal boundary.
 10. Separate authoring from validation: authoritative source changes enter history through explicit commits; CI verifies them rather than silently rewriting the revision under review.
+11. Treat source visibility and artifact distribution as explicit threat-model and product decisions; private source may raise attacker cost but must never be the control that makes an otherwise insecure design safe.
 
 ## Maturity relationship
 

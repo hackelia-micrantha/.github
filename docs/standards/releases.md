@@ -70,6 +70,8 @@ Release artifacts should be:
 
 For mobile, native, container, Nix, package-registry, and provider-adapter releases, validate installation or consumption through the supported channel.
 
+When implementation source is intentionally private, apply the [source exposure and distribution standard](source-exposure-and-distribution.md). Public package definitions must consume immutable reviewed release artifacts rather than requiring exported buildable implementation source, unless an explicit documented exception changes that posture.
+
 For command-line tools, apply the [CLI interoperability standard](cli-interoperability.md). The supported package or release artifact must contain the same executable contract and section-1 man page validated by CI.
 
 ## Supply-chain evidence
@@ -120,14 +122,17 @@ Use the organization [release-readiness prompt](../prompts/releases/release-read
 - compatibility, migration, rollback, and known limitations are documented;
 - public documentation matches the released capability;
 - publication credentials and targets are scoped correctly;
+- declared source-exposure posture matches repository visibility, artifact contents, and package-manager/Nix behavior;
 - command-line tools satisfy applicable Unix process, machine-output, non-interactive safety, man-page, and conformance requirements from the CLI interoperability standard;
 - multi-transport operations preserve one canonical domain contract rather than parallel CLI-versus-orchestrator semantics.
 
-Missing applicable CLI interoperability or cross-transport contract evidence is a release blocker for a surface claimed as supported or stable. Experimental channels may explicitly disclose unavailable pre-release behavior instead of claiming support.
+Missing applicable CLI interoperability or cross-transport contract evidence is a release blocker for a surface claimed as supported or stable. A public source-building package that contradicts an intentional private-implementation boundary is likewise a release blocker until the package or declared posture is corrected. Experimental channels may explicitly disclose unavailable pre-release behavior instead of claiming support.
 
 ## Publication authority across repositories
 
 The authoritative implementation repository owns product or contract release identity. Community, website, adapter, and distribution repositories publish their own packaging or integration releases without redefining upstream component maturity.
+
+For a private-canonical/public-distribution topology, the public distribution surface must be independently consumable without private-repository credentials and must preserve traceability to the authorized canonical revision and immutable artifact.
 
 When GitHub and GitLab both participate, document which repository or registry is authoritative for source, tags, packages, release notes, and mirrors. Mirrors must not create conflicting release histories.
 
