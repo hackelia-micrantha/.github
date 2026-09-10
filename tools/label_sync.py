@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -20,6 +21,8 @@ PREFIXES = ("priority:", "status:", "type:", "area:", "maturity:")
 ROOT_FIELDS = {"$schema", "schemaVersion", "organization", "labels", "repositories"}
 LABEL_FIELDS = {"name", "color", "description", "aliases"}
 REPOSITORY_FIELDS = {"repository", "mode", "labels", "notes"}
+PLAN_SCHEMA_VERSION = 1
+INITIAL_MUTATION_ACTIONS = {"create", "update"}
 
 
 def load(path: Path) -> Any:
@@ -27,6 +30,20 @@ def load(path: Path) -> Any:
         return json.loads(path.read_text(encoding="utf-8"))
     except (FileNotFoundError, json.JSONDecodeError) as exc:
         raise ValueError(f"cannot load {path}: {exc}") from None
+
+
+def canonical_json(value: Any) -> str:
+    """Return deterministic JSON suitable for hashing and evidence identity."""
+    return json.dumps(
+        value,
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+
+
+def sha256_json(value: Any) -> str:
+    return hashlib.sha256(canonical_json(value).encode("utf-8")).hexdigest()
 
 
 def documented(path: Path) -> set[str]:
@@ -167,8 +184,40 @@ def snapshot(name: str, value: dict[str, Any]) -> dict[str, str]:
     }
 
 
+def plan_identity(
+    manifest: dict[str, Any],
+    repo: str,
+    control_revision: str | None,
+    selected_labels: list[str],
+    actions: list[dict[str, Any]],
+) -> dict[str, Any]:
+    """Build the mutation-relevant identity; preserved local labels are excluded."""
+    return {
+        "schemaVersion": PLAN_SCHEMA_VERSION,
+        "repository": repo,
+        "controlRevision": control_revision,
+        "manifestSha256": sha256_json(manifest),
+        "selectedLabels": selected_labels,
+        "actions": [
+            {
+                "label": item["label"],
+                "action": item["action"],
+                "existing": item["existing"],
+                "desired": item["desired"],
+                "reason": item["reason"],
+                "initialMutationEligible": item["initialMutationEligible"],
+            }
+            for item in actions
+        ],
+    }
+
+
 def plan(
-    manifest: dict[str, Any], repo: str, current: list[dict[str, Any]]
+    manifest: dict[str, Any],
+    repo: str,
+    current: list[dict[str, Any]],
+    *,
+    control_revision: str | None = None,
 ) -> dict[str, Any]:
     adoption = next(
         (item for item in manifest["repositories"] if item["repository"] == repo),
@@ -239,6 +288,7 @@ def plan(
                 "existing": before,
                 "desired": desired,
                 "reason": reason,
+                "initialMutationEligible": action in INITIAL_MUTATION_ACTIONS,
             }
         )
 
@@ -246,8 +296,22 @@ def plan(
     summary: dict[str, int] = {}
     for item in actions:
         summary[item["action"]] = summary.get(item["action"], 0) + 1
+
+    selected_labels = list(adoption["labels"])
+    identity = plan_identity(
+        manifest,
+        repo,
+        control_revision,
+        selected_labels,
+        actions,
+    )
     return {
+        "schemaVersion": PLAN_SCHEMA_VERSION,
         "repository": repo,
+        "controlRevision": control_revision,
+        "manifestSha256": identity["manifestSha256"],
+        "planSha256": sha256_json(identity),
+        "selectedLabels": selected_labels,
         "mode": "report-only",
         "mutates": False,
         "summary": summary,
@@ -309,19 +373,24 @@ def format_desired(value: dict[str, str]) -> str:
 
 
 def render(value: dict[str, Any]) -> str:
+    control_revision = value.get("controlRevision")
     lines = [
         "# Micrantha label synchronization plan",
         "",
         f"Repository: `{value['repository']}`",
+        f"Control revision: `{control_revision}`" if control_revision else "Control revision: **unbound**",
+        f"Manifest SHA-256: `{value.get('manifestSha256', 'unavailable')}`",
+        f"Plan SHA-256: `{value.get('planSha256', 'unavailable')}`",
         "Mode: `report-only`",
         "Mutation: **disabled**",
         "",
-        "| Label | Action | Existing | Desired | Reason |",
-        "| --- | --- | --- | --- | --- |",
+        "| Label | Action | Initial write candidate | Existing | Desired | Reason |",
+        "| --- | --- | --- | --- | --- | --- |",
     ]
     lines += [
         (
             f"| `{item['label']}` | {item['action']} | "
+            f"{'yes' if item.get('initialMutationEligible') else 'no'} | "
             f"{format_existing(item['existing'])} | {format_desired(item['desired'])} | "
             f"{escape(item['reason'])} |"
         )
@@ -331,7 +400,12 @@ def render(value: dict[str, Any]) -> str:
     lines += ["", f"Out-of-scope repository labels preserved: **{len(preserved)}**"]
     if preserved:
         lines += ["", ", ".join(f"`{name}`" for name in preserved)]
-    lines += ["", "Evidence only: no apply, rename, or delete operation exists.", ""]
+    lines += [
+        "",
+        "Initial write candidate is an operation classification only; this report grants no authority.",
+        "Evidence only: no apply, rename, or delete operation exists.",
+        "",
+    ]
     return "\n".join(lines)
 
 
@@ -347,6 +421,7 @@ def main() -> int:
     planner = sub.add_parser("plan")
     planner.add_argument("--repository", required=True)
     planner.add_argument("--current-labels", type=Path)
+    planner.add_argument("--control-revision", default=os.environ.get("GITHUB_SHA"))
     planner.add_argument("--output-json", type=Path)
     planner.add_argument("--output-markdown", type=Path)
     args = parser.parse_args()
@@ -376,7 +451,12 @@ def main() -> int:
         )
         if not isinstance(current, list):
             raise ValueError("current labels must be a JSON array")
-        result = plan(manifest, args.repository, current)
+        result = plan(
+            manifest,
+            args.repository,
+            current,
+            control_revision=args.control_revision,
+        )
     except ValueError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2
