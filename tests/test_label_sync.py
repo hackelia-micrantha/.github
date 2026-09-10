@@ -101,7 +101,7 @@ class LabelSyncTests(unittest.TestCase):
         self.assertEqual(actions["status:ready"]["action"], "no-op")
         self.assertFalse(actions["status:ready"]["initialMutationEligible"])
         self.assertEqual(actions["priority:P1"]["action"], "update")
-        self.assertTrue(actions["priority:P1"]["initialMutationEligible"])
+        self.assertFalse(actions["priority:P1"]["initialMutationEligible"])
         self.assertEqual(actions["priority:P1"]["existing"][0]["color"], "ffffff")
         self.assertEqual(actions["priority:P1"]["desired"]["color"], "d93f0b")
         self.assertEqual(actions["priority:P1"]["existing"][0]["description"], "Old.")
@@ -200,7 +200,7 @@ class LabelSyncTests(unittest.TestCase):
                 {
                     "label": "priority:P1",
                     "action": "update",
-                    "initialMutationEligible": True,
+                    "initialMutationEligible": False,
                     "existing": [
                         {"name": "priority:P1", "color": "ffffff", "description": "Old."}
                     ],
