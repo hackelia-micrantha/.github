@@ -150,6 +150,19 @@ class LabelSyncTests(unittest.TestCase):
             with_unrelated_local_label["preservedRepositoryLabels"],
         )
 
+        with_selected_alias = label_sync.plan(
+            self.manifest,
+            repo,
+            [{"name": "CI", "color": "ededed", "description": "Legacy CI."}],
+            control_revision=revision,
+        )
+        self.assertNotEqual(baseline["planSha256"], with_selected_alias["planSha256"])
+        area_ci = next(
+            item for item in with_selected_alias["actions"] if item["label"] == "area:ci"
+        )
+        self.assertEqual(area_ci["action"], "migration")
+        self.assertFalse(area_ci["initialMutationEligible"])
+
         different_revision = label_sync.plan(
             self.manifest,
             repo,
