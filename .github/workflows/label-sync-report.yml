@@ -54,6 +54,7 @@ jobs:
         run: |
           python tools/label_sync.py plan \
             --repository hackelia-micrantha/.github \
+            --control-revision "$GITHUB_SHA" \
             --output-json label-sync-plan.json \
             --output-markdown label-sync-plan.md
           cat label-sync-plan.md >> "$GITHUB_STEP_SUMMARY"
