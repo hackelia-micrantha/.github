@@ -1,6 +1,6 @@
 # Label synchronization
 
-Organization-standard labels are reconciled conservatively. The first implementation is **report-only**: it can inventory a reviewed repository and describe what would change, but it cannot create, update, rename, or delete labels.
+Organization-standard labels are reconciled conservatively. The current implementation is **report-only**: it can inventory a reviewed repository and describe what would change, but it cannot create, update, rename, or delete labels.
 
 ## Sources of truth
 
@@ -8,6 +8,7 @@ Organization-standard labels are reconciled conservatively. The first implementa
 - `metadata/labels.json` is the machine-readable synchronization manifest.
 - `metadata/repositories.json` remains the repository registry. Every label-sync target must already exist there.
 - `tools/label_sync.py` validates the manifest and produces deterministic plans.
+- `docs/automation/label-mutation-authority.md` defines the separate security/authority contract that must be satisfied before any mutation implementation exists.
 
 The validator requires the managed `priority:`, `status:`, `type:`, `area:`, and `maturity:` label names in `metadata/labels.json` to match the labels documented in `docs/standards/labels.md`. A manifest entry cannot silently introduce a new organization-standard label.
 
@@ -52,6 +53,18 @@ The workflow:
 
 There is intentionally no `apply` command.
 
-A later reviewed slice may add mutation only after issue #27 records an explicit target/label allowlist, reviewed dry-run evidence, a dedicated least-privilege credential or GitHub App, collision/migration handling, before/after evidence, rollback behavior, and an independently reviewed opt-in mutation boundary.
+Issue #76 and [label mutation authority and rollback](label-mutation-authority.md) define the next gate. The initial mutation implementation, if separately reviewed and added later, must remain narrower than the report planner:
 
-Rename and delete remain disabled unless a separate migration explicitly authorizes them. Organization-wide mutation must never be inferred from the existence of the catalog or from a report-only plan.
+- `.github` is the only first pilot target;
+- mutation is explicit human dispatch on the default branch only;
+- the approved plan is bound to an exact workflow revision and SHA-256 plan digest;
+- live label state is re-read and the plan is regenerated immediately before mutation;
+- stale-plan or collision differences fail closed;
+- only `create` and same-name metadata `update` may be authorized initially;
+- `migration`/rename remains report-only until separately authorized;
+- delete remains unsupported;
+- every attempted mutation emits before/after evidence and rollback data.
+
+For the same-repository `.github` pilot, the narrow credential is the ephemeral repository-scoped `GITHUB_TOKEN` with `contents: read` and `issues: write`. Cross-repository rollout requires a short-lived GitHub App installation token scoped to the exact reviewed repositories with repository `Issues: write` only.
+
+Organization-wide mutation must never be inferred from the existence of the catalog, from a successful report-only plan, or from an alias match.
