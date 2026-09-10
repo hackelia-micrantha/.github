@@ -141,19 +141,25 @@ A partially applied run must stop on the first failed operation, emit evidence f
 
 ## Idempotence and pilot evidence
 
+The current `.github` report includes legacy alias migrations that are deliberately outside the first mutation authority. Therefore pilot idempotence is measured over the **mutation-authorized create/update surface**, not over migration rows that remain report-only.
+
 The first mutation pilot is complete only when all of the following evidence exists for `hackelia-micrantha/.github`:
 
 1. a reviewed dry-run from the exact merged control-plane revision with exact before/desired state and `plan_sha256`;
-2. explicit dispatch against that same reviewed revision and plan digest;
-3. successful create/update operations only;
-4. a post-run live inventory matching the desired selected surface;
-5. a fresh planner run returning only `no-op` for every selected canonical label;
-6. a receipt containing deterministic rollback data;
-7. independent review of the run evidence before any second repository is allowlisted.
+2. the plan explicitly identifies which rows are mutation-authorized (`create`/`update`) and which rows remain non-mutating (`migration`, `collision`, `no-op`);
+3. explicit dispatch against that same reviewed revision and plan digest;
+4. successful writes for authorized create/update rows only;
+5. a post-run live inventory matching the desired state for the authorized create/update surface;
+6. a fresh planner run returning `no-op` for every row that the pilot was authorized to create or update;
+7. any remaining migration/collision rows are unchanged and explicitly dispositioned as deferred, blocked, or separately proposed work;
+8. a receipt containing deterministic rollback data;
+9. independent review of the run evidence before any second repository is allowlisted.
+
+A pilot must not broaden its authority merely to make the whole report green. Deferred migration rows are valid evidence of a deliberately narrower capability boundary.
 
 ## Broader rollout gate
 
-Do not expand beyond `.github` until the first pilot is idempotent and reviewed. Any cross-repository rollout additionally requires:
+Do not expand beyond `.github` until the first pilot's authorized surface is idempotent and reviewed, and every remaining migration/collision row has an explicit disposition. Any cross-repository rollout additionally requires:
 
 - a GitHub App installation token scoped to the exact reviewed repositories and `Issues: write`;
 - token minting only in the approved apply job, after read-only preflight;
