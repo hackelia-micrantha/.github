@@ -4,11 +4,13 @@ on:
   pull_request:
     paths:
       - .github/workflows/**
+      - docs/architecture/**
       - docs/automation/**
       - docs/prompts/**
       - metadata/**
       - tests/**
       - tools/repository_health.py
+      - tools/source_posture.py
       - workflow-templates/**
       - mise.toml
   push:
@@ -16,11 +18,13 @@ on:
       - main
     paths:
       - .github/workflows/**
+      - docs/architecture/**
       - docs/automation/**
       - docs/prompts/**
       - metadata/**
       - tests/**
       - tools/repository_health.py
+      - tools/source_posture.py
       - workflow-templates/**
       - mise.toml
 
@@ -33,7 +37,7 @@ concurrency:
 
 jobs:
   validate:
-    name: registry, prompts, templates, and tests
+    name: registry, posture, prompts, templates, and tests
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
@@ -48,6 +52,9 @@ jobs:
 
       - name: Validate metadata and workflow templates
         run: python tools/repository_health.py validate
+
+      - name: Validate source and distribution posture
+        run: python tools/source_posture.py metadata/repositories.json
 
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
