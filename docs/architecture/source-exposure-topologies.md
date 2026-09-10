@@ -33,6 +33,8 @@ publicDistributionRepository: owner/repository | null
 
 During migration these fields are optional. Once any primary posture field is present, `sourceExposure`, `repositoryRole`, and `distributionMode` must be declared together.
 
+`distributionMode` is repository-local: it describes the primary downstream acquisition mode represented by **this repository surface**, not the eventual acquisition mode of the project as a whole. A private canonical build/release repository that publishes through a separate public binary repository should therefore normally declare `distributionMode=internal` (or `none` when it exposes no consumer acquisition surface), while the public distribution repository declares `distributionMode=binary`.
+
 `visibility` remains separate. It describes GitHub access, not product authority or source-disclosure intent.
 
 ## Topology A — public-source canonical project
@@ -66,6 +68,7 @@ Use this when implementation remains private but unauthenticated/public consumer
 private canonical repository
   sourceExposure=private
   repositoryRole=canonical
+  distributionMode=internal
   implementation/release authority
         |
         | authorized reviewed release
@@ -99,6 +102,7 @@ Use this when canonical authority remains private but selected implementation/co
 private canonical repository
   sourceExposure=private
   repositoryRole=canonical
+  distributionMode=internal
         |
         | reviewed one-way projection
         v
@@ -144,6 +148,7 @@ Use this when a project wants public documentation, schemas, examples, interoper
 private canonical repository
   sourceExposure=private
   repositoryRole=canonical
+  distributionMode=internal
         |
         | explicit allow-listed publication
         v
@@ -230,6 +235,7 @@ Avoid:
 
 - interpreting `-community` as `distribution`, `projection`, or `canonical` without metadata;
 - interpreting `visibility=public` as `sourceExposure=public`;
+- recording a public distribution mode on a separate private canonical repository merely because the project eventually ships that way;
 - exporting private implementation source solely so a public Nix flake can build it;
 - requiring ordinary downstream endpoints to possess private source credentials when they only need released artifacts;
 - allowing a public projection to silently fork canonical contracts;
