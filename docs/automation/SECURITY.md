@@ -39,13 +39,13 @@ The initial reusable workflows do not accept or inherit caller secrets. Adding s
 
 The current label-sync implementation is report-only and has no write credential or `apply` path.
 
-The separately reviewed [label mutation authority contract](label-mutation-authority.md) defines the required boundary before mutation can be implemented. The first `.github`-only pilot should prefer the ephemeral repository-scoped `GITHUB_TOKEN` with only `contents: read` and `issues: write`; no broader repository or organization permission is required for repository label create/update operations.
+The separately reviewed [label mutation authority contract](label-mutation-authority.md) defines the required boundary before mutation can be implemented. The first `.github`-only pilot separates read-only preflight from the only write-authorized job. The apply job may use the ephemeral repository-scoped `GITHUB_TOKEN` with only `contents: read` and `issues: write`; no broader repository or organization permission is required for repository label creation.
 
-Mutation must be manual-dispatch only, default-branch only, exact-plan-bound, stale-safe, collision-safe, and restricted to the reviewed repository/label allowlist. Pull requests, forks, pushes, schedules, issue comments, and repository dispatches must not obtain label-write authority.
+Mutation must be manual-dispatch only, default-branch only, exact-plan-bound, stale-safe, collision-safe, and restricted to the reviewed repository/label allowlist. After approval, the write-authorized job must verify that the **live** default-branch tip still equals the approved control-plane revision, then re-read live label state. Pull requests, forks, pushes, schedules, issue comments, and repository dispatches must not obtain label-write authority.
 
 A later cross-repository rollout must mint a short-lived GitHub App installation token scoped to the exact reviewed repository set and repository `Issues: write`. Broad personal tokens, classic PATs, and organization-admin authority are not acceptable substitutes.
 
-Write authority does not imply migration authority. The first mutation implementation may create canonical labels and update color/description only. Alias migration/rename requires a separate reviewed decision; delete is unsupported initially.
+The first mutation implementation is **create-only**. Metadata update is deferred because the label update API has no documented compare-and-swap/conditional write contract, leaving a residual read/write overwrite race. Alias migration/rename requires a separate reviewed decision; delete is unsupported initially. Every create must re-check its exact precondition immediately before the API request and stop on conflict rather than reinterpret changed state.
 
 ## Third-party actions
 
