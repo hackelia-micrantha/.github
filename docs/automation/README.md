@@ -2,7 +2,7 @@
 
 This directory documents the shared automation surfaces maintained by the Micrantha organization meta repository.
 
-See [automation security boundaries](SECURITY.md) for the caller, input, secret, runner, and token trust model and [shared automation versioning](versioning.md) for immutable caller pins, compatibility, pilots, and rollback.
+See [automation security boundaries](SECURITY.md) for the caller, input, secret, runner, and token trust model, [shared automation versioning](versioning.md) for immutable caller pins, compatibility, pilots, and rollback, and [label mutation authority](label-mutation-authority.md) for the separately reviewed write boundary that must exist before label synchronization can mutate repository state.
 
 ## Scope
 
@@ -12,9 +12,10 @@ The automation foundation provides:
 - reusable, read-only CI workflows under `.github/workflows/`;
 - a machine-readable repository registry under `metadata/`;
 - registry validation and read-only repository-health reporting;
+- report-only label synchronization planning;
 - explicit adoption and trust-boundary guidance.
 
-It does not automatically modify repository settings, labels, branch protections, secrets, environments, runners, releases, or repository files outside this repository.
+It does not automatically modify repository settings, labels, branch protections, secrets, environments, runners, releases, or repository files outside this repository. The current label synchronization implementation is report-only and contains no write path.
 
 ## Workflow starter templates
 
@@ -97,23 +98,24 @@ Before a repository is monitored, required-file expectations must be justified b
 - registry structure and semantics;
 - workflow-template and `.properties.json` pairing;
 - JSON metadata syntax;
-- known reusable-workflow references from starter templates.
+- known reusable-workflow references from starter templates;
+- label synchronization manifest semantics.
 
 The workflow uses only read permissions and runs on pull requests and pushes to the default branch.
 
 ## Label synchronization
 
-Organization-wide label synchronization is intentionally not included in this slice. Label mutation requires explicit credentials, collision handling, repository opt-in, dry-run evidence, and a rollback strategy.
+The current [label synchronization](label-synchronization.md) surface is deliberately report-only. It has a canonical machine-readable label catalog, explicit per-repository adoption, deterministic collision/migration planning, exact before/desired evidence, and no `apply` command.
 
-A future label-sync workflow should:
+Any future mutation must follow [label mutation authority and rollback](label-mutation-authority.md). In particular:
 
-1. read the shared taxonomy from `docs/standards/labels.md` or a derived machine-readable source;
-2. default to dry-run;
-3. require an explicit repository allowlist;
-4. preserve repository-specific labels;
-5. never delete or rename labels without a reviewed migration plan;
-6. use a dedicated least-privilege GitHub App or fine-grained token;
-7. emit a complete before-and-after report.
+1. mutation remains separate from pull-request/push/scheduled reporting;
+2. the first pilot is `.github` only and may authorize create + metadata update only;
+3. stale-plan and collision checks fail closed;
+4. migration/rename requires separate explicit authority and is never inferred from an alias;
+5. delete is unsupported initially;
+6. every mutation emits before/after evidence and deterministic rollback data;
+7. cross-repository mutation requires a short-lived GitHub App installation token scoped to reviewed repositories and minimum label-management permission.
 
 ## Adoption sequence
 
