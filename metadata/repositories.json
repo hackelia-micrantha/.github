@@ -97,6 +97,12 @@
         "read-only host integration contracts"
       ],
       "requiredFiles": ["README.md"],
+      "sourceExposure": "private",
+      "repositoryRole": "canonical",
+      "implementationAuthority": "hackelia-micrantha/invokrum",
+      "releaseAuthority": "hackelia-micrantha/invokrum",
+      "distributionMode": "internal",
+      "publicDistributionRepository": "hackelia-micrantha/invokrum-community",
       "notes": "Mechanism, not policy; does not own workflow state, authorization, execution, or task completion."
     },
     {
@@ -109,6 +115,12 @@
       "monitor": true,
       "authority": ["public Invokrum documentation, examples, and community distribution"],
       "requiredFiles": ["README.md"],
+      "sourceExposure": "none",
+      "repositoryRole": "distribution",
+      "implementationAuthority": "hackelia-micrantha/invokrum",
+      "releaseAuthority": "hackelia-micrantha/invokrum",
+      "distributionMode": "binary",
+      "canonicalRepository": "hackelia-micrantha/invokrum",
       "notes": "Public surface does not independently redefine private implementation authority."
     },
     {
@@ -125,6 +137,12 @@
         "experimental MCP HTTP authorization adapters"
       ],
       "requiredFiles": ["README.md"],
+      "sourceExposure": "private",
+      "repositoryRole": "canonical",
+      "implementationAuthority": "hackelia-micrantha/keylix",
+      "releaseAuthority": "hackelia-micrantha/keylix",
+      "distributionMode": "internal",
+      "publicDistributionRepository": "hackelia-micrantha/keylix-community",
       "notes": "Proof of possession and sender binding do not establish application authorization, policy, or task correctness."
     },
     {
@@ -136,7 +154,13 @@
       "archived": false,
       "monitor": true,
       "authority": ["public Keylix documentation, examples, and community distribution"],
-      "requiredFiles": ["README.md"]
+      "requiredFiles": ["README.md"],
+      "sourceExposure": "public",
+      "repositoryRole": "projection",
+      "implementationAuthority": "hackelia-micrantha/keylix",
+      "releaseAuthority": "hackelia-micrantha/keylix",
+      "distributionMode": "source",
+      "canonicalRepository": "hackelia-micrantha/keylix"
     },
     {
       "repository": "hackelia-micrantha/hyperion",
@@ -226,7 +250,12 @@
       "archived": false,
       "monitor": true,
       "authority": ["public Kotlin Multiplatform SDK and application foundation"],
-      "requiredFiles": ["README.md"]
+      "requiredFiles": ["README.md"],
+      "sourceExposure": "public",
+      "repositoryRole": "canonical",
+      "implementationAuthority": "hackelia-micrantha/bluebell",
+      "releaseAuthority": "hackelia-micrantha/bluebell",
+      "distributionMode": "source"
     },
     {
       "repository": "hackelia-micrantha/amaryllis",
@@ -237,7 +266,12 @@
       "archived": false,
       "monitor": true,
       "authority": ["React Native on-device multimodal inference and governed UI foundation"],
-      "requiredFiles": ["README.md"]
+      "requiredFiles": ["README.md"],
+      "sourceExposure": "public",
+      "repositoryRole": "canonical",
+      "implementationAuthority": "hackelia-micrantha/amaryllis",
+      "releaseAuthority": "hackelia-micrantha/amaryllis",
+      "distributionMode": "source"
     },
     {
       "repository": "hackelia-micrantha/digitalis",
@@ -292,7 +326,12 @@
       "archived": false,
       "monitor": true,
       "authority": ["mobile platform engineering golden path and reference distribution"],
-      "requiredFiles": ["README.md"]
+      "requiredFiles": ["README.md"],
+      "sourceExposure": "public",
+      "repositoryRole": "canonical",
+      "implementationAuthority": "hackelia-micrantha/morifolium",
+      "releaseAuthority": "hackelia-micrantha/morifolium",
+      "distributionMode": "source"
     },
     {
       "repository": "hackelia-micrantha/repora",
@@ -306,7 +345,12 @@
         "repository topology and reconciliation tooling",
         "managed repository artifacts and posture evidence"
       ],
-      "requiredFiles": ["README.md"]
+      "requiredFiles": ["README.md"],
+      "sourceExposure": "public",
+      "repositoryRole": "canonical",
+      "implementationAuthority": "hackelia-micrantha/repora",
+      "releaseAuthority": "hackelia-micrantha/repora",
+      "distributionMode": "source"
     },
     {
       "repository": "hackelia-micrantha/calathea-community",
@@ -318,6 +362,11 @@
       "monitor": true,
       "authority": ["canonical reusable Calathea core, product contracts, architecture, and executable"],
       "requiredFiles": ["README.md"],
+      "sourceExposure": "public",
+      "repositoryRole": "canonical",
+      "implementationAuthority": "hackelia-micrantha/calathea-community",
+      "releaseAuthority": "hackelia-micrantha/calathea-community",
+      "distributionMode": "source",
       "notes": "This public repository is intentionally authoritative for reusable Calathea semantics."
     },
     {
@@ -330,6 +379,11 @@
       "monitor": true,
       "authority": ["private Calathea composition, portfolio data, dogfood operations, and non-public extensions"],
       "requiredFiles": ["README.md", "public-core.lock.toml"],
+      "sourceExposure": "private",
+      "repositoryRole": "internal",
+      "implementationAuthority": "hackelia-micrantha/calathea",
+      "releaseAuthority": "hackelia-micrantha/calathea",
+      "distributionMode": "internal",
       "notes": "Must not fork the reusable semantics owned by calathea-community."
     },
     {
