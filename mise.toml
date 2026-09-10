@@ -2,8 +2,8 @@
 python = "3.13"
 
 [tasks.validate]
-description = "Validate repository metadata and workflow-template layout"
-run = "python tools/repository_health.py validate"
+description = "Validate repository metadata, source posture, and workflow-template layout"
+run = "python tools/repository_health.py validate && python tools/source_posture.py metadata/repositories.json"
 
 [tasks.test]
 description = "Run automation unit tests"
