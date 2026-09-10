@@ -26,6 +26,14 @@ class LabelSyncTests(unittest.TestCase):
         errors = label_sync.validate(manifest, self.registry, self.standard)
         self.assertTrue(any("apply is not implemented" in error for error in errors))
 
+    def test_alias_cannot_collide_with_a_canonical_label(self) -> None:
+        manifest = copy.deepcopy(self.manifest)
+        manifest["labels"][0]["aliases"] = ["TYPE:BUG"]
+        errors = label_sync.validate(manifest, self.registry, self.standard)
+        self.assertTrue(
+            any("collides with canonical label 'type:bug'" in error for error in errors)
+        )
+
     def test_plan_distinguishes_outcomes_and_preserves_out_of_scope_labels(self) -> None:
         manifest = {
             "labels": [
