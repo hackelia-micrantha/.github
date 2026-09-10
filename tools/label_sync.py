@@ -65,7 +65,9 @@ def validate(manifest: Any, registry: Any, standards: Path) -> list[str]:
         if not isinstance(desc, str) or not desc.strip() or len(desc) > 100:
             errors.append(f"{p}.description must contain 1-100 characters")
         raw_aliases = item.get("aliases", [])
-        if not isinstance(raw_aliases, list) or any(not isinstance(a, str) or not a for a in raw_aliases):
+        if not isinstance(raw_aliases, list) or any(
+            not isinstance(alias, str) or not alias for alias in raw_aliases
+        ):
             errors.append(f"{p}.aliases must be a string array")
             continue
         if len(raw_aliases) != len(set(raw_aliases)):
@@ -83,7 +85,11 @@ def validate(manifest: Any, registry: Any, standards: Path) -> list[str]:
     if extra:
         errors.append("manifest has undocumented labels: " + ", ".join(extra))
 
-    registered = {item.get("repository") for item in registry.get("repositories", []) if isinstance(item, dict)}
+    registered = {
+        item.get("repository")
+        for item in registry.get("repositories", [])
+        if isinstance(item, dict)
+    }
     repos = manifest.get("repositories")
     if not isinstance(repos, list) or not repos:
         return errors + ["repositories must be a non-empty allowlist"]
@@ -116,35 +122,64 @@ def validate(manifest: Any, registry: Any, standards: Path) -> list[str]:
     return errors
 
 
-def plan(manifest: dict[str, Any], repo: str, current: list[dict[str, Any]]) -> dict[str, Any]:
-    adoption = next((item for item in manifest["repositories"] if item["repository"] == repo), None)
+def snapshot(name: str, value: dict[str, Any]) -> dict[str, str]:
+    return {
+        "name": name,
+        "color": str(value.get("color", "")).lstrip("#").lower(),
+        "description": str(value.get("description") or ""),
+    }
+
+
+def plan(
+    manifest: dict[str, Any], repo: str, current: list[dict[str, Any]]
+) -> dict[str, Any]:
+    adoption = next(
+        (item for item in manifest["repositories"] if item["repository"] == repo),
+        None,
+    )
     if not adoption:
         raise ValueError(f"repository is not allowlisted for label sync: {repo}")
+
     catalog = {item["name"]: item for item in manifest["labels"]}
     existing = {
-        str(item["name"]): {
-            "color": str(item.get("color", "")).lstrip("#").lower(),
-            "description": str(item.get("description") or ""),
-        }
+        str(item["name"]): snapshot(str(item["name"]), item)
         for item in current
         if isinstance(item, dict) and item.get("name")
     }
     lower = {name.lower(): name for name in existing}
     selected = set(adoption["labels"])
-    selected_aliases: set[str] = set()
-    actions: list[dict[str, str]] = []
+    considered_existing: set[str] = set()
+    actions: list[dict[str, Any]] = []
 
     for name in adoption["labels"]:
         wanted = catalog[name]
+        desired = snapshot(name, wanted)
         aliases = wanted.get("aliases", [])
-        selected_aliases.update(aliases)
-        alias_hits = [a for a in aliases if a in existing]
+        alias_hits = [alias for alias in aliases if alias in existing]
         case_hit = lower.get(name.lower())
         canonical = existing.get(name)
+
+        existing_names: list[str] = []
+        if canonical:
+            existing_names.append(name)
+        if case_hit and case_hit != name and case_hit not in existing_names:
+            existing_names.append(case_hit)
+        for alias in alias_hits:
+            if alias not in existing_names:
+                existing_names.append(alias)
+        considered_existing.update(existing_names)
+        before = [existing[value] for value in existing_names]
+
         if canonical:
             if alias_hits or (case_hit and case_hit != name):
-                action, reason = "collision", "canonical label coexists with alias/case conflict"
-            elif canonical["color"] == wanted["color"].lower() and canonical["description"] == wanted["description"]:
+                action, reason = (
+                    "collision",
+                    "canonical label coexists with alias/case conflict",
+                )
+            elif (
+                canonical["color"] == desired["color"]
+                and canonical["description"] == desired["description"]
+            ):
                 action, reason = "no-op", "metadata matches"
             else:
                 action, reason = "update", "canonical label metadata differs"
@@ -156,9 +191,18 @@ def plan(manifest: dict[str, Any], repo: str, current: list[dict[str, Any]]) -> 
             action, reason = "collision", "multiple known aliases exist"
         else:
             action, reason = "create", "canonical label is absent"
-        actions.append({"label": name, "action": action, "reason": reason})
 
-    preserved = sorted(name for name in existing if name not in selected and name not in selected_aliases and name not in catalog)
+        actions.append(
+            {
+                "label": name,
+                "action": action,
+                "existing": before,
+                "desired": desired,
+                "reason": reason,
+            }
+        )
+
+    preserved = sorted(name for name in existing if name not in considered_existing)
     summary: dict[str, int] = {}
     for item in actions:
         summary[item["action"]] = summary.get(item["action"], 0) + 1
@@ -181,39 +225,72 @@ def request(url: str, token: str | None) -> Any:
     if token:
         headers["Authorization"] = f"Bearer {token}"
     try:
-        with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=30) as response:
+        with urllib.request.urlopen(
+            urllib.request.Request(url, headers=headers), timeout=30
+        ) as response:
             return json.loads(response.read())
     except (urllib.error.HTTPError, urllib.error.URLError) as exc:
         raise ValueError(f"GitHub label inventory request failed: {exc}") from None
 
 
 def fetch_labels(repo: str) -> list[dict[str, Any]]:
-    owner, name = (urllib.parse.quote(x, safe="") for x in repo.split("/", 1))
+    owner, name = (urllib.parse.quote(value, safe="") for value in repo.split("/", 1))
     api = os.environ.get("GITHUB_API_URL", "https://api.github.com").rstrip("/")
     token = os.environ.get("GITHUB_TOKEN") or None
     values: list[dict[str, Any]] = []
     page = 1
     while True:
-        batch = request(f"{api}/repos/{owner}/{name}/labels?per_page=100&page={page}", token)
+        batch = request(
+            f"{api}/repos/{owner}/{name}/labels?per_page=100&page={page}", token
+        )
         if not isinstance(batch, list):
             raise ValueError("GitHub label inventory response is not an array")
-        values.extend(x for x in batch if isinstance(x, dict))
+        values.extend(value for value in batch if isinstance(value, dict))
         if len(batch) < 100:
             return values
         page += 1
 
 
+def escape(value: str) -> str:
+    return value.replace("|", "\\|").replace("\n", " ")
+
+
+def format_existing(values: list[dict[str, str]]) -> str:
+    if not values:
+        return "—"
+    return "<br>".join(
+        f"`{escape(value['name'])}` `#{value['color']}` — {escape(value['description']) or '_(empty)_'}"
+        for value in values
+    )
+
+
+def format_desired(value: dict[str, str]) -> str:
+    return f"`#{value['color']}` — {escape(value['description'])}"
+
+
 def render(value: dict[str, Any]) -> str:
     lines = [
-        "# Micrantha label synchronization plan", "",
-        f"Repository: `{value['repository']}`", "Mode: `report-only`", "Mutation: **disabled**", "",
-        "| Label | Action | Reason |", "| --- | --- | --- |",
+        "# Micrantha label synchronization plan",
+        "",
+        f"Repository: `{value['repository']}`",
+        "Mode: `report-only`",
+        "Mutation: **disabled**",
+        "",
+        "| Label | Action | Existing | Desired | Reason |",
+        "| --- | --- | --- | --- | --- |",
     ]
-    lines += [f"| `{x['label']}` | {x['action']} | {x['reason']} |" for x in value["actions"]]
+    lines += [
+        (
+            f"| `{item['label']}` | {item['action']} | "
+            f"{format_existing(item['existing'])} | {format_desired(item['desired'])} | "
+            f"{escape(item['reason'])} |"
+        )
+        for item in value["actions"]
+    ]
     preserved = value["preservedRepositoryLabels"]
-    lines += ["", f"Repository-specific labels preserved: **{len(preserved)}**"]
+    lines += ["", f"Out-of-scope repository labels preserved: **{len(preserved)}**"]
     if preserved:
-        lines += ["", ", ".join(f"`{x}`" for x in preserved)]
+        lines += ["", ", ".join(f"`{name}`" for name in preserved)]
     lines += ["", "Evidence only: no apply, rename, or delete operation exists.", ""]
     return "\n".join(lines)
 
@@ -222,14 +299,16 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--manifest", type=Path, default=Path("metadata/labels.json"))
     parser.add_argument("--registry", type=Path, default=Path("metadata/repositories.json"))
-    parser.add_argument("--standards", type=Path, default=Path("docs/standards/labels.md"))
+    parser.add_argument(
+        "--standards", type=Path, default=Path("docs/standards/labels.md")
+    )
     sub = parser.add_subparsers(dest="command")
     sub.add_parser("validate")
-    p = sub.add_parser("plan")
-    p.add_argument("--repository", required=True)
-    p.add_argument("--current-labels", type=Path)
-    p.add_argument("--output-json", type=Path)
-    p.add_argument("--output-markdown", type=Path)
+    planner = sub.add_parser("plan")
+    planner.add_argument("--repository", required=True)
+    planner.add_argument("--current-labels", type=Path)
+    planner.add_argument("--output-json", type=Path)
+    planner.add_argument("--output-markdown", type=Path)
     args = parser.parse_args()
 
     try:
@@ -248,18 +327,26 @@ def main() -> int:
     if args.command != "plan":
         parser.print_help(sys.stderr)
         return 2
+
     try:
-        current = load(args.current_labels) if args.current_labels else fetch_labels(args.repository)
+        current = (
+            load(args.current_labels)
+            if args.current_labels
+            else fetch_labels(args.repository)
+        )
         if not isinstance(current, list):
             raise ValueError("current labels must be a JSON array")
         result = plan(manifest, args.repository, current)
     except ValueError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         return 2
+
     text = render(result)
     print(text)
     if args.output_json:
-        args.output_json.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+        args.output_json.write_text(
+            json.dumps(result, indent=2) + "\n", encoding="utf-8"
+        )
     if args.output_markdown:
         args.output_markdown.write_text(text, encoding="utf-8")
     return 0

@@ -11,11 +11,13 @@ Organization-standard labels are reconciled conservatively. The first implementa
 
 The validator requires the managed `priority:`, `status:`, `type:`, `area:`, and `maturity:` label names in `metadata/labels.json` to match the labels documented in `docs/standards/labels.md`. A manifest entry cannot silently introduce a new organization-standard label.
 
+Compatibility aliases are intentionally conservative. An alias is recorded only when the legacy meaning is unambiguous for the canonical dimension. Generic names that could map to multiple dimensions are preserved for explicit review rather than guessed.
+
 ## Explicit adoption
 
 The catalog is organization-wide; synchronization is not.
 
-`metadata/labels.json` contains an explicit repository allowlist. Each allowlisted repository selects only the canonical labels it intends to adopt. A repository-specific label that is not selected remains outside the synchronization surface and is preserved.
+`metadata/labels.json` contains an explicit repository allowlist. Each allowlisted repository selects only the canonical labels it intends to adopt. Every existing label outside that selected synchronization surface—including an organization-standard label that the repository has not selected—is reported as preserved.
 
 The initial pilot allowlists only `hackelia-micrantha/.github` in `report-only` mode.
 
@@ -29,9 +31,9 @@ The planner reports one of these outcomes for every selected canonical label:
 - `migration` — the canonical label is absent and one documented compatibility alias exists;
 - `collision` — applying a canonical label would be ambiguous because aliases or case-conflicting labels coexist.
 
-`update` and `migration` are observations, not authority to mutate. A collision is always visible and never silently overwritten.
+Every action records the exact current label metadata involved and the exact desired canonical color and description. `update` and `migration` are observations, not authority to mutate. A collision is always visible and never silently overwritten.
 
-Repository-specific labels are listed separately as preserved evidence.
+Out-of-scope repository labels are listed separately as preserved evidence.
 
 ## Report workflow
 
@@ -42,7 +44,7 @@ The workflow:
 - runs only on GitHub-hosted infrastructure;
 - uses read-only `contents` and `issues` permissions;
 - validates the manifest before querying labels;
-- emits the exact plan to the GitHub Actions step summary;
+- emits the exact before/desired plan to the GitHub Actions step summary;
 - has a bounded 10-minute runtime;
 - contains no mutation step and no write-scoped credential.
 
