@@ -22,7 +22,7 @@ ROOT_FIELDS = {"$schema", "schemaVersion", "organization", "labels", "repositori
 LABEL_FIELDS = {"name", "color", "description", "aliases"}
 REPOSITORY_FIELDS = {"repository", "mode", "labels", "notes"}
 PLAN_SCHEMA_VERSION = 1
-INITIAL_MUTATION_ACTIONS = {"create", "update"}
+INITIAL_MUTATION_ACTIONS = {"create"}
 
 
 def load(path: Path) -> Any:
