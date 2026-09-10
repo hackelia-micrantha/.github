@@ -1,6 +1,6 @@
 # Micrantha organization defaults
 
-This repository contains shared governance, community health files, contribution conventions, issue and pull-request templates, engineering prompts, standards, automation, and reusable guidance for repositories in the `hackelia-micrantha` organization.
+This repository contains shared governance, community health files, contribution conventions, issue and pull-request templates, engineering prompts, standards, automation, shared skill defaults, and reusable guidance for repositories in the `hackelia-micrantha` organization.
 
 Repositories may refine these defaults when their product, legal, security, or operating model requires it, but should document the difference explicitly. Repository-local implementation and evidence remain authoritative within the boundaries assigned by the organization governance model.
 
@@ -11,11 +11,13 @@ Use the repository that owns the question:
 | Question | Source of truth |
 | --- | --- |
 | How should Micrantha repositories be governed and engineered? | This repository (`hackelia-micrantha/.github`) |
+| What shared skill defaults are available? | [`skills/`](skills/) in this repository |
+| What operational skills does a specific project use? | The owning project repository |
 | What Micrantha projects exist, what are their roles/lifecycles, and how do they relate? | [`hackelia-micrantha/hackelia-micrantha`](https://github.com/hackelia-micrantha/hackelia-micrantha) |
 | What does a specific product/library/tool implement? | The owning project repository |
 | What is presented publicly? | [`micrantha.com`](https://micrantha.com) and [`profile/README.md`](profile/README.md), as evidence-backed projections |
 
-The meta/registry repository coordinates ecosystem identity and relationships; it does not own organization GitHub policy. This repository defines shared defaults and responsibility boundaries; it does not become a second implementation source of truth for projects.
+The meta/registry repository coordinates ecosystem identity, relationships, and skill discovery/composition; it does not own organization GitHub policy or project-local operational skills. This repository defines shared defaults and responsibility boundaries; it does not become a second implementation source of truth for projects.
 
 ## Governance and ownership
 
@@ -74,8 +76,10 @@ The repository registry is an advisory machine-readable projection of the canoni
   - [QART template](docs/engineering/templates/qart.md)
   - [RFC template](docs/engineering/templates/rfc.md)
   - [ADR template](docs/engineering/templates/adr.md)
+- [Shared engineering skills](skills/README.md) — reusable defaults/reference contracts; operational skills remain project-local by default
 - [Compound engineering](docs/engineering/compound-engineering.md) — Plan → Work → Review → Compound → Repeat
 - [AI-assisted SDLC phase discipline](docs/engineering/ai-assisted-sdlc.md) — explicit phase-local context, durable handoffs, verification, review, and authority boundaries
+- [AI model selection and escalation](docs/engineering/ai-model-selection.md) — risk-adaptive model choice; frontier inference is an escalation option rather than a universal requirement
 - [Compound artifact routing](docs/engineering/compound-artifact-routing.md) — route reusable lessons to the weakest durable control that reliably prevents recurrence
 - [Governed learning promotion](docs/architecture/governed-learning-promotion.md) — candidate learning, validation, exact promotion, supersession, and authority boundaries
 - [Compound learning runtime boundaries](docs/architecture/compound-learning-runtime.md) — Supervisor, Run Ledger, Memory, Invokrum, Sandcastle, Anthesis, and scheduler ownership

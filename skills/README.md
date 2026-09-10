@@ -4,6 +4,26 @@ Micrantha skills are reusable, bounded orchestration contracts for recurring eng
 
 Skills do not replace prompts, standards, templates, or project-local authority. They compose those sources into an executable workflow.
 
+## Ownership and adoption
+
+**Operational skills are project-local by default.** A project repository owns the skills that encode its actual workflows, tools, architecture, maturity, release path, security boundaries, and completion rules.
+
+The skills in this repository are **organization-wide defaults and reusable reference contracts**. They provide common vocabulary and a starting point for repeated engineering workflows, but they are not implicitly installed, enabled, or mandatory in every Micrantha project.
+
+A project may:
+
+- adopt a shared skill unchanged when it accurately represents the project;
+- specialize a shared skill with project-local inputs, tooling, evidence, or tighter invariants;
+- compose several shared skills into a project-specific workflow;
+- define a project-only skill when the workflow is not meaningfully reusable elsewhere;
+- omit a shared skill that does not apply to the project's maturity, architecture, or operating model.
+
+Project-local skills must not silently weaken organization security, governance, release, or compatibility standards that apply to the project. Conversely, organization defaults must not override repository-local implementation truth or invent project requirements.
+
+When a local skill derives materially from a shared default, prefer recording the source skill and revision/version so drift can be reviewed deliberately rather than inherited accidentally.
+
+The Micrantha meta repository may catalogue shared and project-local skills and compose ecosystem workflows. That catalog is coordination metadata, not the source of truth for a project's operational behavior.
+
 ## Contract
 
 Each skill uses `SKILL.md` and should define:
@@ -18,7 +38,28 @@ Each skill uses `SKILL.md` and should define:
 
 A skill may invoke another skill. Composition must preserve the stricter authority, security, evidence, and completion requirements of every invoked skill.
 
-## Initial skill set
+## Model selection
+
+A skill should describe the **reasoning capability and evidence required**, not assume that a frontier model is always necessary.
+
+Use the least expensive/smallest model path that can reliably perform the bounded task under the project's verification and authority controls. In particular, experimental, exploratory, low-consequence, or easily reversible work may intentionally use local or smaller models when their limitations are acceptable and deterministic validation provides the required evidence.
+
+Escalate to a stronger or frontier model when the task materially benefits from it, for example because of:
+
+- broad or difficult repository/system synthesis;
+- consequential architectural or security reasoning;
+- material ambiguity that a weaker model repeatedly fails to resolve;
+- repeated implementation/review failure without progress;
+- semantic verification that cannot be decided adequately by deterministic checks;
+- project policy that explicitly requires a stronger model class for the affected boundary.
+
+Model class is not a security boundary, source of authority, or proof of correctness. A frontier model does not replace deterministic verification, independent evidence, human disposition where required, or least-privilege execution. A smaller/local model does not justify weakening those controls either.
+
+Project-local skills may declare a justified model capability/profile or escalation rule when useful, but should avoid hard-coding a vendor/model name unless interoperability with that exact model is itself under test.
+
+See [AI model selection and escalation](../docs/engineering/ai-model-selection.md) for the canonical risk-adaptive model-selection policy.
+
+## Initial shared defaults
 
 | Skill | Purpose |
 | --- | --- |
@@ -35,6 +76,6 @@ A skill may invoke another skill. Composition must preserve the stricter authori
 
 ## Execution rules
 
-The shared execution, ambiguity, validation, and priority contracts in [`docs/prompts/README.md`](../docs/prompts/README.md) apply to every skill unless a skill explicitly tightens them.
+The shared execution, ambiguity, validation, and priority contracts in [`docs/prompts/README.md`](../docs/prompts/README.md) apply to every shared skill unless a skill explicitly tightens them. A project-local skill should reference the organization standards that remain applicable and document intentional project-specific differences.
 
 Prefer durable mechanical controls over adding more prompt prose. When a recurring lesson can be enforced by a test, schema, type, CI gate, packaging check, capability boundary, or safer tool behavior, create or recommend that mechanism rather than relying on operator memory.
