@@ -17,6 +17,9 @@ from typing import Any
 NAME_RE = re.compile(r"^[a-z][a-z0-9-]*:[A-Za-z0-9][A-Za-z0-9.-]*$")
 COLOR_RE = re.compile(r"^[0-9a-fA-F]{6}$")
 PREFIXES = ("priority:", "status:", "type:", "area:", "maturity:")
+ROOT_FIELDS = {"$schema", "schemaVersion", "organization", "labels", "repositories"}
+LABEL_FIELDS = {"name", "color", "description", "aliases"}
+REPOSITORY_FIELDS = {"repository", "mode", "labels", "notes"}
 
 
 def load(path: Path) -> Any:
@@ -36,6 +39,10 @@ def validate(manifest: Any, registry: Any, standards: Path) -> list[str]:
     errors: list[str] = []
     if not isinstance(manifest, dict) or not isinstance(registry, dict):
         return ["manifest and registry roots must be objects"]
+
+    unknown_root = sorted(set(manifest) - ROOT_FIELDS)
+    if unknown_root:
+        errors.append("manifest has unknown fields: " + ", ".join(unknown_root))
     if manifest.get("schemaVersion") != 1:
         errors.append("schemaVersion must be 1")
     org = manifest.get("organization")
@@ -53,6 +60,9 @@ def validate(manifest: Any, registry: Any, standards: Path) -> list[str]:
         if not isinstance(item, dict):
             errors.append(f"{p} must be an object")
             continue
+        unknown = sorted(set(item) - LABEL_FIELDS)
+        if unknown:
+            errors.append(f"{p} has unknown fields: {', '.join(unknown)}")
         name, color, desc = item.get("name"), item.get("color"), item.get("description")
         valid_name = isinstance(name, str) and bool(NAME_RE.fullmatch(name))
         if not valid_name:
@@ -120,6 +130,9 @@ def validate(manifest: Any, registry: Any, standards: Path) -> list[str]:
         if not isinstance(item, dict):
             errors.append(f"{p} must be an object")
             continue
+        unknown = sorted(set(item) - REPOSITORY_FIELDS)
+        if unknown:
+            errors.append(f"{p} has unknown fields: {', '.join(unknown)}")
         repo = item.get("repository")
         if not isinstance(repo, str) or "/" not in repo:
             errors.append(f"{p}.repository must be owner/name")
@@ -140,6 +153,9 @@ def validate(manifest: Any, registry: Any, standards: Path) -> list[str]:
             errors.append(f"{p}.labels must not contain duplicates")
         elif any(name not in names for name in selected):
             errors.append(f"{p}.labels contains an unknown canonical label")
+        notes = item.get("notes")
+        if notes is not None and not isinstance(notes, str):
+            errors.append(f"{p}.notes must be a string when present")
     return errors
 
 
