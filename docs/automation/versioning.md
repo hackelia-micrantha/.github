@@ -11,7 +11,22 @@ Micrantha shared automation uses two reviewed identities:
 
 A release tag is convenience and discovery metadata. The commit it names is the execution identity. Moving an existing release tag is prohibited.
 
-Starter templates may use `@main` only as a bootstrap path before the caller has completed its first successful pilot. A caller that becomes relied upon or required must replace `@main` with a reviewed immutable commit or a reviewed immutable release tag.
+New starter templates are pinned to the reviewed automation-v1 candidate commit `c0016c206607f6f101b8e6b70340ad7d4ab52837`. Callers must review that pin and may advance it only through a reviewed shared-automation version change.
+
+## Current automation-v1 candidate
+
+Candidate execution identity:
+
+`c0016c206607f6f101b8e6b70340ad7d4ab52837`
+
+This revision contains the reusable Mise and Nix workflows with read-only permissions, reviewed third-party action pins, caller-selected runners, and delegated-job timeout inputs.
+
+Pilot evidence:
+
+- **Repora / Nix** — the shared Nix workflow passed on PR #163 and again on `main` after merge, using the same immutable shared-workflow revision. The pilot also exposed and repaired a repository-local workflow-policy assumption: caller jobs that delegate via top-level `uses:` cannot own `timeout-minutes`; the called reusable workflow must own the runtime bound.
+- **Anthesis / Mise** — the shared Mise workflow passed on PR #235 on the existing `runner-anthesis` self-hosted boundary, with direct fork execution rejected and a 15-minute delegated timeout. Default-branch repeat evidence is required after merge before the Mise pilot is considered complete.
+
+Publication of the convenience tag `automation-v1.0.0` remains a separate final release action. Until that tag exists, callers should continue using the immutable candidate SHA.
 
 ## Compatibility policy
 
