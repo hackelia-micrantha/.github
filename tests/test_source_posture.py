@@ -49,7 +49,7 @@ class SourcePostureValidationTests(unittest.TestCase):
             visibility="private",
             source_exposure="private",
             repository_role="canonical",
-            distribution_mode="binary",
+            distribution_mode="internal",
             implementationAuthority="hackelia-micrantha/invokrum",
             releaseAuthority="hackelia-micrantha/invokrum",
             publicDistributionRepository="hackelia-micrantha/invokrum-community",
@@ -78,7 +78,7 @@ class SourcePostureValidationTests(unittest.TestCase):
             visibility="private",
             source_exposure="private",
             repository_role="canonical",
-            distribution_mode="binary",
+            distribution_mode="internal",
             publicDistributionRepository="hackelia-micrantha/keylix-community",
         )
         projection = self.entry(
@@ -191,7 +191,7 @@ class SourcePostureValidationTests(unittest.TestCase):
             visibility="private",
             source_exposure="private",
             repository_role="canonical",
-            distribution_mode="binary",
+            distribution_mode="internal",
             publicDistributionRepository="hackelia-micrantha/internal-dist",
         )
         distribution = self.entry(
@@ -214,7 +214,7 @@ class SourcePostureValidationTests(unittest.TestCase):
             visibility="private",
             source_exposure="private",
             repository_role="canonical",
-            distribution_mode="binary",
+            distribution_mode="internal",
             monitor=True,
             publicDistributionRepository="hackelia-micrantha/invokrum-community",
         )
@@ -235,6 +235,7 @@ class SourcePostureValidationTests(unittest.TestCase):
         )
 
         self.assertIn("classified: 2/2 repositories", report)
+        self.assertIn("canonical/private/internal", report)
         self.assertIn("distribution/none/binary", report)
         self.assertIn(
             "invokrum-community --canonical--> hackelia-micrantha/invokrum",
