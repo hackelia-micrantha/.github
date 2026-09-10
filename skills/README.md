@@ -57,6 +57,8 @@ Model class is not a security boundary, source of authority, or proof of correct
 
 Project-local skills may declare a justified model capability/profile or escalation rule when useful, but should avoid hard-coding a vendor/model name unless interoperability with that exact model is itself under test.
 
+See [AI model selection and escalation](../docs/engineering/ai-model-selection.md) for the canonical risk-adaptive model-selection policy.
+
 ## Initial shared defaults
 
 | Skill | Purpose |
