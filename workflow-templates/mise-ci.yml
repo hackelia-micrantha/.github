@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   ci:
-    # Pin this reusable workflow to a reviewed tag or commit before making it required.
-    uses: hackelia-micrantha/.github/.github/workflows/reusable-mise-ci.yml@main
+    # Immutable automation-v1 candidate. Update only through reviewed shared-workflow versioning.
+    uses: hackelia-micrantha/.github/.github/workflows/reusable-mise-ci.yml@c0016c206607f6f101b8e6b70340ad7d4ab52837 # automation-v1 candidate
     with:
       task: ci
