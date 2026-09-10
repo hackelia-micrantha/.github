@@ -8,10 +8,10 @@ Related: #27, #76, `label-synchronization.md`, and `SECURITY.md`.
 
 The first mutation pilot, if implemented, is restricted to `hackelia-micrantha/.github` and must run only through an explicit human-triggered workflow on the default branch.
 
-For that same-repository pilot, prefer the ephemeral repository-scoped `GITHUB_TOKEN` with exactly:
+For that same-repository pilot, prefer the ephemeral repository-scoped `GITHUB_TOKEN`. Read-only preflight and write-authorized apply must be separate jobs:
 
-- `contents: read`;
-- `issues: write`.
+- preflight: `contents: read`, `issues: read`;
+- apply: `contents: read`, `issues: write`.
 
 No `contents: write`, `actions: write`, `workflows: write`, administration permission, organization permission, or inherited secret is required for label create/update operations.
 
@@ -21,40 +21,60 @@ If synchronization later targets a different repository, the built-in token is n
 
 - **Broad personal token** — rejected because authority, rotation, repository scope, and attribution are unnecessarily coupled to a human account.
 - **Organization-admin token/App permissions** — rejected because repository label management does not require organization administration.
+- **Write-scoped token in the preflight/report job** — rejected because generating evidence does not require mutation authority.
 - **Write-scoped token on pull-request, push, schedule, or `pull_request_target` events** — rejected because unreviewed or ambient events must not create mutation authority.
 - **Cross-repository use of the default `GITHUB_TOKEN`** — rejected as an architecture assumption; cross-repository authority must be separately scoped and explicit.
 
 ## Event and approval boundary
 
-The initial mutation workflow must:
+The initial mutation workflow must expose only `workflow_dispatch` and contain two jobs.
 
-1. expose only `workflow_dispatch`;
-2. reject any ref other than `refs/heads/main`;
-3. require explicit inputs for `repository`, `expected_revision`, and `plan_sha256`;
-4. require `repository` to equal `hackelia-micrantha/.github` for the first pilot;
-5. require `expected_revision` to equal the running `github.sha`;
-6. regenerate the plan from live label state before acquiring or using mutation authority;
-7. fail closed unless the regenerated plan digest exactly equals `plan_sha256`;
-8. contain no path that can be triggered from a pull request, fork, schedule, push, issue comment, repository dispatch, or unvalidated dynamic input.
+### Preflight job
 
-A protected environment named for label mutation is recommended before broader rollout. If used, its approval must gate the mutation job, not merely a reporting job.
+The preflight job has read-only permissions and must:
+
+1. reject any ref other than `refs/heads/main`;
+2. require explicit inputs for `repository`, `expected_revision`, and `plan_sha256`;
+3. require `repository` to equal `hackelia-micrantha/.github` for the first pilot;
+4. require `expected_revision` to equal the running `github.sha`; this is the reviewed `.github` control-plane revision containing the workflow and manifest;
+5. fetch live label state and regenerate the canonical plan;
+6. fail closed unless the regenerated plan digest exactly equals `plan_sha256`;
+7. expose only bounded, non-secret outputs required by the apply job.
+
+### Apply job
+
+The apply job is the only job with `issues: write`. It must:
+
+1. depend on successful preflight;
+2. repeat the repository/ref/revision allowlist checks rather than trusting only job outputs;
+3. re-fetch live labels after the apply job starts and regenerate the plan again;
+4. compare the regenerated digest to the same approved `plan_sha256` immediately before the first write;
+5. abort before mutation on any drift, collision, changed operation class, or changed manifest/control-plane revision;
+6. execute only operation classes separately authorized for the pilot;
+7. emit the mutation receipt even on rejection or partial failure.
+
+A protected environment named for label mutation should gate the apply job so approval occurs before the write-authorized job starts. If the repository cannot provide an equivalent approval gate, mutation remains blocked until an alternative is explicitly reviewed.
+
+The workflow must contain no path that can be triggered from a pull request, fork, push, schedule, issue comment, repository dispatch, or unvalidated dynamic input.
 
 ## Plan identity and stale-plan protection
 
-An approved dry-run is evidence for one exact repository state; it is not open-ended authorization.
+An approved dry-run is evidence for one exact repository label state under one exact `.github` control-plane revision; it is not open-ended authorization.
 
 The planner should emit a canonical machine-readable plan record and compute `plan_sha256` as SHA-256 over deterministic JSON containing at least:
 
 - plan schema version;
-- repository;
-- expected repository/default-branch revision used for the mutation workflow;
+- target repository;
+- expected `.github` control-plane revision;
 - label manifest digest;
 - ordered selected canonical labels;
 - complete normalized current snapshots for every selected canonical label and considered alias/case conflict;
 - desired canonical snapshots;
 - ordered action classifications and reasons.
 
-The mutation path must fetch live labels and regenerate the plan immediately before mutation. Any difference in name, color, description, alias/collision state, selected-label set, manifest digest, or expected workflow revision changes the digest and must abort the run.
+The mutation workflow must regenerate this plan twice: once in read-only preflight and again in the write-authorized apply job immediately before mutation. Any difference in relevant label name, color, description, alias/collision state, selected-label set, manifest digest, control-plane revision, or action classification changes the digest and must abort the run.
+
+Unrelated out-of-scope repository labels are preserved and need not invalidate a plan unless their new name creates a selected canonical/alias/case collision.
 
 A timestamp alone is not a stale-plan control. A prior successful plan must never be applied without exact current-state revalidation.
 
@@ -68,6 +88,8 @@ The first implementation may authorize only:
 - `update` — change color and/or description of an existing selected canonical label whose name is unchanged.
 
 Both operations require exact preconditions from the approved plan. A create must fail if any canonical, alias, or case-conflicting label appears after planning. An update must fail if the existing label snapshot differs from the approved snapshot.
+
+Operation order must be deterministic and recorded in the plan. The runner stops on the first failed write and does not automatically attempt rollback.
 
 ### Migration and rename
 
@@ -90,13 +112,13 @@ Delete is unsupported in the first implementation. No synchronization run may de
 
 ## Evidence record
 
-Every attempted mutation run must emit a durable JSON receipt, even when it aborts before mutation. The receipt should contain:
+Every attempted apply run must emit a durable JSON receipt, even when it aborts before mutation. The receipt should contain:
 
 - receipt schema version;
-- repository;
+- target repository;
 - GitHub run ID and run attempt;
 - triggering actor;
-- workflow/ref/revision;
+- workflow/ref/control-plane revision;
 - plan digest and manifest digest;
 - normalized pre-mutation label snapshots;
 - ordered requested operations;
@@ -121,8 +143,8 @@ A partially applied run must stop on the first failed operation, emit evidence f
 
 The first mutation pilot is complete only when all of the following evidence exists for `hackelia-micrantha/.github`:
 
-1. a reviewed dry-run with exact before/desired state and `plan_sha256`;
-2. explicit dispatch against the same reviewed workflow revision and plan digest;
+1. a reviewed dry-run from the exact merged control-plane revision with exact before/desired state and `plan_sha256`;
+2. explicit dispatch against that same reviewed revision and plan digest;
 3. successful create/update operations only;
 4. a post-run live inventory matching the desired selected surface;
 5. a fresh planner run returning only `no-op` for every selected canonical label;
@@ -134,6 +156,7 @@ The first mutation pilot is complete only when all of the following evidence exi
 Do not expand beyond `.github` until the first pilot is idempotent and reviewed. Any cross-repository rollout additionally requires:
 
 - a GitHub App installation token scoped to the exact reviewed repositories and `Issues: write`;
+- token minting only in the approved apply job, after read-only preflight;
 - explicit repository opt-in in the manifest;
 - the same stale-plan and collision controls;
 - protected handling of App credentials/private keys;
