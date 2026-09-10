@@ -26,6 +26,18 @@ class LabelSyncTests(unittest.TestCase):
         errors = label_sync.validate(manifest, self.registry, self.standard)
         self.assertTrue(any("apply is not implemented" in error for error in errors))
 
+    def test_unknown_manifest_fields_are_rejected(self) -> None:
+        manifest = copy.deepcopy(self.manifest)
+        manifest["unexpected"] = True
+        manifest["labels"][0]["alias"] = ["legacy"]
+        manifest["repositories"][0]["lables"] = []
+        errors = label_sync.validate(manifest, self.registry, self.standard)
+        self.assertTrue(any("manifest has unknown fields: unexpected" in error for error in errors))
+        self.assertTrue(any("labels[0] has unknown fields: alias" in error for error in errors))
+        self.assertTrue(
+            any("repositories[0] has unknown fields: lables" in error for error in errors)
+        )
+
     def test_alias_cannot_collide_with_a_canonical_label(self) -> None:
         manifest = copy.deepcopy(self.manifest)
         manifest["labels"][0]["aliases"] = ["TYPE:BUG"]
