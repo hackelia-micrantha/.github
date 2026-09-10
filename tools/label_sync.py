@@ -167,7 +167,7 @@ def plan(
         for item in current
         if isinstance(item, dict) and item.get("name")
     }
-    lower = {name.lower(): name for name in existing}
+    lower = {name.casefold(): name for name in existing}
     considered_existing: set[str] = set()
     actions: list[dict[str, Any]] = []
 
@@ -175,8 +175,12 @@ def plan(
         wanted = catalog[name]
         desired = snapshot(name, wanted)
         aliases = wanted.get("aliases", [])
-        alias_hits = [alias for alias in aliases if alias in existing]
-        case_hit = lower.get(name.lower())
+        alias_hits = [
+            lower[alias.casefold()]
+            for alias in aliases
+            if alias.casefold() in lower
+        ]
+        case_hit = lower.get(name.casefold())
         canonical = existing.get(name)
 
         existing_names: list[str] = []
