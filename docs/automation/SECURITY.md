@@ -6,7 +6,7 @@ Shared automation is a convenience and policy surface, not a new source of repos
 
 - Caller repositories control their workflow triggers, inputs, task definitions, and required-check configuration.
 - Reusable workflows run with the caller's event context and effective permission ceiling.
-- The shared workflows request only read access to repository contents and do not declare secrets.
+- The shared CI workflows request only read access to repository contents and do not declare secrets.
 - Caller-supplied runner labels, commands, or task names are repository-controlled configuration and must not be populated directly from untrusted issue, pull-request, branch, commit, or dispatch text.
 - Untrusted fork code must not run on persistent privileged self-hosted runners.
 
@@ -34,6 +34,18 @@ The initial reusable workflows do not accept or inherit caller secrets. Adding s
 - evidence and approval;
 - rollback and incident response;
 - current callers and migration.
+
+## Label mutation boundary
+
+The current label-sync implementation is report-only and has no write credential or `apply` path.
+
+The separately reviewed [label mutation authority contract](label-mutation-authority.md) defines the required boundary before mutation can be implemented. The first `.github`-only pilot should prefer the ephemeral repository-scoped `GITHUB_TOKEN` with only `contents: read` and `issues: write`; no broader repository or organization permission is required for repository label create/update operations.
+
+Mutation must be manual-dispatch only, default-branch only, exact-plan-bound, stale-safe, collision-safe, and restricted to the reviewed repository/label allowlist. Pull requests, forks, pushes, schedules, issue comments, and repository dispatches must not obtain label-write authority.
+
+A later cross-repository rollout must mint a short-lived GitHub App installation token scoped to the exact reviewed repository set and repository `Issues: write`. Broad personal tokens, classic PATs, and organization-admin authority are not acceptable substitutes.
+
+Write authority does not imply migration authority. The first mutation implementation may create canonical labels and update color/description only. Alias migration/rename requires a separate reviewed decision; delete is unsupported initially.
 
 ## Third-party actions
 
