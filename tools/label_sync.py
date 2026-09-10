@@ -46,20 +46,24 @@ def validate(manifest: Any, registry: Any, standards: Path) -> list[str]:
     if not isinstance(labels, list) or not labels:
         return errors + ["labels must be a non-empty array"]
 
-    names: set[str] = set()
-    aliases: dict[str, str] = {}
+    canonical_names: dict[str, str] = {}
+    aliases: dict[str, tuple[str, str]] = {}
     for i, item in enumerate(labels):
         p = f"labels[{i}]"
         if not isinstance(item, dict):
             errors.append(f"{p} must be an object")
             continue
         name, color, desc = item.get("name"), item.get("color"), item.get("description")
-        if not isinstance(name, str) or not NAME_RE.fullmatch(name):
+        valid_name = isinstance(name, str) and bool(NAME_RE.fullmatch(name))
+        if not valid_name:
             errors.append(f"{p}.name must use dimension:value syntax")
-        elif name in names:
-            errors.append(f"{p}.name duplicates {name}")
         else:
-            names.add(name)
+            folded = name.casefold()
+            previous = canonical_names.get(folded)
+            if previous is not None:
+                errors.append(f"{p}.name duplicates canonical label {previous!r}")
+            else:
+                canonical_names[folded] = name
         if not isinstance(color, str) or not COLOR_RE.fullmatch(color):
             errors.append(f"{p}.color must be six hex digits without #")
         if not isinstance(desc, str) or not desc.strip() or len(desc) > 100:
@@ -70,13 +74,30 @@ def validate(manifest: Any, registry: Any, standards: Path) -> list[str]:
         ):
             errors.append(f"{p}.aliases must be a string array")
             continue
-        if len(raw_aliases) != len(set(raw_aliases)):
-            errors.append(f"{p}.aliases must not contain duplicates")
+        if len({alias.casefold() for alias in raw_aliases}) != len(raw_aliases):
+            errors.append(f"{p}.aliases must not contain case-insensitive duplicates")
+        if not valid_name:
+            continue
         for alias in raw_aliases:
-            owner = aliases.get(alias)
-            if alias == name or (owner and owner != name):
-                errors.append(f"{p} has conflicting alias {alias!r}")
-            aliases[alias] = str(name)
+            folded_alias = alias.casefold()
+            previous = aliases.get(folded_alias)
+            if folded_alias == name.casefold():
+                errors.append(f"{p} has alias {alias!r} equal to its canonical label")
+                continue
+            if previous and previous[1] != name:
+                errors.append(
+                    f"{p} has alias {alias!r} already owned by {previous[1]!r}"
+                )
+                continue
+            aliases[folded_alias] = (alias, name)
+
+    names = set(canonical_names.values())
+    for folded_alias, (alias, owner) in aliases.items():
+        canonical = canonical_names.get(folded_alias)
+        if canonical is not None:
+            errors.append(
+                f"alias {alias!r} for {owner!r} collides with canonical label {canonical!r}"
+            )
 
     docs = documented(standards)
     missing, extra = sorted(docs - names), sorted(names - docs)
@@ -147,7 +168,6 @@ def plan(
         if isinstance(item, dict) and item.get("name")
     }
     lower = {name.lower(): name for name in existing}
-    selected = set(adoption["labels"])
     considered_existing: set[str] = set()
     actions: list[dict[str, Any]] = []
 
