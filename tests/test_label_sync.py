@@ -72,7 +72,7 @@ class LabelSyncTests(unittest.TestCase):
             {"name": "status:ready", "color": "0e8a16", "description": "Ready."},
             {"name": "status:deferred", "color": "c5def5", "description": "Deferred."},
             {"name": "priority:P1", "color": "ffffff", "description": "Old."},
-            {"name": "bug", "color": "d73a4a", "description": "Bug."},
+            {"name": "BUG", "color": "d73a4a", "description": "Bug."},
             {"name": "type:feature", "color": "a2eeef", "description": "Feature."},
             {"name": "enhancement", "color": "a2eeef", "description": "Feature."},
             {"name": "workflow", "color": "ededed", "description": ""},
@@ -88,7 +88,7 @@ class LabelSyncTests(unittest.TestCase):
         self.assertEqual(actions["priority:P1"]["existing"][0]["description"], "Old.")
         self.assertEqual(actions["priority:P1"]["desired"]["description"], "Next up.")
         self.assertEqual(actions["type:bug"]["action"], "migration")
-        self.assertEqual(actions["type:bug"]["existing"][0]["name"], "bug")
+        self.assertEqual(actions["type:bug"]["existing"][0]["name"], "BUG")
         self.assertEqual(actions["area:ci"]["action"], "create")
         self.assertEqual(actions["area:ci"]["existing"], [])
         self.assertEqual(actions["type:feature"]["action"], "collision")
