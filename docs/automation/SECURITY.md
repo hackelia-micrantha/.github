@@ -39,13 +39,17 @@ The initial reusable workflows do not accept or inherit caller secrets. Adding s
 
 The current label-sync implementation is report-only and has no write credential or `apply` path.
 
-The separately reviewed [label mutation authority contract](label-mutation-authority.md) defines the required boundary before mutation can be implemented. The first `.github`-only pilot separates read-only preflight from the only write-authorized job. The apply job may use the ephemeral repository-scoped `GITHUB_TOKEN` with only `contents: read` and `issues: write`; no broader repository or organization permission is required for repository label creation.
+The separately reviewed [label mutation authority contract](label-mutation-authority.md) defines the required boundary before mutation can be implemented. The first `.github`-only pilot separates read-only preflight, the only environment-gated write-authorized apply job, and an ungated read-only receipt/finalizer. The apply job may use the ephemeral repository-scoped `GITHUB_TOKEN` with only `contents: read` and `issues: write`; no broader repository or organization permission is required for repository label creation.
 
-Mutation must be manual-dispatch only, default-branch only, exact-plan-bound, stale-safe, collision-safe, and restricted to the reviewed repository/label allowlist. After approval, the write-authorized job must verify that the **live** default-branch tip still equals the approved control-plane revision, then re-read live label state. Pull requests, forks, pushes, schedules, issue comments, and repository dispatches must not obtain label-write authority.
+Mutation must be manual-dispatch only, default-branch only, exact-plan-bound, stale-safe, collision-safe, and restricted to the reviewed repository/label allowlist. One human dispatch authorizes exactly one explicitly named canonical-label create. After approval and immediately before that one request, the write-authorized job must verify that the **live** default-branch tip still equals the approved control-plane revision and re-read the requested label/alias/case precondition. Pull requests, forks, pushes, schedules, issue comments, and repository dispatches must not obtain label-write authority.
+
+The receipt/finalizer has no write permission and must preserve terminal evidence even when environment approval is rejected, the apply job is cancelled, or the write-authorized job never starts. It must distinguish job state from whether mutation actually started or completed.
 
 A later cross-repository rollout must mint a short-lived GitHub App installation token scoped to the exact reviewed repository set and repository `Issues: write`. Broad personal tokens, classic PATs, and organization-admin authority are not acceptable substitutes.
 
-The first mutation implementation is **create-only**. Metadata update is deferred because the label update API has no documented compare-and-swap/conditional write contract, leaving a residual read/write overwrite race. Alias migration/rename requires a separate reviewed decision; delete is unsupported initially. Every create must re-check its exact precondition immediately before the API request and stop on conflict rather than reinterpret changed state.
+The first mutation implementation is **one create per dispatch only**. Metadata update is deferred because the label update API has no documented compare-and-swap/conditional write contract, leaving a residual read/write overwrite race. Alias migration/rename requires a separate reviewed decision; delete is unsupported initially.
+
+GitHub does not make the final live-ref/label reads and create request transactional. The pilot bounds that residual cross-API race to one non-overwriting create, treats a competing create as terminal conflict/failure, re-reads `main` and the created label after the request, and requires manual review if the control plane changed during that final API window.
 
 ## Third-party actions
 
