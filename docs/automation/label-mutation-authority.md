@@ -65,9 +65,10 @@ After approval, the apply job must:
 7. require that immediate operation precondition to match the approved `create` state;
 8. perform exactly one create request;
 9. treat any conflict/validation failure, including an already-existing label, as terminal; never retry by reinterpreting changed state;
-10. immediately after the request, re-read the live `main` tip **and the requested canonical name plus every configured alias/case-equivalent name**;
-11. classify any post-request control-plane advance or newly introduced canonical/alias/case collision as an applied race condition rather than plain success;
-12. produce bounded outputs for the ungated receipt job.
+10. immediately after the request, query live `main`, re-fetch live labels, and regenerate the **complete canonical plan**;
+11. require the post-plan to match the deterministic expected post-state: the requested row is exactly `no-op` with the canonical name/color/description matching the approved desired snapshot and no alias/case collision, while every other selected row has the same action/current/desired state it had in the approved pre-plan;
+12. classify any post-request control-plane advance or expected-post-plan divergence as an applied race condition rather than plain success;
+13. produce bounded outputs for the ungated receipt job.
 
 The workflow must contain no mutation path that can be triggered from a pull request, fork, push, schedule, issue comment, repository dispatch, or unvalidated dynamic input.
 
@@ -100,7 +101,7 @@ The planner should emit a canonical machine-readable plan record and compute `pl
 - desired canonical snapshots;
 - ordered action classifications and reasons.
 
-The mutation workflow must regenerate this plan in read-only preflight and again in the write-authorized apply job after approval. The apply job must also compare the expected revision with the live default-branch tip both when it starts and immediately before the one create request.
+The mutation workflow must regenerate this plan in read-only preflight and again in the write-authorized apply job after approval. The apply job must compare the expected revision with the live default-branch tip both when it starts and immediately before the one create request. After the create, it must regenerate the complete plan again and compare it with the deterministic expected post-state rather than checking only the newly created name.
 
 Unrelated out-of-scope repository labels are preserved and need not invalidate a plan unless their name creates a selected canonical/alias/case collision.
 
@@ -115,10 +116,11 @@ The first pilot bounds rather than conceals that limitation:
 - one create is the maximum effect of one dispatch;
 - create cannot overwrite existing label metadata;
 - a competing same-name create is treated as a terminal conflict/validation failure;
-- a competing alias/case-equivalent create may coexist with the canonical create, so the canonical name, all configured aliases/case equivalents, and live `main` tip must be re-read immediately after the request;
+- a concurrent alias/case-equivalent create, canonical metadata edit, canonical delete, or other selected-label change can occur after the final pre-read, so the **complete plan is regenerated after the request**;
 - the receipt records `raceKinds` containing `control-plane`, `label-state`, or both when the post-request state differs from the approved invariant;
+- `label-state` includes canonical absence, canonical metadata divergence, canonical/alias/case collision, or any unexpected change to another selected row during the final API window;
 - any detected race yields overall result `applied-with-race`, not plain `applied`, and requires manual disposition before any further mutation;
-- a clean `applied` result is allowed only when the post-request `main` tip and canonical/alias/case state still satisfy the approved invariant.
+- a clean `applied` result is allowed only when the post-request `main` tip is unchanged and the complete post-plan matches the deterministic expected post-state.
 
 If a future operation requires stronger atomicity than the GitHub API exposes, it must use a separately designed coordination mechanism or remain unsupported.
 
@@ -172,7 +174,7 @@ Every dispatched mutation workflow must produce a durable JSON receipt from the 
 - whether the write-authorized job started;
 - whether mutation started/completed;
 - API outcome/status when a request occurred;
-- normalized post-mutation snapshots for the requested canonical label and all configured aliases/case-equivalent names;
+- normalized post-plan evidence, including the requested canonical snapshot, configured alias/case-equivalent state, and all selected-row actions/current/desired snapshots needed to compare with the deterministic expected post-state;
 - `raceKinds` as an empty array for clean state or containing `control-plane`, `label-state`, or both;
 - overall result such as `not-applied`, `rejected-stale`, `rejected-collision`, `applied`, `applied-with-race`, or `failed`;
 - rollback record derived from captured state when a create occurred.
@@ -203,12 +205,13 @@ The first mutation pilot is complete only when all of the following evidence exi
 6. after approval, the live `main` tip and full plan still match the approved evidence;
 7. immediately before the create, live `main` and label/alias/case preconditions still match;
 8. exactly one create request occurs;
-9. immediately after the request, live `main` plus the canonical/alias/case-equivalent set are re-read and the receipt records any `raceKinds`;
-10. a clean pilot requires overall result `applied` with empty `raceKinds`; `applied-with-race` halts the pilot for manual disposition before any further mutation;
-11. a fresh planner run returns `no-op` for the created row with no newly introduced alias/case collision;
-12. remaining create/update/migration/collision rows are unchanged and require separate dispatches or disposition;
-13. the ungated receipt contains deterministic rollback data for the created label;
-14. independent review of the run evidence occurs before any second repository is allowlisted.
+9. immediately after the request, live `main` and the complete canonical plan are re-read;
+10. the requested row must be exact `no-op` at the approved desired metadata with no alias/case collision, and every other selected row must match its approved pre-plan state;
+11. a clean pilot requires overall result `applied` with empty `raceKinds`; `applied-with-race` halts the pilot for manual disposition before any further mutation;
+12. a fresh planner run later still returns `no-op` for the created row with no introduced alias/case collision;
+13. remaining create/update/migration/collision rows are unchanged and require separate dispatches or disposition;
+14. the ungated receipt contains deterministic rollback data for the created label;
+15. independent review of the run evidence occurs before any second repository is allowlisted.
 
 A pilot must not broaden its authority merely to make the whole report green. Deferred create/update/migration rows are valid evidence of a deliberately narrower capability boundary.
 
@@ -219,7 +222,7 @@ Do not expand beyond `.github` until the first pilot is reviewed and the one-cre
 - a GitHub App installation token scoped to the exact reviewed repositories and `Issues: write`;
 - token minting only in the approved apply job, after read-only preflight;
 - explicit repository opt-in in the manifest;
-- the same live-default-branch, stale-plan, single-operation precondition, post-write canonical/alias/case verification, and collision controls;
+- the same live-default-branch, stale-plan, single-operation precondition, complete post-plan verification, and collision controls;
 - protected handling of App credentials/private keys;
 - repository-by-repository evidence and rollback records.
 
