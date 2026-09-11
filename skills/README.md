@@ -73,9 +73,12 @@ See [AI model selection and escalation](../docs/engineering/ai-model-selection.m
 | [`test-strategy`](test-strategy/SKILL.md) | Design risk-based layered validation and Testule integration |
 | [`security-review`](security-review/SKILL.md) | Review trust boundaries, abuse paths, privileges, and safe failure |
 | [`release-integration`](release-integration/SKILL.md) | Apply Micrantha release/distribution/integration strategy across repositories |
+| [`documentation-sync`](documentation-sync/SKILL.md) | Keep public documentation, landing pages, examples, links, and claims synchronized with current project truth while routing material ambiguity to a human decision queue |
 
 ## Execution rules
 
 The shared execution, ambiguity, validation, and priority contracts in [`docs/prompts/README.md`](../docs/prompts/README.md) apply to every shared skill unless a skill explicitly tightens them. A project-local skill should reference the organization standards that remain applicable and document intentional project-specific differences.
+
+For cross-project public documentation maintenance, `documentation-sync` coordinates evidence and consistency while project-local documentation/landing-page rules remain authoritative. The shared skill must not flatten different project maturity, release, or public/private topologies into one generic public narrative.
 
 Prefer durable mechanical controls over adding more prompt prose. When a recurring lesson can be enforced by a test, schema, type, CI gate, packaging check, capability boundary, or safer tool behavior, create or recommend that mechanism rather than relying on operator memory.
