@@ -35,7 +35,10 @@ The initial mutation workflow must expose only `workflow_dispatch` and must requ
 - `repository`;
 - `label` — one canonical label selected by that repository's reviewed manifest entry;
 - `expected_revision` — the exact `.github` control-plane revision;
-- `plan_sha256` — the exact reviewed dry-run digest.
+- `plan_sha256` — the exact reviewed dry-run digest;
+- `race_disposition_ref` — `none` only when the protected-environment reviewer confirms there is no unresolved prior race; otherwise a durable repository issue/ADR/evidence reference that disposes every outstanding `applied-with-race` receipt relevant to the target.
+
+The first-pilot workflow must use a **fixed, hard-coded concurrency group** for `.github` mutation with `cancel-in-progress: false`. A second mutation workflow must not overlap a running or approval-waiting pilot. Broader rollout may key concurrency only from a reviewed allowlist; it must not let untrusted dispatch text choose an arbitrary concurrency boundary.
 
 ### Preflight job
 
@@ -48,27 +51,39 @@ The preflight job has read-only permissions and must:
 5. fetch live label state and regenerate the complete canonical plan;
 6. fail closed unless the regenerated plan digest exactly equals `plan_sha256`;
 7. require the requested label's current action to be exactly `create` and its first-pilot candidate flag to be true;
-8. expose only bounded, non-secret evidence required by downstream jobs.
+8. preserve `race_disposition_ref` as immutable dispatch evidence but not treat it as self-authorizing clearance;
+9. expose only bounded, non-secret evidence required by downstream jobs.
+
+### Protected-environment quarantine clearance
+
+The protected `label-mutation` environment is part of the mutation authority boundary, not merely a confirmation click.
+
+Before approving the apply job, the accountable reviewer must inspect prior mutation receipts for the `.github` pilot and verify that no unresolved `applied-with-race` receipt remains. If a prior race exists, the reviewer must reject the run unless `race_disposition_ref` points to durable, reviewed disposition evidence covering every outstanding race. The environment approval and immutable dispatch input together record the clearance decision.
+
+A run with `race_disposition_ref: none` may be approved only when the reviewer has verified there is no unresolved race receipt. If the platform cannot support this accountable review/recording boundary, mutation remains blocked until a machine-checkable quarantine mechanism is designed.
+
+An `applied-with-race` receipt sets `requiresDisposition: true`. That quarantine remains in force for subsequent dispatches until a human-reviewed durable disposition exists and a later protected-environment approval explicitly clears it. Merely generating a fresh plan/revision does not clear quarantine.
 
 ### Apply job
 
-The apply job is the only job with `issues: write` and must be gated by a protected `label-mutation` environment or an explicitly reviewed equivalent approval boundary. The write-authorized job must not start—and therefore must not receive its write-capable job token—until approval succeeds.
+The apply job is the only job with `issues: write` and must be gated by the protected `label-mutation` environment or an explicitly reviewed equivalent boundary satisfying the quarantine-clearance contract above. The write-authorized job must not start—and therefore must not receive its write-capable job token—until approval succeeds.
 
 After approval, the apply job must:
 
 1. depend on successful preflight;
 2. repeat the repository, ref, revision, label, and allowlist checks rather than trusting only preflight outputs;
-3. query the **live** `refs/heads/main` tip and require it to equal both `expected_revision` and the dispatch `github.sha`;
-4. re-fetch live labels and regenerate the complete plan;
-5. require the regenerated digest to equal the approved `plan_sha256` and the requested label row to remain exactly `create`;
-6. immediately before the single `POST`, query the live `main` tip again and re-fetch the requested canonical name plus configured aliases/case-equivalent names;
-7. require that immediate operation precondition to match the approved `create` state;
-8. perform exactly one create request;
-9. treat any conflict/validation failure, including an already-existing label, as terminal; never retry by reinterpreting changed state;
-10. immediately after the request, query live `main`, re-fetch live labels, and regenerate the **complete canonical plan**;
-11. require the post-plan to match the deterministic expected post-state: the requested row is exactly `no-op` with the canonical name/color/description matching the approved desired snapshot and no alias/case collision, while every other selected row has the same action/current/desired state it had in the approved pre-plan;
-12. classify any post-request control-plane advance or expected-post-plan divergence as an applied race condition rather than plain success;
-13. produce bounded outputs for the ungated receipt job.
+3. record the approved `race_disposition_ref` in bounded evidence;
+4. query the **live** `refs/heads/main` tip and require it to equal both `expected_revision` and the dispatch `github.sha`;
+5. re-fetch live labels and regenerate the complete plan;
+6. require the regenerated digest to equal the approved `plan_sha256` and the requested label row to remain exactly `create`;
+7. immediately before the single `POST`, query the live `main` tip again and re-fetch the requested canonical name plus configured aliases/case-equivalent names;
+8. require that immediate operation precondition to match the approved `create` state;
+9. perform exactly one create request;
+10. treat any conflict/validation failure, including an already-existing label, as terminal; never retry by reinterpreting changed state;
+11. immediately after the request, query live `main`, re-fetch live labels, and regenerate the **complete canonical plan**;
+12. require the post-plan to match the deterministic expected post-state: the requested row is exactly `no-op` with the canonical name/color/description matching the approved desired snapshot and no alias/case collision, while every other selected row has the same action/current/desired state it had in the approved pre-plan;
+13. classify any post-request control-plane advance or expected-post-plan divergence as an applied race condition rather than plain success;
+14. produce bounded outputs for the ungated receipt job.
 
 The workflow must contain no mutation path that can be triggered from a pull request, fork, push, schedule, issue comment, repository dispatch, or unvalidated dynamic input.
 
@@ -80,7 +95,9 @@ The receipt job must:
 - depend on preflight and apply with `if: always()` semantics so it can run after success, preflight failure, apply failure, cancellation, or environment rejection once GitHub resolves the gated job;
 - record whether the write-authorized job started and its terminal job result;
 - record `mutationStarted` and `mutationCompleted` separately from the job result;
+- record the reviewed `race_disposition_ref` supplied for this dispatch;
 - record post-request control-plane and label-state race evidence separately when a create occurred;
+- set `requiresDisposition: true` for `applied-with-race`;
 - never infer that environment rejection, cancellation, or a skipped job performed a mutation;
 - preserve the terminal receipt as durable workflow evidence using a reviewed, pinned mechanism.
 
@@ -105,7 +122,7 @@ The mutation workflow must regenerate this plan in read-only preflight and again
 
 Unrelated out-of-scope repository labels are preserved and need not invalidate a plan unless their name creates a selected canonical/alias/case collision.
 
-A timestamp alone is not a stale-plan control. A prior successful plan must never be applied without exact current-state and live-control-plane revalidation.
+A timestamp alone is not a stale-plan control. A prior successful plan must never be applied without exact current-state and live-control-plane revalidation. Likewise, a fresh plan does not clear an unresolved prior mutation quarantine.
 
 ### Residual cross-API race
 
@@ -113,13 +130,13 @@ GitHub does not provide a transaction that atomically couples reading `refs/head
 
 The first pilot bounds rather than conceals that limitation:
 
-- one create is the maximum effect of one dispatch;
+- one create is the maximum label effect of one dispatch;
 - create cannot overwrite existing label metadata;
 - a competing same-name create is treated as a terminal conflict/validation failure;
 - a concurrent alias/case-equivalent create, canonical metadata edit, canonical delete, or other selected-label change can occur after the final pre-read, so the **complete plan is regenerated after the request**;
 - the receipt records `raceKinds` containing `control-plane`, `label-state`, or both when the post-request state differs from the approved invariant;
 - `label-state` includes canonical absence, canonical metadata divergence, canonical/alias/case collision, or any unexpected change to another selected row during the final API window;
-- any detected race yields overall result `applied-with-race`, not plain `applied`, and requires manual disposition before any further mutation;
+- any detected race yields overall result `applied-with-race`, not plain `applied`, sets `requiresDisposition: true`, and enters the protected-environment quarantine described above;
 - a clean `applied` result is allowed only when the post-request `main` tip is unchanged and the complete post-plan matches the deterministic expected post-state.
 
 If a future operation requires stronger atomicity than the GitHub API exposes, it must use a separately designed coordination mechanism or remain unsupported.
@@ -132,7 +149,7 @@ The first implementation may authorize only:
 
 - `create` — create one explicitly requested selected canonical label that is absent and has no configured alias/case-equivalent collision.
 
-The manifest and plan may contain many `create` rows, but one dispatch authorizes exactly one named row. A second label requires a new dry-run/review/dispatch against then-current state.
+The manifest and plan may contain many `create` rows, but one dispatch authorizes exactly one named row. A second label requires a new dry-run/review/dispatch against then-current state and, when applicable, explicit clearance of any outstanding mutation quarantine.
 
 ### Metadata update
 
@@ -171,17 +188,19 @@ Every dispatched mutation workflow must produce a durable JSON receipt from the 
 - live default-branch revision observed when apply starts, immediately before the create, and immediately after it when available;
 - plan digest and manifest digest;
 - normalized requested-label precondition snapshots;
+- reviewed `race_disposition_ref` for this dispatch;
 - whether the write-authorized job started;
 - whether mutation started/completed;
 - API outcome/status when a request occurred;
 - normalized post-plan evidence, including the requested canonical snapshot, configured alias/case-equivalent state, and all selected-row actions/current/desired snapshots needed to compare with the deterministic expected post-state;
 - `raceKinds` as an empty array for clean state or containing `control-plane`, `label-state`, or both;
+- `requiresDisposition` boolean;
 - overall result such as `not-applied`, `rejected-stale`, `rejected-collision`, `applied`, `applied-with-race`, or `failed`;
 - rollback record derived from captured state when a create occurred.
 
 Secrets, token material, private-key material, and unrelated repository contents must never appear in the receipt.
 
-## Rollback contract
+## Rollback and quarantine contract
 
 Rollback data is generated from captured state, not reconstructed later.
 
@@ -191,6 +210,8 @@ Because metadata `update` is not authorized in the first pilot, update rollback 
 
 The first pilot has no multi-write partial-apply state because one dispatch authorizes one create. A failed request does not authorize a retry under changed state. Rollback is a separate reviewed action, not an automatic failure handler.
 
+An `applied-with-race` result is distinct from rollback: the create may have succeeded, but the authority invariant was not cleanly preserved. It therefore enters mutation quarantine. The next environment reviewer must require durable disposition evidence before approving another write; closing the loop requires an accountable decision to accept, repair, or separately roll back the raced state.
+
 ## Idempotence and pilot evidence
 
 The current `.github` report includes legacy alias migrations that are deliberately outside the first mutation authority. Pilot idempotence is measured over each explicitly authorized create, not over update/migration rows that remain report-only.
@@ -199,15 +220,15 @@ The first mutation pilot is complete only when all of the following evidence exi
 
 1. a reviewed dry-run from the exact merged control-plane revision with exact before/desired state and `plan_sha256`;
 2. one canonical `create` row is explicitly chosen for the first dispatch;
-3. explicit dispatch names that repository, label, revision, and digest;
+3. explicit dispatch names that repository, label, revision, digest, and race-disposition reference;
 4. preflight succeeds read-only;
-5. environment approval gates the only write-authorized job;
+5. environment approval gates the only write-authorized job and verifies there is no unresolved mutation quarantine;
 6. after approval, the live `main` tip and full plan still match the approved evidence;
 7. immediately before the create, live `main` and label/alias/case preconditions still match;
 8. exactly one create request occurs;
 9. immediately after the request, live `main` and the complete canonical plan are re-read;
 10. the requested row must be exact `no-op` at the approved desired metadata with no alias/case collision, and every other selected row must match its approved pre-plan state;
-11. a clean pilot requires overall result `applied` with empty `raceKinds`; `applied-with-race` halts the pilot for manual disposition before any further mutation;
+11. a clean pilot requires overall result `applied` with empty `raceKinds` and `requiresDisposition: false`; `applied-with-race` halts the pilot in mutation quarantine until durable manual disposition;
 12. a fresh planner run later still returns `no-op` for the created row with no introduced alias/case collision;
 13. remaining create/update/migration/collision rows are unchanged and require separate dispatches or disposition;
 14. the ungated receipt contains deterministic rollback data for the created label;
@@ -222,6 +243,7 @@ Do not expand beyond `.github` until the first pilot is reviewed and the one-cre
 - a GitHub App installation token scoped to the exact reviewed repositories and `Issues: write`;
 - token minting only in the approved apply job, after read-only preflight;
 - explicit repository opt-in in the manifest;
+- a reviewed per-repository serialization/quarantine mechanism; human environment review alone should be reconsidered before scale;
 - the same live-default-branch, stale-plan, single-operation precondition, complete post-plan verification, and collision controls;
 - protected handling of App credentials/private keys;
 - repository-by-repository evidence and rollback records.
