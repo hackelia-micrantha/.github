@@ -65,8 +65,9 @@ After approval, the apply job must:
 7. require that immediate operation precondition to match the approved `create` state;
 8. perform exactly one create request;
 9. treat any conflict/validation failure, including an already-existing label, as terminal; never retry by reinterpreting changed state;
-10. immediately after the request, re-read the created label and live `main` tip for the receipt;
-11. produce bounded outputs for the ungated receipt job.
+10. immediately after the request, re-read the live `main` tip **and the requested canonical name plus every configured alias/case-equivalent name**;
+11. classify any post-request control-plane advance or newly introduced canonical/alias/case collision as an applied race condition rather than plain success;
+12. produce bounded outputs for the ungated receipt job.
 
 The workflow must contain no mutation path that can be triggered from a pull request, fork, push, schedule, issue comment, repository dispatch, or unvalidated dynamic input.
 
@@ -78,6 +79,7 @@ The receipt job must:
 - depend on preflight and apply with `if: always()` semantics so it can run after success, preflight failure, apply failure, cancellation, or environment rejection once GitHub resolves the gated job;
 - record whether the write-authorized job started and its terminal job result;
 - record `mutationStarted` and `mutationCompleted` separately from the job result;
+- record post-request control-plane and label-state race evidence separately when a create occurred;
 - never infer that environment rejection, cancellation, or a skipped job performed a mutation;
 - preserve the terminal receipt as durable workflow evidence using a reviewed, pinned mechanism.
 
@@ -113,8 +115,10 @@ The first pilot bounds rather than conceals that limitation:
 - one create is the maximum effect of one dispatch;
 - create cannot overwrite existing label metadata;
 - a competing same-name create is treated as a terminal conflict/validation failure;
-- the live `main` tip and created label are re-read immediately after the request;
-- if the default branch advanced during that final read/write window, the receipt records `applied-with-control-race` and requires manual review before any further mutation; it must not claim the stale-control invariant was perfectly enforced.
+- a competing alias/case-equivalent create may coexist with the canonical create, so the canonical name, all configured aliases/case equivalents, and live `main` tip must be re-read immediately after the request;
+- the receipt records `raceKinds` containing `control-plane`, `label-state`, or both when the post-request state differs from the approved invariant;
+- any detected race yields overall result `applied-with-race`, not plain `applied`, and requires manual disposition before any further mutation;
+- a clean `applied` result is allowed only when the post-request `main` tip and canonical/alias/case state still satisfy the approved invariant.
 
 If a future operation requires stronger atomicity than the GitHub API exposes, it must use a separately designed coordination mechanism or remain unsupported.
 
@@ -168,8 +172,9 @@ Every dispatched mutation workflow must produce a durable JSON receipt from the 
 - whether the write-authorized job started;
 - whether mutation started/completed;
 - API outcome/status when a request occurred;
-- normalized post-mutation snapshot when a create occurred;
-- overall result such as `not-applied`, `rejected-stale`, `rejected-collision`, `applied`, `applied-with-control-race`, or `failed`;
+- normalized post-mutation snapshots for the requested canonical label and all configured aliases/case-equivalent names;
+- `raceKinds` as an empty array for clean state or containing `control-plane`, `label-state`, or both;
+- overall result such as `not-applied`, `rejected-stale`, `rejected-collision`, `applied`, `applied-with-race`, or `failed`;
 - rollback record derived from captured state when a create occurred.
 
 Secrets, token material, private-key material, and unrelated repository contents must never appear in the receipt.
@@ -198,11 +203,12 @@ The first mutation pilot is complete only when all of the following evidence exi
 6. after approval, the live `main` tip and full plan still match the approved evidence;
 7. immediately before the create, live `main` and label/alias/case preconditions still match;
 8. exactly one create request occurs;
-9. post-run live inventory shows that label at the desired state and records whether `main` advanced during the final API window;
-10. a fresh planner run returns `no-op` for the created row;
-11. remaining create/update/migration/collision rows are unchanged and require separate dispatches or disposition;
-12. the ungated receipt contains deterministic rollback data for the created label;
-13. independent review of the run evidence occurs before any second repository is allowlisted.
+9. immediately after the request, live `main` plus the canonical/alias/case-equivalent set are re-read and the receipt records any `raceKinds`;
+10. a clean pilot requires overall result `applied` with empty `raceKinds`; `applied-with-race` halts the pilot for manual disposition before any further mutation;
+11. a fresh planner run returns `no-op` for the created row with no newly introduced alias/case collision;
+12. remaining create/update/migration/collision rows are unchanged and require separate dispatches or disposition;
+13. the ungated receipt contains deterministic rollback data for the created label;
+14. independent review of the run evidence occurs before any second repository is allowlisted.
 
 A pilot must not broaden its authority merely to make the whole report green. Deferred create/update/migration rows are valid evidence of a deliberately narrower capability boundary.
 
@@ -213,7 +219,7 @@ Do not expand beyond `.github` until the first pilot is reviewed and the one-cre
 - a GitHub App installation token scoped to the exact reviewed repositories and `Issues: write`;
 - token minting only in the approved apply job, after read-only preflight;
 - explicit repository opt-in in the manifest;
-- the same live-default-branch, stale-plan, single-operation precondition, and collision controls;
+- the same live-default-branch, stale-plan, single-operation precondition, post-write canonical/alias/case verification, and collision controls;
 - protected handling of App credentials/private keys;
 - repository-by-repository evidence and rollback records.
 
