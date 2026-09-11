@@ -49,7 +49,7 @@ A later cross-repository rollout must mint a short-lived GitHub App installation
 
 The first mutation implementation is **one create per dispatch only**. Metadata update is deferred because the label update API has no documented compare-and-swap/conditional write contract, leaving a residual read/write overwrite race. Alias migration/rename requires a separate reviewed decision; delete is unsupported initially.
 
-GitHub does not make the final live-ref/label reads and create request transactional. The pilot bounds that residual cross-API race to one non-overwriting create, treats a competing create as terminal conflict/failure, re-reads `main` and the created label after the request, and requires manual review if the control plane changed during that final API window.
+GitHub does not make the final live-ref/label reads and create request transactional. The pilot bounds that residual cross-API race to one non-overwriting create, treats a competing same-name create as terminal conflict/failure, and re-reads `main` plus the canonical/alias/case-equivalent set after the request. If either the control plane or collision state changed in the final API window, the receipt must report `applied-with-race` with explicit race kinds and block further mutation pending manual disposition; plain `applied` is reserved for a clean post-request invariant.
 
 ## Third-party actions
 
