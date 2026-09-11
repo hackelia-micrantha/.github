@@ -71,6 +71,6 @@ For the same-repository `.github` pilot, the narrow credential is the ephemeral 
 
 The create-only boundary deliberately avoids the repository-label `PATCH` race: GitHub does not document conditional compare-and-swap semantics for that unsafe update operation. A later metadata-update capability therefore requires its own reviewed need, concurrency semantics, and rollback design.
 
-GitHub also does not make the final branch-ref/label reads and label-create request transactional. The first pilot bounds that residual race to one non-overwriting create per dispatch, treats a competing create as terminal conflict/failure, re-reads `main` and the created label after the request, and requires review if the control plane changed during that final API window.
+GitHub also does not make the final branch-ref/label reads and label-create request transactional. The first pilot bounds that residual race to one non-overwriting create per dispatch. After the request it must re-read `main` plus the canonical label and all configured aliases/case equivalents. A control-plane or label-state race yields `applied-with-race` with explicit race kinds and blocks further mutation pending manual disposition; plain `applied` is reserved for a clean post-request invariant.
 
 Organization-wide mutation must never be inferred from the existence of the catalog, from a successful report-only plan, from an `update`/`migration` classification, or from an alias match.
