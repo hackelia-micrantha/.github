@@ -1,16 +1,16 @@
 # Micrantha repository responsibility catalogue
 
-This catalogue records organization-level project classification, maturity, authoritative responsibility, and important non-responsibilities. It is the default source for deciding where work, contracts, issues, and public claims belong.
+This catalogue records organization-level project classification, role, lifecycle, authoritative responsibility, and important non-responsibilities. It is the default explanatory source for deciding where work, contracts, issues, and public claims belong.
 
-Detailed implementation, support, licensing, and release evidence remains in each authoritative repository. When this catalogue conflicts with current repository evidence, treat the conflict as governance drift: correct the catalogue or explicitly change ownership through review rather than silently relying on the inconsistency.
+Canonical project identity and portfolio tier are owned by `hackelia-micrantha/hackelia-micrantha/registry/projects.yaml`. This catalogue explains responsibility and repository boundaries; it must not independently add, remove, or re-tier portfolio projects. Detailed implementation, support, licensing, and release evidence remains in each authoritative repository. When this catalogue conflicts with the canonical registry or current repository evidence, treat the conflict as governance drift: correct the catalogue or explicitly change ownership through review rather than silently relying on the inconsistency.
 
-**Catalogue baseline:** 2026-09-04
+**Catalogue baseline:** 2026-09-11
 
 ## How to use this catalogue
 
 Before creating or moving work, determine:
 
-1. Which repository owns the affected contract or outcome?
+1. Which project and repository own the affected contract or outcome?
 2. Is the work product implementation, composition, provider integration, laboratory evidence, community packaging, public communication, or shared engineering substrate?
 3. Does the change alter another repository's authoritative boundary?
 4. Is current repository placement transitional?
@@ -18,15 +18,16 @@ Before creating or moving work, determine:
 
 A runtime dependency does not imply governance authority. A laboratory finding does not automatically change a product contract. A public site does not create product truth. A distribution composes components without assuming their internal authority. A trust-domain label describes context; it does not grant permission.
 
-## Classification, role, and lifecycle
+## Portfolio, classification, role, and lifecycle
 
 Keep these dimensions separate:
 
-- **classification** describes the portfolio/public grouping, where applicable: solution or laboratory;
-- **role** describes the primary architectural function: solution, platform, infrastructure, library/protocol, tooling, design-system substrate, laboratory/research, or meta/public surface;
-- **lifecycle** describes maturity/support expectations independently of role.
+- **portfolio** describes intentional portfolio presentation: `featured`, `supporting`, explicit `false`, or omitted/undecided. The canonical project registry owns this dimension;
+- **classification** describes solution/laboratory grouping where applicable and does not imply portfolio membership;
+- **role** describes the primary architectural function: solution, platform, infrastructure, library/protocol, tooling, design-system substrate, laboratory/research, creative, or meta/public surface;
+- **lifecycle** describes maturity/support expectations independently of role and portfolio tier.
 
-Lifecycle follows the organization lifecycle model. Do not infer maturity from repository visibility, age, recent activity, or public positioning.
+Do not infer portfolio membership from repository existence, visibility, activity, classification, role, or lifecycle. Portfolio-scoped reviews resolve membership from the canonical project registry and its reviewed inventory exclusions. Lifecycle follows the organization lifecycle model; do not infer maturity from repository visibility, age, recent activity, or public positioning.
 
 ## Repository role patterns
 
@@ -71,10 +72,10 @@ Examples include design-system contracts, reusable testing contracts, prompt/con
 
 | Repository or surface | Classification / role | Maturity | Authoritative responsibility | Does not own |
 | --- | --- | --- | --- | --- |
-| [`hackelia-micrantha/.github`](https://github.com/hackelia-micrantha/.github) | Organization governance / meta | Active | Organization defaults, governance, lifecycle, work-item conventions, prompt library, inherited issue/PR templates, shared engineering standards, public organization profile | Repository-specific implementation, licenses, CODEOWNERS, releases, branch rules, or deployment configuration |
-| [`hackelia-micrantha/hackelia-micrantha`](https://github.com/hackelia-micrantha/hackelia-micrantha) | Ecosystem coordination / meta | Active | Ecosystem registry, project relationships, aggregate maturity/status model, distribution and integration coordination | Organization-wide GitHub policy or project implementation |
-| [`hackelia-micrantha/web`](https://github.com/hackelia-micrantha/web) | Public website / public surface | Active | `micrantha.com` presentation, public navigation, and evidence-backed ecosystem communication | Product contracts, maturity by assertion, repository ownership, or support promises unsupported by authoritative projects |
-| [`profile/README.md`](../../profile/README.md) | GitHub organization profile / public surface | Active | Concise public organization overview and project map | Canonical lifecycle or responsibility rules; it projects this catalogue and governance model |
+| [`hackelia-micrantha/.github`](https://github.com/hackelia-micrantha/.github) | Organization governance / meta | Active | Organization defaults, governance, lifecycle, work-item conventions, prompt library, inherited issue/PR templates, shared engineering standards, public organization profile | Repository-specific implementation, licenses, CODEOWNERS, releases, branch rules, deployment configuration, or portfolio membership |
+| [`hackelia-micrantha/hackelia-micrantha`](https://github.com/hackelia-micrantha/hackelia-micrantha) | Ecosystem coordination / meta | Active | Canonical project identity and portfolio registry, project relationships, aggregate maturity/status model, distribution and integration coordination | Organization-wide GitHub policy or project implementation |
+| [`hackelia-micrantha/web`](https://github.com/hackelia-micrantha/web) | Public website / public surface | Active | `micrantha.com` presentation, public navigation, and evidence-backed ecosystem communication | Product contracts, portfolio membership by assertion, maturity by assertion, repository ownership, or support promises unsupported by authoritative projects |
+| [`profile/README.md`](../../profile/README.md) | GitHub organization profile / public surface | Active | Concise public organization overview and project map | Canonical lifecycle, portfolio membership, or responsibility rules; it projects reviewed organization/project evidence |
 
 ## Solutions, platforms, and product systems
 
@@ -99,6 +100,18 @@ Examples include design-system contracts, reusable testing contracts, prompt/con
 | **Modolia** — [`modolia`](https://github.com/hackelia-micrantha/modolia), [`modolia-community`](https://github.com/hackelia-micrantha/modolia-community) | Library/tooling / model-surface resolution | Incubating | Versioned model-surface registry schema, deterministic constraint evaluation, candidate ranking, route decisions, and replayable resolution records | Runtime provider routing, retries/fallback, model execution, or the authority that establishes governance constraints |
 | **Testule** — [`testule`](https://github.com/hackelia-micrantha/testule) | Library/tooling / testability contracts | Incubating | Language-neutral test plans, testability/data/environment/capability contracts, adapters, evidence normalization, gap analysis, and agent-accessible bounded testing capabilities | Replacing native test runners, CI/release authority, or treating evidence as authorization |
 | **Phyllotaxis** — [`phyllotaxis`](https://github.com/hackelia-micrantha/phyllotaxis) | Shared substrate / design system | Experimental | Shared semantic design tokens and themed UI substrate; Venation owns layout/primitives, with Chroma, Lamina, and Cambium as named design-system concerns | Product-specific information architecture, content, application behavior, or forcing identical branding across sites |
+
+## Additional registered project boundaries
+
+These registered projects do not require a `solution` or `laboratory` classification merely to participate in the portfolio. Their portfolio tier remains defined only in the canonical project registry.
+
+| Project and locations | Classification / role | Maturity | Authoritative responsibility | Does not own |
+| --- | --- | --- | --- | --- |
+| **Mobuild** — [`mobuild`](https://github.com/hackelia-micrantha/mobuild) with related component repositories | — / meta | Incubating | Cross-repository architecture and coordination for modular mobile build and security work; defines component relationships and trust/release boundaries, with Envuscator as the current product line | Envuscator implementation authority, unrelated mobile products, or automatic authority over component releases merely through coordination |
+| **Outermesh** — [`outermesh`](https://github.com/hackelia-micrantha/outermesh), with associated publication/web surfaces | — / solution | Experimental | Learning project that teaches software-engineering concepts through a bounded multiplayer security-simulation game and reference implementation | General organization education policy, unrelated security simulation products, or portfolio membership for its auxiliary repositories |
+| **The Fatherless / Entanglement of Ages** — authoritative creative source currently under `ryjen/the-fatherless`; public/marketing surfaces are separate projections | — / creative | Active | Canon, treatments, manuscript adaptation, publishing governance, and release preparation for the Entanglement of Ages creative project | Organization engineering standards, software project authority, or public disclosure of private creative-source material by implication |
+
+Garden and Scouter repository families remain explicitly outside portfolio scope under the reviewed canonical inventory. Their repositories may still be retained, inspected, or dispositioned for repository-health/lifecycle purposes without becoming portfolio projects.
 
 ## Laboratory, infrastructure, templates, and reference integrations
 
@@ -203,12 +216,13 @@ Repository location alone does not override documented architectural responsibil
 
 ## Unclassified or newly created repositories
 
-A repository not listed here is not automatically a solution, laboratory, supported product, or public project. Before making ecosystem claims, add a catalogue entry that identifies:
+A repository not listed here is not automatically a solution, laboratory, supported product, public project, or portfolio project. Before making ecosystem claims, add or reconcile the appropriate catalogue/registry entry that identifies:
 
 ```markdown
 ## Repository classification proposal
 
 - Repository:
+- Owning project (if any):
 - Purpose:
 - Classification:
 - Role:
@@ -222,7 +236,7 @@ A repository not listed here is not automatically a solution, laboratory, suppor
 - Overlap or migration from existing repositories:
 ```
 
-Private experiments and empty repository reservations may remain uncatalogued while Proposed, but they must not be used as evidence of implemented capability.
+If the proposal changes project identity or portfolio tier, update the canonical project registry rather than encoding that decision only here. Private experiments and empty repository reservations may remain uncatalogued while Proposed, but they must not be used as evidence of implemented capability or portfolio membership.
 
 ## Change control
 
@@ -231,8 +245,9 @@ Update this catalogue when:
 - a repository is created, transferred, renamed, split, merged, superseded, or archived;
 - source/community or engine/adapter boundaries change;
 - a contract moves between repositories;
-- project maturity changes;
+- project role or lifecycle changes;
+- a project identity/portfolio decision changes in the canonical registry and this explanatory catalogue is affected;
 - a transitional repository moves into the organization;
 - public documentation or release ownership changes materially.
 
-Changes that alter authority or a cross-repository contract should link the relevant QART, RFC, ADR, lifecycle record, or organization-owner decision. Editorial corrections and evidence refreshes may use a normal documentation pull request.
+Changes that alter authority or a cross-repository contract should link the relevant QART, RFC, ADR, lifecycle record, canonical-registry change, or organization-owner decision. Editorial corrections and evidence refreshes may use a normal documentation pull request.
