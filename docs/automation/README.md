@@ -118,7 +118,7 @@ Any future mutation must follow [label mutation authority and rollback](label-mu
 7. the receipt/finalizer records terminal evidence even when approval is rejected or the write job never starts;
 8. cross-repository mutation requires a short-lived GitHub App installation token scoped to reviewed repositories and minimum label-management permission.
 
-The create API does not make the branch-ref read and label write transactional. The pilot therefore bounds that residual race to one non-overwriting create, re-reads `main` plus the requested canonical/alias/case-equivalent set after the request, and reports `applied-with-race` with explicit race kinds if either the control plane or collision state changed. Any detected race blocks further mutation pending manual disposition.
+The create API does not make the branch-ref read and label write transactional. The pilot therefore bounds that residual race to one non-overwriting create and regenerates the **complete canonical plan** immediately after the request. Clean `applied` requires unchanged `main`, the requested row at exact `no-op` with approved metadata/no alias collision, and every other selected row unchanged. Any control-plane or expected-post-plan divergence is `applied-with-race` with explicit race kinds and blocks further mutation pending manual disposition.
 
 ## Adoption sequence
 
