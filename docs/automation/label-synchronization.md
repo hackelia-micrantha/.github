@@ -57,17 +57,20 @@ Issue #76 and [label mutation authority and rollback](label-mutation-authority.m
 
 - `.github` is the only first pilot target;
 - mutation is explicit human dispatch on the default branch only;
-- read-only preflight and write-authorized apply are separate jobs;
+- one dispatch names and authorizes at most one selected canonical `create` row;
+- read-only preflight, environment-gated write-authorized apply, and an ungated read-only receipt/finalizer are separate jobs;
 - the approved plan is bound to an exact control-plane revision and SHA-256 plan digest;
-- after approval, the apply job must verify that the **live** `main` tip still equals the approved revision;
+- after approval and immediately before the single create request, apply must verify that the **live** `main` tip still equals the approved revision;
 - live label state is re-read and the complete plan is regenerated before mutation;
+- the requested canonical/alias/case-equivalent precondition is re-read immediately before creation;
 - stale-plan or collision differences fail closed;
-- only `create` may be authorized initially, with an immediate precondition read before every create;
 - metadata `update`, `migration`/rename, and delete remain report-only/unsupported until separately reviewed;
-- every attempted mutation emits before/after evidence and rollback data.
+- the receipt/finalizer preserves terminal evidence even if approval is rejected or the write-authorized job never starts.
 
 For the same-repository `.github` pilot, the narrow credential is the ephemeral repository-scoped `GITHUB_TOKEN`; only the apply job receives `contents: read` and `issues: write`. Cross-repository rollout requires a short-lived GitHub App installation token scoped to the exact reviewed repositories with repository `Issues: write` only.
 
 The create-only boundary deliberately avoids the repository-label `PATCH` race: GitHub does not document conditional compare-and-swap semantics for that unsafe update operation. A later metadata-update capability therefore requires its own reviewed need, concurrency semantics, and rollback design.
+
+GitHub also does not make the final branch-ref/label reads and label-create request transactional. The first pilot bounds that residual race to one non-overwriting create per dispatch, treats a competing create as terminal conflict/failure, re-reads `main` and the created label after the request, and requires review if the control plane changed during that final API window.
 
 Organization-wide mutation must never be inferred from the existence of the catalog, from a successful report-only plan, from an `update`/`migration` classification, or from an alias match.
