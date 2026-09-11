@@ -10,6 +10,7 @@ on:
       - metadata/**
       - tests/**
       - tools/label_sync.py
+      - tools/release_readiness.py
       - tools/repository_health.py
       - tools/source_posture.py
       - workflow-templates/**
@@ -25,6 +26,7 @@ on:
       - metadata/**
       - tests/**
       - tools/label_sync.py
+      - tools/release_readiness.py
       - tools/repository_health.py
       - tools/source_posture.py
       - workflow-templates/**
