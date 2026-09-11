@@ -17,7 +17,10 @@ import sys
 from pathlib import Path
 from typing import Any
 
-from tools import source_posture
+try:
+    from tools import source_posture
+except ModuleNotFoundError:  # direct `python tools/release_readiness.py ...`
+    import source_posture
 
 SHA256_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 PUBLIC_DISTRIBUTION_MODES = {"source", "binary", "package", "closure"}
