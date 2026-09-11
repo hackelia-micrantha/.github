@@ -112,13 +112,15 @@ Any future mutation must follow [label mutation authority and rollback](label-mu
 1. mutation remains separate from pull-request/push/scheduled reporting;
 2. the first pilot is `.github` only, is **create-only**, and authorizes exactly **one explicitly named canonical label per human dispatch**;
 3. read-only preflight, environment-gated write apply, and an ungated read-only receipt/finalizer remain separate jobs;
-4. after approval and again immediately before the one create request, the live default-branch tip must still equal the approved control-plane revision;
-5. stale-plan and collision checks fail closed and the requested label/alias/case precondition is re-read immediately before creation;
-6. metadata update, migration/rename, and delete remain unsupported initially;
-7. the receipt/finalizer records terminal evidence even when approval is rejected or the write job never starts;
-8. cross-repository mutation requires a short-lived GitHub App installation token scoped to reviewed repositories and minimum label-management permission.
+4. the pilot uses a fixed non-cancelling concurrency group so mutation dispatches cannot overlap;
+5. after approval and again immediately before the one create request, the live default-branch tip must still equal the approved control-plane revision;
+6. stale-plan and collision checks fail closed and the requested label/alias/case precondition is re-read immediately before creation;
+7. metadata update, migration/rename, and delete remain unsupported initially;
+8. the receipt/finalizer records terminal evidence even when approval is rejected or the write job never starts;
+9. a protected-environment reviewer must reject new mutation while a prior `applied-with-race` receipt lacks durable reviewed disposition evidence;
+10. cross-repository mutation requires a short-lived GitHub App installation token scoped to reviewed repositories and minimum label-management permission.
 
-The create API does not make the branch-ref read and label write transactional. The pilot therefore bounds that residual race to one non-overwriting create and regenerates the **complete canonical plan** immediately after the request. Clean `applied` requires unchanged `main`, the requested row at exact `no-op` with approved metadata/no alias collision, and every other selected row unchanged. Any control-plane or expected-post-plan divergence is `applied-with-race` with explicit race kinds and blocks further mutation pending manual disposition.
+The create API does not make the branch-ref read and label write transactional. The pilot therefore bounds that residual race to one non-overwriting create and regenerates the **complete canonical plan** immediately after the request. Clean `applied` requires unchanged `main`, the requested row at exact `no-op` with approved metadata/no alias collision, and every other selected row unchanged. Any control-plane or expected-post-plan divergence is `applied-with-race`, sets a mutation quarantine requiring durable disposition before another protected approval, and cannot be cleared merely by generating a fresh plan.
 
 ## Adoption sequence
 
