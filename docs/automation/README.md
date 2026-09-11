@@ -110,12 +110,15 @@ The current [label synchronization](label-synchronization.md) surface is deliber
 Any future mutation must follow [label mutation authority and rollback](label-mutation-authority.md). In particular:
 
 1. mutation remains separate from pull-request/push/scheduled reporting;
-2. the first pilot is `.github` only and may authorize **create only**;
-3. after approval, the live default-branch tip must still equal the approved control-plane revision;
-4. stale-plan and collision checks fail closed, with an immediate precondition read before every create;
-5. metadata update, migration/rename, and delete remain unsupported initially;
-6. every mutation emits before/after evidence and deterministic rollback data;
-7. cross-repository mutation requires a short-lived GitHub App installation token scoped to reviewed repositories and minimum label-management permission.
+2. the first pilot is `.github` only, is **create-only**, and authorizes exactly **one explicitly named canonical label per human dispatch**;
+3. read-only preflight, environment-gated write apply, and an ungated read-only receipt/finalizer remain separate jobs;
+4. after approval and again immediately before the one create request, the live default-branch tip must still equal the approved control-plane revision;
+5. stale-plan and collision checks fail closed and the requested label/alias/case precondition is re-read immediately before creation;
+6. metadata update, migration/rename, and delete remain unsupported initially;
+7. the receipt/finalizer records terminal evidence even when approval is rejected or the write job never starts;
+8. cross-repository mutation requires a short-lived GitHub App installation token scoped to reviewed repositories and minimum label-management permission.
+
+The create API does not make the branch-ref read and label write transactional. The pilot therefore bounds that residual race to one non-overwriting create, re-reads `main` and the created label after the request, and requires review if the control plane changed in the final API window.
 
 ## Adoption sequence
 
