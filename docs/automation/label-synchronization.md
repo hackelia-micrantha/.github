@@ -59,6 +59,7 @@ Issue #76 and [label mutation authority and rollback](label-mutation-authority.m
 - mutation is explicit human dispatch on the default branch only;
 - one dispatch names and authorizes at most one selected canonical `create` row;
 - read-only preflight, environment-gated write-authorized apply, and an ungated read-only receipt/finalizer are separate jobs;
+- a fixed non-cancelling concurrency group serializes first-pilot mutation runs;
 - the approved plan is bound to an exact control-plane revision and SHA-256 plan digest;
 - after approval and immediately before the single create request, apply must verify that the **live** `main` tip still equals the approved revision;
 - live label state is re-read and the complete plan is regenerated before mutation;
@@ -69,8 +70,10 @@ Issue #76 and [label mutation authority and rollback](label-mutation-authority.m
 
 For the same-repository `.github` pilot, the narrow credential is the ephemeral repository-scoped `GITHUB_TOKEN`; only the apply job receives `contents: read` and `issues: write`. Cross-repository rollout requires a short-lived GitHub App installation token scoped to the exact reviewed repositories with repository `Issues: write` only.
 
+The protected environment is also the first-pilot quarantine boundary. Before approving another apply, its reviewer must verify that no prior `applied-with-race` receipt remains unresolved. If a race exists, the immutable dispatch must reference durable reviewed disposition evidence through `race_disposition_ref`; a fresh plan/revision alone does not clear quarantine.
+
 The create-only boundary deliberately avoids the repository-label `PATCH` race: GitHub does not document conditional compare-and-swap semantics for that unsafe update operation. A later metadata-update capability therefore requires its own reviewed need, concurrency semantics, and rollback design.
 
-GitHub also does not make the final branch-ref/label reads and label-create request transactional. The first pilot bounds that residual race to one non-overwriting create per dispatch and regenerates the **complete canonical plan** after the request. Clean `applied` requires unchanged `main`, the requested row at exact approved `no-op` state with no alias/case collision, and every other selected row unchanged. Any canonical deletion/edit, alias/case appearance, other selected-row drift, or control-plane change yields `applied-with-race` with explicit race kinds and blocks further mutation pending manual disposition.
+GitHub also does not make the final branch-ref/label reads and label-create request transactional. The first pilot bounds that residual race to one non-overwriting create per dispatch and regenerates the **complete canonical plan** after the request. Clean `applied` requires unchanged `main`, the requested row at exact approved `no-op` state with no alias/case collision, and every other selected row unchanged. Any canonical deletion/edit, alias/case appearance, other selected-row drift, or control-plane change yields `applied-with-race`, sets mutation quarantine, and blocks further write approval until durable human-reviewed disposition.
 
 Organization-wide mutation must never be inferred from the existence of the catalog, from a successful report-only plan, from an `update`/`migration` classification, or from an alias match.
