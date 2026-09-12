@@ -21,7 +21,7 @@ PREFIXES = ("priority:", "status:", "type:", "area:", "maturity:")
 ROOT_FIELDS = {"$schema", "schemaVersion", "organization", "labels", "repositories"}
 LABEL_FIELDS = {"name", "color", "description", "aliases"}
 REPOSITORY_FIELDS = {"repository", "mode", "labels", "notes"}
-PLAN_SCHEMA_VERSION = 1
+PLAN_SCHEMA_VERSION = 2
 INITIAL_MUTATION_ACTIONS = {"create"}
 
 
@@ -176,12 +176,25 @@ def validate(manifest: Any, registry: Any, standards: Path) -> list[str]:
     return errors
 
 
-def snapshot(name: str, value: dict[str, Any]) -> dict[str, str]:
-    return {
+def snapshot(name: str, value: dict[str, Any]) -> dict[str, Any]:
+    result: dict[str, Any] = {
         "name": name,
         "color": str(value.get("color", "")).lstrip("#").lower(),
         "description": str(value.get("description") or ""),
     }
+    label_id = value.get("id")
+    if isinstance(label_id, int) and not isinstance(label_id, bool):
+        result["id"] = label_id
+    return result
+
+
+def stable_identity_complete(actions: list[dict[str, Any]]) -> bool:
+    """Whether every selected existing label snapshot carries GitHub's stable label id."""
+    return all(
+        isinstance(existing.get("id"), int) and not isinstance(existing.get("id"), bool)
+        for item in actions
+        for existing in item["existing"]
+    )
 
 
 def plan_identity(
@@ -198,6 +211,7 @@ def plan_identity(
         "controlRevision": control_revision,
         "manifestSha256": sha256_json(manifest),
         "selectedLabels": selected_labels,
+        "stableIdentityComplete": stable_identity_complete(actions),
         "actions": [
             {
                 "label": item["label"],
@@ -312,6 +326,7 @@ def plan(
         "manifestSha256": identity["manifestSha256"],
         "planSha256": sha256_json(identity),
         "selectedLabels": selected_labels,
+        "stableIdentityComplete": identity["stableIdentityComplete"],
         "mode": "report-only",
         "mutates": False,
         "summary": summary,
@@ -359,16 +374,20 @@ def escape(value: str) -> str:
     return value.replace("|", "\\|").replace("\n", " ")
 
 
-def format_existing(values: list[dict[str, str]]) -> str:
+def format_existing(values: list[dict[str, Any]]) -> str:
     if not values:
         return "—"
-    return "<br>".join(
-        f"`{escape(value['name'])}` `#{value['color']}` — {escape(value['description']) or '_(empty)_'}"
-        for value in values
-    )
+    rendered: list[str] = []
+    for value in values:
+        identity = f" · id `{value['id']}`" if "id" in value else ""
+        rendered.append(
+            f"`{escape(value['name'])}` `#{value['color']}`{identity} — "
+            f"{escape(value['description']) or '_(empty)_'}"
+        )
+    return "<br>".join(rendered)
 
 
-def format_desired(value: dict[str, str]) -> str:
+def format_desired(value: dict[str, Any]) -> str:
     return f"`#{value['color']}` — {escape(value['description'])}"
 
 
@@ -381,6 +400,11 @@ def render(value: dict[str, Any]) -> str:
         f"Control revision: `{control_revision}`" if control_revision else "Control revision: **unbound**",
         f"Manifest SHA-256: `{value.get('manifestSha256', 'unavailable')}`",
         f"Plan SHA-256: `{value.get('planSha256', 'unavailable')}`",
+        (
+            "Stable selected-label identity: **complete**"
+            if value.get("stableIdentityComplete")
+            else "Stable selected-label identity: **incomplete**"
+        ),
         "Mode: `report-only`",
         "Mutation: **disabled**",
         "",
