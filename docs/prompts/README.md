@@ -14,6 +14,7 @@ This directory contains reusable prompts for evidence-backed engineering review,
 | `review CI workflows` | [CI/CD workflow architecture review](ci/ci-workflow-review.md) | CI/CD design needs review for performance, redundant computation, runner efficiency, evidence quality, security, or maintainability |
 | `classify this work` | [Classify and route engineering work](planning/classify-and-route.md) | Raw notes or mixed planning material must become the minimum responsible artifact set |
 | `what is next?` | [Next executable slice](planning/next-executable-slice.md) | A priority, issue, epic, or design needs conversion into one bounded implementation slice |
+| `proceed in loops` / `run this to completion` | [Long-running agent execution](planning/long-running-agent-execution.md) | A non-trivial task should continue through review, repair, validation, and gated-effect cycles without repeated continuation prompts |
 | `make this issue well groomed` | [Issue grooming](issues/issue-grooming.md) | An issue or small backlog needs an observable outcome, scope, acceptance criteria, and priority |
 | `do QART` | [QART decision analysis](decisions/qart-analysis.md) | Alternatives and trade-offs remain open |
 | `draft an RFC` | [RFC development](decisions/rfc-development.md) | A consequential proposal may require broad review or cross-boundary coordination |

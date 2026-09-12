@@ -38,6 +38,14 @@ prompts:
     do_not_use_when: Raw notes or discussions (use classify-and-route first); reviewing a PR.
     output: candidate comparison, selected slice with scope/non-goals/validation, issue-ready version, final decision
 
+  - id: long-running-agent-execution
+    name: Long-Running Agent Execution
+    file: planning/long-running-agent-execution.md
+    category: planning
+    use_when: A non-trivial repository task should continue through multiple review, repair, validation, and gate cycles without repeated continuation prompts.
+    do_not_use_when: A task is trivial/one-step or the next transition requires an explicit approval that has not been granted.
+    output: continuously updated run state, findings/evidence, gate disposition, verified closeout or precise blocked transition
+
   - id: classify-and-route
     name: Classify and Route Engineering Work
     file: planning/classify-and-route.md

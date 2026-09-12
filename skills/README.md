@@ -68,6 +68,7 @@ See [AI model selection and escalation](../docs/engineering/ai-model-selection.m
 | [`issue-grooming`](issue-grooming/SKILL.md) | Produce bounded, verifiable work items |
 | [`qart-analysis`](qart-analysis/SKILL.md) | Resolve a bounded decision through Questions, Alternatives, Recommendation, Trade-offs |
 | [`implementation-plan`](implementation-plan/SKILL.md) | Turn accepted intent into ordered, independently verifiable slices |
+| [`long-running-execution`](long-running-execution/SKILL.md) | Carry non-trivial work through bounded review, repair, validation, gate, effect, and verification loops without repeated continuation prompts |
 | [`pr-review`](pr-review/SKILL.md) | Review a change set for correctness, risk, scope, and evidence |
 | [`merge-readiness`](merge-readiness/SKILL.md) | Decide merge/fix/block/close from exact-head evidence |
 | [`test-strategy`](test-strategy/SKILL.md) | Design risk-based layered validation and Testule integration |
