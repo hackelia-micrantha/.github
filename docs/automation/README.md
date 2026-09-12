@@ -113,16 +113,17 @@ Any future mutation must follow [label mutation authority and rollback](label-mu
 2. the first pilot is `.github` only, is **create-only**, and authorizes exactly **one explicitly named canonical label per human dispatch**;
 3. read-only preflight, environment-gated write apply, and an ungated read-only receipt/finalizer remain separate jobs;
 4. the pilot uses a fixed non-cancelling concurrency group so mutation dispatches cannot overlap;
-5. an approved plan must use schema version 2 or later, include stable GitHub label IDs for every selected existing canonical/alias/case snapshot, and report `stableIdentityComplete: true`;
-6. after approval and again immediately before the one create request, the live default-branch tip must still equal the approved control-plane revision and the requested canonical/alias/case precondition must still match;
-7. a successful create must capture GitHub's returned label ID; clean postcondition requires the canonical label to have that same ID and every other selected existing label to retain its approved stable ID;
-8. metadata update, migration/rename, and delete remain unsupported initially; delete is unsupported **even as rollback** until a separately reviewed atomicity/coordination design exists;
-9. if mutation outcome is unknown after apply may have sent the request, the receipt records `indeterminate-mutation`, sets `requiresDisposition: true`, and preserves attribution ambiguity rather than claiming success or non-application;
-10. a missing terminal receipt after apply may have started is itself quarantine evidence;
-11. a protected-environment reviewer must reject new mutation while `applied-with-race`, `indeterminate-mutation`, missing-receipt, or other `requiresDisposition` evidence remains unresolved;
-12. cross-repository mutation requires a short-lived GitHub App installation token scoped to reviewed repositories and minimum label-management permission.
+5. live label planning requires two consecutive normalized full-repository label inventories to match; pagination instability is retried within a fixed bound and otherwise fails closed;
+6. an approved plan must use schema version 2 or later, include stable GitHub label IDs for every selected existing canonical/alias/case snapshot, and report `stableIdentityComplete: true`;
+7. after approval and again immediately before the one create request, the live default-branch tip must still equal the approved control-plane revision and the requested canonical/alias/case precondition must still match;
+8. a successful create must capture GitHub's returned label ID; clean postcondition requires the canonical label to have that same ID and every other selected existing label to retain its approved stable ID;
+9. metadata update, migration/rename, and delete remain unsupported initially; delete is unsupported **even as rollback** until a separately reviewed atomicity/coordination design exists;
+10. if mutation outcome is unknown after apply may have sent the request, the receipt records `indeterminate-mutation`, sets `requiresDisposition: true`, and preserves attribution ambiguity rather than claiming success or non-application;
+11. a missing terminal receipt after apply may have started is itself quarantine evidence;
+12. a protected-environment reviewer must reject new mutation while `applied-with-race`, `indeterminate-mutation`, missing-receipt, or other `requiresDisposition` evidence remains unresolved;
+13. cross-repository mutation requires a short-lived GitHub App installation token scoped to reviewed repositories and minimum label-management permission.
 
-The create API does not make the branch-ref read, label reads, and label write transactional. The pilot therefore bounds the residual race to one non-overwriting create and regenerates the **complete canonical plan including stable IDs** immediately after the request. Clean `applied` requires unchanged `main`, a known create-response ID, the requested row at exact `no-op` with approved metadata and that same ID/no alias collision, and every other selected row unchanged in visible state and stable identity. Known divergence is `applied-with-race`; unknown mutation outcome is `indeterminate-mutation`. Both enter mutation quarantine and cannot be cleared merely by generating a fresh plan.
+The create API does not make the branch-ref read, label reads, and label write transactional. The pilot therefore bounds the residual race to one non-overwriting create and regenerates the **complete canonical plan including stable IDs from a stabilized live inventory** immediately after the request. Clean `applied` requires unchanged `main`, a known create-response ID, the requested row at exact `no-op` with approved metadata and that same ID/no alias collision, and every other selected row unchanged in visible state and stable identity. Known divergence is `applied-with-race`; unknown mutation outcome is `indeterminate-mutation`. Both enter mutation quarantine and cannot be cleared merely by generating a fresh plan.
 
 ## Adoption sequence
 
