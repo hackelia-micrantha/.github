@@ -3,11 +3,14 @@ name: Meta validation
 on:
   pull_request:
     paths:
+      - AGENTS.md
       - .github/workflows/**
       - docs/architecture/**
       - docs/automation/**
+      - docs/engineering/**
       - docs/prompts/**
       - metadata/**
+      - skills/**
       - tests/**
       - tools/label_sync.py
       - tools/release_readiness.py
@@ -19,11 +22,14 @@ on:
     branches:
       - main
     paths:
+      - AGENTS.md
       - .github/workflows/**
       - docs/architecture/**
       - docs/automation/**
+      - docs/engineering/**
       - docs/prompts/**
       - metadata/**
+      - skills/**
       - tests/**
       - tools/label_sync.py
       - tools/release_readiness.py
