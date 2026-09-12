@@ -21,8 +21,9 @@ PREFIXES = ("priority:", "status:", "type:", "area:", "maturity:")
 ROOT_FIELDS = {"$schema", "schemaVersion", "organization", "labels", "repositories"}
 LABEL_FIELDS = {"name", "color", "description", "aliases"}
 REPOSITORY_FIELDS = {"repository", "mode", "labels", "notes"}
-PLAN_SCHEMA_VERSION = 1
+PLAN_SCHEMA_VERSION = 2
 INITIAL_MUTATION_ACTIONS = {"create"}
+MAX_INVENTORY_READS = 4
 
 
 def load(path: Path) -> Any:
@@ -176,12 +177,25 @@ def validate(manifest: Any, registry: Any, standards: Path) -> list[str]:
     return errors
 
 
-def snapshot(name: str, value: dict[str, Any]) -> dict[str, str]:
-    return {
+def snapshot(name: str, value: dict[str, Any]) -> dict[str, Any]:
+    result: dict[str, Any] = {
         "name": name,
         "color": str(value.get("color", "")).lstrip("#").lower(),
         "description": str(value.get("description") or ""),
     }
+    label_id = value.get("id")
+    if isinstance(label_id, int) and not isinstance(label_id, bool):
+        result["id"] = label_id
+    return result
+
+
+def stable_identity_complete(actions: list[dict[str, Any]]) -> bool:
+    """Whether every selected existing label snapshot carries GitHub's stable label id."""
+    return all(
+        isinstance(existing.get("id"), int) and not isinstance(existing.get("id"), bool)
+        for item in actions
+        for existing in item["existing"]
+    )
 
 
 def plan_identity(
@@ -198,6 +212,7 @@ def plan_identity(
         "controlRevision": control_revision,
         "manifestSha256": sha256_json(manifest),
         "selectedLabels": selected_labels,
+        "stableIdentityComplete": stable_identity_complete(actions),
         "actions": [
             {
                 "label": item["label"],
@@ -312,6 +327,7 @@ def plan(
         "manifestSha256": identity["manifestSha256"],
         "planSha256": sha256_json(identity),
         "selectedLabels": selected_labels,
+        "stableIdentityComplete": identity["stableIdentityComplete"],
         "mode": "report-only",
         "mutates": False,
         "summary": summary,
@@ -337,7 +353,7 @@ def request(url: str, token: str | None) -> Any:
         raise ValueError(f"GitHub label inventory request failed: {exc}") from None
 
 
-def fetch_labels(repo: str) -> list[dict[str, Any]]:
+def fetch_labels_once(repo: str) -> list[dict[str, Any]]:
     owner, name = (urllib.parse.quote(value, safe="") for value in repo.split("/", 1))
     api = os.environ.get("GITHUB_API_URL", "https://api.github.com").rstrip("/")
     token = os.environ.get("GITHUB_TOKEN") or None
@@ -355,20 +371,59 @@ def fetch_labels(repo: str) -> list[dict[str, Any]]:
         page += 1
 
 
+def inventory_fingerprint(values: list[dict[str, Any]]) -> str:
+    """Hash normalized full inventory so pagination races can be detected across reads."""
+    normalized = [
+        snapshot(str(value["name"]), value)
+        for value in values
+        if isinstance(value, dict) and value.get("name")
+    ]
+    normalized.sort(
+        key=lambda value: (
+            value["name"].casefold(),
+            value["name"],
+            value.get("id", -1),
+        )
+    )
+    return sha256_json(normalized)
+
+
+def fetch_labels(repo: str, *, max_reads: int = MAX_INVENTORY_READS) -> list[dict[str, Any]]:
+    """Require two consecutive matching full inventories before planning from live state."""
+    if max_reads < 2:
+        raise ValueError("max_reads must be at least 2")
+
+    previous_fingerprint: str | None = None
+    for _ in range(max_reads):
+        current = fetch_labels_once(repo)
+        current_fingerprint = inventory_fingerprint(current)
+        if current_fingerprint == previous_fingerprint:
+            return current
+        previous_fingerprint = current_fingerprint
+
+    raise ValueError(
+        "GitHub label inventory did not stabilize across consecutive reads; retry later"
+    )
+
+
 def escape(value: str) -> str:
     return value.replace("|", "\\|").replace("\n", " ")
 
 
-def format_existing(values: list[dict[str, str]]) -> str:
+def format_existing(values: list[dict[str, Any]]) -> str:
     if not values:
         return "—"
-    return "<br>".join(
-        f"`{escape(value['name'])}` `#{value['color']}` — {escape(value['description']) or '_(empty)_'}"
-        for value in values
-    )
+    rendered: list[str] = []
+    for value in values:
+        identity = f" · id `{value['id']}`" if "id" in value else ""
+        rendered.append(
+            f"`{escape(value['name'])}` `#{value['color']}`{identity} — "
+            f"{escape(value['description']) or '_(empty)_'}"
+        )
+    return "<br>".join(rendered)
 
 
-def format_desired(value: dict[str, str]) -> str:
+def format_desired(value: dict[str, Any]) -> str:
     return f"`#{value['color']}` — {escape(value['description'])}"
 
 
@@ -381,6 +436,11 @@ def render(value: dict[str, Any]) -> str:
         f"Control revision: `{control_revision}`" if control_revision else "Control revision: **unbound**",
         f"Manifest SHA-256: `{value.get('manifestSha256', 'unavailable')}`",
         f"Plan SHA-256: `{value.get('planSha256', 'unavailable')}`",
+        (
+            "Stable selected-label identity: **complete**"
+            if value.get("stableIdentityComplete")
+            else "Stable selected-label identity: **incomplete**"
+        ),
         "Mode: `report-only`",
         "Mutation: **disabled**",
         "",
