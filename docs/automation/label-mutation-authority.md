@@ -41,6 +41,19 @@ The initial mutation workflow must expose only `workflow_dispatch` and must requ
 
 The first-pilot workflow must use a **fixed, hard-coded concurrency group** for `.github` mutation with `cancel-in-progress: false`. A second mutation workflow must not overlap a running or approval-waiting pilot. Broader rollout may key concurrency only from a reviewed allowlist; it must not let untrusted dispatch text choose an arbitrary concurrency boundary.
 
+### Stable live-inventory rule
+
+A full GitHub label inventory assembled with offset pagination is not treated as an atomic snapshot. Any live full-plan regeneration used as mutation evidence must:
+
+1. read the complete repository label inventory;
+2. normalize it by stable label identity and visible metadata;
+3. read the complete inventory again;
+4. require two **consecutive normalized full inventories** to match before using the result;
+5. retry within a fixed bound when they differ;
+6. fail closed when no consecutive stable pair is obtained.
+
+This rule applies to the report planner and to future preflight, apply, post-request, and finalizer full-plan regeneration. It does not replace the immediate operation-specific canonical/alias/case reads required just before the one create request.
+
 ### Preflight job
 
 The preflight job has read-only permissions and must:
@@ -49,7 +62,7 @@ The preflight job has read-only permissions and must:
 2. require `repository` to equal `hackelia-micrantha/.github` for the first pilot;
 3. require `expected_revision` to equal the running `github.sha`;
 4. require `label` to be in the repository's selected canonical label set;
-5. fetch live label state and regenerate the complete canonical plan;
+5. fetch live label state through the stable live-inventory rule and regenerate the complete canonical plan;
 6. require plan schema version 2 or later with stable GitHub label IDs captured for every selected existing canonical/alias/case snapshot and `stableIdentityComplete: true`;
 7. fail closed unless the regenerated plan digest exactly equals `plan_sha256`;
 8. require the requested label's current action to be exactly `create` and its first-pilot candidate flag to be true;
@@ -83,7 +96,7 @@ After approval, the apply job must:
 2. repeat the repository, ref, revision, label, and allowlist checks rather than trusting only preflight outputs;
 3. record the approved `race_disposition_ref` in bounded evidence;
 4. query the **live** `refs/heads/main` tip and require it to equal both `expected_revision` and the dispatch `github.sha`;
-5. re-fetch live labels and regenerate the complete plan;
+5. fetch live labels through the stable live-inventory rule and regenerate the complete plan;
 6. require plan schema/stable-identity completeness, the regenerated digest to equal the approved `plan_sha256`, and the requested label row to remain exactly `create`;
 7. immediately before the single `POST`, query the live `main` tip again and re-fetch the requested canonical name plus configured aliases/case-equivalent names;
 8. require that immediate operation precondition to match the approved `create` state;
@@ -91,7 +104,7 @@ After approval, the apply job must:
 10. perform exactly one create request;
 11. capture the create response's stable GitHub label ID as `createdLabelId` when the request succeeds;
 12. treat any conflict/validation failure, including an already-existing label, as terminal; never retry by reinterpreting changed state;
-13. immediately after the request, query live `main`, re-fetch live labels, and regenerate the **complete canonical plan**;
+13. immediately after the request, query live `main`, re-fetch live labels through the stable live-inventory rule, and regenerate the **complete canonical plan**;
 14. require the post-plan to match the deterministic expected post-state: the requested row is exactly `no-op` with canonical name/color/description matching the approved desired snapshot, its stable label ID equals `createdLabelId`, no alias/case collision exists, and every other selected row retains the same action/current/desired state **and stable existing-label IDs** it had in the approved pre-plan;
 15. classify any post-request control-plane advance or expected-post-plan/identity divergence as an applied race condition rather than plain success;
 16. produce bounded outputs for the ungated receipt job.
@@ -110,7 +123,7 @@ The receipt must distinguish these states:
 - **`indeterminate-mutation`** — the apply job started and available evidence cannot prove whether the create request was accepted/completed, including runner loss/cancellation after the request may have been sent;
 - **`failed`** — a non-mutation failure with reliable evidence that the create request was not attempted.
 
-For any run where mutation may have occurred, the read-only finalizer must re-read live `main` and complete selected label state. Observed state is evidence only: when the create response/ID is unavailable, the finalizer must not attribute an existing matching label to this run merely because it is present.
+For any run where mutation may have occurred, the read-only finalizer must re-read live `main` and obtain selected label state through the stable live-inventory rule. Observed state is evidence only: when the create response/ID is unavailable, the finalizer must not attribute an existing matching label to this run merely because it is present. If the inventory cannot stabilize within the bound, the run remains `indeterminate-mutation` and quarantined.
 
 The receipt must:
 
@@ -118,7 +131,7 @@ The receipt must:
 - record `mutationStarted`, `mutationCompleted`, and `mutationOutcomeKnown` separately from the job result;
 - record the reviewed `race_disposition_ref` supplied for this dispatch;
 - record post-request control-plane, label-state, and stable-ID evidence when a create may have occurred;
-- record `uncertaintyKinds`, including `mutation-outcome` for indeterminate runs;
+- record `uncertaintyKinds`, including `mutation-outcome` for indeterminate runs and `inventory-instability` when reconciliation cannot obtain a stable inventory;
 - set `requiresDisposition: true` for `applied-with-race` and `indeterminate-mutation`;
 - never infer that environment rejection, cancellation, a failed runner, or a skipped job did or did not perform a mutation without supporting evidence;
 - preserve the terminal receipt as durable workflow evidence using a reviewed, pinned mechanism when the finalizer runs.
@@ -145,9 +158,11 @@ The planner emits plan schema version 2 or later and computes `plan_sha256` over
 
 Stable identity is part of the approved state. Deleting and recreating a label with identical name/color/description changes its GitHub label ID and therefore changes the plan digest/postcondition.
 
-The mutation workflow must regenerate this plan in read-only preflight and again in the write-authorized apply job after approval. The apply job must compare the expected revision with the live default-branch tip both when it starts and immediately before the one create request. After the create, it must regenerate the complete plan again and compare it with the deterministic expected post-state, including stable IDs, rather than checking only names/metadata.
+A live plan is usable as mutation evidence only after the stable live-inventory rule succeeds. A single successful pagination pass is not evidence of completeness. Caller-supplied inventory files are explicit fixtures/snapshots and must not be represented as verified live inventory merely because their contained IDs are complete.
 
-Unrelated out-of-scope repository labels are preserved and need not invalidate a plan unless their name creates a selected canonical/alias/case collision.
+The mutation workflow must regenerate this plan in read-only preflight and again in the write-authorized apply job after approval using stabilized live inventories. The apply job must compare the expected revision with the live default-branch tip both when it starts and immediately before the one create request. After the create, it must regenerate the complete plan again from a stabilized live inventory and compare it with the deterministic expected post-state, including stable IDs, rather than checking only names/metadata.
+
+Unrelated out-of-scope repository labels are preserved and need not invalidate a plan unless their name creates a selected canonical/alias/case collision. Their churn can make a full live inventory fail to stabilize; in that case the planner fails closed rather than claiming completeness.
 
 A timestamp alone is not a stale-plan control. A prior successful plan must never be applied without exact current-state and live-control-plane revalidation. Likewise, a fresh plan does not clear unresolved mutation quarantine.
 
@@ -160,13 +175,13 @@ The first pilot bounds rather than conceals that limitation:
 - one create is the maximum label effect of one dispatch;
 - create cannot overwrite existing label metadata;
 - a competing same-name create is treated as a terminal conflict/validation failure;
-- a concurrent alias/case-equivalent create, canonical metadata edit, canonical delete/recreate, or other selected-label change can occur after the final pre-read, so the **complete plan including stable IDs is regenerated after the request**;
+- a concurrent alias/case-equivalent create, canonical metadata edit, canonical delete/recreate, or other selected-label change can occur after the final pre-read, so the **complete plan including stable IDs is regenerated from a stabilized inventory after the request**;
 - the requested canonical ID must equal the successful create response ID;
 - the receipt records `raceKinds` containing `control-plane`, `label-state`, or both when known post-request state differs from the approved invariant;
 - `label-state` includes canonical absence, canonical metadata divergence, canonical ID divergence, canonical/alias/case collision, or any unexpected change/identity replacement of another selected row during the final API window;
 - any detected known race yields overall result `applied-with-race`, not plain `applied`, sets `requiresDisposition: true`, and enters mutation quarantine;
-- any unresolved mutation outcome yields `indeterminate-mutation`, also sets `requiresDisposition: true`, and enters quarantine;
-- a clean `applied` result is allowed only when the post-request `main` tip is unchanged, the create response ID is known, and the complete post-plan including stable IDs matches the deterministic expected post-state.
+- any unresolved mutation outcome or inability to obtain a stable reconciliation inventory yields `indeterminate-mutation`, also sets `requiresDisposition: true`, and enters quarantine;
+- a clean `applied` result is allowed only when the post-request `main` tip is unchanged, the create response ID is known, and the complete stabilized post-plan including stable IDs matches the deterministic expected post-state.
 
 If a future operation requires stronger atomicity than the GitHub API exposes, it must use a separately designed coordination mechanism or remain unsupported.
 
@@ -226,7 +241,7 @@ Every dispatched mutation workflow should produce a durable JSON receipt from th
 - independent finalizer re-read evidence when mutation may have occurred;
 - normalized post-plan evidence, including canonical/alias/case state and all selected-row actions/current/desired snapshots with stable existing-label IDs;
 - `raceKinds` as an empty array for clean known state or containing `control-plane`, `label-state`, or both;
-- `uncertaintyKinds`, including `mutation-outcome` when applicable;
+- `uncertaintyKinds`, including `mutation-outcome` and, when applicable, `inventory-instability`;
 - `requiresDisposition` boolean;
 - overall result such as `not-applied`, `rejected-stale`, `rejected-collision`, `applied`, `applied-with-race`, `indeterminate-mutation`, or `failed`;
 - non-executable inverse/remediation evidence for the created label when a create is known to have occurred.
@@ -251,20 +266,20 @@ The current `.github` report includes legacy alias migrations that are deliberat
 
 The first mutation pilot is complete only when all of the following evidence exists for `hackelia-micrantha/.github`:
 
-1. a reviewed dry-run from the exact merged control-plane revision with plan schema version 2+, stable selected-label IDs, `stableIdentityComplete: true`, exact before/desired state, and `plan_sha256`;
+1. a reviewed dry-run from the exact merged control-plane revision produced from a stabilized live inventory, with plan schema version 2+, stable selected-label IDs, `stableIdentityComplete: true`, exact before/desired state, and `plan_sha256`;
 2. one canonical `create` row is explicitly chosen for the first dispatch;
 3. explicit dispatch names that repository, label, revision, digest, and quarantine-disposition reference;
-4. preflight succeeds read-only;
+4. preflight succeeds read-only and reconfirms a stabilized live inventory;
 5. environment approval gates the only write-authorized job and verifies there is no unresolved mutation quarantine or missing terminal receipt;
-6. after approval, live `main`, full plan, stable IDs, and digest still match the approved evidence;
+6. after approval, live `main`, full stabilized plan, stable IDs, and digest still match the approved evidence;
 7. immediately before the create, live `main` and label/alias/case preconditions still match;
 8. exactly one create request occurs;
 9. the successful create response's stable label ID is captured;
-10. immediately after the request, live `main` and the complete canonical plan including stable IDs are re-read;
+10. immediately after the request, live `main` and the complete canonical plan including stable IDs are re-read from a stabilized inventory;
 11. the requested row is exact `no-op` at approved metadata, its ID equals the create response ID, no alias/case collision exists, and every other selected row retains approved pre-plan state and stable IDs;
 12. a clean pilot requires overall result `applied`, empty `raceKinds`, empty `uncertaintyKinds`, `mutationOutcomeKnown: true`, and `requiresDisposition: false`;
-13. `applied-with-race`, `indeterminate-mutation`, or a missing terminal receipt halts the pilot in mutation quarantine until durable manual disposition;
-14. a fresh planner run later still returns `no-op` for the created row with the same stable ID and no introduced alias/case collision;
+13. `applied-with-race`, `indeterminate-mutation`, unstable reconciliation, or a missing terminal receipt halts the pilot in mutation quarantine until durable manual disposition;
+14. a fresh stabilized planner run later still returns `no-op` for the created row with the same stable ID and no introduced alias/case collision;
 15. remaining create/update/migration/collision rows are unchanged and require separate dispatches or disposition;
 16. the receipt contains non-executable inverse/remediation evidence for the created label;
 17. independent review of the run evidence occurs before any second repository is allowlisted.
@@ -279,7 +294,7 @@ Do not expand beyond `.github` until the first pilot is reviewed and the one-cre
 - token minting only in the approved apply job, after read-only preflight;
 - explicit repository opt-in in the manifest;
 - a reviewed per-repository serialization/quarantine mechanism; human environment review alone should be reconsidered before scale;
-- the same live-default-branch, stable-ID, stale-plan, single-operation precondition, complete post-plan verification, indeterminate-outcome quarantine, and collision controls;
+- the same stabilized-live-inventory, live-default-branch, stable-ID, stale-plan, single-operation precondition, complete post-plan verification, indeterminate-outcome quarantine, and collision controls;
 - protected handling of App credentials/private keys;
 - repository-by-repository evidence and non-executable remediation records.
 
