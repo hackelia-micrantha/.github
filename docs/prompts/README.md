@@ -11,6 +11,7 @@ This directory contains reusable prompts for evidence-backed engineering review,
 | `review this research paper` | [Research paper relevance review](research/research-paper-relevance-review.md) | A paper, preprint, technical report, benchmark paper, or academic result may affect Micrantha architecture, security, governance, runtime, tooling, or roadmap |
 | `review to fix or merge` | [Pull-request merge-gate review](pull-requests/merge-gate-review.md) | A pull request needs a concrete merge, fix, block, or close decision |
 | `check CI to fix or merge` | [CI failure triage and repair](ci/ci-failure-triage.md) | A workflow or required check is failing, flaky, cancelled, or unexpectedly skipped |
+| `review CI workflows` | [CI/CD workflow architecture review](ci/ci-workflow-review.md) | CI/CD design needs review for performance, redundant computation, runner efficiency, evidence quality, security, or maintainability |
 | `classify this work` | [Classify and route engineering work](planning/classify-and-route.md) | Raw notes or mixed planning material must become the minimum responsible artifact set |
 | `what is next?` | [Next executable slice](planning/next-executable-slice.md) | A priority, issue, epic, or design needs conversion into one bounded implementation slice |
 | `make this issue well groomed` | [Issue grooming](issues/issue-grooming.md) | An issue or small backlog needs an observable outcome, scope, acceptance criteria, and priority |
