@@ -23,6 +23,7 @@ LABEL_FIELDS = {"name", "color", "description", "aliases"}
 REPOSITORY_FIELDS = {"repository", "mode", "labels", "notes"}
 PLAN_SCHEMA_VERSION = 2
 INITIAL_MUTATION_ACTIONS = {"create"}
+MAX_INVENTORY_READS = 4
 
 
 def load(path: Path) -> Any:
@@ -352,7 +353,7 @@ def request(url: str, token: str | None) -> Any:
         raise ValueError(f"GitHub label inventory request failed: {exc}") from None
 
 
-def fetch_labels(repo: str) -> list[dict[str, Any]]:
+def fetch_labels_once(repo: str) -> list[dict[str, Any]]:
     owner, name = (urllib.parse.quote(value, safe="") for value in repo.split("/", 1))
     api = os.environ.get("GITHUB_API_URL", "https://api.github.com").rstrip("/")
     token = os.environ.get("GITHUB_TOKEN") or None
@@ -368,6 +369,41 @@ def fetch_labels(repo: str) -> list[dict[str, Any]]:
         if len(batch) < 100:
             return values
         page += 1
+
+
+def inventory_fingerprint(values: list[dict[str, Any]]) -> str:
+    """Hash normalized full inventory so pagination races can be detected across reads."""
+    normalized = [
+        snapshot(str(value["name"]), value)
+        for value in values
+        if isinstance(value, dict) and value.get("name")
+    ]
+    normalized.sort(
+        key=lambda value: (
+            value["name"].casefold(),
+            value["name"],
+            value.get("id", -1),
+        )
+    )
+    return sha256_json(normalized)
+
+
+def fetch_labels(repo: str, *, max_reads: int = MAX_INVENTORY_READS) -> list[dict[str, Any]]:
+    """Require two consecutive matching full inventories before planning from live state."""
+    if max_reads < 2:
+        raise ValueError("max_reads must be at least 2")
+
+    previous_fingerprint: str | None = None
+    for _ in range(max_reads):
+        current = fetch_labels_once(repo)
+        current_fingerprint = inventory_fingerprint(current)
+        if current_fingerprint == previous_fingerprint:
+            return current
+        previous_fingerprint = current_fingerprint
+
+    raise ValueError(
+        "GitHub label inventory did not stabilize across consecutive reads; retry later"
+    )
 
 
 def escape(value: str) -> str:
