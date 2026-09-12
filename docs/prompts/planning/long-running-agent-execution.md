@@ -6,7 +6,7 @@ It implements the shared [long-running agent execution contract](../../engineeri
 
 Do **not** use this prompt for a trivial one-step request, or to bypass an explicit approval/merge/release/deployment gate.
 
-```markdown
+````markdown
 # Long-running governed execution
 
 Carry **[GOAL]** through the longest safe, useful execution loop permitted by current authority and evidence.
@@ -106,7 +106,7 @@ Use these defaults unless project policy provides stronger values:
 
 - maximum same causal failure without a new hypothesis: 2;
 - maximum repeated tool/infrastructure retry without new evidence: 3;
-- implementation repair cycles: [DEFAULT 6 OR PROJECT-SPECIFIC];
+- maximum implementation repair cycles: 6;
 - consequential effects: no blind retries unless explicitly idempotent and policy permits them.
 
 When a budget is reached, change the hypothesis or escalate. Never compensate for exhausted retries by widening authority or weakening acceptance criteria.
@@ -193,4 +193,4 @@ On blocked/escalated closeout, report:
 - work already completed;
 - retry/investigation performed;
 - smallest decision/capability needed to continue.
-```
+````
