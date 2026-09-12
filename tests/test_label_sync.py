@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from tools import label_sync
 
@@ -238,6 +239,50 @@ class LabelSyncTests(unittest.TestCase):
         )
         self.assertEqual(first_action["existing"][0]["id"], 101)
         self.assertEqual(recreated_action["existing"][0]["id"], 202)
+
+    def test_live_inventory_requires_two_consecutive_matching_reads(self) -> None:
+        first = [
+            {"id": 1, "name": "one", "color": "111111", "description": "One."},
+        ]
+        stable = [
+            {"id": 1, "name": "one", "color": "111111", "description": "One."},
+            {"id": 2, "name": "two", "color": "222222", "description": "Two."},
+        ]
+        stable_reordered = list(reversed(stable))
+
+        with patch.object(
+            label_sync,
+            "fetch_labels_once",
+            side_effect=[first, stable, stable_reordered],
+        ) as fetch_once:
+            result = label_sync.fetch_labels(
+                "hackelia-micrantha/example",
+                max_reads=3,
+            )
+
+        self.assertEqual(fetch_once.call_count, 3)
+        self.assertEqual(
+            label_sync.inventory_fingerprint(result),
+            label_sync.inventory_fingerprint(stable),
+        )
+
+    def test_live_inventory_fails_closed_when_reads_never_stabilize(self) -> None:
+        inventories = [
+            [{"id": 1, "name": "one", "color": "111111", "description": "One."}],
+            [{"id": 2, "name": "one", "color": "111111", "description": "One."}],
+            [{"id": 3, "name": "one", "color": "111111", "description": "One."}],
+        ]
+
+        with patch.object(
+            label_sync,
+            "fetch_labels_once",
+            side_effect=inventories,
+        ):
+            with self.assertRaisesRegex(ValueError, "did not stabilize"):
+                label_sync.fetch_labels(
+                    "hackelia-micrantha/example",
+                    max_reads=3,
+                )
 
     def test_canonical_json_is_key_order_independent(self) -> None:
         left = {"b": 2, "a": {"d": 4, "c": 3}}
