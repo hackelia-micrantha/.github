@@ -1,6 +1,6 @@
 # Label synchronization
 
-Organization-standard labels are reconciled conservatively. The first implementation is **report-only**: it can inventory a reviewed repository and describe what would change, but it cannot create, update, rename, or delete labels.
+Organization-standard labels are reconciled conservatively. The current implementation is **report-only**: it can inventory a reviewed repository and describe what would change, but it cannot create, update, rename, or delete labels.
 
 ## Sources of truth
 
@@ -8,6 +8,7 @@ Organization-standard labels are reconciled conservatively. The first implementa
 - `metadata/labels.json` is the machine-readable synchronization manifest.
 - `metadata/repositories.json` remains the repository registry. Every label-sync target must already exist there.
 - `tools/label_sync.py` validates the manifest and produces deterministic plans.
+- `docs/automation/label-mutation-authority.md` defines the separate security/authority contract that must be satisfied before any mutation implementation exists.
 
 The validator requires the managed `priority:`, `status:`, `type:`, `area:`, and `maturity:` label names in `metadata/labels.json` to match the labels documented in `docs/standards/labels.md`. A manifest entry cannot silently introduce a new organization-standard label.
 
@@ -31,7 +32,7 @@ The planner reports one of these outcomes for every selected canonical label:
 - `migration` — the canonical label is absent and one documented compatibility alias exists;
 - `collision` — applying a canonical label would be ambiguous because aliases or case-conflicting labels coexist.
 
-Every action records the exact current label metadata involved and the exact desired canonical color and description. `update` and `migration` are observations, not authority to mutate. A collision is always visible and never silently overwritten.
+Every action records the exact current label metadata involved and the exact desired canonical color and description. An action classification is evidence, not mutation authority. A collision is always visible and never silently overwritten.
 
 Out-of-scope repository labels are listed separately as preserved evidence.
 
@@ -52,6 +53,27 @@ The workflow:
 
 There is intentionally no `apply` command.
 
-A later reviewed slice may add mutation only after issue #27 records an explicit target/label allowlist, reviewed dry-run evidence, a dedicated least-privilege credential or GitHub App, collision/migration handling, before/after evidence, rollback behavior, and an independently reviewed opt-in mutation boundary.
+Issue #76 and [label mutation authority and rollback](label-mutation-authority.md) define the next gate. The initial mutation implementation, if separately reviewed and added later, must remain narrower than the report planner:
 
-Rename and delete remain disabled unless a separate migration explicitly authorizes them. Organization-wide mutation must never be inferred from the existence of the catalog or from a report-only plan.
+- `.github` is the only first pilot target;
+- mutation is explicit human dispatch on the default branch only;
+- one dispatch names and authorizes at most one selected canonical `create` row;
+- read-only preflight, environment-gated write-authorized apply, and an ungated read-only receipt/finalizer are separate jobs;
+- a fixed non-cancelling concurrency group serializes first-pilot mutation runs;
+- the approved plan is bound to an exact control-plane revision and SHA-256 plan digest;
+- after approval and immediately before the single create request, apply must verify that the **live** `main` tip still equals the approved revision;
+- live label state is re-read and the complete plan is regenerated before mutation;
+- the requested canonical/alias/case-equivalent precondition is re-read immediately before creation;
+- stale-plan or collision differences fail closed;
+- metadata `update`, `migration`/rename, and delete remain report-only/unsupported until separately reviewed;
+- the receipt/finalizer preserves terminal evidence even if approval is rejected or the write-authorized job never starts.
+
+For the same-repository `.github` pilot, the narrow credential is the ephemeral repository-scoped `GITHUB_TOKEN`; only the apply job receives `contents: read` and `issues: write`. Cross-repository rollout requires a short-lived GitHub App installation token scoped to the exact reviewed repositories with repository `Issues: write` only.
+
+The protected environment is also the first-pilot quarantine boundary. Before approving another apply, its reviewer must verify that no prior `applied-with-race` receipt remains unresolved. If a race exists, the immutable dispatch must reference durable reviewed disposition evidence through `race_disposition_ref`; a fresh plan/revision alone does not clear quarantine.
+
+The create-only boundary deliberately avoids the repository-label `PATCH` race: GitHub does not document conditional compare-and-swap semantics for that unsafe update operation. A later metadata-update capability therefore requires its own reviewed need, concurrency semantics, and rollback design.
+
+GitHub also does not make the final branch-ref/label reads and label-create request transactional. The first pilot bounds that residual race to one non-overwriting create per dispatch and regenerates the **complete canonical plan** after the request. Clean `applied` requires unchanged `main`, the requested row at exact approved `no-op` state with no alias/case collision, and every other selected row unchanged. Any canonical deletion/edit, alias/case appearance, other selected-row drift, or control-plane change yields `applied-with-race`, sets mutation quarantine, and blocks further write approval until durable human-reviewed disposition.
+
+Organization-wide mutation must never be inferred from the existence of the catalog, from a successful report-only plan, from an `update`/`migration` classification, or from an alias match.
