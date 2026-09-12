@@ -21,20 +21,11 @@ Automatically select [`long-running-execution`](../../skills/long-running-execut
 
 Do not select it for a trivial one-step task solely because the operator used `proceed` or `continue`.
 
-After selection, the agent should continue through reversible, low-risk, already-authorized transitions without repeatedly asking for continuation. The agent still stops or escalates for the conditions defined by the skill and the [agent execution contract](./agent-execution-contract.md).
+After selection, continue through reversible, low-risk, already-authorized transitions without repeatedly asking for continuation. The agent still stops or escalates for the conditions defined by the skill and the [agent execution contract](./agent-execution-contract.md).
 
 ## Consequential effects remain separately gated
 
-Intent-based selection must not infer authority for:
-
-- merge;
-- release or tag creation;
-- publication or deployment;
-- destructive deletion;
-- permission, credential, or secret mutation;
-- external communication;
-- consequential acceptance closure;
-- any other effect separately governed by project or organization policy.
+Intent-based selection must not infer authority for merge, release or tag creation, publication or deployment, destructive deletion, permission or credential mutation, external communication, consequential acceptance closure, or any other effect separately governed by project or organization policy.
 
 A phrase such as `proceed in loops` means "continue the governed run", not "grant every future effect required to finish it".
 
@@ -62,7 +53,7 @@ Composition preserves the strictest authority, evidence, security, retry, and co
 
 ## Repository adoption
 
-The organization `.github` repository is the normative source for shared Micrantha skill-selection guidance, but GitHub does not automatically propagate arbitrary `AGENTS.md` files into every repository.
+The organization `.github` repository is the normative source for shared Micrantha skill-selection guidance, but arbitrary `AGENTS.md` files are not automatically inherited by every repository.
 
 Therefore:
 
@@ -72,7 +63,7 @@ Therefore:
 4. local guidance must not silently weaken applicable organization security, release, compatibility, or effect-authority requirements;
 5. adoption should eventually be checked mechanically so drift is visible rather than dependent on operator memory.
 
-The shared [`AGENTS.md`](../../AGENTS.md) is the executable reference for this repository and a template for project-local adoption.
+The shared [`AGENTS.md`](../../AGENTS.md) is the executable reference for this repository and the model for project-local adoption.
 
 ## Related contracts
 
