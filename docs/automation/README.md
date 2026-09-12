@@ -2,7 +2,7 @@
 
 This directory documents the shared automation surfaces maintained by the Micrantha organization meta repository.
 
-See [automation security boundaries](SECURITY.md) for the caller, input, secret, runner, and token trust model and [shared automation versioning](versioning.md) for immutable caller pins, compatibility, pilots, and rollback.
+See [automation security boundaries](SECURITY.md) for the caller, input, secret, runner, and token trust model, [shared automation versioning](versioning.md) for immutable caller pins, compatibility, pilots, and rollback, and [label mutation authority](label-mutation-authority.md) for the separately reviewed write boundary that must exist before label synchronization can mutate repository state.
 
 ## Scope
 
@@ -12,9 +12,10 @@ The automation foundation provides:
 - reusable, read-only CI workflows under `.github/workflows/`;
 - a machine-readable repository registry under `metadata/`;
 - registry validation and read-only repository-health reporting;
+- report-only label synchronization planning;
 - explicit adoption and trust-boundary guidance.
 
-It does not automatically modify repository settings, labels, branch protections, secrets, environments, runners, releases, or repository files outside this repository.
+It does not automatically modify repository settings, labels, branch protections, secrets, environments, runners, releases, or repository files outside this repository. The current label synchronization implementation is report-only and contains no write path.
 
 ## Workflow starter templates
 
@@ -97,23 +98,29 @@ Before a repository is monitored, required-file expectations must be justified b
 - registry structure and semantics;
 - workflow-template and `.properties.json` pairing;
 - JSON metadata syntax;
-- known reusable-workflow references from starter templates.
+- known reusable-workflow references from starter templates;
+- label synchronization manifest semantics.
 
 The workflow uses only read permissions and runs on pull requests and pushes to the default branch.
 
 ## Label synchronization
 
-Organization-wide label synchronization is intentionally not included in this slice. Label mutation requires explicit credentials, collision handling, repository opt-in, dry-run evidence, and a rollback strategy.
+The current [label synchronization](label-synchronization.md) surface is deliberately report-only. It has a canonical machine-readable label catalog, explicit per-repository adoption, deterministic collision/migration planning, exact before/desired evidence, and no `apply` command.
 
-A future label-sync workflow should:
+Any future mutation must follow [label mutation authority and rollback](label-mutation-authority.md). In particular:
 
-1. read the shared taxonomy from `docs/standards/labels.md` or a derived machine-readable source;
-2. default to dry-run;
-3. require an explicit repository allowlist;
-4. preserve repository-specific labels;
-5. never delete or rename labels without a reviewed migration plan;
-6. use a dedicated least-privilege GitHub App or fine-grained token;
-7. emit a complete before-and-after report.
+1. mutation remains separate from pull-request/push/scheduled reporting;
+2. the first pilot is `.github` only, is **create-only**, and authorizes exactly **one explicitly named canonical label per human dispatch**;
+3. read-only preflight, environment-gated write apply, and an ungated read-only receipt/finalizer remain separate jobs;
+4. the pilot uses a fixed non-cancelling concurrency group so mutation dispatches cannot overlap;
+5. after approval and again immediately before the one create request, the live default-branch tip must still equal the approved control-plane revision;
+6. stale-plan and collision checks fail closed and the requested label/alias/case precondition is re-read immediately before creation;
+7. metadata update, migration/rename, and delete remain unsupported initially;
+8. the receipt/finalizer records terminal evidence even when approval is rejected or the write job never starts;
+9. a protected-environment reviewer must reject new mutation while a prior `applied-with-race` receipt lacks durable reviewed disposition evidence;
+10. cross-repository mutation requires a short-lived GitHub App installation token scoped to reviewed repositories and minimum label-management permission.
+
+The create API does not make the branch-ref read and label write transactional. The pilot therefore bounds that residual race to one non-overwriting create and regenerates the **complete canonical plan** immediately after the request. Clean `applied` requires unchanged `main`, the requested row at exact `no-op` with approved metadata/no alias collision, and every other selected row unchanged. Any control-plane or expected-post-plan divergence is `applied-with-race`, sets a mutation quarantine requiring durable disposition before another protected approval, and cannot be cleared merely by generating a fresh plan.
 
 ## Adoption sequence
 
