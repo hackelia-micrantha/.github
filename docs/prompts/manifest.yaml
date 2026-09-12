@@ -22,6 +22,14 @@ prompts:
     do_not_use_when: Reviewing a PR or general project status.
     output: CI status, root cause classification, repair description, decision
 
+  - id: ci-workflow-review
+    name: CI/CD Workflow Architecture Review
+    file: ci/ci-workflow-review.md
+    category: ci
+    use_when: CI/CD workflow design needs review for performance, redundant computation, runner efficiency, evidence quality, security, or maintainability.
+    do_not_use_when: Diagnosing one concrete failing run (use ci-failure-triage); reviewing a product code PR without a workflow-architecture concern.
+    output: workflow architecture summary, execution graph, redundancy matrix, performance findings, security/evidence findings, prioritized changes, human decisions, final assessment
+
   - id: next-executable-slice
     name: Next Executable Slice
     file: planning/next-executable-slice.md
