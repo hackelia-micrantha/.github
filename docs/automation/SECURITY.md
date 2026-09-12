@@ -35,6 +35,8 @@ The initial reusable workflows do not accept or inherit caller secrets. Adding s
 - rollback and incident response;
 - current callers and migration.
 
+Privileged automation changes that alter write authority, credentials, protected approval, release authority, destructive behavior, or security boundaries must also follow [independent review for privileged changes](../governance/independent-review.md). Passing CI, CODEOWNERS routing, or self-merge does not replace a required non-author review. When a hosted reviewer is unavailable, a separately run external or local model may provide read-only review evidence using an exact-SHA review bundle; no repository mutation credential is required for that fallback.
+
 ## Label mutation boundary
 
 The current label-sync implementation is report-only and has no write credential or `apply` path.
