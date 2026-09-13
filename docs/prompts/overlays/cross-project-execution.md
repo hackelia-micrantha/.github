@@ -193,8 +193,8 @@ Only expand into another repository when one of these checks demonstrates a real
 
 When instructions conflict, use this order:
 
-1. explicit user instruction and explicitly authorized scope/effects;
-2. safety, security, and external authority constraints;
+1. safety, security, external authority, and bounded-effect constraints;
+2. explicit user instruction and explicitly authorized scope/effects within those constraints;
 3. project-specific authoritative decisions and repository-local policy;
 4. shared Micrantha/Ryjen contracts and standards;
 5. this cross-project overlay;
