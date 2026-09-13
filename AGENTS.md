@@ -2,6 +2,12 @@
 
 This file defines the default agent-selection behavior for work performed in this repository. Other Micrantha repositories do not automatically inherit this file; they should adopt or reference these organization defaults explicitly and may tighten them with repository-local policy.
 
+## Cross-project scope
+
+Whenever a reusable engineering prompt or skill is selected, also apply the [Micrantha / Ryjen cross-project execution overlay](docs/prompts/overlays/cross-project-execution.md).
+
+Resolve a defined project before assuming repository scope, expand only the project graph required by the task, and preserve repository-local implementation, security, release, and operational authority. The overlay changes scope resolution only; it does not grant mutation or effect authority.
+
 ## Intent-based skill selection
 
 Select the most specific applicable skill from [`skills/`](skills/) from operator intent and current authoritative repository state. Do not require the operator to name a skill when the intent clearly matches one.
