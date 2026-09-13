@@ -1,6 +1,14 @@
 # Micrantha engineering prompts
 
-This directory contains reusable prompts for evidence-backed engineering review, planning, decision-making, delivery, and security work across Micrantha repositories.
+This directory contains reusable prompts for evidence-backed engineering review, planning, decision-making, delivery, and security work across Micrantha repositories and registered `ryjen/*` project surfaces.
+
+## Cross-project execution overlay
+
+Every reusable prompt in this library applies the [Micrantha / Ryjen cross-project execution overlay](overlays/cross-project-execution.md) unless the prompt explicitly documents a narrower or incompatible scope rule.
+
+The overlay makes project resolution explicit: **project != repository**. Resolve registered project identity from `hackelia-micrantha/hackelia-micrantha/registry/projects.yaml`, use the meta inventory and repository-local evidence for auxiliary/public/private topology, and expand only the project graph required by the invocation. Repository-local sources remain authoritative for implementation, release, security, and operational facts.
+
+The overlay composes with, and does not weaken or duplicate, the shared execution boundary, ambiguity contract, validation contract, priority model, project-specific policy, or effect authority defined below.
 
 ## Choose a prompt
 
