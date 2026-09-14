@@ -387,6 +387,54 @@
       "notes": "Must not fork the reusable semantics owned by calathea-community."
     },
     {
+      "repository": "hackelia-micrantha/musicpkg",
+      "classification": "laboratory",
+      "maturity": "experimental",
+      "visibility": "private",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": [
+        "MUSICPKG private engineering implementation and publication staging",
+        "unpublished architecture, security research, adversarial testing, and operational tooling"
+      ],
+      "requiredFiles": ["README.md", "STATUS.md"],
+      "sourceExposure": "private",
+      "repositoryRole": "canonical",
+      "implementationAuthority": "hackelia-micrantha/musicpkg",
+      "releaseAuthority": "hackelia-micrantha/musicpkg",
+      "distributionMode": "internal",
+      "publicDistributionRepository": "hackelia-micrantha/musicpkg-community",
+      "notes": "Published wire-format, verification, and conformance contracts are authoritative in musicpkg-community; private implementation must not silently redefine them."
+    },
+    {
+      "repository": "hackelia-micrantha/musicpkg-community",
+      "classification": "community-surface",
+      "maturity": "experimental",
+      "visibility": "public",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": [
+        "published MUSICPKG wire-format and verification contracts",
+        "public conformance schemas, test vectors, and interoperability guidance"
+      ],
+      "requiredFiles": [
+        "README.md",
+        "PRODUCT.md",
+        "rfcs/0000-musicpkg.md",
+        "spec/musicpkg-v0.2.cddl",
+        "test-vectors/v0.2/README.md"
+      ],
+      "sourceExposure": "public",
+      "repositoryRole": "projection",
+      "implementationAuthority": "hackelia-micrantha/musicpkg",
+      "releaseAuthority": "hackelia-micrantha/musicpkg-community",
+      "distributionMode": "source",
+      "canonicalRepository": "hackelia-micrantha/musicpkg",
+      "notes": "Authoritative for published interoperability contracts; private musicpkg remains canonical project/implementation authority and staging source."
+    },
+    {
       "repository": "hackelia-micrantha/modolia",
       "classification": "library-sdk",
       "maturity": "incubating",
