@@ -1,0 +1,44 @@
+{
+  "kind": "repora.posture-policy-profile",
+  "version": 1,
+  "id": "micrantha-active-code-v1",
+  "rules": [
+    {
+      "id": "default-branch-protected",
+      "area": "repository-hygiene",
+      "fact": "repository.default_branch_protected",
+      "operator": "equals",
+      "expected": true,
+      "severity": "high",
+      "title": "Default branch is protected",
+      "remediation": [
+        "Require the repository default branch to use reviewed branch protection or an equivalent ruleset where the provider and plan support it."
+      ]
+    },
+    {
+      "id": "immutable-third-party-actions",
+      "area": "repository-hygiene",
+      "fact": "ci.mutable_third_party_action_count",
+      "operator": "at_most",
+      "expected": 0,
+      "severity": "high",
+      "title": "Third-party workflow dependencies are immutable",
+      "remediation": [
+        "Pin third-party GitHub Actions to full immutable commit SHAs or immutable digests and retain a human-readable version comment where practical."
+      ]
+    },
+    {
+      "id": "workflow-permissions-declared",
+      "area": "repository-hygiene",
+      "fact": "ci.workflows_without_declared_permissions_count",
+      "operator": "at_most",
+      "expected": 0,
+      "severity": "high",
+      "title": "Workflows declare token permissions",
+      "remediation": [
+        "Add explicit least-privilege top-level permissions to every GitHub Actions workflow."
+      ]
+    }
+  ],
+  "exceptions": []
+}
