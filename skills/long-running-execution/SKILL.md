@@ -1,6 +1,6 @@
 ---
 name: long-running-execution
-description: Carry a non-trivial engineering task through bounded review, repair, validation, gate, effect, and verification loops without repeated continuation prompts.
+description: Carry a non-trivial engineering task through bounded review, repair, validation, gate, effect, verification, and interrupted-session recovery loops without repeated continuation prompts.
 ---
 
 # Long-running execution
@@ -14,6 +14,7 @@ Use for operator intent such as:
 - `run this to completion`;
 - `review -> fix -> validate -> re-review`;
 - `fix loop to proceed`;
+- `resume this` / `continue the broken chat` / `recover the previous run`;
 - a non-trivial repository task where repeated `proceed` messages would otherwise be needed.
 
 Do not use for a trivial one-step task or to bypass an explicit approval, merge, release, deployment, deletion, permission, credential, or external-communication gate.
@@ -29,7 +30,8 @@ Resolve from the invocation and authoritative repository/project state where pos
 - mutation authority already granted;
 - consequential-effect authority already granted, if any;
 - required validation, review, and evidence;
-- applicable project-local skills, policy overlays, and retry limits.
+- applicable project-local skills, policy overlays, and retry limits;
+- latest durable run ledger/handoff, when resuming prior work.
 
 Ask only when missing information is materially ambiguous and blocks the next safe transition. Do not ask for generic continuation confirmation after each successful substep.
 
@@ -63,6 +65,12 @@ On validation or verification failure:
 failure -> diagnose/classify -> repair/recover -> validate
 ```
 
+On interrupted-session recovery:
+
+```text
+recover -> reconcile -> continue
+```
+
 On missing authority, policy conflict, material ambiguity, unavailable required evidence, or exhausted budget:
 
 ```text
@@ -71,6 +79,7 @@ current state -> blocked/escalate
 
 ## Workflow
 
+0. **Recover interrupted work when applicable.** Treat a prior session as potentially interrupted before, during, or after any external effect. Resolve authoritative current state first; reconcile the latest durable ledger/handoff if available; classify intended prior operations as verified complete, partial/uncertain, not started, or stale/conflicted; and perform read-after-write/idempotency checks before retrying uncertain effects. Resume from the first unverified safe transition, not from the last conversational sentence.
 1. **Discover authoritative state.** Inspect current code, issues, pull requests, branch/revision state, CI, accepted decisions, and repository-local policy needed for the goal. Do not reconstruct canonical state from conversation memory when an authoritative source exists.
 2. **Snapshot the exact subject.** Record the candidate/revision identity when later evidence or approval must bind to it.
 3. **Select bounded work.** Reuse accepted work items and architecture. Decompose only as needed for a reversible, independently verifiable increment.
@@ -80,11 +89,31 @@ current state -> blocked/escalate
 7. **Validate the exact changed candidate.** Prefer deterministic and mechanically decidable evidence first. Treat material candidate changes as invalidating stale candidate-bound evidence.
 8. **Re-review after green validation.** Tests are evidence, not semantic completion. Re-check the candidate against the goal, architecture, security boundaries, compatibility, acceptance criteria, and unintended scope changes.
 9. **Continue while useful work remains.** If CI, builds, reviews, or another external check is pending, perform independent review, documentation reconciliation, issue cleanup, evidence gathering, or other safe work that does not depend on the pending result. Do not stop merely because one branch of the graph is waiting.
-10. **Bound retries.** After the same causal failure twice without materially new evidence, change the hypothesis or escalate. Default repeated tool/infrastructure retry budget is three. Default implementation repair-cycle budget is six unless project policy defines another bound.
+10. **Bound retries.** After the same causal failure twice without materially new evidence, change the hypothesis or escalate. Default repeated tool/infrastructure retry budget is three. Default implementation repair-cycle budget is six unless project policy defines another bound. A recovered session inherits consumed budget when it can be established; use a conservative value when counters are uncertain rather than resetting them.
 11. **Evaluate the gate separately.** Before merge, release, publication, deployment, destructive deletion, permission/credential mutation, external communication, or consequential acceptance closure, verify exact subject identity, current sufficient evidence, zero unresolved blockers, applicable policy, and explicit authority for that effect.
 12. **Execute only authorized effects.** Use expected-head/candidate protection where supported. Do not infer effect authority from prior successful reasoning, green CI, issue ownership, or write access.
-13. **Verify the resulting effect.** Confirm the intended externally observable state rather than treating an API/workflow success response as outcome proof.
+13. **Verify the resulting effect.** Confirm the intended externally observable state rather than treating an API/workflow success response as outcome proof. Preserve enough read-back in durable state to distinguish a completed effect from an interrupted one.
 14. **Close out or escalate precisely.** Report the resulting revision/state, evidence, effects, and remaining non-blocking work; or report the exact blocked transition and the smallest missing decision/capability.
+
+## Recovery rules
+
+For a resumed or uncertain run:
+
+- never replay writes blindly because a previous chat appears incomplete;
+- never infer completion merely because a previous assistant message said an operation was being performed or was complete;
+- reconcile branch/file writes, issue/PR mutations, merges, releases, deployments, deletions, permission/credential changes, and external communications before retrying them;
+- if the current subject changed materially, invalidate candidate-bound evidence and approvals that no longer apply;
+- if an uncertain effect is non-idempotent and cannot be established from authoritative state, stop at that transition rather than risk duplication;
+- prefer recovery from durable external state over reconstructing detailed conversational history.
+
+A useful classification is:
+
+```text
+observable result already present -> verify -> continue
+partial/uncertain result          -> reconcile/repair -> verify
+no result                         -> execute if still authorized
+conflicting/newer state           -> re-plan or escalate
+```
 
 ## Run ledger
 
@@ -95,6 +124,8 @@ Track at least:
 - goal;
 - current graph state;
 - exact subject/revision;
+- last externally verified state and observation;
+- any potentially in-flight external effect and its known idempotency;
 - unresolved blocking findings;
 - evidence obtained/missing;
 - active policy gates and effect authority;
@@ -103,6 +134,22 @@ Track at least:
 - next eligible transitions.
 
 Do not persist state merely for ceremony. Conversation history may provide context but must not become the only canonical state when correctness, recovery, or authority depends on exact state.
+
+For human-readable handoff, preserve at least:
+
+```markdown
+Goal:
+Current subject/revision:
+Last verified state:
+Completed and externally verified:
+Partial or uncertain effects:
+Unresolved findings/blockers:
+Evidence obtained / still required:
+Authority and active gates:
+Retry budget already consumed:
+Next safe transition:
+Do not redo without reconciliation:
+```
 
 ## Evidence
 
