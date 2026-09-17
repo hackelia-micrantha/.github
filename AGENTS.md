@@ -19,15 +19,16 @@ For a non-trivial engineering task, automatically load and apply [`skills/long-r
 - `run this to completion`;
 - `review -> fix -> validate -> re-review`;
 - `fix loop to proceed`;
+- `resume this`, `continue the broken chat`, `recover the previous run`, or equivalent interrupted-session continuation intent;
 - `proceed` or `continue` when an existing non-trivial run is already active and repeated continuation prompts would otherwise be required.
 
 Do not activate `long-running-execution` for a trivial one-step task merely because the word `proceed` appears.
 
-Once selected, continue through safe, reversible, already-authorized transitions without asking for generic continuation confirmation. Preserve the skill's retry budgets, exact-candidate evidence requirements, re-review discipline, and stop/escalation conditions.
+Once selected, continue through safe, reversible, already-authorized transitions without asking for generic continuation confirmation. When resuming after a disconnect or uncertain operation, apply `recover -> reconcile -> continue` before new mutations. Preserve the skill's retry budgets, exact-candidate evidence requirements, re-review discipline, and stop/escalation conditions.
 
 ## Authority is not selected from intent
 
-Skill selection does not grant new authority. In particular, `proceed`, `continue`, or selection of `long-running-execution` does not by itself authorize merge, release, tag, publication, deployment, destructive deletion, permission or credential changes, external communication, or other consequential effects.
+Skill selection does not grant new authority. In particular, `proceed`, `continue`, recovery/resumption intent, or selection of `long-running-execution` does not by itself authorize merge, release, tag, publication, deployment, destructive deletion, permission or credential changes, external communication, or other consequential effects.
 
 Apply the authority and evidence boundaries in:
 
