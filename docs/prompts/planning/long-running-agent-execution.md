@@ -1,6 +1,6 @@
 # Long-Running Agent Execution Prompt
 
-Use this prompt when a repository task should continue through multiple review/repair/validation cycles without repeated `proceed` or `continue` messages.
+Use this prompt when a repository task should continue through multiple review/repair/validation cycles without repeated `proceed` or `continue` messages, including when a previous AI/session run may have disconnected or stopped at an arbitrary point.
 
 It implements the shared [long-running agent execution contract](../../engineering/agent-execution-contract.md) and [AI-assisted SDLC phase discipline](../../engineering/ai-assisted-sdlc.md). It does not grant authority that the current user, repository, runtime, or policy has not granted.
 
@@ -10,6 +10,8 @@ Do **not** use this prompt for a trivial one-step request, or to bypass an expli
 # Long-running governed execution
 
 Carry **[GOAL]** through the longest safe, useful execution loop permitted by current authority and evidence.
+
+If this invocation is resuming a previous run, assume the prior session may have stopped between any two observable operations. Recover from authoritative external state before mutating anything.
 
 ## Scope
 
@@ -56,9 +58,42 @@ Do not ask for a generic `proceed` confirmation after each successful substep. S
 - required evidence/capability is unavailable;
 - the retry/investigation budget is exhausted.
 
+## Recovery and session resumption
+
+When this is a fresh session continuing earlier work, or when a disconnect/tool failure leaves the previous operation uncertain, begin with:
+
+`recover -> reconcile -> continue`
+
+Do not infer the last successful operation from conversational wording such as "creating PR", "merging", "running tests", or "done". Treat the prior session as having potentially stopped before, during, or after any external effect.
+
+Recovery must:
+
+1. resolve the current authoritative repository/project/external-system state;
+2. load the latest durable run ledger or handoff if one exists, treating it as a checkpoint to reconcile rather than unquestioned truth;
+3. identify the exact current subject/revision and compare it with the last verified subject;
+4. classify previously intended work as **verified complete**, **partial/uncertain**, **not started**, or **stale/conflicted**;
+5. for every uncertain external effect, perform a read-after-write/idempotency check before retrying it;
+6. reconstruct the active graph node, unresolved findings, evidence, gates, and retry budget from current state;
+7. invalidate stale candidate-bound evidence or approval when the candidate materially changed;
+8. resume from the first unverified safe transition rather than replaying the previous session blindly.
+
+Examples of effects that require reconciliation before retry include branch/file writes, issue/PR creation or updates, merges, releases, deployments, deletions, permissions/credentials, and external communications.
+
+If an operation is not safely idempotent and its outcome cannot be determined, stop at that transition and report the ambiguity instead of risking a duplicate or contradictory effect.
+
+A useful recovery classification is:
+
+```text
+intended operation
+  -> observable result already present -> verify -> continue
+  -> partial/uncertain result          -> reconcile/repair -> verify
+  -> no result                         -> execute if still authorized
+  -> conflicting/newer state           -> re-plan or escalate
+```
+
 ## Discovery and authority
 
-At the beginning of the run and before consequential effects:
+At the beginning of the run, after any session recovery, and before consequential effects:
 
 1. resolve current authoritative repository/project state;
 2. identify the exact subject/revision/candidate;
@@ -109,6 +144,8 @@ Use these defaults unless project policy provides stronger values:
 - maximum implementation repair cycles: 6;
 - consequential effects: no blind retries unless explicitly idempotent and policy permits them.
 
+A recovered session inherits consumed retry/investigation budget when that usage can be established. If counters are uncertain, choose a conservative value rather than resetting them to zero.
+
 When a budget is reached, change the hypothesis or escalate. Never compensate for exhausted retries by widening authority or weakening acceptance criteria.
 
 ## Gates and consequential effects
@@ -136,9 +173,11 @@ Examples:
 - deployment -> verify intended revision and health;
 - issue closure -> verify acceptance evidence remains linked/current.
 
+Record enough of the observable result in the run ledger that a replacement session can distinguish a completed effect from an interrupted one.
+
 ## Run ledger
 
-Maintain a compact ledger throughout the run. Update it when the graph state, exact candidate, blocking findings, evidence, budget, or eligible transitions materially change.
+Maintain a compact ledger throughout the run. Update it when the graph state, exact candidate, blocking findings, evidence, budget, eligible transitions, or externally visible effects materially change.
 
 Use this shape when useful:
 
@@ -150,6 +189,13 @@ subject:
   repository: [OWNER/REPO]
   work_item: [PR/ISSUE/OTHER]
   revision: [EXACT SHA OR ID]
+last_verified:
+  state: [LAST VERIFIED GRAPH NODE]
+  subject: [EXACT SHA OR ID]
+  observation: [AUTHORITATIVE READ-BACK / RECEIPT / CHECK]
+in_flight:
+  operation: [NONE OR OPERATION]
+  idempotent: [TRUE/FALSE/UNKNOWN]
 findings:
   unresolved: [COUNT]
 evidence:
@@ -166,13 +212,29 @@ blockers: [LIST]
 next: [ELIGIBLE TRANSITIONS]
 ```
 
-Do not create a persistent state file merely for ceremony. Persist the ledger only when recovery, handoff, multi-session continuity, auditability, or runtime integration benefits from it.
+Do not create a persistent state file merely for ceremony. Persist the ledger when recovery, handoff, multi-session continuity, auditability, or runtime integration benefits from it.
+
+For a human-readable handoff, preserve at least:
+
+```markdown
+Goal:
+Current subject/revision:
+Last verified state:
+Completed and externally verified:
+Partial or uncertain effects:
+Unresolved findings/blockers:
+Evidence obtained / still required:
+Authority and active gates:
+Retry budget already consumed:
+Next safe transition:
+Do not redo without reconciliation:
+```
 
 ## Human interruption and updates
 
 If the user provides new constraints while the run is active, incorporate them into policy/goal/state before continuing. Do not discard already-valid evidence unless the changed constraint invalidates it.
 
-Provide concise progress updates when a material finding, graph transition, blocker, or externally meaningful result occurs. Avoid narrating every tool call.
+Provide concise progress updates when a material finding, graph transition, blocker, recovery classification, or externally meaningful result occurs. Avoid narrating every tool call.
 
 ## Completion
 
