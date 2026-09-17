@@ -60,6 +60,8 @@ At minimum, a durable run ledger should be able to identify:
 - goal;
 - current graph state;
 - exact subject/revision/candidate identity;
+- last externally verified state and observation;
+- any potentially in-flight external effect and whether it is known idempotent;
 - unresolved findings;
 - evidence gathered and evidence still required;
 - policy gates currently relevant;
@@ -77,6 +79,13 @@ subject:
   repository: ryjen/tidyfs
   pr: 80
   head: af81c72
+last_verified:
+  state: validate
+  subject: af81c72
+  observation: required checks read back as passed for exact head
+in_flight:
+  operation: none
+  idempotent: true
 findings:
   unresolved: 0
 evidence:
@@ -98,6 +107,53 @@ next:
 ```
 
 Do not infer authorization from the presence of a state file, a green check, a confident model conclusion, or a previous approval bound to another candidate.
+
+## Session recovery and resumption
+
+Interactive AI sessions, browser/app connections, tool transports, and model processes may terminate at arbitrary points. Treat session loss like worker-process failure: the run may continue, but only after reconstructing state from authoritative external observations.
+
+The default restart sequence is:
+
+```text
+recover -> reconcile -> continue
+```
+
+A replacement session must not assume either that the last conversationally described operation succeeded or that it failed. Phrases such as `creating PR`, `merging`, `deploying`, `running tests`, or `done` are not durable effect receipts.
+
+On resumption:
+
+1. resolve current authoritative repository/project/external-system state before any new mutation;
+2. load the latest durable ledger or handoff when available, but reconcile it against current state rather than treating it as canonical by itself;
+3. identify the exact current subject/revision and compare it with the last externally verified subject;
+4. classify prior intended work as **verified complete**, **partial/uncertain**, **not started**, or **stale/conflicted**;
+5. reconcile every uncertain external effect with a read-after-write or equivalent idempotency check before retrying it;
+6. reconstruct the active graph node, unresolved findings, evidence, policy gates, and retry/investigation budget;
+7. invalidate stale evidence or authorization that was bound to a materially different candidate;
+8. resume from the first unverified eligible transition rather than replaying prior steps mechanically.
+
+Typical effects requiring reconciliation include branch or file writes, issue/PR creation or updates, merges, releases, deployments, deletions, permission/credential changes, and external communications.
+
+When an uncertain operation is not safely idempotent and its outcome cannot be established from authoritative state, the correct transition is `blocked/escalate`, not blind retry.
+
+A recovered run inherits retry and investigation budget already consumed when that usage can be established. If counters are uncertain, choose a conservative value rather than resetting them to zero.
+
+For multi-session work, a human-readable handoff may be as small as:
+
+```markdown
+Goal:
+Current subject/revision:
+Last verified state:
+Completed and externally verified:
+Partial or uncertain effects:
+Unresolved findings/blockers:
+Evidence obtained / still required:
+Authority and active gates:
+Retry budget already consumed:
+Next safe transition:
+Do not redo without reconciliation:
+```
+
+Persist this only when recovery, handoff, auditability, or runtime integration benefits from it. Do not create per-run state files merely for ceremony.
 
 ## Transition rules
 
@@ -186,7 +242,7 @@ deployment command succeeded
   != service is healthy at the intended revision
 ```
 
-Verify the externally observable result before closeout when the effect is consequential.
+Verify the externally observable result before closeout when the effect is consequential. Record enough of the read-back that a replacement session can distinguish a completed effect from an interrupted one.
 
 ## Continuation policy
 
@@ -213,7 +269,8 @@ Use explicit loop classes so repetition has a reason:
 | Qualification | validate -> inspect evidence -> re-review | establish readiness claims |
 | Integration | execute/merge -> downstream validate -> repair | prove composed behavior |
 | Discovery | inspect -> hypothesis -> gather evidence | reduce uncertainty |
-| Recovery | classify failure -> isolate -> repair -> reproduce | restore a failed path |
+| Recovery | recover -> reconcile -> continue | reconstruct exact state after interruption and resume without duplicate effects |
+| Failure recovery | classify failure -> isolate -> repair -> reproduce | restore a failed path |
 | Governance | proposed effect -> policy -> approval -> execute -> attest | control consequential effects |
 
 A run may nest loop classes, but the ledger should make the active loop and exit criterion clear enough to resume safely.
@@ -242,7 +299,8 @@ Escalate rather than improvise when:
 - two materially different approaches remain and choosing incorrectly has significant consequence;
 - the same causal failure persists after the configured retry threshold;
 - the investigation or repair budget is exhausted;
-- newly discovered architecture materially widens scope or authority.
+- newly discovered architecture materially widens scope or authority;
+- a potentially consequential non-idempotent effect is uncertain and cannot be reconciled from authoritative state.
 
 Escalation should report the exact blocked transition, evidence already gathered, safe work already completed, and the smallest decision or capability needed to continue.
 
