@@ -17,17 +17,18 @@ Automatically select [`long-running-execution`](../../skills/long-running-execut
 - `run this to completion`;
 - `review -> fix -> validate -> re-review`;
 - `fix loop to proceed`;
+- `resume this`, `continue the broken chat`, `recover the previous run`, or equivalent interrupted-session continuation intent;
 - `proceed` or `continue` when a non-trivial run is already active and the next safe transition can be derived from authoritative state.
 
 Do not select it for a trivial one-step task solely because the operator used `proceed` or `continue`.
 
-After selection, continue through reversible, low-risk, already-authorized transitions without repeatedly asking for continuation. The agent still stops or escalates for the conditions defined by the skill and the [agent execution contract](./agent-execution-contract.md).
+After selection, continue through reversible, low-risk, already-authorized transitions without repeatedly asking for continuation. For resumed or uncertain runs, first apply `recover -> reconcile -> continue`: read authoritative current state, reconcile any durable handoff, classify uncertain prior effects, and resume from the first unverified safe transition. The agent still stops or escalates for the conditions defined by the skill and the [agent execution contract](./agent-execution-contract.md).
 
 ## Consequential effects remain separately gated
 
 Intent-based selection must not infer authority for merge, release or tag creation, publication or deployment, destructive deletion, permission or credential mutation, external communication, consequential acceptance closure, or any other effect separately governed by project or organization policy.
 
-A phrase such as `proceed in loops` means "continue the governed run", not "grant every future effect required to finish it".
+A phrase such as `proceed in loops` means "continue the governed run", not "grant every future effect required to finish it". Likewise, recovery/resumption intent grants no new effect authority.
 
 ## Composition
 
@@ -38,6 +39,11 @@ proceed in loops on this PR
   -> long-running-execution
   -> pr-review
   -> merge-readiness when the graph reaches the merge gate
+
+resume the broken run on this PR
+  -> long-running-execution recovery
+  -> reconcile exact PR/head/CI/effects
+  -> task-specific skills from the recovered graph state
 
 apply the Micrantha release strategy and proceed
   -> long-running-execution
