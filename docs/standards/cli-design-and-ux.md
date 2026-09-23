@@ -82,6 +82,25 @@ Symbol stripping, debug-symbol separation, and optional minification are packagi
 
 Before modifying an existing tool, capture its currently documented flags, output formats, man-page path, exit meanings, config precedence, install channels, published schemas, security boundary, and consumer scripts. Classify each proposed change as compatible presentation, additive optional interface, or breaking contract; preserve established consumers or plan a versioned migration.
 
-The [interoperability conformance checks](cli-interoperability.md#conformance-checks) are the minimum black-box test basis. Project-owned tests SHOULD additionally exercise help and version without credentials; human table and narrow/no-colour terminal; strict stdout/stderr separation; valid JSON/JSONL and stable ordering where promised; an empty result; malformed inputs; denied and partial effects; clean non-interactive operation; safe broken-pipe handling; packed section-1 man page; and the exact installed candidate. Reuse the existing release-readiness checker and testing/Testule evidence where applicable rather than implementing a parallel release gate.
+The [interoperability conformance checks](cli-interoperability.md#conformance-checks) are the minimum black-box test basis. A **preliminary, read-only installed-package smoke probe** is provided by `tools/cli_conformance.py`. It checks an explicit help command, version command, JSON-formatted read-only operation, and the installed section-1 man page; it does not validate authorization, failure taxonomy, JSON Schema, domain semantics, streaming, package provenance, or release readiness. Supply an installed executable and explicit safe command (never a mutation) in a project-owned JSON profile:
+
+```json
+{
+  "executable": ["/absolute/path/to/repoctl"],
+  "read_only_command": ["repository", "list"],
+  "machine_format_args": ["--format", "json"],
+  "expected_version": "1.2.3",
+  "install_root": "/absolute/path/to/installed/package",
+  "man_page": "share/man/man1/repoctl.1"
+}
+```
+
+```sh
+python tools/cli_conformance.py /path/to/cli-profile.json
+```
+
+The caller is responsible for confirming the selected command is genuinely read-only; a profile is test input, **not** authority to execute an effectful operation. This probe emits a JSON check report and exits nonzero on failed checks. Its profile can customize `help_args` and `version_args` for established interfaces. The version above is an example, not a released repoctl version.
+
+Project-owned tests SHOULD additionally exercise help and version without credentials; human table and narrow/no-colour terminal; strict stdout/stderr separation; valid JSON/JSONL and stable ordering where promised; an empty result; malformed inputs; denied and partial effects; clean non-interactive operation; safe broken-pipe handling; packed section-1 man page; and the exact installed candidate. Reuse the existing release-readiness checker and testing/Testule evidence where applicable rather than implementing a parallel release gate.
 
 Start with one representative Rust/native CLI, one TypeScript or other managed-runtime CLI, and one effectful/infrastructure CLI. Record the actually observed differences and create repository-local adoption issues; do not claim portfolio-wide compliance from this documentation alone.
