@@ -8,7 +8,8 @@ These standards define organization-wide defaults for engineering evidence, secu
 - [CI/CD](ci-cd.md)
 - [Security engineering](security.md)
 - [Source exposure and distribution](source-exposure-and-distribution.md)
-- [CLI interoperability](cli-interoperability.md)
+- [CLI interoperability](cli-interoperability.md) — normative process, machine/transport semantics, safety, and manual-page contract
+- [CLI design and UX](cli-design-and-ux.md) — user-facing tables, help, frameworks, extensions, and adoption without duplicating release authority
 - [Tool result trust and observation](tool-result-trust.md)
 - [Releases and versioning](releases.md)
 - [Documentation](documentation.md)
