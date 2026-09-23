@@ -72,7 +72,7 @@ For mobile, native, container, Nix, package-registry, and provider-adapter relea
 
 When implementation source is intentionally private, apply the [source exposure and distribution standard](source-exposure-and-distribution.md). Public package definitions must consume immutable reviewed release artifacts rather than requiring exported buildable implementation source, unless an explicit documented exception changes that posture.
 
-For command-line tools, apply the [CLI interoperability standard](cli-interoperability.md). The supported package or release artifact must contain the same executable contract and section-1 man page validated by CI.
+For command-line tools, apply the [CLI interoperability standard](cli-interoperability.md) and its [CLI design/UX guidance](cli-design-and-ux.md). The supported package or release artifact must contain the same executable contract and section-1 man page validated by CI. Release identity, packaging, SBOMs, provenance, signatures, and rollback remain governed by this release standard, not a separate CLI-specific release process.
 
 ## Supply-chain evidence
 
