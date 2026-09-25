@@ -81,9 +81,15 @@ def build_bundle(args: argparse.Namespace) -> dict[str, Any]:
     if not REPOSITORY.fullmatch(repository):
         raise ValueError("repository must be owner/name")
 
+    patch_base_sha = args.patch_base_sha.strip()
+    if not SHA40.fullmatch(patch_base_sha):
+        raise ValueError("patch_base_sha must be a lowercase 40-hex commit SHA")
+
     reviewed_sha = args.reviewed_sha.strip()
     if not SHA40.fullmatch(reviewed_sha):
         raise ValueError("reviewed_sha must be a lowercase 40-hex commit SHA")
+    if reviewed_sha == patch_base_sha:
+        raise ValueError("patch_base_sha and reviewed_sha must identify different revisions")
 
     patch_path = args.patch.resolve()
     if not patch_path.is_file():
@@ -113,6 +119,7 @@ def build_bundle(args: argparse.Namespace) -> dict[str, Any]:
         "candidate": {
             "repository": repository,
             "subject": parse_subject(args.subject),
+            "patch_base_sha": patch_base_sha,
             "reviewed_sha": reviewed_sha,
             "patch": {
                 "sha256": hashlib.sha256(patch_bytes).hexdigest(),
@@ -159,6 +166,7 @@ def parser() -> argparse.ArgumentParser:
         required=True,
         help="commit, pull_request:<number>, or issue:<number>",
     )
+    result.add_argument("--patch-base-sha", required=True)
     result.add_argument("--reviewed-sha", required=True)
     result.add_argument("--patch", type=Path, required=True, help="exact patch/diff file")
     result.add_argument(
