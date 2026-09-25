@@ -140,6 +140,25 @@ def validate_result(bundle: dict[str, Any], result: dict[str, Any]) -> list[str]
     if result.get("schema") != RESULT_SCHEMA:
         errors.append("unsupported review result schema")
 
+    expected_top_level = {
+        "schema",
+        "review_bundle_sha256",
+        "reviewed_sha",
+        "review_prompt_sha256",
+        "reviewer",
+        "scope",
+        "result",
+        "findings",
+        "blocked_reasons",
+        "limitations",
+    }
+    missing_top_level = expected_top_level - set(result)
+    extra_top_level = set(result) - expected_top_level
+    if missing_top_level:
+        errors.append(f"review result is missing fields: {sorted(missing_top_level)}")
+    if extra_top_level:
+        errors.append(f"review result has unexpected fields: {sorted(extra_top_level)}")
+
     if result.get("review_bundle_sha256") != expected_bundle_digest:
         errors.append("review result is not bound to this review bundle")
 
@@ -224,6 +243,13 @@ def validate_result(bundle: dict[str, Any], result: dict[str, Any]) -> list[str]
     else:
         for index, finding in enumerate(findings):
             validate_finding(finding, index, errors)
+        finding_ids = [
+            finding.get("id")
+            for finding in findings
+            if isinstance(finding, dict) and isinstance(finding.get("id"), str)
+        ]
+        if len(finding_ids) != len(set(finding_ids)):
+            errors.append("finding ids must be unique")
 
     blocked_reasons = result.get("blocked_reasons")
     if not isinstance(blocked_reasons, list) or not all(
