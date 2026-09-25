@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/hackelia-micrantha/.github/blob/main/metadata/independent-review-evidence.schema.json",
+  "title": "Micrantha independent review evidence v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "review_bundle_sha256",
+    "review_result_sha256",
+    "reviewed_sha",
+    "review_prompt_sha256",
+    "reviewer",
+    "scope",
+    "result",
+    "finding_dispositions",
+    "accountable_owner",
+    "disposition_state",
+    "evidence_ref",
+    "notes",
+    "constraints"
+  ],
+  "properties": {
+    "schema": {
+      "const": "micrantha.independent-review-evidence/v1"
+    },
+    "review_bundle_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "review_result_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "reviewed_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "review_prompt_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "identity",
+        "provider",
+        "model",
+        "independence_basis"
+      ],
+      "properties": {
+        "kind": {
+          "enum": ["human", "automated-service", "external-model", "local-model"]
+        },
+        "identity": {"type": "string", "minLength": 1},
+        "provider": {"type": ["string", "null"], "minLength": 1},
+        "model": {"type": ["string", "null"], "minLength": 1},
+        "independence_basis": {"type": "string", "minLength": 1}
+      }
+    },
+    "scope": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "result": {
+      "enum": ["clean", "findings", "blocked"]
+    },
+    "finding_dispositions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["finding_id", "state", "reference"],
+        "properties": {
+          "finding_id": {"type": "string", "minLength": 1},
+          "state": {
+            "enum": ["resolved", "accepted", "blocked"]
+          },
+          "reference": {
+            "type": ["string", "null"],
+            "minLength": 1
+          }
+        }
+      }
+    },
+    "accountable_owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "disposition_state": {
+      "enum": ["complete", "blocked"]
+    },
+    "evidence_ref": {
+      "type": "string",
+      "minLength": 1
+    },
+    "notes": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"type": "string", "minLength": 1}
+    },
+    "constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_not_authority",
+        "merge_authorized",
+        "release_authorized",
+        "mutation_authorized"
+      ],
+      "properties": {
+        "evidence_not_authority": {"const": true},
+        "merge_authorized": {"const": false},
+        "release_authorized": {"const": false},
+        "mutation_authorized": {"const": false}
+      }
+    }
+  }
+}
