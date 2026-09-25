@@ -79,7 +79,7 @@ def build_bundle(args: argparse.Namespace) -> dict[str, Any]:
     if not REPOSITORY.fullmatch(repository):
         raise ValueError("repository must be owner/name")
 
-    reviewed_sha = args.reviewed_sha.strip().lower()
+    reviewed_sha = args.reviewed_sha.strip()
     if not SHA40.fullmatch(reviewed_sha):
         raise ValueError("reviewed_sha must be a lowercase 40-hex commit SHA")
 
