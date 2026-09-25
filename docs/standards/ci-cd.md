@@ -124,6 +124,74 @@ Micrantha repositories may use `mise` tasks as the standard entry point for form
 
 Scripts should be bounded, tested where logic is material, and avoid becoming an undocumented second build system.
 
+## Flake-first CI and minimal runner substrate
+
+For active repositories with executable CI, the repository should own its CI/build/test environment through a Nix flake. Repositories with no executable CI surface may declare this requirement not applicable rather than adding a meaningless flake.
+
+The flake is the authoritative declaration of project-specific tooling and should expose stable CI entry points through checks, packages, apps, or—when a derivation is not a practical interface—a bounded CI development shell.
+
+- Prefer `nix flake check`, `nix build .#...`, or explicit flake-owned apps/checks/packages over imperative toolchain installation in workflows.
+- Keep repository-specific compilers, SDKs, linters, formatters, browsers, generators, package managers, and test utilities in the project flake rather than the shared runner image.
+- Bind external flake inputs through `flake.lock` or an explicitly documented equivalent lock policy.
+- Keep local developer validation and CI on the same underlying flake contracts where practical.
+- Treat hidden host or runner dependencies as reproducibility defects.
+- Do not turn a CI devShell into an unstructured ambient dependency bucket.
+
+The generic Dubnium runner image is a **bootstrap execution substrate**, not a shared distribution containing the union of project workloads. It should contain only capabilities required before or independently of project-flake evaluation and materialization, normally:
+
+- the GitHub Actions runner and runtime support required by the runner itself;
+- Nix;
+- Git;
+- CA certificates and bounded network bootstrap;
+- minimal shell/core bootstrap;
+- rootless container/isolation machinery;
+- controller/worker lifecycle hooks, resource and network policy enforcement, diagnostics, and cleanup.
+
+Project-specific dependencies belong outside the generic image unless a measured bootstrap constraint demonstrates that they must be substrate-owned.
+
+### Space and time budgets
+
+CI and runner performance should be evaluated across both storage/transfer cost and latency. Do not optimize wall-clock time while allowing persistent image, cache, store, or writable-layer growth to become invisible.
+
+For representative warm and clean/cache-miss runs, measure where observable:
+
+**Space**
+
+- compressed/pull image size;
+- unpacked image or closure size;
+- per-job writable-layer growth;
+- Nix store growth attributable to the job;
+- bytes downloaded or materialized;
+- cache/artifact storage growth and retention;
+- reclaimable bytes after cleanup or garbage collection.
+
+**Time**
+
+- queue/admission delay;
+- image availability or pull time;
+- worker/container startup latency;
+- checkout plus flake evaluation time;
+- Nix substitution/materialization time;
+- build/test critical-path execution time;
+- artifact/cache transfer time;
+- cleanup/worker teardown time;
+- end-to-end p50/p95 when enough comparable samples exist.
+
+Establish representative baselines before setting hard numeric budgets. Once evidence exists, prefer ratcheting regression thresholds over arbitrary universal limits.
+
+### Performance and trust invariants
+
+- Prefer immutable Nix derivation identity and trusted binary substitution over repeated builds.
+- Reuse immutable outputs rather than mutable workspaces.
+- Optimize cold-start and cache-miss behavior as well as warm steady state.
+- Minimize generic-image publication/adoption churn caused by project dependencies.
+- Avoid repeated flake evaluation/materialization across jobs when safe reuse is measurable.
+- Preserve intentionally independent validation when it provides distinct platform, trust-boundary, release, compatibility, or provenance evidence.
+- Bound cleanup so ephemeral jobs do not create monotonic disk growth.
+- Do not expose writable shared project state across mutually untrusted jobs.
+- Do not allow untrusted workloads to publish into a trusted binary cache.
+- Do not weaken runner isolation, required checks, or evidence quality merely to improve speed or image size.
+
 ## Concurrency and performance
 
 - Cancel superseded pull-request runs when safe.
