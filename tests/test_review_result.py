@@ -183,6 +183,18 @@ class ReviewResultTests(unittest.TestCase):
         )
         self.assertIn("review context must not have mutation tools", errors)
 
+    def test_rejects_unknown_top_level_fields_and_duplicate_finding_ids(self) -> None:
+        bundle = self.bundle()
+        result = self.result(
+            bundle,
+            state="findings",
+            findings=[self.finding(), self.finding()],
+        )
+        result["unexpected"] = True
+        errors = validate_result(bundle, result)
+        self.assertTrue(any("unexpected fields" in error for error in errors))
+        self.assertIn("finding ids must be unique", errors)
+
     def test_scope_must_cover_exact_bundle_scope(self) -> None:
         bundle = self.bundle()
         result = self.result(bundle)
