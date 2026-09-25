@@ -6,8 +6,9 @@ import hashlib
 from pathlib import Path
 import tempfile
 import unittest
+from unittest import mock
 
-from tools.review_bundle import build_bundle
+from tools.review_bundle import build_bundle, effective_prompt
 from tools.review_evidence import EVIDENCE_SCHEMA, canonical_digest, validate_evidence
 from tools.review_result import RESULT_SCHEMA
 
@@ -19,14 +20,18 @@ class ReviewEvidenceTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.patch = self.root / "candidate.patch"
         self.patch.write_text("diff --git a/a b/a\n+candidate\n", encoding="utf-8")
+        self.verify_patcher = mock.patch("tools.review_bundle.verify_patch_range")
+        self.verify_patcher.start()
+        self.addCleanup(self.verify_patcher.stop)
 
     def bundle(self) -> dict:
         return build_bundle(
             argparse.Namespace(
                 repository="hackelia-micrantha/.github",
                 subject="pull_request:130",
+                repository_root=self.root,
                 patch_base_sha="a" * 40,
-            reviewed_sha="c" * 40,
+                reviewed_sha="c" * 40,
                 patch=self.patch,
                 patch_ref="https://example.invalid/immutable/c.patch",
                 scope=["governance boundary"],
@@ -46,7 +51,7 @@ class ReviewEvidenceTests(unittest.TestCase):
             "review_bundle_sha256": bundle["bundle_sha256"],
             "reviewed_sha": bundle["candidate"]["reviewed_sha"],
             "review_prompt_sha256": hashlib.sha256(
-                bundle["review"]["prompt"].encode("utf-8")
+                effective_prompt(bundle["review"]["prompt_context"]).encode("utf-8")
             ).hexdigest(),
             "reviewer": {
                 "kind": "human",
