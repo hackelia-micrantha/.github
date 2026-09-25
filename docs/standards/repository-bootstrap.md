@@ -321,6 +321,22 @@ Apply must:
 
 Provider repository creation is outside the v1 organization contract until a consuming implementation defines and reviews that capability separately.
 
+## CI applicability and flake-first policy
+
+Bootstrap must distinguish **whether executable CI applies** from **how an applicable CI environment is made reproducible**.
+
+The presence of a workflow, a detected language, or a neighboring repository's practice is observation only; it must not silently resolve CI applicability. A repository with no executable CI surface may explicitly record that CI is not applicable rather than receiving a placeholder workflow or meaningless flake.
+
+Once executable CI is explicitly applicable, the organization [CI/CD standard](ci-cd.md) supplies the environment policy:
+
+- the repository-owned Nix flake is authoritative for project-specific CI/build/test tooling;
+- Mise may remain the task/orchestration interface over that flake;
+- project tools must not be assumed from the shared runner image when they can be represented reproducibly in the flake;
+- irreducible host/platform capabilities are explicit external CI inputs and should be constrained or attested where practical;
+- an empty/generic flake does not satisfy the policy merely by existing.
+
+This is policy-derived resolution, not another technology default invented by bootstrap. Repora posture/enforcement is tracked separately in [repora#197](https://github.com/hackelia-micrantha/repora/issues/197).
+
 ## Template behavior
 
 A repository bootstrap template is a **question and policy carrier**, not a bag of preferred technology defaults.
