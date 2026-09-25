@@ -137,6 +137,46 @@ class ReviewBundleTests(unittest.TestCase):
             bundle["candidate"]["subject"],
         )
 
+    def test_schema_encodes_subject_and_transfer_state_invariants(self) -> None:
+        schema_path = (
+            Path(__file__).resolve().parents[1]
+            / "metadata"
+            / "independent-review-bundle.schema.json"
+        )
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+
+        subject = schema["properties"]["candidate"]["properties"]["subject"]
+        self.assertEqual(["kind", "number"], subject["required"])
+        self.assertTrue(
+            any(
+                rule.get("then", {})
+                .get("properties", {})
+                .get("number", {})
+                .get("type")
+                == "null"
+                for rule in subject["allOf"]
+            )
+        )
+
+        transfer = schema["properties"]["review"]["properties"][
+            "external_source_transfer"
+        ]
+        self.assertTrue(
+            any(
+                rule.get("if", {})
+                .get("properties", {})
+                .get("state", {})
+                .get("const")
+                == "explicitly-authorized"
+                and rule.get("then", {})
+                .get("properties", {})
+                .get("authorization_ref", {})
+                .get("type")
+                == "string"
+                for rule in transfer["allOf"]
+            )
+        )
+
     def test_schema_file_matches_emitted_contract_version(self) -> None:
         schema_path = (
             Path(__file__).resolve().parents[1]
