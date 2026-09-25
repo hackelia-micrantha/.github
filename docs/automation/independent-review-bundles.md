@@ -9,7 +9,7 @@ The governing policy remains [independent review for privileged changes](../gove
 `tools/review_bundle.py` generates a versioned JSON manifest that binds:
 
 - repository and PR/issue/commit identity;
-- exact 40-hex candidate commit SHA;
+- exact 40-hex patch base and candidate commit SHAs;
 - SHA-256 and byte length of the exact patch/diff file supplied to the reviewer;
 - optional durable patch reference;
 - review scope and authority/acceptance references;
@@ -25,7 +25,7 @@ The JSON bundle deliberately does **not** embed the patch. The review input is t
 1. generated review-bundle JSON;
 2. the exact patch file whose SHA-256 is recorded in that JSON.
 
-This avoids duplicating private source into durable metadata while still allowing the reviewer or evidence recorder to verify that the reviewed patch matches the declared candidate.
+This avoids duplicating private source into durable metadata. The manifest records the declared base/candidate revision pair and patch digest, but the generator does **not** prove that an arbitrary caller-supplied patch was derived from those revisions. A reviewer adapter must independently materialize or fetch the exact base/candidate revisions and verify that the supplied patch/diff corresponds to that range before treating the review as exact-head evidence.
 
 ## Generate a bundle
 
@@ -37,6 +37,7 @@ Example for a public pull request:
 python tools/review_bundle.py \
   --repository hackelia-micrantha/.github \
   --subject pull_request:119 \
+  --patch-base-sha 89abcdef0123456789abcdef0123456789abcdef \
   --reviewed-sha 0123456789abcdef0123456789abcdef01234567 \
   --patch /tmp/pr-119.patch \
   --patch-ref https://example.invalid/immutable/pr-119-0123456.patch \
@@ -48,7 +49,7 @@ python tools/review_bundle.py \
   --output /tmp/pr-119.review-bundle.json
 ```
 
-The version above is illustrative. The supplied SHA and patch must identify the actual candidate being reviewed.
+The version above is illustrative. The supplied base SHA, candidate SHA, and patch must identify the actual candidate range being reviewed. Bundle creation records that claim; reviewer execution must verify it independently against authoritative repository state.
 
 ## Confidentiality and reviewer routing
 
