@@ -13,6 +13,7 @@ on:
       - metadata/**
       - skills/**
       - tests/**
+      - tools/cli_conformance.py
       - tools/label_sync.py
       - tools/release_readiness.py
       - tools/repository_health.py
@@ -29,9 +30,11 @@ on:
       - docs/automation/**
       - docs/engineering/**
       - docs/prompts/**
+      - docs/standards/**
       - metadata/**
       - skills/**
       - tests/**
+      - tools/cli_conformance.py
       - tools/label_sync.py
       - tools/release_readiness.py
       - tools/repository_health.py

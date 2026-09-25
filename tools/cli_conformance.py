@@ -18,6 +18,10 @@ from typing import Any
 ANSI = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
 
 
+def reject_json_constant(value: str) -> None:
+    raise ValueError(f"nonstandard JSON constant: {value}")
+
+
 def validate_manifest(data: Any) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise ValueError("manifest must be a JSON object")
@@ -29,14 +33,22 @@ def validate_manifest(data: Any) -> dict[str, Any]:
         if not isinstance(value, list) or not all(isinstance(item, str) and item for item in value):
             raise ValueError(f"{key} must be an array of nonempty argument strings")
     if not data["executable"]:
-        raise ValueError("executable must contain an absolute executable path")
-    if not Path(data["executable"][0]).is_absolute():
+        raise ValueError("executable must contain an absolute installed executable path")
+    executable = Path(data["executable"][0])
+    if not executable.is_absolute():
         raise ValueError("executable[0] must be an absolute path")
     if not data["read_only_command"]:
         raise ValueError("read_only_command is required (no implicit effectful probe)")
     for key in ("install_root", "man_page"):
         if not isinstance(data[key], str) or not data[key]:
             raise ValueError(f"{key} must be a nonempty string")
+    root = Path(data["install_root"])
+    if not root.is_absolute():
+        raise ValueError("install_root must be an absolute path")
+    resolved_root = root.resolve()
+    resolved_executable = executable.resolve()
+    if not resolved_executable.is_relative_to(resolved_root):
+        raise ValueError("executable[0] must resolve within install_root")
     man = Path(data["man_page"])
     if man.is_absolute() or ".." in man.parts or not man.as_posix().startswith("share/man/man1/") or man.suffix != ".1":
         raise ValueError("man_page must be a relative share/man/man1/<tool>.1 path")
@@ -73,7 +85,7 @@ def probe(data: dict[str, Any], timeout: float) -> dict[str, Any]:
                 reasons.append("missing required stdout result")
             if machine and output:
                 try:
-                    json.loads(output)
+                    json.loads(output, parse_constant=reject_json_constant)
                 except (ValueError, TypeError) as exc:
                     reasons.append(f"stdout is not one valid JSON document: {exc}")
             if version and data.get("expected_version") and data["expected_version"] not in output:
@@ -89,6 +101,21 @@ def probe(data: dict[str, Any], timeout: float) -> dict[str, Any]:
     run("json", data["read_only_command"] + data["machine_format_args"], machine=True)
 
     root = Path(data["install_root"]).resolve()
+    executable = Path(data["executable"][0])
+    resolved_executable = executable.resolve()
+    executable_bound = (
+        resolved_executable.is_relative_to(root)
+        and executable.is_file()
+        and os.access(executable, os.X_OK)
+    )
+    results.append({
+        "probe": "installed_executable",
+        "passed": executable_bound,
+        "reasons": [] if executable_bound else [
+            "candidate executable missing, not executable, or outside install_root"
+        ],
+    })
+
     page = root / data["man_page"]
     within_root = page.resolve().is_relative_to(root)
     valid = within_root and page.is_file() and page.stat().st_size > 0
