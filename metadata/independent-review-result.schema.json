@@ -42,7 +42,8 @@
         "model",
         "execution_location",
         "independence_basis",
-        "fresh_context",
+        "non_author",
+        "separate_review_context",
         "repository_write_credentials_available",
         "mutation_tools_available"
       ],
@@ -69,7 +70,10 @@
           "type": "string",
           "minLength": 1
         },
-        "fresh_context": {
+        "non_author": {
+          "const": true
+        },
+        "separate_review_context": {
           "const": true
         },
         "repository_write_credentials_available": {
