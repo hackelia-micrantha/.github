@@ -42,6 +42,16 @@ This inheritance rule is limited to file types GitHub actually supports as organ
 
 Reference: [GitHub default community health files](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/creating-a-default-community-health-file).
 
+## Organization default branch
+
+Micrantha formally uses `main` as the organization default branch for new repositories.
+
+This is an explicit organization-policy decision, not a bootstrap heuristic. A repository may override it only through an explicit project-local decision with rationale and any required migration/compatibility plan.
+
+New GitHub repositories and the generic Micrantha template should therefore use a single `main` branch unless a project-specific branching requirement is explicitly resolved.
+
+Branching and integration workflow is governed separately from the branch name. The organization default is intended to support trunk-based integration rather than a long-lived `develop` branch.
+
 ## GitHub template repositories
 
 A GitHub template repository can be a useful **creation transport**, but it is not an inheritance mechanism, policy source, or convergence mechanism.
