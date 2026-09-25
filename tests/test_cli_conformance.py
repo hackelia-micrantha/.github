@@ -65,7 +65,7 @@ class CliConformanceTests(unittest.TestCase):
         self.exe.write_text(
             self.exe.read_text(encoding="utf-8").replace(
                 "print(json.dumps({'data': [1]}))",
-                "print('{\\"data\\": NaN}')",
+                "print('{\"data\": NaN}')",
             ),
             encoding="utf-8",
         )
