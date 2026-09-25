@@ -25,6 +25,23 @@ This contract covers creation-time and early-bootstrap decisions whose accidenta
 
 The list is not exhaustive. New decision keys may be introduced without treating unrecognized keys as optional defaults.
 
+## Automatic baseline: inherit before materializing
+
+For GitHub-hosted repositories, use the organization's public `.github` repository as the first automatic baseline for file types GitHub natively inherits when a repository does not define a local override. This includes supported community-health files such as contribution/security/support guidance and issue/pull-request templates.
+
+Provider-native inheritance is preferable to copying those files into every new repository because:
+
+- organization changes remain centralized;
+- a new repository receives the baseline without a bootstrap mutation;
+- project-local files remain explicit overrides;
+- inherited content does not create misleading repository-local provenance or Git history.
+
+Do not materialize an inherited file merely to make a repository look complete.
+
+This inheritance rule is limited to file types GitHub actually supports as organization defaults. It must not be generalized into technology or architecture defaults. In particular, GitHub does not provide an inherited default license; licensing remains an explicit repository decision and, when selected, a repository-local artifact.
+
+Reference: [GitHub default community health files](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/creating-a-default-community-health-file).
+
 ## Decision states
 
 Every material bootstrap decision is represented explicitly as one of three states.
