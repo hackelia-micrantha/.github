@@ -120,7 +120,7 @@ class RepositoryBootstrapTests(unittest.TestCase):
             for decision in self.example["decisions"]
             if decision["state"] == "resolved"
         ]
-        self.assertEqual(["repository.name"], resolved)
+        self.assertEqual(["repository.name", "repository.defaultBranch"], resolved)
 
     def test_unresolved_values_are_not_disguised_defaults(self) -> None:
         for decision in self.example["decisions"]:
@@ -137,7 +137,6 @@ class RepositoryBootstrapTests(unittest.TestCase):
             "repository.visibility",
             "repository.classification",
             "repository.maturity",
-            "repository.defaultBranch",
             "repository.license",
             "repository.sourceExposure",
             "repository.role",
