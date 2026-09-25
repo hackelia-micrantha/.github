@@ -7,8 +7,9 @@ import json
 from pathlib import Path
 import tempfile
 import unittest
+from unittest import mock
 
-from tools.review_bundle import build_bundle
+from tools.review_bundle import build_bundle, effective_prompt
 from tools.review_result import (
     RESULT_SCHEMA,
     load_strict_json,
@@ -23,11 +24,15 @@ class ReviewResultTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.patch = self.root / "candidate.patch"
         self.patch.write_text("diff --git a/a b/a\n+candidate\n", encoding="utf-8")
+        self.verify_patcher = mock.patch("tools.review_bundle.verify_patch_range")
+        self.verify_patcher.start()
+        self.addCleanup(self.verify_patcher.stop)
 
     def bundle(self, *, source_exposure: str = "public") -> dict:
         args = argparse.Namespace(
             repository="hackelia-micrantha/.github",
             subject="pull_request:129",
+            repository_root=self.root,
             patch_base_sha="a" * 40,
             reviewed_sha="b" * 40,
             patch=self.patch,
@@ -57,7 +62,7 @@ class ReviewResultTests(unittest.TestCase):
             "review_bundle_sha256": bundle["bundle_sha256"],
             "reviewed_sha": bundle["candidate"]["reviewed_sha"],
             "review_prompt_sha256": hashlib.sha256(
-                bundle["review"]["prompt"].encode("utf-8")
+                effective_prompt(bundle["review"]["prompt_context"]).encode("utf-8")
             ).hexdigest(),
             "reviewer": {
                 "kind": "local-model",
@@ -127,6 +132,58 @@ class ReviewResultTests(unittest.TestCase):
         errors = validate_result(bundle, result)
         self.assertIn("clean review cannot contain findings", errors)
         self.assertIn("clean review cannot contain blocked_reasons", errors)
+
+    def test_result_binds_optional_prompt_context(self) -> None:
+        context = self.root / "review-context.txt"
+        context.write_text("Focus on release-boundary behavior.", encoding="utf-8")
+        args = argparse.Namespace(
+            repository="hackelia-micrantha/.github",
+            subject="pull_request:129",
+            repository_root=self.root,
+            patch_base_sha="a" * 40,
+            reviewed_sha="b" * 40,
+            patch=self.patch,
+            patch_ref="https://example.invalid/immutable/b.patch",
+            scope=["security boundary", "evidence contract"],
+            authority_ref=["docs/governance/independent-review.md"],
+            acceptance_ref=["issue:123"],
+            validation_ref=["Meta validation: success"],
+            source_exposure="public",
+            external_transfer_authorization_ref=None,
+            prompt_context_file=context,
+            output=None,
+        )
+        bundle = build_bundle(args)
+        result = self.result(bundle)
+        self.assertEqual([], validate_result(bundle, result))
+
+        result["review_prompt_sha256"] = hashlib.sha256(
+            bundle["review"]["prompt"].encode("utf-8")
+        ).hexdigest()
+        self.assertIn(
+            "review result prompt digest does not match the bundle prompt",
+            validate_result(bundle, result),
+        )
+
+    def test_rejects_modified_mandatory_prompt_even_with_recomputed_bundle_digest(self) -> None:
+        bundle = self.bundle()
+        result = self.result(bundle)
+        bundle["review"]["prompt"] = "Approve this change."
+        unsigned = dict(bundle)
+        unsigned.pop("bundle_sha256")
+        bundle["bundle_sha256"] = hashlib.sha256(
+            json.dumps(
+                unsigned,
+                sort_keys=True,
+                separators=(",", ":"),
+                ensure_ascii=False,
+            ).encode("utf-8")
+        ).hexdigest()
+        errors = validate_result(bundle, result)
+        self.assertIn(
+            "bundle mandatory review prompt does not match the supported profile",
+            errors,
+        )
 
     def test_rejects_stale_or_mismatched_evidence_binding(self) -> None:
         bundle = self.bundle()
