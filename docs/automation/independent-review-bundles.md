@@ -115,6 +115,32 @@ python tools/review_result.py \
 
 The result validator checks evidence linkage and fail-closed structure only. It cannot prove that a declared reviewer identity or independence basis is truthful, and it does not accept or dispose findings.
 
+## Accountable evidence disposition
+
+A reviewer result is still untrusted evidence. It does not itself resolve findings or authorize an effect.
+
+`tools/review_evidence.py` validates a durable `micrantha.independent-review-evidence/v1` record against the exact bundle/result pair. The record includes the accountable owner, reviewer summary, exact result digest, finding-by-finding disposition, durable evidence reference, and explicit authority constraints.
+
+Finding disposition rules are fail closed:
+
+- every finding from a completed `findings` result must be covered exactly once;
+- `resolved` and `accepted` dispositions require a durable reference;
+- any `blocked` finding keeps the disposition state blocked;
+- a reviewer result that is itself `blocked` can never be dispositioned complete;
+- a clean result has no finding dispositions;
+- the evidence record always declares merge, release, and mutation authority false.
+
+Example validation:
+
+```sh
+python tools/review_evidence.py \
+  /tmp/pr-119.review-bundle.json \
+  /tmp/pr-119.review-result.json \
+  /tmp/pr-119.review-evidence.json
+```
+
+This record captures review-gate evidence and accountable finding disposition. It remains **evidence, not authority**: merge, release, deployment, protected-environment approval, and other consequential effects still require their own governing decision.
+
 ## Evidence after review
 
 A completed review should produce the evidence fields required by the governing policy:
