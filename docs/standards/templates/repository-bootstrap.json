@@ -17,7 +17,15 @@
     {"key": "repository.visibility", "state": "unresolved", "question": "Should this repository be public, private, or internal?"},
     {"key": "repository.classification", "state": "unresolved", "question": "Which Micrantha repository classification applies?"},
     {"key": "repository.maturity", "state": "unresolved", "question": "Which lifecycle state applies at creation?"},
-    {"key": "repository.defaultBranch", "state": "unresolved", "question": "What default branch is explicitly intended?"},
+    {
+      "key": "repository.defaultBranch",
+      "state": "resolved",
+      "value": "main",
+      "provenance": {
+        "authority": "organization-policy",
+        "reference": "Micrantha organization default branch policy"
+      }
+    },
     {"key": "repository.license", "state": "unresolved", "question": "What license, if any, is authorized for this repository?"},
     {"key": "repository.sourceExposure", "state": "unresolved", "question": "What source exposure is intended?"},
     {"key": "repository.role", "state": "unresolved", "question": "What repository-topology role does this surface have?"},
