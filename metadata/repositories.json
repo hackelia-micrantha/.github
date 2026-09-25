@@ -466,7 +466,14 @@
       "archived": false,
       "monitor": true,
       "authority": ["canonical Testule implementation, portable testability contracts, native-tool adapters, gap analysis, and normalized test evidence"],
-      "requiredFiles": ["README.md"]
+      "requiredFiles": ["README.md"],
+      "sourceExposure": "private",
+      "repositoryRole": "canonical",
+      "implementationAuthority": "hackelia-micrantha/testule",
+      "releaseAuthority": "hackelia-micrantha/testule",
+      "distributionMode": "internal",
+      "publicDistributionRepository": "hackelia-micrantha/testule-community",
+      "notes": "Canonical implementation remains private; public specifications and immutable binary release distribution are projected through testule-community."
     },
     {
       "repository": "hackelia-micrantha/testule-community",
@@ -477,7 +484,14 @@
       "archived": false,
       "monitor": true,
       "authority": ["public Testule specifications, compatibility and release policy, operator documentation, and community distribution"],
-      "requiredFiles": ["README.md"]
+      "requiredFiles": ["README.md"],
+      "sourceExposure": "none",
+      "repositoryRole": "projection",
+      "implementationAuthority": "hackelia-micrantha/testule",
+      "releaseAuthority": "hackelia-micrantha/testule-community",
+      "distributionMode": "binary",
+      "canonicalRepository": "hackelia-micrantha/testule",
+      "notes": "Public specification and binary-distribution surface; no canonical implementation source is published here, and the first immutable binary release is still pending."
     },
     {
       "repository": "hackelia-micrantha/sandcastle",
