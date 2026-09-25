@@ -43,6 +43,7 @@ Repository topology is also explicit: provider, visibility, and labels such as `
   - [CI/CD](docs/standards/ci-cd.md)
   - [Security engineering](docs/standards/security.md)
   - [CLI interoperability](docs/standards/cli-interoperability.md)
+  - [CLI design and UX](docs/standards/cli-design-and-ux.md)
   - [Tool-result trust](docs/standards/tool-result-trust.md)
   - [Releases and versioning](docs/standards/releases.md)
   - [Documentation](docs/standards/documentation.md)

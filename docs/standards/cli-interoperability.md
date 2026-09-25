@@ -1,5 +1,7 @@
 # CLI interoperability standard
 
+For consistent human-facing tables, command discoverability, language/framework selection, subcommand extension UX, and adoption, see [CLI design and UX](cli-design-and-ux.md). This document remains authoritative for Unix process behaviour, machine formats, canonical domain semantics, authority, and packaged man-page requirements.
+
 Micrantha command-line tools are expected to behave as composable Unix programs and to expose the same canonical domain semantics used by orchestrators, services, CI integrations, and other adapters.
 
 This standard applies to repositories that ship a CLI or expose stable machine-consumable operations through both a CLI and another transport.

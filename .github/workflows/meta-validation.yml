@@ -9,6 +9,7 @@ on:
       - docs/automation/**
       - docs/engineering/**
       - docs/prompts/**
+      - docs/standards/**
       - metadata/**
       - skills/**
       - tests/**
