@@ -110,7 +110,11 @@ def build_bundle(args: argparse.Namespace) -> dict[str, Any]:
                 "sha256": hashlib.sha256(patch_bytes).hexdigest(),
                 "size_bytes": len(patch_bytes),
                 "file_name": patch_path.name,
-                "reference": args.patch_ref.strip() if args.patch_ref else None,
+                "reference": (
+                args.patch_ref.strip()
+                if args.patch_ref is not None and args.patch_ref.strip()
+                else None
+            ),
             },
         },
         "review": {
