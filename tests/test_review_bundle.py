@@ -155,8 +155,6 @@ class ReviewBundleTests(unittest.TestCase):
         )
 
     def test_verifies_patch_against_exact_git_range(self) -> None:
-        self.verify_patcher.stop()
-        self.addCleanup(lambda: None)
         repo = self.root / "repo"
         repo.mkdir()
         subprocess.run(["git", "init", "-q", str(repo)], check=True)
