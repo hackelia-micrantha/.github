@@ -20,7 +20,7 @@ The governing policy remains [independent review for privileged changes](../gove
 - immutable read-only/no-mutation/exact-head constraints;
 - a deterministic digest of the bundle metadata itself.
 
-The JSON bundle deliberately does **not** embed the patch. The review input is the pair:
+The JSON bundle deliberately does **not** embed the patch. Before the bundle is emitted, the generator verifies that the supplied patch exactly matches the canonical local Git diff for the declared base/candidate revisions. The review input is the pair:
 
 1. generated review-bundle JSON;
 2. the exact patch file whose SHA-256 is recorded in that JSON.
@@ -29,7 +29,14 @@ This avoids duplicating private source into durable metadata. The manifest recor
 
 ## Generate a bundle
 
-Create the exact patch from a known candidate revision using the repository's normal Git workflow. The patch-generation step is repository-owned; the bundle generator does not invoke GitHub, Git, a model provider, or any network service.
+Create the exact patch from the declared base and candidate revisions using the canonical Git diff form below. The bundle generator invokes **local Git only** to verify that the supplied patch bytes exactly equal this base-to-candidate diff; it does not contact GitHub, a model provider, or any network service.
+
+```sh
+git diff --binary --full-index --no-color --no-ext-diff --no-textconv --no-renames \
+  --src-prefix=a/ --dst-prefix=b/ <base-sha> <candidate-sha> -- > candidate.patch
+```
+
+This verification requires both commits to exist in the local repository supplied by `--repository-root`.
 
 Example for a public pull request:
 
@@ -37,6 +44,7 @@ Example for a public pull request:
 python tools/review_bundle.py \
   --repository hackelia-micrantha/.github \
   --subject pull_request:119 \
+  --repository-root /path/to/.github \
   --patch-base-sha 89abcdef0123456789abcdef0123456789abcdef \
   --reviewed-sha 0123456789abcdef0123456789abcdef01234567 \
   --patch /tmp/pr-119.patch \
