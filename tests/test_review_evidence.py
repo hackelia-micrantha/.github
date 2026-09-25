@@ -25,7 +25,8 @@ class ReviewEvidenceTests(unittest.TestCase):
             argparse.Namespace(
                 repository="hackelia-micrantha/.github",
                 subject="pull_request:130",
-                reviewed_sha="c" * 40,
+                patch_base_sha="a" * 40,
+            reviewed_sha="c" * 40,
                 patch=self.patch,
                 patch_ref="https://example.invalid/immutable/c.patch",
                 scope=["governance boundary"],
