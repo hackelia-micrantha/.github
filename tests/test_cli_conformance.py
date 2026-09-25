@@ -17,6 +17,7 @@ class CliConformanceTests(unittest.TestCase):
         self.root = Path(self.temp.name)
         self.exe = self.root / "fixture.py"
         self.exe.write_text(
+            f"#!{sys.executable}\n"
             "import json, sys\n"
             "args = sys.argv[1:]\n"
             "if '--help' in args: print('usage: fixture [--help]'); sys.exit(0)\n"
@@ -25,11 +26,12 @@ class CliConformanceTests(unittest.TestCase):
             "sys.exit(2)\n",
             encoding="utf-8",
         )
+        self.exe.chmod(0o755)
         man = self.root / "share" / "man" / "man1" / "fixture.1"
         man.parent.mkdir(parents=True)
         man.write_text(".TH FIXTURE 1\n.SH NAME\nfixture\\-test\n", encoding="utf-8")
         self.profile = {
-            "executable": [sys.executable, str(self.exe)],
+            "executable": [str(self.exe)],
             "help_args": ["--help"],
             "version_args": ["--version"],
             "read_only_command": ["list"],
@@ -42,7 +44,10 @@ class CliConformanceTests(unittest.TestCase):
     def test_passing_package_probe(self) -> None:
         result = probe(validate_manifest(self.profile), 3)
         self.assertTrue(result["passed"], result)
-        self.assertEqual(4, len(result["results"]))
+        self.assertEqual(5, len(result["results"]))
+        self.assertTrue(
+            next(x for x in result["results"] if x["probe"] == "installed_executable")["passed"]
+        )
 
     def test_rejects_machine_stdout_contamination(self) -> None:
         self.exe.write_text(
@@ -55,6 +60,33 @@ class CliConformanceTests(unittest.TestCase):
         result = probe(validate_manifest(self.profile), 3)
         self.assertFalse(result["passed"])
         self.assertFalse(next(x for x in result["results"] if x["probe"] == "json")["passed"])
+
+    def test_rejects_nonstandard_json_constants(self) -> None:
+        self.exe.write_text(
+            self.exe.read_text(encoding="utf-8").replace(
+                "print(json.dumps({'data': [1]}))",
+                "print('{\\"data\\": NaN}')",
+            ),
+            encoding="utf-8",
+        )
+        result = probe(validate_manifest(self.profile), 3)
+        json_probe = next(x for x in result["results"] if x["probe"] == "json")
+        self.assertFalse(json_probe["passed"])
+        self.assertTrue(
+            any("nonstandard JSON constant" in reason for reason in json_probe["reasons"])
+        )
+
+    def test_rejects_executable_outside_install_root(self) -> None:
+        self.profile["executable"] = [sys.executable]
+        with self.assertRaisesRegex(ValueError, "within install_root"):
+            validate_manifest(self.profile)
+
+    def test_rejects_executable_symlink_escape(self) -> None:
+        symlink = self.root / "fixture-link"
+        symlink.symlink_to(sys.executable)
+        self.profile["executable"] = [str(symlink)]
+        with self.assertRaisesRegex(ValueError, "within install_root"):
+            validate_manifest(self.profile)
 
     def test_rejects_missing_man_page(self) -> None:
         self.profile["man_page"] = "share/man/man1/missing.1"
