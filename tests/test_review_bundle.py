@@ -23,6 +23,7 @@ class ReviewBundleTests(unittest.TestCase):
         values: dict[str, object] = {
             "repository": "hackelia-micrantha/.github",
             "subject": "pull_request:123",
+            "patch_base_sha": "b" * 40,
             "reviewed_sha": "a" * 40,
             "patch": self.patch,
             "patch_ref": "https://example.invalid/immutable/a.patch",
@@ -49,6 +50,7 @@ class ReviewBundleTests(unittest.TestCase):
         unsigned.pop("bundle_sha256")
         self.assertEqual(expected, hashlib.sha256(canonical_bytes(unsigned)).hexdigest())
 
+        self.assertEqual("b" * 40, first["candidate"]["patch_base_sha"])
         self.assertEqual("a" * 40, first["candidate"]["reviewed_sha"])
         self.assertEqual(
             hashlib.sha256(self.patch.read_bytes()).hexdigest(),
@@ -105,6 +107,16 @@ class ReviewBundleTests(unittest.TestCase):
             build_bundle(
                 self.args(external_transfer_authorization_ref="approval:not-needed")
             )
+
+    def test_requires_exact_lowercase_patch_base_sha(self) -> None:
+        for value in ("abc", "B" * 40, "g" * 40, "b" * 39):
+            with self.subTest(value=value):
+                with self.assertRaisesRegex(ValueError, "patch_base_sha"):
+                    build_bundle(self.args(patch_base_sha=value))
+
+    def test_rejects_identical_patch_base_and_candidate(self) -> None:
+        with self.assertRaisesRegex(ValueError, "different revisions"):
+            build_bundle(self.args(patch_base_sha="a" * 40))
 
     def test_requires_exact_lowercase_commit_sha(self) -> None:
         for value in ("abc", "A" * 40, "g" * 40, "a" * 39):
