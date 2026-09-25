@@ -27,7 +27,7 @@ The organization default branch is `main`.
 - it is the canonical authoritative integration line;
 - changes entering it have satisfied the repository's applicable merge gates for the exact candidate being accepted;
 - its history represents accepted integrated source, not speculative or partially composed work;
-- release identity normally traces to a reviewed commit reachable from `main`;
+- release identity normally traces to an accepted source state reachable from `main`, with review/validation evidence tied to the exact admission candidate;
 - temporary integration branches, feature branches, environment branches, or generated branches do not become alternate sources of truth merely because they exist.
 
 Golden does **not** mean every commit is automatically a public/stable release, deployed to production, or supported indefinitely. Release and deployment authority remain separate decisions governed by the release and deployment standards.

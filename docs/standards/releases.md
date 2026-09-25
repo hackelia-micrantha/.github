@@ -53,7 +53,7 @@ Release notes should describe externally meaningful outcomes rather than reprodu
 Apply the [branching and integration standard](branching-and-integration.md).
 
 - `main` is the organization-default golden integration line; a commit on `main` is accepted integrated source but is not automatically a stable release.
-- Stable releases normally identify reviewed commits reachable from `main`, unless a documented maintenance branch owns that supported release line.
+- Stable releases normally identify source commits reachable from `main` whose accepted source state is traceable to the reviewed/validated admission candidate, unless a documented maintenance branch owns that supported release line.
 - Protect or restrict release tags according to repository risk.
 - Use annotated or signed tags when authenticity requirements justify them.
 - Do not move or overwrite published stable tags.
