@@ -76,7 +76,7 @@
         "acceptance_refs",
         "validation_evidence_refs",
         "source_exposure",
-        "external_provider_policy",
+        "external_source_transfer",
         "prompt"
       ],
       "properties": {
@@ -105,13 +105,13 @@
         "source_exposure": {
           "enum": ["public", "private", "restricted"]
         },
-        "external_provider_policy": {
+        "external_source_transfer": {
           "type": "object",
           "additionalProperties": false,
           "required": ["state", "authorization_ref"],
           "properties": {
             "state": {
-              "enum": ["allowed-public", "prohibited", "explicitly-authorized"]
+              "enum": ["public-source", "prohibited", "explicitly-authorized"]
             },
             "authorization_ref": {
               "type": ["string", "null"],
