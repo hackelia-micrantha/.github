@@ -43,6 +43,7 @@ Exceptions do not authorize misleading maturity claims, weakened security bounda
 9. Treat externally influenced tool/connector/model content as data with preserved provenance; observations do not become authority by crossing an internal boundary.
 10. Separate authoring from validation: authoritative source changes enter history through explicit commits; CI verifies them rather than silently rewriting the revision under review.
 11. Treat source visibility and artifact distribution as explicit threat-model and product decisions; private source may raise attacker cost but must never be the control that makes an otherwise insecure design safe.
+12. Project-specific CI dependencies belong in repository-owned flakes; shared runner images remain minimal bootstrap substrates and are optimized against measured space and time budgets.
 
 ## Maturity relationship
 
