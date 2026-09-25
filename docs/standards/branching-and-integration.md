@@ -25,9 +25,10 @@ The organization default branch is `main`.
 `main` is **golden** in the following sense:
 
 - it is the canonical authoritative integration line;
-- changes entering it have satisfied the repository's applicable merge gates for the exact candidate being accepted;
-- its history represents accepted integrated source, not speculative or partially composed work;
-- release identity normally traces to an accepted source state reachable from `main`, with review/validation evidence tied to the exact admission candidate;
+- each admitted mainline state has satisfied the repository's applicable merge gates for the candidate being accepted;
+- golden status applies to **admitted mainline states** (normally the first-parent progression of `main`, or an equivalent explicit admission record), not to every commit merely reachable through merged branch ancestry;
+- commits reachable only as second-parent/component ancestry may remain historical implementation evidence without themselves becoming independently admitted golden states;
+- release identity normally traces to an accepted mainline state, with review/validation evidence tied to the corresponding admission candidate;
 - temporary integration branches, feature branches, environment branches, or generated branches do not become alternate sources of truth merely because they exist.
 
 Golden does **not** mean every commit is automatically a public/stable release, deployed to production, or supported indefinitely. Release and deployment authority remain separate decisions governed by the release and deployment standards.
@@ -112,13 +113,21 @@ Temporary integration branches are candidate-composition surfaces, not release a
 
 ## Merge methods
 
-Repositories may choose the merge method that preserves the most useful history, but the default preference for ordinary topic branches is **squash merge**.
+Repositories may choose the merge method that preserves the most useful history, but merge method must remain compatible with the repository's review/evidence requirements. For ordinary non-privileged topic branches, the default preference is **squash merge**.
 
 Use:
 
-- **squash merge** for ordinary iterative topic branches when the PR is the useful unit of history;
+- **squash merge** for ordinary iterative topic branches when the PR is the useful unit of history and no exact-revision review rule would be invalidated by synthesizing a new commit;
 - **rebase/fast-forward-style history** when individual commits are intentionally curated and useful as first-class history;
 - **merge commits** when preserving topology is materially useful, especially for temporary integration branches or coordinated multi-branch convergence.
+
+For changes subject to an exact-head independent-review requirement, the accepted revision must be demonstrably equivalent to the reviewed candidate. A merge operation that synthesizes a materially new commit SHA (for example a squash commit) is not automatically covered by review of the pre-merge head. Such a repository must either:
+
+- use an admission method that preserves the reviewed candidate as the accepted revision;
+- obtain independent review of the final synthesized revision; or
+- define a mechanically verifiable equivalence rule in governance that proves the accepted revision differs only by bounded, semantics-preserving transformation and records that evidence.
+
+Absent one of those mechanisms, fail closed rather than treating a reviewed PR head and a newly synthesized merge commit as the same reviewed revision.
 
 Do not choose a merge method solely to make history visually linear if doing so obscures material integration provenance.
 
@@ -232,6 +241,8 @@ Avoid these organization defaults:
 - feature branches kept alive as durable alternate product lines;
 - release branches created for every ordinary release;
 - stable releases cut from temporary integration branches without explicit authority;
+- treating every commit reachable from `main` as independently admitted/golden merely because branch ancestry is preserved;
+- squash-merging an exact-head-reviewed privileged change without final-revision review or a governed equivalence proof;
 - tags used as mutable pointers;
 - feature tags for every PR or issue;
 - treating branch names as environment/security authority;
