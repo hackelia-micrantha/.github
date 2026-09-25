@@ -126,15 +126,16 @@ Scripts should be bounded, tested where logic is material, and avoid becoming an
 
 ## Flake-first CI and minimal runner substrate
 
-For active repositories with executable CI, the repository should own its CI/build/test environment through a Nix flake. Repositories with no executable CI surface may declare this requirement not applicable rather than adding a meaningless flake.
+For active repositories with executable CI, the repository must own its CI/build/test environment through a Nix flake. Repositories with no executable CI surface may declare this requirement not applicable rather than adding a meaningless flake.
 
-The flake is the authoritative declaration of project-specific tooling and should expose stable CI entry points through checks, packages, apps, or—when a derivation is not a practical interface—a bounded CI development shell.
+The flake is the authoritative declaration of project-specific tooling and should expose stable CI entry points through checks, packages, apps, or—when a derivation is not a practical interface—a bounded CI development shell. Mise may remain the task and orchestration interface; the flake owns the reproducible environment in which those tasks execute.
 
 - Prefer `nix flake check`, `nix build .#...`, or explicit flake-owned apps/checks/packages over imperative toolchain installation in workflows.
-- Keep repository-specific compilers, SDKs, linters, formatters, browsers, generators, package managers, and test utilities in the project flake rather than the shared runner image.
+- Keep repository-specific compilers, SDKs, linters, formatters, browsers, generators, package managers, and test utilities in the project flake rather than the shared runner image when they can be represented reproducibly there.
+- Treat irreducible host or platform capabilities—such as an operating-system kernel, hardware/device access, vendor-controlled platform tooling, or host services required before the flake can take control—as explicit external CI inputs. Constrain and attest their identity/version where practical; do not treat them as ambient convenience dependencies.
 - Bind external flake inputs through `flake.lock` or an explicitly documented equivalent lock policy.
 - Keep local developer validation and CI on the same underlying flake contracts where practical.
-- Treat hidden host or runner dependencies as reproducibility defects.
+- Treat undeclared host or runner dependencies as reproducibility defects.
 - Do not turn a CI devShell into an unstructured ambient dependency bucket.
 
 The generic Dubnium runner image is a **bootstrap execution substrate**, not a shared distribution containing the union of project workloads. It should contain only capabilities required before or independently of project-flake evaluation and materialization, normally:
@@ -148,6 +149,8 @@ The generic Dubnium runner image is a **bootstrap execution substrate**, not a s
 - controller/worker lifecycle hooks, resource and network policy enforcement, diagnostics, and cleanup.
 
 Project-specific dependencies belong outside the generic image unless a measured bootstrap constraint demonstrates that they must be substrate-owned.
+
+As a default classification rule: if checkout has completed and Nix can evaluate and materialize the repository flake before a tool is needed, that tool is presumptively a project/workload dependency rather than runner substrate. Exceptions require evidence that the capability is needed to obtain, evaluate, materialize, isolate, or execute the project environment itself, or is an irreducible platform capability that cannot be flake-owned.
 
 ### Space and time budgets
 
