@@ -18,7 +18,7 @@
     "candidate": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["repository", "subject", "reviewed_sha", "patch"],
+      "required": ["repository", "subject", "patch_base_sha", "reviewed_sha", "patch"],
       "properties": {
         "repository": {
           "type": "string",
@@ -37,6 +37,10 @@
               "minimum": 1
             }
           }
+        },
+        "patch_base_sha": {
+          "type": "string",
+          "pattern": "^[0-9a-f]{40}$"
         },
         "reviewed_sha": {
           "type": "string",
