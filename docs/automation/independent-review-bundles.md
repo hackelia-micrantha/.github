@@ -9,7 +9,7 @@ The governing policy remains [independent review for privileged changes](../gove
 `tools/review_bundle.py` generates a versioned JSON manifest that binds:
 
 - repository and PR/issue/commit identity;
-- exact 40-hex candidate commit SHA;
+- exact 40-hex patch base and candidate commit SHAs;
 - SHA-256 and byte length of the exact patch/diff file supplied to the reviewer;
 - optional durable patch reference;
 - review scope and authority/acceptance references;
@@ -20,16 +20,23 @@ The governing policy remains [independent review for privileged changes](../gove
 - immutable read-only/no-mutation/exact-head constraints;
 - a deterministic digest of the bundle metadata itself.
 
-The JSON bundle deliberately does **not** embed the patch. The review input is the pair:
+The JSON bundle deliberately does **not** embed the patch. Before the bundle is emitted, the generator verifies that the supplied patch exactly matches the canonical local Git diff for the declared base/candidate revisions. The review input is the pair:
 
 1. generated review-bundle JSON;
 2. the exact patch file whose SHA-256 is recorded in that JSON.
 
-This avoids duplicating private source into durable metadata while still allowing the reviewer or evidence recorder to verify that the reviewed patch matches the declared candidate.
+This avoids duplicating private source into durable metadata. The manifest records the declared base/candidate revision pair and patch digest, but the generator does **not** prove that an arbitrary caller-supplied patch was derived from those revisions. A reviewer adapter must independently materialize or fetch the exact base/candidate revisions and verify that the supplied patch/diff corresponds to that range before treating the review as exact-head evidence.
 
 ## Generate a bundle
 
-Create the exact patch from a known candidate revision using the repository's normal Git workflow. The patch-generation step is repository-owned; the bundle generator does not invoke GitHub, Git, a model provider, or any network service.
+Create the exact patch from the declared base and candidate revisions using the canonical Git diff form below. The bundle generator invokes **local Git only** to verify that the supplied patch bytes exactly equal this base-to-candidate diff; it does not contact GitHub, a model provider, or any network service.
+
+```sh
+git diff --binary --full-index --no-color --no-ext-diff --no-textconv --no-renames \
+  --src-prefix=a/ --dst-prefix=b/ <base-sha> <candidate-sha> -- > candidate.patch
+```
+
+This verification requires both commits to exist in the local repository supplied by `--repository-root`.
 
 Example for a public pull request:
 
@@ -37,6 +44,8 @@ Example for a public pull request:
 python tools/review_bundle.py \
   --repository hackelia-micrantha/.github \
   --subject pull_request:119 \
+  --repository-root /path/to/.github \
+  --patch-base-sha 89abcdef0123456789abcdef0123456789abcdef \
   --reviewed-sha 0123456789abcdef0123456789abcdef01234567 \
   --patch /tmp/pr-119.patch \
   --patch-ref https://example.invalid/immutable/pr-119-0123456.patch \
@@ -48,7 +57,7 @@ python tools/review_bundle.py \
   --output /tmp/pr-119.review-bundle.json
 ```
 
-The version above is illustrative. The supplied SHA and patch must identify the actual candidate being reviewed.
+The version above is illustrative. The supplied base SHA, candidate SHA, and patch must identify the actual candidate range being reviewed. Bundle creation records that claim; reviewer execution must verify it independently against authoritative repository state.
 
 ## Confidentiality and reviewer routing
 
@@ -85,7 +94,7 @@ The validator checks:
 
 - the review-bundle digest;
 - exact reviewed commit SHA;
-- mandatory review-prompt digest;
+- the effective review-prompt digest (mandatory fixed prompt plus optional project context);
 - exact review scope;
 - non-author and separate-review-context attestations;
 - absence of repository write credentials and mutation tools;
@@ -105,32 +114,6 @@ python tools/review_result.py \
 ```
 
 The result validator checks evidence linkage and fail-closed structure only. It cannot prove that a declared reviewer identity or independence basis is truthful, and it does not accept or dispose findings.
-
-## Accountable evidence disposition
-
-A reviewer result is still untrusted evidence. It does not itself resolve findings or authorize an effect.
-
-`tools/review_evidence.py` validates a durable `micrantha.independent-review-evidence/v1` record against the exact bundle/result pair. The record includes the accountable owner, reviewer summary, exact result digest, finding-by-finding disposition, durable evidence reference, and explicit authority constraints.
-
-Finding disposition rules are fail closed:
-
-- every finding from a completed `findings` result must be covered exactly once;
-- `resolved` and `accepted` dispositions require a durable reference;
-- any `blocked` finding keeps the disposition state blocked;
-- a reviewer result that is itself `blocked` can never be dispositioned complete;
-- a clean result has no finding dispositions;
-- the evidence record always declares merge, release, and mutation authority false.
-
-Example validation:
-
-```sh
-python tools/review_evidence.py \
-  /tmp/pr-119.review-bundle.json \
-  /tmp/pr-119.review-result.json \
-  /tmp/pr-119.review-evidence.json
-```
-
-This record captures review-gate evidence and accountable finding disposition. It remains **evidence, not authority**: merge, release, deployment, protected-environment approval, and other consequential effects still require their own governing decision.
 
 ## Evidence after review
 
