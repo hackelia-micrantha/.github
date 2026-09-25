@@ -77,6 +77,35 @@ A reviewer receives only the bounded bundle, the exact matching patch, and neces
 
 Provider/model routing is intentionally outside the bundle generator. The eventual multi-route implementation should reuse the governed `reviewer` role and routing semantics rather than embedding provider choice in this file format.
 
+## Reviewer result contract
+
+A reviewer or reviewer adapter should emit one `micrantha.independent-review-result/v1` JSON document. `tools/review_result.py` validates that result against the exact review bundle before it can be treated as candidate-bound review evidence.
+
+The validator checks:
+
+- the review-bundle digest;
+- exact reviewed commit SHA;
+- mandatory review-prompt digest;
+- exact review scope;
+- non-author and separate-review-context attestations;
+- absence of repository write credentials and mutation tools;
+- source-transfer compatibility for local versus external execution;
+- strict `clean | findings | blocked` state semantics;
+- unique structured finding identifiers;
+- strict JSON without `NaN` / `Infinity`.
+
+A `clean` result cannot contain findings or blocked reasons. A `findings` result requires at least one finding. A `blocked` result requires at least one blocked reason and may preserve findings discovered before the block.
+
+Example validation:
+
+```sh
+python tools/review_result.py \
+  /tmp/pr-119.review-bundle.json \
+  /tmp/pr-119.review-result.json
+```
+
+The result validator checks evidence linkage and fail-closed structure only. It cannot prove that a declared reviewer identity or independence basis is truthful, and it does not accept or dispose findings.
+
 ## Evidence after review
 
 A completed review should produce the evidence fields required by the governing policy:
