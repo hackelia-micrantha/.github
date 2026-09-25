@@ -6,6 +6,7 @@ These standards define organization-wide defaults for engineering evidence, secu
 
 - [Testing and validation](testing.md)
 - [CI/CD](ci-cd.md)
+- [Branching and integration](branching-and-integration.md)
 - [Security engineering](security.md)
 - [Source exposure and distribution](source-exposure-and-distribution.md)
 - [CLI interoperability](cli-interoperability.md) — normative process, machine/transport semantics, safety, and manual-page contract
