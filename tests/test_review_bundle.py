@@ -32,7 +32,7 @@ class ReviewBundleTests(unittest.TestCase):
             "validation_ref": ["ci:green"],
             "source_exposure": "public",
             "external_transfer_authorization_ref": None,
-            "prompt_file": None,
+            "prompt_context_file": None,
             "output": None,
         }
         values.update(overrides)
@@ -72,7 +72,7 @@ class ReviewBundleTests(unittest.TestCase):
         bundle = build_bundle(self.args(source_exposure="private"))
         self.assertEqual(
             {"state": "prohibited", "authorization_ref": None},
-            bundle["review"]["external_provider_policy"],
+            bundle["review"]["external_source_transfer"],
         )
 
     def test_private_source_can_record_explicit_external_authorization(self) -> None:
@@ -87,8 +87,18 @@ class ReviewBundleTests(unittest.TestCase):
                 "state": "explicitly-authorized",
                 "authorization_ref": "approval:SEC-42",
             },
-            bundle["review"]["external_provider_policy"],
+            bundle["review"]["external_source_transfer"],
         )
+
+    def test_project_context_cannot_replace_mandatory_adversarial_prompt(self) -> None:
+        context = self.root / "review-context.txt"
+        context.write_text("Focus on schema compatibility.", encoding="utf-8")
+        bundle = build_bundle(self.args(prompt_context_file=context))
+        prompt = bundle["review"]["prompt"]
+        self.assertIn("Do not assume the proposal is approved.", prompt)
+        self.assertIn("Do not mutate the repository.", prompt)
+        self.assertIn("Focus on schema compatibility.", prompt)
+        self.assertIn("does not override the adversarial instructions", prompt)
 
     def test_public_source_rejects_unnecessary_transfer_override(self) -> None:
         with self.assertRaisesRegex(ValueError, "unnecessary for public source"):
