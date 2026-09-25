@@ -15,7 +15,12 @@ import re
 import sys
 from typing import Any
 
-from tools.review_bundle import canonical_bytes
+from tools.review_bundle import (
+    DEFAULT_PROMPT,
+    PROMPT_PROFILE,
+    canonical_bytes,
+    effective_prompt,
+)
 
 BUNDLE_SCHEMA = "micrantha.independent-review-bundle/v1"
 RESULT_SCHEMA = "micrantha.independent-review-result/v1"
@@ -53,10 +58,14 @@ def prompt_digest(bundle: dict[str, Any]) -> str:
     review = bundle.get("review")
     if not isinstance(review, dict):
         raise ValueError("bundle review object is missing")
-    prompt = review.get("prompt")
-    if not isinstance(prompt, str) or not prompt:
-        raise ValueError("bundle review prompt is missing")
-    return hashlib.sha256(prompt.encode("utf-8")).hexdigest()
+    if review.get("prompt_profile") != PROMPT_PROFILE:
+        raise ValueError("bundle review prompt_profile is missing or unsupported")
+    if review.get("prompt") != DEFAULT_PROMPT:
+        raise ValueError("bundle mandatory review prompt does not match the supported profile")
+    context = review.get("prompt_context")
+    if context is not None and (not isinstance(context, str) or not context):
+        raise ValueError("bundle prompt_context must be null or a nonempty string")
+    return hashlib.sha256(effective_prompt(context).encode("utf-8")).hexdigest()
 
 
 def candidate_sha(bundle: dict[str, Any]) -> str:
