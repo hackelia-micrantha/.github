@@ -80,7 +80,7 @@ A repository may implement this hierarchy directly in documentation and native t
 
 ## Testule integration
 
-[Testule](https://github.com/hackelia-micrantha/testule) is Micrantha's portable **test-plan, testability-contract, adapter, normalized-evidence, and gap-analysis layer**. It does not replace ecosystem-native test frameworks or CI/CD.
+[Testule](https://github.com/hackelia-micrantha/testule-community) is Micrantha's portable **test-plan, testability-contract, adapter, normalized-evidence, and gap-analysis layer**; its public repository is the specification/distribution surface, while canonical implementation authority remains private. It does not replace ecosystem-native test frameworks or CI/CD.
 
 The intended boundary is:
 
