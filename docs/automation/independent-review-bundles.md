@@ -15,7 +15,7 @@ The governing policy remains [independent review for privileged changes](../gove
 - review scope and authority/acceptance references;
 - validation evidence references;
 - repository source-exposure class;
-- external-provider routing posture;
+- external source-transfer posture;
 - the adversarial review prompt;
 - immutable read-only/no-mutation/exact-head constraints;
 - a deterministic digest of the bundle metadata itself.
@@ -54,13 +54,15 @@ The version above is illustrative. The supplied SHA and patch must identify the 
 
 The bundle records source exposure independently from reviewer availability:
 
-- `public` -> external-provider policy is `allowed-public`;
-- `private` or `restricted` -> external-provider policy is `prohibited` by default;
+- `public` -> external source-transfer state is `public-source`;
+- `private` or `restricted` -> external source-transfer state is `prohibited` by default;
 - private/restricted source may record `explicitly-authorized` only when `--external-transfer-authorization-ref` names a real accountable authorization.
 
-The flag records an authorization reference; it does not create that authorization. Reviewer routing must still verify the referenced policy/decision before sending source outside the approved boundary.
+The flag records an authorization reference; it does not create that authorization. Source-transfer state is not provider admission: reviewer routing must still apply trust, locality, retention, budget, and other governed provider constraints before sending source outside the approved boundary.
 
 Prefer a local/read-only reviewer for private or restricted source when no approved external path exists.
+
+Project-specific reviewer context may be supplied with `--prompt-context-file`. It is appended after the mandatory adversarial prompt and cannot replace the baseline challenge/no-mutation instructions.
 
 ## Reviewer execution contract
 
