@@ -114,7 +114,7 @@ class RepositoryBootstrapTests(unittest.TestCase):
     def test_example_satisfies_reference_semantics(self) -> None:
         self.assertEqual([], validate_manifest(self.example))
 
-    def test_example_resolves_only_explicit_fixture_identity(self) -> None:
+    def test_example_resolves_only_explicit_fixture_and_org_policy(self) -> None:
         resolved = [
             decision["key"]
             for decision in self.example["decisions"]
