@@ -15,12 +15,16 @@ import re
 import sys
 from typing import Any
 
-from tools.review_bundle import canonical_bytes, reject_json_constant
+from tools.review_bundle import canonical_bytes
 
 BUNDLE_SCHEMA = "micrantha.independent-review-bundle/v1"
 RESULT_SCHEMA = "micrantha.independent-review-result/v1"
 SHA40 = re.compile(r"^[0-9a-f]{40}$")
 SHA256 = re.compile(r"^[0-9a-f]{64}$")
+
+
+def reject_json_constant(value: str) -> None:
+    raise ValueError(f"nonstandard JSON constant: {value}")
 
 
 def load_strict_json(path: Path) -> dict[str, Any]:
