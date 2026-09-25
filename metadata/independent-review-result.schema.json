@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/hackelia-micrantha/.github/blob/main/metadata/independent-review-result.schema.json",
+  "title": "Micrantha independent review result v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "review_bundle_sha256",
+    "reviewed_sha",
+    "review_prompt_sha256",
+    "reviewer",
+    "scope",
+    "result",
+    "findings",
+    "blocked_reasons",
+    "limitations"
+  ],
+  "properties": {
+    "schema": {
+      "const": "micrantha.independent-review-result/v1"
+    },
+    "review_bundle_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "reviewed_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "review_prompt_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "identity",
+        "provider",
+        "model",
+        "execution_location",
+        "independence_basis",
+        "non_author",
+        "separate_review_context",
+        "repository_write_credentials_available",
+        "mutation_tools_available"
+      ],
+      "properties": {
+        "kind": {
+          "enum": ["human", "automated-service", "external-model", "local-model"]
+        },
+        "identity": {
+          "type": "string",
+          "minLength": 1
+        },
+        "provider": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "model": {
+          "type": ["string", "null"],
+          "minLength": 1
+        },
+        "execution_location": {
+          "enum": ["local", "external", "unknown"]
+        },
+        "independence_basis": {
+          "type": "string",
+          "minLength": 1
+        },
+        "non_author": {
+          "const": true
+        },
+        "separate_review_context": {
+          "const": true
+        },
+        "repository_write_credentials_available": {
+          "const": false
+        },
+        "mutation_tools_available": {
+          "const": false
+        }
+      }
+    },
+    "scope": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "result": {
+      "enum": ["clean", "findings", "blocked"]
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "severity", "title", "description", "evidence_refs"],
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "severity": {
+            "enum": ["critical", "high", "medium", "low", "info"]
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1
+          },
+          "evidence_refs": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "blocked_reasons": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "limitations": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  }
+}

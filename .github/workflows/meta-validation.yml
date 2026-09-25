@@ -16,6 +16,7 @@ on:
       - tests/**
       - tools/label_sync.py
       - tools/review_bundle.py
+      - tools/review_result.py
       - tools/release_readiness.py
       - tools/repository_health.py
       - tools/source_posture.py
@@ -37,6 +38,7 @@ on:
       - tests/**
       - tools/label_sync.py
       - tools/review_bundle.py
+      - tools/review_result.py
       - tools/release_readiness.py
       - tools/repository_health.py
       - tools/source_posture.py
