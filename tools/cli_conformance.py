@@ -18,6 +18,10 @@ from typing import Any
 ANSI = re.compile(r"\x1b\[[0-?]*[ -/]*[@-~]")
 
 
+def reject_json_constant(value: str) -> None:
+    raise ValueError(f"nonstandard JSON constant: {value}")
+
+
 def validate_manifest(data: Any) -> dict[str, Any]:
     if not isinstance(data, dict):
         raise ValueError("manifest must be a JSON object")
@@ -81,12 +85,7 @@ def probe(data: dict[str, Any], timeout: float) -> dict[str, Any]:
                 reasons.append("missing required stdout result")
             if machine and output:
                 try:
-                    json.loads(
-                        output,
-                        parse_constant=lambda value: (_ for _ in ()).throw(
-                            ValueError(f"nonstandard JSON constant: {value}")
-                        ),
-                    )
+                    json.loads(output, parse_constant=reject_json_constant)
                 except (ValueError, TypeError) as exc:
                     reasons.append(f"stdout is not one valid JSON document: {exc}")
             if version and data.get("expected_version") and data["expected_version"] not in output:
