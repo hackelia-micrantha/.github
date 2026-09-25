@@ -9,6 +9,7 @@ These standards define organization-wide defaults for engineering evidence, secu
 - [Branching and integration](branching-and-integration.md)
 - [Security engineering](security.md)
 - [Source exposure and distribution](source-exposure-and-distribution.md)
+- [Repository bootstrap](repository-bootstrap.md) — explicit unresolved/resolved/not-applicable decisions for assumption-free new-repository automation
 - [CLI interoperability](cli-interoperability.md) — normative process, machine/transport semantics, safety, and manual-page contract
 - [CLI design and UX](cli-design-and-ux.md) — user-facing tables, help, frameworks, extensions, and adoption without duplicating release authority
 - [Tool result trust and observation](tool-result-trust.md)
