@@ -461,11 +461,22 @@
       "repository": "hackelia-micrantha/testule",
       "classification": "library-sdk",
       "maturity": "incubating",
+      "visibility": "private",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": ["canonical Testule implementation, portable testability contracts, native-tool adapters, gap analysis, and normalized test evidence"],
+      "requiredFiles": ["README.md"]
+    },
+    {
+      "repository": "hackelia-micrantha/testule-community",
+      "classification": "community-surface",
+      "maturity": "incubating",
       "visibility": "public",
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["portable testability contracts, native-tool adapters, gap analysis, and normalized test evidence"],
+      "authority": ["public Testule specifications, compatibility and release policy, operator documentation, and community distribution"],
       "requiredFiles": ["README.md"]
     },
     {
