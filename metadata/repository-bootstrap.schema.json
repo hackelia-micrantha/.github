@@ -1,0 +1,91 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/hackelia-micrantha/.github/blob/main/metadata/repository-bootstrap.schema.json",
+  "title": "Micrantha repository bootstrap manifest",
+  "description": "Explicit, provenance-bearing decisions for assumption-free repository bootstrap.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "kind", "decisions"],
+  "properties": {
+    "$schema": {"type": "string", "minLength": 1},
+    "schemaVersion": {"const": 1},
+    "kind": {"const": "micrantha.repository-bootstrap"},
+    "policySources": {
+      "description": "Policies explicitly supplied as candidate inputs. Presence does not itself prove applicability to every decision.",
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["authority", "reference"],
+        "properties": {
+          "authority": {"enum": ["organization-policy", "project-policy"]},
+          "reference": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "decisions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/decision"}
+    }
+  },
+  "$defs": {
+    "decisionKey": {
+      "type": "string",
+      "pattern": "^[a-z][A-Za-z0-9]*(\\.[a-z][A-Za-z0-9]*)+$"
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["authority", "reference"],
+      "properties": {
+        "authority": {"enum": ["human", "organization-policy", "project-policy"]},
+        "reference": {"type": "string", "minLength": 1},
+        "rationale": {"type": "string", "minLength": 1}
+      }
+    },
+    "resolvedDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "state", "value", "provenance"],
+      "properties": {
+        "key": {"$ref": "#/$defs/decisionKey"},
+        "state": {"const": "resolved"},
+        "value": {"not": {"type": "null"}},
+        "provenance": {"$ref": "#/$defs/provenance"},
+        "notes": {"type": "string", "minLength": 1}
+      }
+    },
+    "unresolvedDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "state"],
+      "properties": {
+        "key": {"$ref": "#/$defs/decisionKey"},
+        "state": {"const": "unresolved"},
+        "question": {"type": "string", "minLength": 1},
+        "notes": {"type": "string", "minLength": 1}
+      }
+    },
+    "notApplicableDecision": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "state", "reason", "provenance"],
+      "properties": {
+        "key": {"$ref": "#/$defs/decisionKey"},
+        "state": {"const": "not-applicable"},
+        "reason": {"type": "string", "minLength": 1},
+        "provenance": {"$ref": "#/$defs/provenance"},
+        "notes": {"type": "string", "minLength": 1}
+      }
+    },
+    "decision": {
+      "oneOf": [
+        {"$ref": "#/$defs/resolvedDecision"},
+        {"$ref": "#/$defs/unresolvedDecision"},
+        {"$ref": "#/$defs/notApplicableDecision"}
+      ]
+    }
+  }
+}
