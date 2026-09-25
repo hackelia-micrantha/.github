@@ -9,7 +9,7 @@ on:
         type: string
         default: nix flake check --print-build-logs
       runner:
-        description: GitHub runner label
+        description: GitHub runner label; custom self-hosted runners require Actions Runner v2.327.1+ for Node 24 actions
         required: false
         type: string
         default: ubuntu-latest
@@ -47,7 +47,7 @@ jobs:
         working-directory: ${{ inputs.working-directory }}
     steps:
       - name: Check out repository
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v6.0.2
         with:
           persist-credentials: false
 
