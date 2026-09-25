@@ -42,6 +42,79 @@ This inheritance rule is limited to file types GitHub actually supports as organ
 
 Reference: [GitHub default community health files](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/creating-a-default-community-health-file).
 
+## GitHub template repositories
+
+A GitHub template repository can be a useful **creation transport**, but it is not an inheritance mechanism, policy source, or convergence mechanism.
+
+GitHub creates a repository from the template's directory structure and files from the template default branch, with an option to include all branches. The generated repository has independent history; later template changes do not propagate automatically. Template-derived state therefore becomes repository-local state at creation time.
+
+Use a Micrantha template only as a thin optional seed after the semantic decisions required by its contents are resolved.
+
+### Preferred layering
+
+For GitHub-hosted repositories, prefer this order:
+
+1. **Organization-native defaults and inheritance** — use GitHub organization defaults, organization rulesets where available, and the public `.github` repository for supported inherited files.
+2. **Thin template seed** — materialize only bootstrap files that cannot be inherited and whose applicability is already established.
+3. **Repora reconciliation** — inspect, plan, apply, verify, and later detect drift for repository-local files/settings and cross-provider semantics.
+
+The template must not duplicate files already inherited from `.github` merely to make the generated repository appear self-contained.
+
+### Template contents
+
+A generic bootstrap template must not contain project choices that have not been explicitly resolved. In particular it must not carry a default:
+
+- license;
+- implementation language/runtime;
+- package manager or build system;
+- language-specific `.gitignore`;
+- CI/release workflow;
+- deployment configuration;
+- public/private repository split;
+- project-specific `CODEOWNERS`;
+- service/library/CLI/mobile/web scaffold.
+
+A template may contain a bootstrap manifest skeleton and bounded bootstrap instructions because those represent unresolved state rather than a chosen implementation.
+
+Organization workflow templates remain preferable to copying CI workflows into a generic repository template when CI selection is still unresolved.
+
+### Provider-required creation decisions
+
+Template-based creation is itself a mutating provider operation. Every provider-required semantic input must be resolved before execution.
+
+For GitHub's template-generation API:
+
+- repository name must be explicit;
+- destination owner must be explicit;
+- repository visibility must be resolved and passed explicitly;
+- `include_all_branches` must be set explicitly rather than inherited from a client/tool default;
+- the exact template repository and reviewed template revision/tree used for planning must be recorded as execution evidence.
+
+GitHub's API defaults `private` to `false`. Repora or any other Micrantha automation must therefore fail closed rather than omit visibility and accidentally create a public repository.
+
+If the resolved visibility or another required repository property cannot be represented by the template-generation endpoint, use a different reviewed provisioning path rather than coercing the decision to fit the endpoint.
+
+### Branch semantics
+
+Because template generation materializes branches from the template, the template's branch structure is not neutral.
+
+A generic template should contain only the minimum required branch set. Template-based creation is eligible only when:
+
+- the resolved/default organization branch policy is compatible with the template branch being materialized; or
+- an explicit reviewed plan includes the required post-creation branch transition.
+
+Do not create extra template branches "just in case", and do not use GitHub's "include all branches" option for the generic template unless a project decision specifically requires it.
+
+### Template provenance and drift
+
+Template identity is execution provenance, not decision authority.
+
+A plan that uses a template should bind to an exact immutable template revision or equivalent tree identity. Apply must not silently resolve "latest template" after review.
+
+Once generated, the new repository is independent. Template updates do not remediate existing repositories; Repora/posture automation remains responsible for detecting and proposing convergence where organization policy actually requires it.
+
+Reference: [GitHub template repositories](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-template-repository) and [creating a repository from a template](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template).
+
 ## Decision states
 
 Every material bootstrap decision is represented explicitly as one of three states.
