@@ -181,6 +181,26 @@ class ReviewBundleTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "does not match"):
             verify_patch_range(repo, base, head, canonical + b"\n# stale")
 
+        subprocess.run(["git", "-C", str(repo), "replace", head, base], check=True)
+        verify_patch_range(
+            repo,
+            base,
+            head,
+            canonical,
+        )
+        subprocess.run(["git", "-C", str(repo), "replace", "-d", head], check=True)
+
+        subprocess.run(
+            ["git", "-C", str(repo), "tag", "-a", "reviewed-tag", "-m", "reviewed", head],
+            check=True,
+        )
+        tag_object = subprocess.check_output(
+            ["git", "-C", str(repo), "rev-parse", "reviewed-tag"],
+            text=True,
+        ).strip()
+        with self.assertRaisesRegex(ValueError, "must name a commit object directly"):
+            verify_patch_range(repo, base, tag_object, canonical)
+
     def test_output_path_cannot_overwrite_patch(self) -> None:
         exit_code = main(
             [
@@ -194,6 +214,26 @@ class ReviewBundleTests(unittest.TestCase):
                 "--scope", "review evidence boundary",
                 "--authority-ref", "docs/governance/independent-review.md",
                 "--output", str(self.patch),
+            ]
+        )
+        self.assertEqual(2, exit_code)
+        self.assertTrue(self.patch.read_text(encoding="utf-8").startswith("diff --git"))
+
+    def test_output_path_cannot_overwrite_patch_through_hard_link(self) -> None:
+        alias = self.root / "patch-hardlink"
+        alias.hardlink_to(self.patch)
+        exit_code = main(
+            [
+                "--repository", "hackelia-micrantha/.github",
+                "--subject", "pull_request:123",
+                "--repository-root", str(self.root),
+                "--patch-base-sha", "b" * 40,
+                "--reviewed-sha", "a" * 40,
+                "--patch", str(self.patch),
+                "--source-exposure", "public",
+                "--scope", "review evidence boundary",
+                "--authority-ref", "docs/governance/independent-review.md",
+                "--output", str(alias),
             ]
         )
         self.assertEqual(2, exit_code)
