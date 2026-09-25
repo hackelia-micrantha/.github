@@ -1,0 +1,40 @@
+{
+  "$schema": "../../../metadata/repository-bootstrap.schema.json",
+  "schemaVersion": 1,
+  "kind": "micrantha.repository-bootstrap",
+  "decisions": [
+    {
+      "key": "repository.name",
+      "state": "resolved",
+      "value": "example",
+      "provenance": {
+        "authority": "human",
+        "reference": "example manifest fixture"
+      }
+    },
+    {"key": "repository.purpose", "state": "unresolved", "question": "What responsibility does this repository own?"},
+    {"key": "project.identity", "state": "unresolved", "question": "Does this repository belong to an existing project identity or establish a new one?"},
+    {"key": "repository.visibility", "state": "unresolved", "question": "Should this repository be public, private, or internal?"},
+    {"key": "repository.classification", "state": "unresolved", "question": "Which Micrantha repository classification applies?"},
+    {"key": "repository.maturity", "state": "unresolved", "question": "Which lifecycle state applies at creation?"},
+    {"key": "repository.defaultBranch", "state": "unresolved", "question": "What default branch is explicitly intended?"},
+    {"key": "repository.license", "state": "unresolved", "question": "What license, if any, is authorized for this repository?"},
+    {"key": "repository.sourceExposure", "state": "unresolved", "question": "What source exposure is intended?"},
+    {"key": "repository.role", "state": "unresolved", "question": "What repository-topology role does this surface have?"},
+    {"key": "repository.distributionMode", "state": "unresolved", "question": "What distribution mode, if any, does this repository represent?"},
+    {"key": "repository.topology", "state": "unresolved", "question": "What explicitly designed repository topology applies?"},
+    {"key": "implementation.language", "state": "unresolved", "question": "What implementation language is intentionally selected?"},
+    {"key": "implementation.runtime", "state": "unresolved", "question": "What runtime, if any, is intentionally selected?"},
+    {"key": "implementation.buildSystem", "state": "unresolved", "question": "What build system, if any, is intentionally selected?"},
+    {"key": "implementation.packageManager", "state": "unresolved", "question": "What package manager, if any, is intentionally selected?"},
+    {"key": "interface.cli", "state": "unresolved", "question": "Does this repository intentionally provide a CLI?"},
+    {"key": "interface.service", "state": "unresolved", "question": "Does this repository intentionally provide a service/API?"},
+    {"key": "interface.library", "state": "unresolved", "question": "Does this repository intentionally provide a reusable library/SDK?"},
+    {"key": "interface.website", "state": "unresolved", "question": "Does this repository intentionally provide a website or web application?"},
+    {"key": "interface.mobile", "state": "unresolved", "question": "Does this repository intentionally provide a mobile application or mobile SDK?"},
+    {"key": "delivery.ciProvider", "state": "unresolved", "question": "What CI implementation, if any, is explicitly selected?"},
+    {"key": "delivery.releaseModel", "state": "unresolved", "question": "What release model, if any, applies?"},
+    {"key": "delivery.distribution", "state": "unresolved", "question": "How, if at all, will consumers acquire releases or packages?"},
+    {"key": "security.profile", "state": "unresolved", "question": "What project-specific security profile or additional controls apply beyond organization standards?"}
+  ]
+}
