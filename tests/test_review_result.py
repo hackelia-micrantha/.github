@@ -28,6 +28,7 @@ class ReviewResultTests(unittest.TestCase):
         args = argparse.Namespace(
             repository="hackelia-micrantha/.github",
             subject="pull_request:129",
+            patch_base_sha="a" * 40,
             reviewed_sha="b" * 40,
             patch=self.patch,
             patch_ref="https://example.invalid/immutable/b.patch",
