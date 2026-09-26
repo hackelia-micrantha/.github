@@ -50,9 +50,15 @@ Release notes should describe externally meaningful outcomes rather than reprodu
 
 ## Tags and branches
 
+Apply the [branching and integration standard](branching-and-integration.md).
+
+- `main` is the organization-default golden integration line; a commit on `main` is accepted integrated source but is not automatically a stable release.
+- Stable releases normally identify source commits reachable from `main` whose accepted source state is traceable to the reviewed/validated admission candidate, unless a documented maintenance branch owns that supported release line.
 - Protect or restrict release tags according to repository risk.
 - Use annotated or signed tags when authenticity requirements justify them.
 - Do not move or overwrite published stable tags.
+- Feature/milestone tags are optional immutable checkpoints for materially useful integrated states; ordinary merged features do not require tags.
+- A feature/milestone tag does not imply release, deployment, support, or maturity authority unless separately declared.
 - Record hotfix and maintenance branch policy where supported versions diverge.
 - Treat a tag as a reference, not proof that artifacts were correctly built or published.
 
