@@ -41,7 +41,11 @@
         "cross-project relationship and lifecycle projection",
         "distribution and aggregate status coordination"
       ],
-      "requiredFiles": ["README.md", "registry/projects.yaml", "registry/schema.json"],
+      "requiredFiles": [
+        "README.md",
+        "registry/projects.yaml",
+        "registry/schema.json"
+      ],
       "notes": "Coordinates ecosystem identity and relationships; does not own organization GitHub policy or project implementation."
     },
     {
@@ -52,8 +56,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["micrantha.com implementation and deployment"],
-      "requiredFiles": ["README.md"],
+      "authority": [
+        "micrantha.com implementation and deployment"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ],
       "notes": "Public claims must remain projections of authoritative project evidence."
     },
     {
@@ -69,7 +77,9 @@
         "approval and evidence contracts",
         "governance runtime implementation"
       ],
-      "requiredFiles": ["README.md"]
+      "requiredFiles": [
+        "README.md"
+      ]
     },
     {
       "repository": "hackelia-micrantha/anthesis-community",
@@ -79,8 +89,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["public Anthesis documentation and community distribution"],
-      "requiredFiles": ["README.md"],
+      "authority": [
+        "public Anthesis documentation and community distribution"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ],
       "notes": "Does not redefine private-source contracts or release evidence."
     },
     {
@@ -96,7 +110,9 @@
         "context manifests, lockfiles, and composition integrity",
         "read-only host integration contracts"
       ],
-      "requiredFiles": ["README.md"],
+      "requiredFiles": [
+        "README.md"
+      ],
       "sourceExposure": "private",
       "repositoryRole": "canonical",
       "implementationAuthority": "hackelia-micrantha/invokrum",
@@ -113,8 +129,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["public Invokrum documentation, examples, and community distribution"],
-      "requiredFiles": ["README.md"],
+      "authority": [
+        "public Invokrum documentation, examples, and community distribution"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ],
       "sourceExposure": "none",
       "repositoryRole": "distribution",
       "implementationAuthority": "hackelia-micrantha/invokrum",
@@ -136,7 +156,9 @@
         "verified sender-binding contracts and conformance",
         "experimental MCP HTTP authorization adapters"
       ],
-      "requiredFiles": ["README.md"],
+      "requiredFiles": [
+        "README.md"
+      ],
       "sourceExposure": "private",
       "repositoryRole": "canonical",
       "implementationAuthority": "hackelia-micrantha/keylix",
@@ -153,8 +175,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["public Keylix documentation, examples, and community distribution"],
-      "requiredFiles": ["README.md"],
+      "authority": [
+        "public Keylix documentation, examples, and community distribution"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ],
       "sourceExposure": "public",
       "repositoryRole": "projection",
       "implementationAuthority": "hackelia-micrantha/keylix",
@@ -170,8 +196,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["reproducible infrastructure and GitOps implementation"],
-      "requiredFiles": ["README.md"]
+      "authority": [
+        "reproducible infrastructure and GitOps implementation"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ]
     },
     {
       "repository": "hackelia-micrantha/hyperion-community",
@@ -181,8 +211,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["public Hyperion documentation and community distribution"],
-      "requiredFiles": ["README.md"]
+      "authority": [
+        "public Hyperion documentation and community distribution"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ]
     },
     {
       "repository": "hackelia-micrantha/dubnium-community",
@@ -192,8 +226,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["public Dubnium documentation and community distribution"],
-      "requiredFiles": ["README.md"],
+      "authority": [
+        "public Dubnium documentation and community distribution"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ],
       "notes": "Distribution composition does not transfer authority over Anthesis or component contracts."
     },
     {
@@ -204,8 +242,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["Envuscator engine and build-time obfuscation implementation"],
-      "requiredFiles": ["README.md"]
+      "authority": [
+        "Envuscator engine and build-time obfuscation implementation"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ]
     },
     {
       "repository": "hackelia-micrantha/envuscator-community",
@@ -215,8 +257,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["public Envuscator documentation and community distribution"],
-      "requiredFiles": ["README.md"],
+      "authority": [
+        "public Envuscator documentation and community distribution"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ],
       "notes": "Licensed provider adapters and private engine behavior remain authoritative in their owning repositories."
     },
     {
@@ -227,8 +273,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["Achillea platform and SDK implementation for guided outdoor experiences"],
-      "requiredFiles": ["README.md"]
+      "authority": [
+        "Achillea platform and SDK implementation for guided outdoor experiences"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ]
     },
     {
       "repository": "hackelia-micrantha/achillea-community",
@@ -238,8 +288,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["public Achillea documentation and community distribution"],
-      "requiredFiles": ["README.md"]
+      "authority": [
+        "public Achillea documentation and community distribution"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ]
     },
     {
       "repository": "hackelia-micrantha/bluebell",
@@ -249,8 +303,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["public Kotlin Multiplatform SDK and application foundation"],
-      "requiredFiles": ["README.md"],
+      "authority": [
+        "public Kotlin Multiplatform SDK and application foundation"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ],
       "sourceExposure": "public",
       "repositoryRole": "canonical",
       "implementationAuthority": "hackelia-micrantha/bluebell",
@@ -265,8 +323,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["React Native on-device multimodal inference and governed UI foundation"],
-      "requiredFiles": ["README.md"],
+      "authority": [
+        "React Native on-device multimodal inference and governed UI foundation"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ],
       "sourceExposure": "public",
       "repositoryRole": "canonical",
       "implementationAuthority": "hackelia-micrantha/amaryllis",
@@ -281,8 +343,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["attestation and secure configuration implementation experiments"],
-      "requiredFiles": ["README.md"]
+      "authority": [
+        "attestation and secure configuration implementation experiments"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ]
     },
     {
       "repository": "hackelia-micrantha/digitalis-community",
@@ -292,8 +358,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["public Digitalis documentation and demonstrations"],
-      "requiredFiles": ["README.md"]
+      "authority": [
+        "public Digitalis documentation and demonstrations"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ]
     },
     {
       "repository": "hackelia-micrantha/myosotis",
@@ -303,8 +373,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["governed field-operated AI protocol and SDK experiments"],
-      "requiredFiles": ["README.md"]
+      "authority": [
+        "governed field-operated AI protocol and SDK experiments"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ]
     },
     {
       "repository": "hackelia-micrantha/myosotis-community",
@@ -314,8 +388,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["public Myosotis documentation and demonstrations"],
-      "requiredFiles": ["README.md"]
+      "authority": [
+        "public Myosotis documentation and demonstrations"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ]
     },
     {
       "repository": "hackelia-micrantha/morifolium",
@@ -325,8 +403,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["mobile platform engineering golden path and reference distribution"],
-      "requiredFiles": ["README.md"],
+      "authority": [
+        "mobile platform engineering golden path and reference distribution"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ],
       "sourceExposure": "public",
       "repositoryRole": "canonical",
       "implementationAuthority": "hackelia-micrantha/morifolium",
@@ -345,7 +427,9 @@
         "repository topology and reconciliation tooling",
         "managed repository artifacts and posture evidence"
       ],
-      "requiredFiles": ["README.md"],
+      "requiredFiles": [
+        "README.md"
+      ],
       "sourceExposure": "public",
       "repositoryRole": "canonical",
       "implementationAuthority": "hackelia-micrantha/repora",
@@ -360,8 +444,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["canonical reusable Calathea core, product contracts, architecture, and executable"],
-      "requiredFiles": ["README.md"],
+      "authority": [
+        "canonical reusable Calathea core, product contracts, architecture, and executable"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ],
       "sourceExposure": "public",
       "repositoryRole": "canonical",
       "implementationAuthority": "hackelia-micrantha/calathea-community",
@@ -377,8 +465,13 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["private Calathea composition, portfolio data, dogfood operations, and non-public extensions"],
-      "requiredFiles": ["README.md", "public-core.lock.toml"],
+      "authority": [
+        "private Calathea composition, portfolio data, dogfood operations, and non-public extensions"
+      ],
+      "requiredFiles": [
+        "README.md",
+        "public-core.lock.toml"
+      ],
       "sourceExposure": "private",
       "repositoryRole": "internal",
       "implementationAuthority": "hackelia-micrantha/calathea",
@@ -398,7 +491,10 @@
         "MUSICPKG private engineering implementation and publication staging",
         "unpublished architecture, security research, adversarial testing, and operational tooling"
       ],
-      "requiredFiles": ["README.md", "STATUS.md"],
+      "requiredFiles": [
+        "README.md",
+        "STATUS.md"
+      ],
       "sourceExposure": "private",
       "repositoryRole": "canonical",
       "implementationAuthority": "hackelia-micrantha/musicpkg",
@@ -442,8 +538,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["deterministic model-surface registry, constraint evaluation, ranking, and route decisions"],
-      "requiredFiles": ["README.md"],
+      "authority": [
+        "deterministic model-surface registry, constraint evaluation, ranking, and route decisions"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ],
       "notes": "Does not proxy model requests or own runtime provider execution."
     },
     {
@@ -454,8 +554,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["public Modolia documentation and community distribution"],
-      "requiredFiles": ["README.md"]
+      "authority": [
+        "public Modolia documentation and community distribution"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ]
     },
     {
       "repository": "hackelia-micrantha/testule",
@@ -465,8 +569,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["canonical Testule implementation, portable testability contracts, native-tool adapters, gap analysis, and normalized test evidence"],
-      "requiredFiles": ["README.md"],
+      "authority": [
+        "canonical Testule implementation, portable testability contracts, native-tool adapters, gap analysis, and normalized test evidence"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ],
       "sourceExposure": "private",
       "repositoryRole": "canonical",
       "implementationAuthority": "hackelia-micrantha/testule",
@@ -483,8 +591,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["public Testule specifications, compatibility and release policy, operator documentation, and community distribution"],
-      "requiredFiles": ["README.md"],
+      "authority": [
+        "public Testule specifications, compatibility and release policy, operator documentation, and community distribution"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ],
       "sourceExposure": "none",
       "repositoryRole": "projection",
       "implementationAuthority": "hackelia-micrantha/testule",
@@ -501,8 +613,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["persistent mutable-workspace checkpoint identity, lineage, save, restore, fork, inspect, and diff semantics"],
-      "requiredFiles": ["README.md"]
+      "authority": [
+        "persistent mutable-workspace checkpoint identity, lineage, save, restore, fork, inspect, and diff semantics"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ]
     },
     {
       "repository": "hackelia-micrantha/sandcastle-community",
@@ -512,8 +628,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["public Sandcastle documentation, schemas, examples, and interoperability guidance"],
-      "requiredFiles": ["README.md"]
+      "authority": [
+        "public Sandcastle documentation, schemas, examples, and interoperability guidance"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ]
     },
     {
       "repository": "hackelia-micrantha/phyllotaxis",
@@ -523,9 +643,46 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["shared themeable Micrantha design-system and UI substrate contracts"],
-      "requiredFiles": ["docs/architecture/venation-layout-contract.md"],
-      "notes": "Current implementation work is contract-first; Venation layout/primitives are the first stabilized layer."
+      "authority": [
+        "private Phyllotaxis implementation, validation, build, and release authority"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ],
+      "sourceExposure": "private",
+      "repositoryRole": "canonical",
+      "implementationAuthority": "hackelia-micrantha/phyllotaxis",
+      "releaseAuthority": "hackelia-micrantha/phyllotaxis",
+      "distributionMode": "internal",
+      "publicDistributionRepository": "hackelia-micrantha/phyllotaxis-community",
+      "notes": "Published requirements, architecture, contracts, interfaces, and CLI design are authoritative in phyllotaxis-community; this repository owns private implementation and release evidence."
+    },
+    {
+      "repository": "hackelia-micrantha/phyllotaxis-community",
+      "classification": "community-surface",
+      "maturity": "experimental",
+      "visibility": "public",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": [
+        "published Phyllotaxis requirements, architecture, contracts, interfaces, and design decisions",
+        "public phyllo CLI UX, machine-output, configuration, and manual-page contracts"
+      ],
+      "requiredFiles": [
+        "README.md",
+        "UPSTREAM.md",
+        "docs/README.md",
+        "docs/contracts/README.md",
+        "docs/requirements/README.md"
+      ],
+      "sourceExposure": "none",
+      "repositoryRole": "projection",
+      "implementationAuthority": "hackelia-micrantha/phyllotaxis",
+      "releaseAuthority": "hackelia-micrantha/phyllotaxis",
+      "distributionMode": "none",
+      "canonicalRepository": "hackelia-micrantha/phyllotaxis",
+      "notes": "Authoritative for published design semantics; private phyllotaxis remains implementation, build, and release authority."
     },
     {
       "repository": "hackelia-micrantha/fortunes",
@@ -535,8 +692,12 @@
       "defaultBranch": "devel",
       "archived": false,
       "monitor": true,
-      "authority": ["Fortunes application composition"],
-      "requiredFiles": ["README.md"],
+      "authority": [
+        "Fortunes application composition"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ],
       "notes": "The non-main default branch is recorded explicitly and should be treated as a migration candidate, not silently corrected by automation."
     },
     {
@@ -547,8 +708,12 @@
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
-      "authority": ["image obfuscation and privacy service experiments"],
-      "requiredFiles": ["README.md"]
+      "authority": [
+        "image obfuscation and privacy service experiments"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ]
     }
   ]
 }
