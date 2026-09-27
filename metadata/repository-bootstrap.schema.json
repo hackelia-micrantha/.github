@@ -326,5 +326,11 @@
       "type": "string",
       "minLength": 1
     }
+  },
+  "x-micrantha-semantic-validation": {
+    "uniqueDecisionKeys": true,
+    "verifyProvenanceAuthorityExternally": true,
+    "revalidateAuthorityInputsBeforeApply": true,
+    "description": "These constraints cannot be fully expressed by JSON Schema alone and are mandatory before a manifest or reviewed plan is actionable."
   }
 }
