@@ -674,7 +674,11 @@
         "UPSTREAM.md",
         "docs/README.md",
         "docs/contracts/README.md",
-        "docs/requirements/README.md"
+        "docs/requirements/README.md",
+        "contracts/public-interface-v1.json",
+        "contracts/public-interface.schema.json",
+        "contracts/chroma-inspection-v1.json",
+        "contracts/chroma-inspection.schema.json"
       ],
       "sourceExposure": "none",
       "repositoryRole": "projection",
@@ -682,7 +686,7 @@
       "releaseAuthority": "hackelia-micrantha/phyllotaxis",
       "distributionMode": "none",
       "canonicalRepository": "hackelia-micrantha/phyllotaxis",
-      "notes": "Authoritative for published design semantics; private phyllotaxis remains implementation, build, and release authority."
+      "notes": "Authoritative for published design semantics and machine-readable public contract projections; private phyllotaxis remains implementation, build, and release authority."
     },
     {
       "repository": "hackelia-micrantha/fortunes",
