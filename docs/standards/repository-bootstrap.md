@@ -135,9 +135,12 @@ A value is authorized and records provenance.
 
 A resolved decision requires:
 
-- a concrete non-null value;
+- a concrete value that satisfies the semantic contract for its decision key;
 - an authority class;
+- an attributable subject identifying the human or policy identity making the provenance claim;
 - a durable reference identifying the human decision or applicable policy.
+
+Schema-valid provenance is an **untrusted claim**, not proof of authorization. Before a resolved or not-applicable decision becomes actionable, the consuming planner must verify that the referenced subject actually holds authority for that decision under current organization/project governance and that the referenced disposition/policy is still applicable.
 
 Accepted authority classes in v1 are:
 
@@ -146,6 +149,8 @@ Accepted authority classes in v1 are:
 - `project-policy`.
 
 Repository observations are deliberately **not** an authority class.
+
+For v1, only decision keys whose resolved-value semantics are defined by the v1 schema may enter the `resolved` state. Extension keys may be carried as `unresolved` or `not-applicable`, but resolving an extension key requires a reviewed schema/contract revision that defines its value semantics. This prevents arbitrary non-null JSON values from becoming executable decisions.
 
 ### `unresolved`
 
@@ -222,6 +227,15 @@ The v1 machine-readable contract is:
 
 A manifest is a list of keyed decisions rather than a structure in which omitted properties acquire defaults.
 
+JSON Schema validation is necessary but not sufficient for an actionable manifest. Every consumer must also perform the v1 semantic checks defined here before planning or applying effects:
+
+- decision keys are unique across the manifest;
+- every resolved value satisfies the semantic contract for its key;
+- every provenance claim is attributable and its subject/reference is independently verified against current governing authority;
+- every policy source claimed as applicable is still current and applicable to the specific decision.
+
+A manifest that fails any semantic check is non-actionable and must fail closed.
+
 Example decision:
 
 ```json
@@ -241,6 +255,7 @@ A resolved decision carries authority:
   "value": "private",
   "provenance": {
     "authority": "human",
+    "subject": "repository-owner",
     "reference": "approved bootstrap request"
   }
 }
@@ -298,12 +313,13 @@ It may record repository facts and evidence, but it must keep those observations
 
 Planning must:
 
-- be deterministic for the same manifest, policy inputs, and observed state;
+- be deterministic for the same manifest, policy inputs, approvals/authority evidence, target identity, and observed state;
 - list actions that are ready;
 - list actions blocked by unresolved or missing decision keys;
 - identify the decision dependencies of each action;
 - avoid rendering unresolved values into output files;
-- produce machine-readable output suitable for review and composition.
+- produce machine-readable output suitable for review and composition;
+- bind the plan to immutable identities/digests for the manifest, applicable policy inputs, approval/authority evidence, target repository/provider identity, and observed state used to produce it.
 
 Unresolved decisions block only the actions that depend on them. They do not prevent an unrelated action whose complete authority and inputs are already established.
 
@@ -314,6 +330,9 @@ Apply must consume an exact reviewed plan rather than re-deciding values during 
 Apply must:
 
 - fail stale when relevant observed state changed;
+- revalidate the exact manifest identity/digest used by the reviewed plan;
+- revalidate every bound policy source, approval/authority record, and target repository/provider identity before any effect;
+- fail closed when any authority-bearing input changed, became unavailable, is no longer applicable, or cannot be verified;
 - never ask a renderer, framework, provider, or API to fill missing semantic values;
 - preserve partial-result honesty;
 - emit durable result/evidence appropriate to the effect;
@@ -356,7 +375,7 @@ Assumption-free files may be applied automatically only when their applicability
 
 ## Provenance and later migration
 
-Decision provenance is retained so later tooling can distinguish:
+Decision provenance is retained as attributable evidence so later tooling can distinguish:
 
 - a human/project-specific choice that must not be overwritten casually;
 - an organization-policy decision that may become a migration candidate when that policy changes.
@@ -371,7 +390,7 @@ Policy evolution must not reinterpret an old human decision as inherited merely 
 - **Anthesis** may evaluate approval/policy/evidence where an enforced governance runtime is used.
 - Repository/provider provisioning requires its own reviewed capability and authority.
 
-A consuming tool must not become a governance source merely because it implements this contract.
+A consuming tool must not become a governance source merely because it implements this contract. A provenance object is never self-authorizing: the consumer must verify the claimed subject/reference against the applicable governance authority before treating the decision as executable.
 
 ## Relationship to existing standards
 
