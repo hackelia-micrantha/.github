@@ -79,7 +79,7 @@ def validate_manifest(data: Any) -> list[str]:
                 errors.append(f"{prefix} resolved decision requires value")
             else:
                 value = decision.get("value")
-                if key == "repository.visibility" and value not in {"public", "private", "internal"}:
+                if key == "repository.visibility" and (not isinstance(value, str) or value not in {"public", "private", "internal"}):
                     errors.append(f"{prefix} repository.visibility has invalid value")
                 elif key == "repository.defaultBranch":
                     if not isinstance(value, str) or not value.strip() or any(ch.isspace() for ch in value):
@@ -256,9 +256,13 @@ class RepositoryBootstrapTests(unittest.TestCase):
             self.schema["properties"]["decisions"]["description"].lower(),
         )
         self.assertIn(
-            "authorization",
+            "authorized",
             self.schema["$defs"]["provenance"]["description"].lower(),
         )
+        semantic = self.schema["x-micrantha-semantic-validation"]
+        self.assertTrue(semantic["uniqueDecisionKeys"])
+        self.assertTrue(semantic["verifyProvenanceAuthorityExternally"])
+        self.assertTrue(semantic["revalidateAuthorityInputsBeforeApply"])
 
 
 if __name__ == "__main__":
