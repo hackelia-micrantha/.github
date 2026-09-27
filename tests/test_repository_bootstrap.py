@@ -12,6 +12,33 @@ EXAMPLE = ROOT / "docs" / "standards" / "templates" / "repository-bootstrap.json
 
 AUTHORITIES = {"human", "organization-policy", "project-policy"}
 STATES = {"resolved", "unresolved", "not-applicable"}
+BOOLEAN_KEYS = {
+    "interface.cli",
+    "interface.service",
+    "interface.library",
+    "interface.website",
+    "interface.mobile",
+}
+STRING_KEYS = {
+    "repository.name",
+    "repository.purpose",
+    "project.identity",
+    "repository.classification",
+    "repository.maturity",
+    "repository.license",
+    "repository.sourceExposure",
+    "repository.role",
+    "repository.distributionMode",
+    "repository.topology",
+    "implementation.language",
+    "implementation.runtime",
+    "implementation.buildSystem",
+    "implementation.packageManager",
+    "delivery.ciProvider",
+    "delivery.releaseModel",
+    "delivery.distribution",
+    "security.profile",
+}
 
 
 def validate_manifest(data: Any) -> list[str]:
@@ -49,13 +76,29 @@ def validate_manifest(data: Any) -> list[str]:
 
         if state == "resolved":
             if "value" not in decision or decision.get("value") is None:
-                errors.append(f"{prefix} resolved decision requires non-null value")
+                errors.append(f"{prefix} resolved decision requires value")
+            else:
+                value = decision.get("value")
+                if key == "repository.visibility" and value not in {"public", "private", "internal"}:
+                    errors.append(f"{prefix} repository.visibility has invalid value")
+                elif key == "repository.defaultBranch":
+                    if not isinstance(value, str) or not value.strip() or any(ch.isspace() for ch in value):
+                        errors.append(f"{prefix} repository.defaultBranch requires non-empty token")
+                elif key in BOOLEAN_KEYS and not isinstance(value, bool):
+                    errors.append(f"{prefix} {key} requires boolean value")
+                elif key in STRING_KEYS and (not isinstance(value, str) or not value.strip()):
+                    errors.append(f"{prefix} {key} requires non-empty string value")
+                elif key not in BOOLEAN_KEYS | STRING_KEYS | {"repository.visibility", "repository.defaultBranch"}:
+                    errors.append(f"{prefix} resolved extension key lacks v1 value semantics")
             provenance = decision.get("provenance")
             if not isinstance(provenance, dict):
                 errors.append(f"{prefix} resolved decision requires provenance")
             else:
                 if provenance.get("authority") not in AUTHORITIES:
                     errors.append(f"{prefix} has invalid provenance authority")
+                subject = provenance.get("subject")
+                if not isinstance(subject, str) or not subject.strip():
+                    errors.append(f"{prefix} provenance requires subject")
                 reference = provenance.get("reference")
                 if not isinstance(reference, str) or not reference.strip():
                     errors.append(f"{prefix} provenance requires reference")
@@ -79,8 +122,12 @@ def validate_manifest(data: Any) -> list[str]:
             provenance = decision.get("provenance")
             if not isinstance(provenance, dict):
                 errors.append(f"{prefix} not-applicable decision requires provenance")
-            elif provenance.get("authority") not in AUTHORITIES:
-                errors.append(f"{prefix} has invalid provenance authority")
+            else:
+                if provenance.get("authority") not in AUTHORITIES:
+                    errors.append(f"{prefix} has invalid provenance authority")
+                subject = provenance.get("subject")
+                if not isinstance(subject, str) or not subject.strip():
+                    errors.append(f"{prefix} provenance requires subject")
 
     return errors
 
@@ -170,6 +217,48 @@ class RepositoryBootstrapTests(unittest.TestCase):
         self.assertEqual("resolved", definitions["resolvedDecision"]["properties"]["state"]["const"])
         self.assertEqual("unresolved", definitions["unresolvedDecision"]["properties"]["state"]["const"])
         self.assertEqual("not-applicable", definitions["notApplicableDecision"]["properties"]["state"]["const"])
+
+    def test_semantic_validation_rejects_duplicate_decision_keys(self) -> None:
+        manifest = json.loads(json.dumps(self.example))
+        manifest["decisions"].append(
+            {"key": "repository.visibility", "state": "unresolved"}
+        )
+        errors = validate_manifest(manifest)
+        self.assertTrue(any("duplicates repository.visibility" in error for error in errors))
+
+    def test_semantic_validation_rejects_unverifiable_provenance_shape(self) -> None:
+        manifest = json.loads(json.dumps(self.example))
+        manifest["decisions"][0]["provenance"].pop("subject", None)
+        errors = validate_manifest(manifest)
+        self.assertTrue(any("provenance requires subject" in error for error in errors))
+
+    def test_semantic_validation_rejects_invalid_known_resolved_values(self) -> None:
+        manifest = json.loads(json.dumps(self.example))
+        visibility = next(d for d in manifest["decisions"] if d["key"] == "repository.visibility")
+        visibility.update(
+            {
+                "state": "resolved",
+                "value": {},
+                "provenance": {
+                    "authority": "human",
+                    "subject": "repository-owner",
+                    "reference": "test",
+                },
+            }
+        )
+        visibility.pop("question", None)
+        errors = validate_manifest(manifest)
+        self.assertTrue(any("repository.visibility has invalid value" in error for error in errors))
+
+    def test_schema_marks_semantic_validation_as_required(self) -> None:
+        self.assertIn(
+            "semantic validation",
+            self.schema["properties"]["decisions"]["description"].lower(),
+        )
+        self.assertIn(
+            "authorization",
+            self.schema["$defs"]["provenance"]["description"].lower(),
+        )
 
 
 if __name__ == "__main__":
