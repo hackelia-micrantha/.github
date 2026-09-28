@@ -718,6 +718,28 @@
       "requiredFiles": [
         "README.md"
       ]
+    },
+    {
+      "repository": "hackelia-micrantha/repository-template",
+      "classification": "organization-meta",
+      "maturity": "active",
+      "visibility": "public",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": [
+        "assumption-free repository creation template transport"
+      ],
+      "requiredFiles": [
+        "README.md",
+        ".repora/bootstrap.proposed.json"
+      ],
+      "sourceExposure": "public",
+      "repositoryRole": "meta",
+      "implementationAuthority": "hackelia-micrantha/.github",
+      "releaseAuthority": "hackelia-micrantha/.github",
+      "distributionMode": "source",
+      "notes": "Optional GitHub template transport only. Does not define organization policy or project architecture; authoritative bootstrap semantics remain in hackelia-micrantha/.github."
     }
   ]
 }
