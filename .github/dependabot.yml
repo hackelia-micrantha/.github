@@ -18,6 +18,11 @@ updates:
     labels:
       - "type:delivery"
       - "area:ci"
+    groups:
+      github-actions:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
     # Review workflow and action changes carefully — see automation/SECURITY.md
 
   # Node / npm
@@ -29,7 +34,15 @@ updates:
       prefix: "deps"
     labels:
       - "type:delivery"
-    # Privileged or build-time packages should be reviewed manually
+    groups:
+      npm-minor-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+    # Major, privileged, or build-time packages should be reviewed separately
 
   # Python / pip
   - package-ecosystem: "pip"
@@ -40,6 +53,14 @@ updates:
       prefix: "deps"
     labels:
       - "type:delivery"
+    groups:
+      pip-minor-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   # Rust / Cargo
   - package-ecosystem: "cargo"
@@ -50,6 +71,14 @@ updates:
       prefix: "deps"
     labels:
       - "type:delivery"
+    groups:
+      cargo-minor-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
 
   # Docker
   - package-ecosystem: "docker"
@@ -60,3 +89,11 @@ updates:
       prefix: "deps"
     labels:
       - "type:delivery"
+    groups:
+      docker-minor-patch:
+        applies-to: "version-updates"
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
