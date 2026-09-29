@@ -20,6 +20,7 @@ updates:
       - "area:ci"
     groups:
       github-actions:
+        applies-to: "version-updates"
         patterns:
           - "*"
     # Review workflow and action changes carefully — see automation/SECURITY.md
@@ -35,6 +36,7 @@ updates:
       - "type:delivery"
     groups:
       npm-minor-patch:
+        applies-to: "version-updates"
         patterns:
           - "*"
         update-types:
@@ -53,6 +55,7 @@ updates:
       - "type:delivery"
     groups:
       pip-minor-patch:
+        applies-to: "version-updates"
         patterns:
           - "*"
         update-types:
@@ -70,6 +73,7 @@ updates:
       - "type:delivery"
     groups:
       cargo-minor-patch:
+        applies-to: "version-updates"
         patterns:
           - "*"
         update-types:
@@ -87,6 +91,7 @@ updates:
       - "type:delivery"
     groups:
       docker-minor-patch:
+        applies-to: "version-updates"
         patterns:
           - "*"
         update-types:
