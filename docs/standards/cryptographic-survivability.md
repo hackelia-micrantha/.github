@@ -12,7 +12,7 @@ NIST finalized the first three post-quantum cryptography standards in August 202
 - FIPS 204 — ML-DSA for digital signatures;
 - FIPS 205 — SLH-DSA for digital signatures.
 
-NIST says organizations should begin migration now and currently plans to deprecate and ultimately remove quantum-vulnerable algorithms from its standards by 2035, with higher-risk systems moving earlier.
+NIST says organizations should begin migration now. Its current PQC project overview uses the transition timeline in draft NIST IR 8547 and states that NIST will deprecate and ultimately remove quantum-vulnerable algorithms from its standards by 2035, with higher-risk systems moving earlier. IR 8547 itself remains a draft transition document as of 2026.
 
 The 2035 date is a migration/deprecation horizon. It is **not** a prediction of when a cryptographically relevant quantum computer will exist.
 
