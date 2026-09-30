@@ -78,6 +78,8 @@ Use the smallest artifact that resolves the risk: issue analysis, QART slice, th
 
 ## Agentic and AI-assisted systems
 
+Systems that give agents broad organizational context, durable memory, connectors, or egress must also follow the [AI Agent Insider-Threat and Cumulative Exposure Standard](agent-insider-threat.md). Per-call authorization is insufficient where individually legitimate reads and effects can compose into prohibited disclosure.
+
 Agentic workflows require explicit control boundaries:
 
 1. **Actor** — who or what requested the action.
