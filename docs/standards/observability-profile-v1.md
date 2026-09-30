@@ -177,7 +177,7 @@ The common semantic modes are:
 
 A repository MAY expose different names or additional modes.
 
-The common standard does not require remote export and does not require a collector to be running.
+The common standard does not require remote export and does not require a collector to be running. Any optional remote export MUST have a documented disable/opt-out control at the appropriate operator, deployment, or end-user scope.
 
 Optional telemetry exporter failure does not change the source operation's result.
 
