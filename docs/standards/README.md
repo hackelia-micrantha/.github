@@ -8,6 +8,8 @@ These standards define organization-wide defaults for engineering evidence, secu
 - [CI/CD](ci-cd.md)
 - [Branching and integration](branching-and-integration.md)
 - [Security engineering](security.md)
+  - [Cryptographic survivability](cryptographic-survivability.md)
+  - [AI agent insider threat and cumulative exposure](agent-insider-threat.md)
 - [Observability](observability.md) — standards-first telemetry, privacy/measurement, opt-out, composability, and offline compatibility
 - [Observability profile v1](observability-profile-v1.md) — minimal cross-project interoperability profile
 - [Source exposure and distribution](source-exposure-and-distribution.md)
