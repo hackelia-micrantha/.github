@@ -9,7 +9,7 @@ The goal is interoperable, privacy-conscious observability without creating a Mi
 1. **Standards first.** Prefer OpenTelemetry, OTLP, W3C Trace Context, CloudEvents, and existing semantic conventions over Micrantha-specific protocols or attribute vocabularies.
 2. **Thin customization.** A `micrantha.*` convention or shared adapter is justified only when an applicable upstream convention does not express the required meaning or when a cross-project policy boundary must be enforced consistently.
 3. **Observation is not authority.** Telemetry, analytics, events, predictions, dashboards, and alerts describe behavior; they do not themselves authorize effects or become canonical domain state.
-4. **Optional observability must remain optional.** A project must be able to operate correctly with optional telemetry disabled, without a remote collector, and with a no-op/local-only sink unless observability is itself part of the declared product contract.
+4. **Optional observability must remain optional.** A project must be able to operate correctly with optional telemetry disabled, without a remote collector, and with a no-op/local-only sink unless observability is itself part of the declared product contract. Optional remote export/measurement must have a documented disable/opt-out control at the appropriate operator, deployment, or end-user scope.
 5. **Required governance evidence is separate.** Disabling optional telemetry must not silently suppress evidence required to authorize, verify, or audit a governed operation.
 6. **Collect to answer questions.** Usage/product measurement starts from a declared question or decision need and collects the minimum data, detail, frequency, and retention required to answer it.
 7. **Preserve composability.** Instrumentation must not corrupt CLI stdout/stderr contracts, machine-readable output, deterministic behavior, or stable transport/domain semantics.
@@ -114,7 +114,7 @@ A material measurement SHOULD be backed by a small `MeasurementPlan` or equivale
 - retention;
 - export/consent policy.
 
-Funnels, flows, cohorts, retention, segmentation, and similar event-oriented analysis concepts are encouraged when they answer the declared question. These concepts do not imply a requirement to build or operate a custom analytics engine.
+Funnels, flows, cohorts, retention, segmentation, and similar event-oriented analysis concepts are encouraged when they answer the declared question. This analytical vocabulary is informed by event-oriented product analytics systems such as Mixpanel, but it does not imply a Mixpanel dependency or a requirement to build or operate a custom analytics engine.
 
 Session replay, advertising attribution, fingerprinting, and unrestricted clickstream capture are not organization defaults and require an explicit product/privacy decision.
 
@@ -336,3 +336,19 @@ This standard does not:
 - require remote export;
 - standardize every project event name centrally;
 - require a custom offline telemetry database in v1.
+
+
+## Upstream references and influences
+
+Normative/interoperability references:
+
+- [OpenTelemetry specification](https://opentelemetry.io/docs/specs/otel/)
+- [OpenTelemetry Protocol (OTLP)](https://opentelemetry.io/docs/specs/otlp/)
+- [OpenTelemetry semantic conventions](https://opentelemetry.io/docs/specs/semconv/)
+- [W3C Trace Context](https://www.w3.org/TR/trace-context/)
+- [CloudEvents](https://cloudevents.io/)
+
+Design influences, not required dependencies:
+
+- [Clean Insights](https://www.cleaninsights.org/) for privacy-preserving, question-driven measurement;
+- [Mixpanel product analytics](https://mixpanel.com/platform/product-analytics/) for event-oriented analysis vocabulary such as funnels, flows, cohorts, retention, and segmentation.
