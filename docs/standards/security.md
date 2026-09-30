@@ -54,6 +54,8 @@ Use the smallest artifact that resolves the risk: issue analysis, QART slice, th
 
 ### Secrets and cryptographic material
 
+Long-lived or migration-sensitive cryptography must also follow the [Cryptographic survivability standard](cryptographic-survivability.md), including confidentiality/authenticity horizon, cryptographic inventory, post-quantum migration, zero-access boundaries, backup exposure, and bounded crypto-erasure claims.
+
 - Do not commit secrets, private keys, production tokens, or sensitive credential material.
 - Use scoped secret stores and short-lived credentials where supported.
 - Separate development, CI, release, and production identities.
@@ -77,6 +79,8 @@ Use the smallest artifact that resolves the risk: issue analysis, QART slice, th
 - Avoid running untrusted fork code on privileged or persistent self-hosted infrastructure.
 
 ## Agentic and AI-assisted systems
+
+Systems that give agents broad organizational context, durable memory, connectors, or egress must also follow the [AI Agent Insider-Threat and Cumulative Exposure Standard](agent-insider-threat.md). Per-call authorization is insufficient where individually legitimate reads and effects can compose into prohibited disclosure.
 
 Agentic workflows require explicit control boundaries:
 
