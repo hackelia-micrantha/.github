@@ -8,6 +8,8 @@ These standards define organization-wide defaults for engineering evidence, secu
 - [CI/CD](ci-cd.md)
 - [Branching and integration](branching-and-integration.md)
 - [Security engineering](security.md)
+  - [Cryptographic survivability](cryptographic-survivability.md)
+  - [AI agent insider threat and cumulative exposure](agent-insider-threat.md)
 - [Source exposure and distribution](source-exposure-and-distribution.md)
 - [Repository bootstrap](repository-bootstrap.md) — explicit unresolved/resolved/not-applicable decisions for assumption-free new-repository automation
 - [Thin repository template](repository-template.md) — optional assumption-free GitHub creation transport and reference skeleton
