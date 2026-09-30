@@ -94,6 +94,7 @@ current state -> blocked/escalate
 12. **Execute only authorized effects.** Use expected-head/candidate protection where supported. Do not infer effect authority from prior successful reasoning, green CI, issue ownership, or write access.
 13. **Verify the resulting effect.** Confirm the intended externally observable state rather than treating an API/workflow success response as outcome proof. Preserve enough read-back in durable state to distinguish a completed effect from an interrupted one.
 14. **Close out or escalate precisely.** Report the resulting revision/state, evidence, effects, and remaining non-blocking work; or report the exact blocked transition and the smallest missing decision/capability.
+15. **Run the Compound assessment after a meaningful reviewed/terminal outcome.** Ask whether the system would catch or prevent the material lesson automatically next time. Route reusable findings to the weakest durable owner/control that reliably addresses them (for example test/invariant/tooling, docs/runbook, candidate Invokrum guidance, implementation/API, ADR/RFC, or governance proposal). `No reusable learning` is valid. Do not promote prompt/context guidance, policy, capabilities, defaults, or other trusted persistent state directly from the run; emit or update the appropriate candidate/tracked work and leave promotion to its owning authority.
 
 ## Recovery rules
 
@@ -182,6 +183,7 @@ A pending check is not itself a completion condition while independent useful wo
 
 ## References
 
+- `docs/engineering/chatgpt-supervisor-operating-profile.md` (interactive ChatGPT/Work bootstrap; non-normative relative to the execution contract)
 - `docs/engineering/agent-execution-contract.md`
 - `docs/engineering/ai-assisted-sdlc.md`
 - `docs/prompts/planning/long-running-agent-execution.md`
