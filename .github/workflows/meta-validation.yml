@@ -8,12 +8,14 @@ on:
       - docs/architecture/**
       - docs/automation/**
       - docs/engineering/**
+      - docs/governance/**
       - docs/prompts/**
       - docs/standards/**
       - metadata/**
       - skills/**
       - tests/**
       - tools/label_sync.py
+      - tools/review_bundle.py
       - tools/release_readiness.py
       - tools/repository_health.py
       - tools/source_posture.py
@@ -28,11 +30,13 @@ on:
       - docs/architecture/**
       - docs/automation/**
       - docs/engineering/**
+      - docs/governance/**
       - docs/prompts/**
       - metadata/**
       - skills/**
       - tests/**
       - tools/label_sync.py
+      - tools/review_bundle.py
       - tools/release_readiness.py
       - tools/repository_health.py
       - tools/source_posture.py
