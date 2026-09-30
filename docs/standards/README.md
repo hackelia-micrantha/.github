@@ -8,6 +8,8 @@ These standards define organization-wide defaults for engineering evidence, secu
 - [CI/CD](ci-cd.md)
 - [Branching and integration](branching-and-integration.md)
 - [Security engineering](security.md)
+- [Observability](observability.md) — standards-first telemetry, privacy/measurement, opt-out, composability, and offline compatibility
+- [Observability profile v1](observability-profile-v1.md) — minimal cross-project interoperability profile
 - [Source exposure and distribution](source-exposure-and-distribution.md)
 - [Repository bootstrap](repository-bootstrap.md) — explicit unresolved/resolved/not-applicable decisions for assumption-free new-repository automation
 - [Thin repository template](repository-template.md) — optional assumption-free GitHub creation transport and reference skeleton
