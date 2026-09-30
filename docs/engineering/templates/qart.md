@@ -76,6 +76,16 @@ Do not use numeric scoring unless weights and evidence are defensible.
 
 State the recommended alternative, rationale, confidence, assumptions, and conditions. Do not force a recommendation when material evidence is missing.
 
+## Expected outcomes and review plan
+
+Use this section when the decision has outcomes that can be meaningfully observed. If outcome calibration would be artificial or misleading, record **Not meaningfully measurable** and explain why.
+
+| Hypothesis or expected outcome | Evidence that would support or weaken it | Review date, event, or threshold | Reconsider if |
+| --- | --- | --- | --- |
+| Expected consequence of the selected direction | Observable evidence, not a causal claim by default | Time/event/threshold | Condition that would materially weaken the decision |
+
+Prefer bounded observable consequences over false-precision probabilities. A later outcome occurring after the decision does not by itself prove the decision caused it.
+
 ## Trade-offs
 
 ### Accepted
@@ -119,3 +129,14 @@ Complete after a decision is made.
 - **RFC:** Required / Not required / Link
 - **ADR:** Required / Not required / Link
 - **Follow-up work:**
+
+### Later review
+
+Complete when enough evidence exists; do not rewrite the original decision context.
+
+- **Observed outcome:** What happened, with evidence links where available
+- **Assumptions that held / failed:** Material assumptions only
+- **Expected outcome supported, weakened, or indeterminate:** State why
+- **Causal interpretation:** Do not infer causation from temporal sequence alone
+- **Disposition:** Retain / amend through new decision / supersede / continue observing
+- **Follow-up evidence or decision:** Link or none

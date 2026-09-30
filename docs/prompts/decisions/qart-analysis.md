@@ -56,6 +56,8 @@ For each question include:
 Cover applicable:
 
 - desired outcome and success criteria;
+- expected observable consequences and what evidence would support or weaken them;
+- material assumptions, review windows, thresholds, or events that could change the recommendation;
 - functional and non-functional requirements;
 - invariants and compatibility obligations;
 - users, operators, maintainers, and threat actors;
@@ -89,7 +91,8 @@ For each alternative describe:
 - failure modes;
 - reversibility;
 - effort and dependency implications;
-- evidence supporting or weakening it.
+- evidence supporting or weakening it;
+- expected observable consequences where meaningful, including what would falsify or materially weaken the alternative.
 
 Do not include straw alternatives merely to make the recommendation appear stronger.
 
@@ -111,6 +114,8 @@ Compare alternatives against explicit criteria. Use only criteria material to th
 
 Qualitative comparison is preferred over false-precision scoring. When using ratings, explain the evidence behind them.
 
+For decisions with meaningfully observable outcomes, define how the important decision hypotheses could be reviewed later. Do not require probabilities, metrics, or instrumentation when they would create artificial precision. Distinguish an observed later outcome from evidence that the decision caused that outcome.
+
 ## 4. Recommendation
 
 Recommend one alternative, a staged combination, or explicit deferral.
@@ -122,6 +127,8 @@ The recommendation must state:
 - what evidence supports it;
 - what risks remain;
 - what would invalidate or change the recommendation;
+- expected observable outcomes or an explicit statement that they are not meaningfully measurable;
+- the review date, event, threshold, or other trigger for revisiting material assumptions where applicable;
 - whether the choice is reversible;
 - the smallest next action.
 
@@ -183,15 +190,27 @@ Add prose where a table would hide important nuance.
 
 State the preferred choice, rationale, confidence, invalidation conditions, and smallest next action.
 
-### G. Trade-offs and consequences
+### G. Expected outcomes and review plan
+
+For decisions whose consequences can be meaningfully observed, state:
+
+- the key hypothesis or expected consequence;
+- evidence that would support or weaken it;
+- material assumptions;
+- the review date, event, threshold, or other trigger;
+- what would cause the decision to be retained, amended, or superseded.
+
+If this would create artificial measurement or false precision, state **Not meaningfully measurable** and explain why.
+
+### H. Trade-offs and consequences
 
 List accepted costs, remaining risks, operational obligations, migration effects, and reassessment triggers.
 
-### H. Decision readiness
+### I. Decision readiness
 
 Choose one readiness classification and identify the appropriate next artifact or implementation slice.
 
-### I. Follow-up work
+### J. Follow-up work
 
 Separate:
 

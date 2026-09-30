@@ -56,6 +56,8 @@ Do not merely summarize or praise the artifact. Identify defects that could caus
 - Are credible alternatives, including current state or defer when viable, considered fairly?
 - Are recommendations supported and confidence stated?
 - Are trade-offs, residual risks, reversibility, and revisit triggers clear?
+- For consequential decisions with meaningfully observable outcomes, are expected consequences, material assumptions, and a review date/event/threshold explicit?
+- When outcome evidence already exists, is it separated from causal claims and from the original historical decision basis?
 - Does an ADR record an accepted durable decision rather than an active proposal?
 
 ### 5. Architecture and contracts
