@@ -54,6 +54,8 @@ Use the smallest artifact that resolves the risk: issue analysis, QART slice, th
 
 ### Secrets and cryptographic material
 
+Long-lived or migration-sensitive cryptography must also follow the [Cryptographic survivability standard](cryptographic-survivability.md), including confidentiality/authenticity horizon, cryptographic inventory, post-quantum migration, zero-access boundaries, backup exposure, and bounded crypto-erasure claims.
+
 - Do not commit secrets, private keys, production tokens, or sensitive credential material.
 - Use scoped secret stores and short-lived credentials where supported.
 - Separate development, CI, release, and production identities.
