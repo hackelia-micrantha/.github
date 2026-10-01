@@ -15,6 +15,7 @@ These standards define organization-wide defaults for engineering evidence, secu
 - [Source exposure and distribution](source-exposure-and-distribution.md)
 - [Repository bootstrap](repository-bootstrap.md) — explicit unresolved/resolved/not-applicable decisions for assumption-free new-repository automation
 - [Thin repository template](repository-template.md) — optional assumption-free GitHub creation transport and reference skeleton
+- [Configuration and executable-extension trust](configuration.md) — authority-aware configuration composition, executable provenance/identity, and governed plugin boundaries
 - [CLI interoperability](cli-interoperability.md) — normative process, machine/transport semantics, safety, and manual-page contract
 - [CLI design and UX](cli-design-and-ux.md) — user-facing tables, help, frameworks, extensions, and adoption without duplicating release authority
 - [Tool result trust and observation](tool-result-trust.md)
