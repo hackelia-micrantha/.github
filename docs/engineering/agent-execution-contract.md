@@ -133,6 +133,8 @@ On resumption:
 
 Typical effects requiring reconciliation include branch or file writes, issue/PR creation or updates, merges, releases, deployments, deletions, permission/credential changes, and external communications.
 
+Repository-state reconciliation does **not** imply unconditional branch synchronization. A topic branch becoming behind `main` is an observation, not automatically a stale/conflicted state. Refresh and inspect the intervening `main` changes; merge/rebase/update the branch only when those changes materially interact with the candidate or its dependencies/contracts/build inputs, invalidate candidate-bound evidence or assumptions, create an actual merge conflict, or repository admission policy requires a composed-current-main candidate. Otherwise preserve the existing exact candidate and its valid evidence.
+
 When an uncertain operation is not safely idempotent and its outcome cannot be established from authoritative state, the correct transition is `blocked/escalate`, not blind retry.
 
 A recovered run inherits retry and investigation budget already consumed when that usage can be established. If counters are uncertain, choose a conservative value rather than resetting them to zero.
