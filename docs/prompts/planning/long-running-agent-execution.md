@@ -77,6 +77,8 @@ Recovery must:
 7. invalidate stale candidate-bound evidence or approval when the candidate materially changed;
 8. resume from the first unverified safe transition rather than replaying the previous session blindly.
 
+Do not interpret `recover -> reconcile -> continue` as an unconditional instruction to merge/rebase/update from `main`. If `main` advanced, inspect the intervening changes. Preserve the existing topic-branch candidate when those changes are unrelated to its behavior, contracts, dependencies, generated/build inputs, validation assumptions, and admission policy. Recompose with current `main` only when the newer changes can materially affect the candidate or its evidence, create an actual conflict, or repository policy requires the composed candidate.
+
 Examples of effects that require reconciliation before retry include branch/file writes, issue/PR creation or updates, merges, releases, deployments, deletions, permissions/credentials, and external communications.
 
 If an operation is not safely idempotent and its outcome cannot be determined, stop at that transition and report the ambiguity instead of risking a duplicate or contradictory effect.

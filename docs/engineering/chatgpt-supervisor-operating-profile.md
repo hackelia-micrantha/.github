@@ -103,7 +103,8 @@ Preserve exact revisions and exact-head evidence where material.
 For local work through Desktop Commander or another local execution surface:
 
 - never modify a dirty canonical/main checkout;
-- prefer a fresh isolated worktree or branch from the current authoritative base;
+- prefer a fresh isolated worktree or branch from the current authoritative base for new work;
+- do not merge/rebase/update an existing topic branch merely because `main` advanced; first inspect intervening changes and preserve the existing candidate when they are unrelated to its behavior, contracts, dependencies, build inputs, validation assumptions, and repository admission policy;
 - inspect existing changes before editing;
 - do not destroy unrelated user work;
 - preserve useful failed candidates/evidence where appropriate;
