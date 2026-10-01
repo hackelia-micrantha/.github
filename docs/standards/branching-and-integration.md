@@ -52,9 +52,13 @@ Topic branches should:
 
 - contain a bounded coherent change;
 - remain short-lived where practical;
-- be synchronized with current `main` closely enough to control stale-state and integration risk;
+- inspect drift from current `main` closely enough to control stale-state and integration risk;
 - enter `main` through normal review and validation for non-trivial changes;
 - be deleted after merge when no continuing purpose remains.
+
+Being behind `main` in commit ancestry is **not by itself** a synchronization defect, conflict, or reason to merge/rebase/update a topic branch. Preserve the existing candidate when intervening `main` changes are unrelated to the candidate's touched behavior, contracts, dependencies, generated/build inputs, validation assumptions, or admission policy.
+
+Update the branch from `main` when evidence shows the intervening changes can materially affect the candidate or its verification, when Git reports an actual merge conflict, or when repository policy/merge-queue admission requires validation of a composed candidate against the current base. Prefer diff/compare and dependency/contract evidence over unconditional ancestry synchronization.
 
 Long-running work should normally be decomposed into independently integrable slices. Feature flags, configuration, compatibility shims, or dormant code may be used when they let safe increments reach `main` without exposing incomplete behavior.
 
