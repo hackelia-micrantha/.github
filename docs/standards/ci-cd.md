@@ -36,8 +36,12 @@ CI evidence is revision- and composition-specific:
 - topic-branch checks validate that topic candidate;
 - checks on a temporary integration branch validate the composed integration candidate;
 - component-branch success does not prove an integration branch when composition can change behavior;
-- final admission to `main` must satisfy the repository's required evidence for the exact accepted candidate;
+- final admission to `main` must satisfy the repository's required evidence for the exact accepted candidate/result;
+- a merge operation that synthesizes a different revision does not automatically inherit validation from the pre-merge head;
+- validation may transfer across a transformation only when the [branching and integration standard](branching-and-integration.md) permits an explicit mechanically verifiable validation-equivalence contract for that evidence class;
 - release/deployment evidence remains distinct from merge evidence.
+
+Where exact-revision validation is required and no applicable validation-equivalence contract exists, the exact accepted revision must itself be validated before it can be treated as a golden admitted state. Provider convenience or a green PR-head check does not weaken that requirement.
 
 Where concurrent pull requests can make a previously tested candidate stale, prefer merge-queue or equivalent exact-candidate validation rather than assuming independently green branches compose safely.
 
