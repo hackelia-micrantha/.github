@@ -1,6 +1,6 @@
 # Configuration and executable-extension trust standard
 
-Configuration is data that selects behavior inside an existing authority boundary. It is not a substitute for identity, policy, approval, provenance, or capability authorization.
+Configuration is data that selects behavior and may describe an authority boundary when it comes from the authority that owns that boundary. A configuration value, especially from a lower-trust source, is not by itself identity, policy authority, approval, trusted provenance, or a capability grant.
 
 This standard defines organization-wide defaults for configuration composition and for language-neutral executable extensions discovered through Unix process conventions such as Git-style PATH subcommands.
 
