@@ -109,12 +109,15 @@ For each implementation loop:
 
 1. review the exact candidate against the requested outcome and accepted constraints;
 2. classify findings before changing code;
-3. make the smallest coherent repair;
-4. validate the exact changed candidate;
-5. re-review after validation;
-6. repeat only when new findings, changed evidence, or a materially changed hypothesis justify another cycle.
+3. for intent-to-implementation mismatches, classify the relationship as **missing**, **partial**, **contradicts**, or **unrequested** before diagnosing root cause;
+4. make the smallest coherent repair;
+5. validate the exact changed candidate;
+6. re-review after validation;
+7. repeat only when new findings, changed evidence, or a materially changed hypothesis justify another cycle.
 
-Classify failures as at least one of:
+Keep intent-gap type separate from failure cause, severity, priority, and final completion state. `unrequested` behavior is not automatically a defect; it may require justification, scope correction, compatibility review, or removal.
+
+Classify failures/root causes as at least one of:
 
 - implementation/correctness defect;
 - requirement/design mismatch;
