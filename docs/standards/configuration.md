@@ -206,7 +206,26 @@ A Git-style executable name or PATH entry is a **discovery candidate**, not a tr
 
 Hosts supporting executable extensions MUST define deterministic resolution and collision behavior.
 
-According to risk, they SHOULD provide:
+### Fixed discovery roots and registries
+
+Declaratively installed or governed extensions SHOULD be discovered from an explicit deployment-owned fixed root or registry rather than from ambient user PATH alone.
+
+A fixed root/registry:
+
+- is selected by trusted deployment configuration, not by repository content, ordinary environment variables, or caller-controlled CLI options;
+- has stable ownership and permission expectations appropriate to its trust profile;
+- may contain executables directly or stable references/symlinks to immutable package artifacts such as Nix store paths;
+- SHOULD make the selected logical command, exact artifact identity, install source, and trust profile inspectable;
+- MUST define deterministic duplicate/collision behavior;
+- MUST NOT become authorization merely because it has higher discovery precedence.
+
+Projects MAY define one or more fixed roots for system/deployment-owned and user-owned extensions. Their precedence must be documented. A higher-precedence fixed root may select which candidate is considered, but authorization and capability admission remain separate.
+
+Ordinary PATH discovery MAY remain available for local/unverified extensions and development workflows. PATH-only presence MUST NOT be sufficient admission evidence for privileged or governed effects unless a separate reviewed profile explicitly establishes equivalent trusted ownership and immutable identity.
+
+For governed/trusted execution, prefer resolving from the fixed root/registry to an exact immutable artifact identity, then execute that exact selected object rather than performing a second PATH search after verification.
+
+According to risk, hosts SHOULD provide:
 
 - an inventory of selected, shadowed, duplicate, and rejected candidates;
 - a way to explain the exact selected executable;
@@ -428,6 +447,7 @@ Projects adopting this standard should document:
 
 - configuration classes and authority owners;
 - configuration locations and precedence;
+- fixed extension roots/registries, ownership, and their discovery precedence where used;
 - extension discovery/naming/resolution rules;
 - supported trust profiles;
 - manifest/schema versions;
