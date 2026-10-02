@@ -2,7 +2,7 @@
 
 This document extends the [CLI interoperability standard](cli-interoperability.md) with consistent human-facing presentation, discoverability, language-specific implementation choices, and cross-project adoption. It does not redefine the underlying domain semantics, Unix transport contract, authority model, or release gates.
 
-**Authority map:** [CLI interoperability](cli-interoperability.md) owns stdin/stdout/stderr, format negotiation, machine contracts, exit semantics, safe non-interactive behavior, man-page minimums, and cross-transport equivalence. [Releases](releases.md) owns versioning, exact-artifact release evidence, packaging, SBOM/provenance/signatures, and rollback. [Source exposure and distribution](source-exposure-and-distribution.md) owns private/public implementation and distribution topology. [Security](security.md) owns secrets, execution authority, and supply-chain risk. [Documentation](documentation.md) owns general documentation lifecycle; [testing](testing.md) owns the evidence pyramid. This page specifies CLI-specific UX details and points to those authorities rather than copying them.
+**Authority map:** [CLI interoperability](cli-interoperability.md) owns stdin/stdout/stderr, format negotiation, machine contracts, exit semantics, safe non-interactive behavior, man-page minimums, and cross-transport equivalence. [Configuration and executable-extension trust](configuration.md) owns configuration authority classes, value precedence versus authority ceilings, extension trust profiles, and executable identity/provenance requirements. [Releases](releases.md) owns versioning, exact-artifact release evidence, packaging, SBOM/provenance/signatures, and rollback. [Source exposure and distribution](source-exposure-and-distribution.md) owns private/public implementation and distribution topology. [Security](security.md) owns secrets, execution authority, and supply-chain risk. [Documentation](documentation.md) owns general documentation lifecycle; [testing](testing.md) owns the evidence pyramid. This page specifies CLI-specific UX details and points to those authorities rather than copying them.
 
 ## Applicability and compatibility
 
@@ -29,7 +29,7 @@ Every supported command MUST offer discoverable help describing synopsis, flags,
 
 Prompts require a TTY and an explicit interactive mode. `--yes` and `--non-interactive` MUST NOT bypass authorization, policy, identity checks, or target-bound approvals. A `--dry-run` MUST NOT commit the proposed mutation; document any reads, discovery, or other observable effects it can still perform. Display a specific target and effect before confirming irreversible operations.
 
-Configuration precedence MUST be deterministic and documented; refer to [CLI interoperability](cli-interoperability.md#configuration-precedence). A `config explain` or `doctor` command MAY display effective *nonsecret* configuration provenance and bounded diagnostics. Diagnostic output MUST apply the [security standard](security.md).
+Configuration precedence MUST be deterministic and documented; refer to [CLI interoperability](cli-interoperability.md#configuration-precedence) and the [configuration standard](configuration.md). Ordinary CLI/env/repository precedence never widens an authority ceiling. A `config explain` or `doctor` command MAY display effective *nonsecret* configuration provenance and bounded diagnostics. Diagnostic output MUST apply the [security standard](security.md).
 
 Use stable project-owned error identifiers and documented exit meanings rather than imposing a new universal integer map on existing commands. Preserve signal and broken-pipe conventions. Subcommands that can partially mutate state must expose the actual completed/unknown/failed state and a safe reconciliation path; a process exit code is necessary but insufficient evidence of a completed effect.
 
@@ -60,7 +60,13 @@ Prefer project-owned small adapters for repeated output/help patterns. Extract a
 
 Independent Micrantha tools remain independently runnable. A parent command MAY orchestrate another executable through an explicitly documented integration boundary; it must preserve the delegated program's cancellation, exit, identity, and output semantics. Do not parse another tool's human table or construct shell command strings from untrusted input. Use bounded argument arrays and document the forwarded-argument delimiter where supported.
 
-Plugin discovery is **not** permission to execute. Any future extension manifest must declare command namespace, protocol/contract version, executable identity and provenance, input/output schemas, and required capabilities. The invoking host verifies compatibility and applies the owning authorization policy without inheriting ambient parent credentials. Registered extensions cannot silently shadow an existing command or elevate authority. Governed execution follows [security](security.md) and [tool-result trust](tool-result-trust.md).
+Plugin discovery is **not** permission to execute. Apply the [configuration and executable-extension trust standard](configuration.md) for supported extension manifests, deterministic resolution, trust profiles, artifact provenance, Keylix execution-principal binding, environment/FD hygiene, and governed Capability Gateway effects.
+
+An extension manifest declares namespace, protocol/schema compatibility, exact executable/artifact identity, provenance claims, configuration namespace, and requested capabilities; it grants none of them. The invoking host verifies the selected profile and applies the owning authorization policy without inheriting ambient parent credentials. Registered/discovered extensions cannot silently shadow a protected command or elevate authority.
+
+Prefer a Unix process boundary as the language-neutral default where it fits the architecture. Rust, Go, Python, TypeScript, or another language may implement an extension without changing the host trust model. WASM/component-model isolation is an optional stronger profile, not a universal plugin ABI.
+
+For governed Micrantha effects, Sigstore may establish required artifact/publisher provenance and Keylix may establish the effective sender-constrained execution principal, but authorization remains separate. Consequential operations re-enter the owning Capability Gateway/Anthesis/provider path. A Capability Gateway remains an effect boundary rather than a dynamic plugin loader unless its own architecture explicitly defines otherwise.
 
 ## Help, man pages, completions, and examples
 

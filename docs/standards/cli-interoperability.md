@@ -80,13 +80,17 @@ For path-producing or path-consuming commands:
 
 ## Configuration precedence
 
-Where configuration exists, document precedence explicitly. Prefer:
+Apply the [configuration and executable-extension trust standard](configuration.md).
+
+For ordinary values that are eligible to decide the same thing, prefer:
 
 ```text
 CLI > environment > repository/user config > defaults
 ```
 
-A repository MAY use a different model when required by the domain, but the behavior must be deterministic and documented.
+A repository MAY use a different deterministic model when required by the domain.
+
+This ordering is **value precedence, not authority precedence**. CLI flags, environment variables, repository/user files, defaults, piped data, or discovered extensions MUST NOT override a higher-authority trust, identity, credential, capability, policy, or sandbox ceiling merely because they have higher ordinary value precedence.
 
 ## Canonical semantic contracts across transports
 
