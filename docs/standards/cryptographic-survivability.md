@@ -127,6 +127,87 @@ Where cryptography is material:
 
 Do not design custom KEMs, signatures, hybrid combiners, ZK protocols, or cryptographic formats merely to claim agility. Prefer reviewed standards and protocol-specific constructions.
 
+### Application-level agility contract
+
+For application-facing cryptographic design, assess agility as a set of separate concerns rather than one maturity score:
+
+- operation coupling — whether callers must name algorithms or algorithm-specific parameters for ordinary use;
+- key-creation coupling — whether creation permanently binds application logic to one algorithm/profile;
+- provider coupling — whether algorithm semantics are inseparable from one library, KMS, HSM, device, or execution backend;
+- decoupling mechanism — where algorithm/provider choices are configured and versioned;
+- selection authority — which trusted principal or policy may choose or change accepted cryptographic profiles;
+- algorithm migration — whether an existing logical cryptographic role can move to a new algorithm/profile without rewriting unrelated domain state;
+- provider migration — whether custody/execution can move independently of algorithm/profile where the security model permits.
+
+Use this vocabulary diagnostically. A deliberately fixed protocol version may be safer than a generic abstraction when interoperability, algorithm-confusion resistance, or standards constraints require one explicit profile.
+
+#### Stable role, exact cryptographic instance
+
+Prefer a stable **logical role/reference** over coupling business identity to one algorithm or provider, but never let that stable reference erase the exact cryptographic instance actually used.
+
+Conceptually:
+
+```text
+logical role / purpose
+  -> versioned key instance
+       -> exact algorithm/profile
+       -> exact provider/custody class
+       -> lifecycle state
+```
+
+A new algorithm normally means fresh key material and a new version. Historical signatures, ciphertext, envelopes, proofs, or ownership transitions must remain attributable to the exact key/profile/provider version that produced them.
+
+Do not universally claim that two cryptographically different keys have the same security identity merely because an API preserves one opaque key name. In protocols where a public key or thumbprint participates directly in identity, sender binding, ownership, or authorization, preserve the protocol-specific identity transition explicitly.
+
+#### Rotation, transformation, and provider migration
+
+Keep these lifecycle operations distinct:
+
+- **rotation** — fresh key material under the same algorithm/profile;
+- **algorithm/profile transformation** — fresh cryptographic material or a reviewed compatible reconfiguration under a different algorithm/profile while preserving the intended logical role and version history;
+- **provider/custody migration** — moving execution or custody to another provider, with re-keying when export is impossible or undesirable.
+
+A single workflow may coordinate more than one operation, but evidence should state which transitions occurred.
+
+For high-consequence or irreversible transitions, support a deterministic preflight where practical. It should establish feasibility, expected old/new profiles and providers, export/rewrap/re-key behavior, data-continuity requirements, destructive steps, rollback limits, and policy/approval requirements before mutation.
+
+#### Intent and substitution boundaries
+
+Intent-based selection may be useful only when candidate algorithms share a genuinely compatible caller-visible operational contract. A common primitive name alone is insufficient if algorithms differ in required context, nonce/IV handling, prehash behavior, message limits, encoding, or other caller obligations.
+
+Where a standards-constrained protocol requires explicit algorithm/profile identifiers, preserve that explicit profile rather than inventing a local generic intent layer.
+
+Cryptographic-selection policy is trusted control-plane state. Untrusted request, model, tool, repository, or provider content must not:
+
+- choose the governing policy;
+- widen the accepted profile/template set;
+- force a weaker fallback;
+- select a provider outside the authorized custody/assurance class;
+- turn a discovery result or catalog entry into approval.
+
+Discovery and inventory describe what is available; policy and authorization determine what may be used.
+
+#### Current operations versus historical compatibility
+
+Treat creation of new cryptographic commitments differently from historical compatibility.
+
+When policy retires or deprecates a profile, projects may need to deny new forward/producer operations such as signing or encryption while temporarily retaining bounded reverse/consumer operations such as signature verification or decryption for historical data.
+
+Historical validity does not imply current authority:
+
+```text
+historically valid signature / ciphertext / proof
+  != currently accepted profile
+  != current authorization
+```
+
+Each project must define retention, archival, compromise, destruction, and historical-verification semantics appropriate to its protocol and recovery model.
+
+Research basis:
+
+- Rameshan and Messmer, *An Assessment Framework for Application-Level Cryptographic Agility*, arXiv:2606.13425.
+- Rameshan and Messmer, *Intent-Based Cryptographic API Design for Cryptographic Agility*, arXiv:2606.13445.
+
 ## Post-quantum migration
 
 FIPS 203/204/205 are deployable standards, but adoption must still respect protocol, library, platform, hardware, interoperability, and operational maturity.
