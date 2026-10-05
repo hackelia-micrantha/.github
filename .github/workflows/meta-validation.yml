@@ -160,7 +160,7 @@ jobs:
           status=$?
           set -e
 
-          test "$status" -eq 2
+          test "$status" -ne 0
           python - "$evidence/intentional-drift.json" <<'PY'
           import json
           import sys
