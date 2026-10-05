@@ -122,6 +122,54 @@ jobs:
               --format json > "$profile_dir/verify.json"
           done
 
+      - name: Compare prompt-pack evidence with committed goldens
+        run: |
+          python tools/verify_prompt_pack_evidence.py \
+            tests/fixtures/micrantha-prompt-pack-golden.json \
+            "$RUNNER_TEMP/micrantha-prompt-pack-evidence"
+
+      - name: Prove canonical source drift fails verification
+        run: |
+          set -euo pipefail
+          invokrum="$RUNNER_TEMP/invokrum-bin/invokrum"
+          evidence="$RUNNER_TEMP/micrantha-prompt-pack-evidence"
+          drift_root="$RUNNER_TEMP/micrantha-prompt-pack-drift"
+
+          mkdir -p "$drift_root"
+          cp micrantha-prompt-pack.yaml "$drift_root/"
+          for source in \
+            docs/prompts/README.md \
+            docs/prompts/overlays/cross-project-execution.md \
+            docs/prompts/planning/classify-and-route.md \
+            docs/prompts/issues/issue-grooming.md \
+            docs/prompts/reviews/engineering-artifact-review.md
+          do
+            mkdir -p "$drift_root/$(dirname "$source")"
+            cp "$source" "$drift_root/$source"
+          done
+
+          printf '\n<!-- intentional prompt-pack drift -->\n' \
+            >> "$drift_root/docs/prompts/issues/issue-grooming.md"
+
+          set +e
+          "$invokrum" verify \
+            --lock "$evidence/issue-grooming/invokrum.lock" \
+            --pack "$drift_root/micrantha-prompt-pack.yaml" \
+            --profile issue-grooming \
+            --format json > "$evidence/intentional-drift.json"
+          status=$?
+          set -e
+
+          test "$status" -eq 2
+          python - "$evidence/intentional-drift.json" <<'PY'
+          import json
+          import sys
+
+          report = json.load(open(sys.argv[1], encoding="utf-8"))
+          assert report["verified"] is False
+          assert report["drifts"]
+          PY
+
       - name: Upload Micrantha prompt-pack evidence
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
