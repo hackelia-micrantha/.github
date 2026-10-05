@@ -31,7 +31,7 @@ class PromptPackTests(unittest.TestCase):
     def _section(self, name: str, next_name: str) -> str:
         text = self._text()
         start = text.index(f"{name}:\n") + len(name) + 2
-        end = text.index(f"\n{next_name}:\n", start)
+        end = text.index(f"\n{next_name}:", start)
         return text[start:end]
 
     def test_pack_uses_invokrum_v1_and_stable_id(self) -> None:
