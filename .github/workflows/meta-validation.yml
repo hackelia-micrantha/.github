@@ -3,6 +3,7 @@ name: Meta validation
 on:
   pull_request:
     paths:
+      - micrantha-prompt-pack.yaml
       - AGENTS.md
       - .github/workflows/**
       - docs/architecture/**
@@ -23,6 +24,7 @@ on:
     branches:
       - main
     paths:
+      - micrantha-prompt-pack.yaml
       - AGENTS.md
       - .github/workflows/**
       - docs/architecture/**
