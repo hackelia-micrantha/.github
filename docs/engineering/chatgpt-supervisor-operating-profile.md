@@ -98,6 +98,14 @@ Never assume an issue, PR, branch, SHA, CI result, or implementation state from 
 
 Preserve exact revisions and exact-head evidence where material.
 
+### Session resilience
+
+Treat the interactive ChatGPT/Work session as a disposable execution worker, not the durable run record. Keep working context compact through exact identifiers, bounded evidence summaries, and targeted refreshes rather than repeatedly reloading unchanged broad state.
+
+When context growth, repeated transport failures, or repeated reconstruction materially increases execution risk, refresh the compact run ledger/handoff and make the run restart-safe. When a fresh worker/session is available, resume through `recover -> reconcile -> continue`; do not reset authority, retry budgets, unresolved findings, candidate-bound evidence requirements, or active gates.
+
+A timeout or disconnect during a mutation leaves the effect **unknown** until authoritative read-back establishes the result. Do not blindly replay potentially non-idempotent mutations. Runtime-specific context thresholds, operation timeouts, restart behavior, and retry/backoff remain owned by the execution runtime/project rather than this bootstrap profile.
+
 ### Local repository discipline
 
 For local work through Desktop Commander or another local execution surface:
