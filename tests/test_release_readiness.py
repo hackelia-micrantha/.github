@@ -146,6 +146,55 @@ class ReleaseReadinessTests(unittest.TestCase):
             [],
         )
 
+    def test_private_canonical_public_package_requires_clean_consumer_evidence(self) -> None:
+        canonical = self.entry(
+            "hackelia-micrantha/phyllotaxis",
+            visibility="private",
+            source_exposure="private",
+            repository_role="canonical",
+            distribution_mode="package",
+            implementationAuthority="hackelia-micrantha/phyllotaxis",
+            releaseAuthority="hackelia-micrantha/phyllotaxis",
+        )
+        evidence = self.binary_evidence()
+        evidence["repository"] = "hackelia-micrantha/phyllotaxis"
+        evidence["release"]["releaseAuthority"] = "hackelia-micrantha/phyllotaxis"
+        evidence["acquisition"]["mode"] = "package"
+        evidence["cleanConsumer"] = {
+            "tested": False,
+            "cacheMiss": False,
+            "privateCredentialsAvailable": False,
+            "passed": False,
+        }
+
+        errors = release_readiness.validate_release_evidence(
+            self.registry(canonical), evidence
+        )
+
+        self.assertTrue(any("[consumer.clean]" in error for error in errors))
+
+    def test_private_canonical_public_package_accepts_clean_consumer_evidence(self) -> None:
+        canonical = self.entry(
+            "hackelia-micrantha/phyllotaxis",
+            visibility="private",
+            source_exposure="private",
+            repository_role="canonical",
+            distribution_mode="package",
+            implementationAuthority="hackelia-micrantha/phyllotaxis",
+            releaseAuthority="hackelia-micrantha/phyllotaxis",
+        )
+        evidence = self.binary_evidence()
+        evidence["repository"] = "hackelia-micrantha/phyllotaxis"
+        evidence["release"]["releaseAuthority"] = "hackelia-micrantha/phyllotaxis"
+        evidence["acquisition"]["mode"] = "package"
+
+        self.assertEqual(
+            release_readiness.validate_release_evidence(
+                self.registry(canonical), evidence
+            ),
+            [],
+        )
+
     def test_binary_distribution_cannot_compile_private_implementation_source(self) -> None:
         evidence = self.binary_evidence()
         evidence["acquisition"]["sourceBuild"] = True
