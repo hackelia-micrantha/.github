@@ -85,6 +85,8 @@ Preserve the reviewer identity/provider/model when known, the exact reviewed SHA
 
 Local models are acceptable when the same evidence and separation requirements are met. This gives the organization a fallback that does not depend on a hosted reviewer quota or on granting another service mutation authority.
 
+The deterministic, credential-free bundle format and generator are documented in [independent review bundles](../automation/independent-review-bundles.md). That helper binds a supplied exact patch to the candidate SHA and source-exposure posture; it does not choose a reviewer, authorize external transfer, perform review, or grant mutation authority.
+
 External review must also respect repository confidentiality and data-handling requirements. Do not send private source, credentials, incident details, customer data, or other restricted material to an external provider unless that transfer is explicitly authorized. Prefer a local reviewer for sensitive material when an approved external path is unavailable.
 
 ## Reviewer diversity and provider independence

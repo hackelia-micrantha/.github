@@ -2,7 +2,7 @@
 
 This directory documents the shared automation surfaces maintained by the Micrantha organization meta repository.
 
-See [automation security boundaries](SECURITY.md) for the caller, input, secret, runner, and token trust model, [shared automation versioning](versioning.md) for immutable caller pins, compatibility, pilots, and rollback, and [label mutation authority](label-mutation-authority.md) for the separately reviewed write boundary that must exist before label synchronization can mutate repository state.
+See [automation security boundaries](SECURITY.md) for the caller, input, secret, runner, and token trust model, [shared automation versioning](versioning.md) for immutable caller pins, compatibility, pilots, and rollback, [independent review bundles](independent-review-bundles.md) for exact-SHA read-only reviewer handoff, and [label mutation authority](label-mutation-authority.md) for the separately reviewed write boundary that must exist before label synchronization can mutate repository state.
 
 ## Scope
 
