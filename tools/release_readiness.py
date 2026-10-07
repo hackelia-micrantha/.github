@@ -123,8 +123,8 @@ def validate_release_evidence(registry: Any, evidence: Any) -> list[str]:
             f"[acquisition.mode] acquisition mode {acquisition_mode!r} contradicts registry distributionMode {distribution_mode!r}"
         )
 
-    is_public_consumer_surface = visibility == "public" and distribution_mode in PUBLIC_DISTRIBUTION_MODES
-    if is_public_consumer_surface:
+    is_public_distribution = distribution_mode in PUBLIC_DISTRIBUTION_MODES
+    if is_public_distribution:
         _require_bool(
             acquisition,
             "requiresPrivateCredentials",
