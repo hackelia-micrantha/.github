@@ -195,6 +195,64 @@ class ReleaseReadinessTests(unittest.TestCase):
             [],
         )
 
+    def test_prestage_public_package_does_not_require_clean_consumer_success(self) -> None:
+        canonical = self.entry(
+            "hackelia-micrantha/phyllotaxis",
+            visibility="private",
+            source_exposure="private",
+            repository_role="canonical",
+            distribution_mode="package",
+            implementationAuthority="hackelia-micrantha/phyllotaxis",
+            releaseAuthority="hackelia-micrantha/phyllotaxis",
+        )
+        evidence = self.binary_evidence()
+        evidence["phase"] = "prestage"
+        evidence["repository"] = "hackelia-micrantha/phyllotaxis"
+        evidence["release"]["releaseAuthority"] = "hackelia-micrantha/phyllotaxis"
+        evidence["acquisition"]["mode"] = "package"
+        evidence.pop("cleanConsumer")
+
+        self.assertEqual(
+            release_readiness.validate_release_evidence(
+                self.registry(canonical), evidence
+            ),
+            [],
+        )
+
+    def test_prestage_public_package_still_rejects_private_credentials(self) -> None:
+        canonical = self.entry(
+            "hackelia-micrantha/phyllotaxis",
+            visibility="private",
+            source_exposure="private",
+            repository_role="canonical",
+            distribution_mode="package",
+            implementationAuthority="hackelia-micrantha/phyllotaxis",
+            releaseAuthority="hackelia-micrantha/phyllotaxis",
+        )
+        evidence = self.binary_evidence()
+        evidence["phase"] = "prestage"
+        evidence["repository"] = "hackelia-micrantha/phyllotaxis"
+        evidence["release"]["releaseAuthority"] = "hackelia-micrantha/phyllotaxis"
+        evidence["acquisition"]["mode"] = "package"
+        evidence["acquisition"]["requiresPrivateCredentials"] = True
+        evidence.pop("cleanConsumer")
+
+        errors = release_readiness.validate_release_evidence(
+            self.registry(canonical), evidence
+        )
+
+        self.assertTrue(any("[acquisition.credentials]" in error for error in errors))
+
+    def test_unknown_evidence_phase_fails_closed(self) -> None:
+        evidence = self.binary_evidence()
+        evidence["phase"] = "candidate"
+
+        errors = release_readiness.validate_release_evidence(
+            self.invokrum_registry(), evidence
+        )
+
+        self.assertTrue(any("[evidence.phase]" in error for error in errors))
+
     def test_binary_distribution_cannot_compile_private_implementation_source(self) -> None:
         evidence = self.binary_evidence()
         evidence["acquisition"]["sourceBuild"] = True
