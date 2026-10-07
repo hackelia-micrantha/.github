@@ -3,6 +3,7 @@ from __future__ import annotations
 import copy
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 from tools import label_sync
 
@@ -81,13 +82,13 @@ class LabelSyncTests(unittest.TestCase):
             ],
         }
         current = [
-            {"name": "status:ready", "color": "0e8a16", "description": "Ready."},
-            {"name": "status:deferred", "color": "c5def5", "description": "Deferred."},
-            {"name": "priority:P1", "color": "ffffff", "description": "Old."},
-            {"name": "BUG", "color": "d73a4a", "description": "Bug."},
-            {"name": "type:feature", "color": "a2eeef", "description": "Feature."},
-            {"name": "enhancement", "color": "a2eeef", "description": "Feature."},
-            {"name": "workflow", "color": "ededed", "description": ""},
+            {"id": 1, "name": "status:ready", "color": "0e8a16", "description": "Ready."},
+            {"id": 2, "name": "status:deferred", "color": "c5def5", "description": "Deferred."},
+            {"id": 3, "name": "priority:P1", "color": "ffffff", "description": "Old."},
+            {"id": 4, "name": "BUG", "color": "d73a4a", "description": "Bug."},
+            {"id": 5, "name": "type:feature", "color": "a2eeef", "description": "Feature."},
+            {"id": 6, "name": "enhancement", "color": "a2eeef", "description": "Feature."},
+            {"id": 7, "name": "workflow", "color": "ededed", "description": ""},
         ]
 
         result = label_sync.plan(
@@ -98,8 +99,11 @@ class LabelSyncTests(unittest.TestCase):
         )
         actions = {item["label"]: item for item in result["actions"]}
 
+        self.assertEqual(result["schemaVersion"], 2)
+        self.assertTrue(result["stableIdentityComplete"])
         self.assertEqual(actions["status:ready"]["action"], "no-op")
         self.assertFalse(actions["status:ready"]["initialMutationEligible"])
+        self.assertEqual(actions["status:ready"]["existing"][0]["id"], 1)
         self.assertEqual(actions["priority:P1"]["action"], "update")
         self.assertFalse(actions["priority:P1"]["initialMutationEligible"])
         self.assertEqual(actions["priority:P1"]["existing"][0]["color"], "ffffff")
@@ -109,6 +113,7 @@ class LabelSyncTests(unittest.TestCase):
         self.assertEqual(actions["type:bug"]["action"], "migration")
         self.assertFalse(actions["type:bug"]["initialMutationEligible"])
         self.assertEqual(actions["type:bug"]["existing"][0]["name"], "BUG")
+        self.assertEqual(actions["type:bug"]["existing"][0]["id"], 4)
         self.assertEqual(actions["area:ci"]["action"], "create")
         self.assertTrue(actions["area:ci"]["initialMutationEligible"])
         self.assertEqual(actions["area:ci"]["existing"], [])
@@ -136,10 +141,12 @@ class LabelSyncTests(unittest.TestCase):
             [],
             control_revision=revision,
         )
+        self.assertTrue(baseline["stableIdentityComplete"])
+
         with_unrelated_local_label = label_sync.plan(
             self.manifest,
             repo,
-            [{"name": "workflow", "color": "ededed", "description": "Local."}],
+            [{"id": 99, "name": "workflow", "color": "ededed", "description": "Local."}],
             control_revision=revision,
         )
         self.assertEqual(
@@ -153,15 +160,17 @@ class LabelSyncTests(unittest.TestCase):
         with_selected_alias = label_sync.plan(
             self.manifest,
             repo,
-            [{"name": "CI", "color": "ededed", "description": "Legacy CI."}],
+            [{"id": 20, "name": "CI", "color": "ededed", "description": "Legacy CI."}],
             control_revision=revision,
         )
         self.assertNotEqual(baseline["planSha256"], with_selected_alias["planSha256"])
+        self.assertTrue(with_selected_alias["stableIdentityComplete"])
         area_ci = next(
             item for item in with_selected_alias["actions"] if item["label"] == "area:ci"
         )
         self.assertEqual(area_ci["action"], "migration")
         self.assertFalse(area_ci["initialMutationEligible"])
+        self.assertEqual(area_ci["existing"][0]["id"], 20)
 
         different_revision = label_sync.plan(
             self.manifest,
@@ -181,6 +190,7 @@ class LabelSyncTests(unittest.TestCase):
         self.assertNotEqual(
             baseline["planSha256"], selected_state_changed["planSha256"]
         )
+        self.assertFalse(selected_state_changed["stableIdentityComplete"])
 
         changed_manifest = copy.deepcopy(self.manifest)
         changed_manifest["labels"][0]["description"] = "Changed desired state."
@@ -195,6 +205,85 @@ class LabelSyncTests(unittest.TestCase):
         )
         self.assertNotEqual(baseline["planSha256"], manifest_changed["planSha256"])
 
+    def test_plan_digest_binds_stable_selected_label_identity(self) -> None:
+        repo = "hackelia-micrantha/.github"
+        revision = "a" * 40
+        selected_name = self.manifest["repositories"][0]["labels"][0]
+        selected = next(
+            item for item in self.manifest["labels"] if item["name"] == selected_name
+        )
+        first = {**selected, "id": 101}
+        recreated = {**selected, "id": 202}
+
+        first_plan = label_sync.plan(
+            self.manifest,
+            repo,
+            [first],
+            control_revision=revision,
+        )
+        recreated_plan = label_sync.plan(
+            self.manifest,
+            repo,
+            [recreated],
+            control_revision=revision,
+        )
+
+        self.assertTrue(first_plan["stableIdentityComplete"])
+        self.assertTrue(recreated_plan["stableIdentityComplete"])
+        self.assertNotEqual(first_plan["planSha256"], recreated_plan["planSha256"])
+        first_action = next(
+            item for item in first_plan["actions"] if item["label"] == selected_name
+        )
+        recreated_action = next(
+            item for item in recreated_plan["actions"] if item["label"] == selected_name
+        )
+        self.assertEqual(first_action["existing"][0]["id"], 101)
+        self.assertEqual(recreated_action["existing"][0]["id"], 202)
+
+    def test_live_inventory_requires_two_consecutive_matching_reads(self) -> None:
+        first = [
+            {"id": 1, "name": "one", "color": "111111", "description": "One."},
+        ]
+        stable = [
+            {"id": 1, "name": "one", "color": "111111", "description": "One."},
+            {"id": 2, "name": "two", "color": "222222", "description": "Two."},
+        ]
+        stable_reordered = list(reversed(stable))
+
+        with patch.object(
+            label_sync,
+            "fetch_labels_once",
+            side_effect=[first, stable, stable_reordered],
+        ) as fetch_once:
+            result = label_sync.fetch_labels(
+                "hackelia-micrantha/example",
+                max_reads=3,
+            )
+
+        self.assertEqual(fetch_once.call_count, 3)
+        self.assertEqual(
+            label_sync.inventory_fingerprint(result),
+            label_sync.inventory_fingerprint(stable),
+        )
+
+    def test_live_inventory_fails_closed_when_reads_never_stabilize(self) -> None:
+        inventories = [
+            [{"id": 1, "name": "one", "color": "111111", "description": "One."}],
+            [{"id": 2, "name": "one", "color": "111111", "description": "One."}],
+            [{"id": 3, "name": "one", "color": "111111", "description": "One."}],
+        ]
+
+        with patch.object(
+            label_sync,
+            "fetch_labels_once",
+            side_effect=inventories,
+        ):
+            with self.assertRaisesRegex(ValueError, "did not stabilize"):
+                label_sync.fetch_labels(
+                    "hackelia-micrantha/example",
+                    max_reads=3,
+                )
+
     def test_canonical_json_is_key_order_independent(self) -> None:
         left = {"b": 2, "a": {"d": 4, "c": 3}}
         right = {"a": {"c": 3, "d": 4}, "b": 2}
@@ -207,6 +296,7 @@ class LabelSyncTests(unittest.TestCase):
             "controlRevision": "abc123",
             "manifestSha256": "1" * 64,
             "planSha256": "2" * 64,
+            "stableIdentityComplete": True,
             "mode": "report-only",
             "mutates": False,
             "actions": [
@@ -215,7 +305,7 @@ class LabelSyncTests(unittest.TestCase):
                     "action": "update",
                     "initialMutationEligible": False,
                     "existing": [
-                        {"name": "priority:P1", "color": "ffffff", "description": "Old."}
+                        {"id": 123, "name": "priority:P1", "color": "ffffff", "description": "Old."}
                     ],
                     "desired": {
                         "name": "priority:P1",
@@ -231,7 +321,10 @@ class LabelSyncTests(unittest.TestCase):
         self.assertIn("Control revision: `abc123`", text)
         self.assertIn(f"Manifest SHA-256: `{'1' * 64}`", text)
         self.assertIn(f"Plan SHA-256: `{'2' * 64}`", text)
-        self.assertIn("`#ffffff` — Old.", text)
+        self.assertIn("Stable selected-label identity: **complete**", text)
+        self.assertIn("id `123`", text)
+        self.assertIn("`#ffffff`", text)
+        self.assertIn("Old.", text)
         self.assertIn("`#d93f0b` — Next up.", text)
         self.assertIn("Initial write candidate", text)
         self.assertIn("Mutation: **disabled**", text)
