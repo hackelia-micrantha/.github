@@ -24,6 +24,7 @@ except ModuleNotFoundError:  # direct `python tools/release_readiness.py ...`
 
 SHA256_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 PUBLIC_DISTRIBUTION_MODES = {"source", "binary", "package", "closure"}
+EVIDENCE_PHASES = {"prestage", "release"}
 
 
 def _repository_index(registry: Any) -> dict[str, dict[str, Any]]:
@@ -65,6 +66,11 @@ def validate_release_evidence(registry: Any, evidence: Any) -> list[str]:
         return ["[evidence.shape] release evidence root must be an object"]
     if evidence.get("schemaVersion") != 1:
         errors.append("[evidence.schema] schemaVersion must be 1")
+
+    evidence_phase = evidence.get("phase", "release")
+    if evidence_phase not in EVIDENCE_PHASES:
+        errors.append("[evidence.phase] phase must be one of: prestage, release")
+        evidence_phase = "release"
 
     repository = evidence.get("repository")
     if not isinstance(repository, str):
@@ -135,16 +141,25 @@ def validate_release_evidence(registry: Any, evidence: Any) -> list[str]:
         _require_bool(acquisition, "immutable", True, errors, "acquisition.immutable")
 
         clean_consumer = evidence.get("cleanConsumer")
-        _require_bool(clean_consumer, "tested", True, errors, "consumer.clean")
-        _require_bool(clean_consumer, "cacheMiss", True, errors, "consumer.clean")
-        _require_bool(
-            clean_consumer,
-            "privateCredentialsAvailable",
-            False,
-            errors,
-            "consumer.clean",
-        )
-        _require_bool(clean_consumer, "passed", True, errors, "consumer.clean")
+        if evidence_phase == "release":
+            _require_bool(clean_consumer, "tested", True, errors, "consumer.clean")
+            _require_bool(clean_consumer, "cacheMiss", True, errors, "consumer.clean")
+            _require_bool(
+                clean_consumer,
+                "privateCredentialsAvailable",
+                False,
+                errors,
+                "consumer.clean",
+            )
+            _require_bool(clean_consumer, "passed", True, errors, "consumer.clean")
+        elif clean_consumer is not None:
+            _require_bool(
+                clean_consumer,
+                "privateCredentialsAvailable",
+                False,
+                errors,
+                "consumer.clean",
+            )
 
     if distribution_mode == "binary":
         _require_bool(acquisition, "sourceBuild", False, errors, "binary.no-source-build")
