@@ -96,6 +96,17 @@ current state -> blocked/escalate
 14. **Close out or escalate precisely.** Report the resulting revision/state, evidence, effects, and remaining non-blocking work; or report the exact blocked transition and the smallest missing decision/capability.
 15. **Run the Compound assessment after a meaningful reviewed/terminal outcome.** Ask whether the system would catch or prevent the material lesson automatically next time. Route reusable findings to the weakest durable owner/control that reliably addresses them (for example test/invariant/tooling, docs/runbook, candidate Invokrum guidance, implementation/API, ADR/RFC, or governance proposal). `No reusable learning` is valid. Do not promote prompt/context guidance, policy, capabilities, defaults, or other trusted persistent state directly from the run; emit or update the appropriate candidate/tracked work and leave promotion to its owning authority.
 
+## Session resilience
+
+Keep the active session reconstructable from authoritative state plus the compact run ledger/handoff.
+
+- Prefer targeted refreshes, exact identifiers, and bounded evidence summaries over repeatedly loading unchanged broad repository state, whole files, or full logs.
+- Refresh/checkpoint the ledger when substantial context accumulates, the candidate changes materially, a consequential effect completes, or repeated transport failures make continuation fragile.
+- If worker/session rollover is available and continuing in-place has become materially less reliable, use `checkpoint -> rollover -> recover -> reconcile -> continue`.
+- Rollover does not reset authority, retry/investigation budgets, unresolved findings, evidence freshness, exact-candidate binding, or gates.
+- Treat a timeout/disconnect during mutation as an unknown effect until authoritative read-back proves success or absence; never blindly replay a potentially non-idempotent write.
+- Leave concrete context thresholds, wall-clock timeouts, restart/cancellation behavior, and backoff schedules to the owning runtime/project configuration.
+
 ## Recovery rules
 
 For a resumed or uncertain run:

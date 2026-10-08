@@ -58,6 +58,26 @@ Do not ask for a generic `proceed` confirmation after each successful substep. S
 - required evidence/capability is unavailable;
 - the retry/investigation budget is exhausted.
 
+## Session resilience and context pressure
+
+Treat the current interactive session as a disposable worker. Keep the run reconstructable from authoritative state plus the compact ledger rather than depending on uninterrupted conversational history.
+
+Prefer exact identifiers, bounded evidence summaries, targeted file/log ranges, and affected-subject refreshes over repeatedly loading broad unchanged state. Checkpoint or refresh the ledger when the candidate changes materially, consequential effects complete, substantial evidence accumulates, important state must be repeatedly reconstructed, or repeated transport failures make continuation fragile.
+
+When rollover to a fresh worker/session is available and continuation in place is materially less reliable, use:
+
+```text
+checkpoint -> rollover -> recover -> reconcile -> continue
+```
+
+Rollover does not reset authority, retry/investigation budgets, unresolved findings, candidate-bound evidence, freshness requirements, or active gates.
+
+Classify timeout/disconnect/provider/connector failures separately from candidate failures. For mutations, treat an interrupted result as unknown until authoritative read-back establishes whether the effect occurred; do not blindly retry potentially non-idempotent writes.
+
+Use targeted authoritative refresh after relevant mutations, externally mutable evidence changes, and before consequential gates. Avoid repeatedly enumerating the full project/repository state when only one PR, issue, head, workflow, or dependency changed.
+
+Concrete context thresholds, operation timeouts, restart/cancellation mechanics, and retry/backoff schedules belong to the owning runtime/project configuration.
+
 ## Recovery and session resumption
 
 When this is a fresh session continuing earlier work, or when a disconnect/tool failure leaves the previous operation uncertain, begin with:
