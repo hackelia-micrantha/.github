@@ -16,6 +16,7 @@ on:
       - tests/**
       - tools/label_sync.py
       - tools/verify_prompt_pack_evidence.py
+      - tools/verify_prompt_pack_installed_root.py
       - tools/release_readiness.py
       - tools/repository_health.py
       - tools/source_posture.py
@@ -37,6 +38,7 @@ on:
       - tests/**
       - tools/label_sync.py
       - tools/verify_prompt_pack_evidence.py
+      - tools/verify_prompt_pack_installed_root.py
       - tools/release_readiness.py
       - tools/repository_health.py
       - tools/source_posture.py
@@ -129,6 +131,13 @@ jobs:
           python tools/verify_prompt_pack_evidence.py \
             tests/fixtures/micrantha-prompt-pack-golden.json \
             "$RUNNER_TEMP/micrantha-prompt-pack-evidence"
+
+      - name: Prove digest-pinned installed-root composition
+        run: |
+          python tools/verify_prompt_pack_installed_root.py \
+            --invokrum "$RUNNER_TEMP/invokrum-bin/invokrum" \
+            --pack-root . \
+            --output "$RUNNER_TEMP/micrantha-prompt-pack-evidence/installed-root-proof.json"
 
       - name: Prove canonical source drift fails verification
         run: |
