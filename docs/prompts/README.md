@@ -7,11 +7,12 @@ This directory contains reusable prompts for evidence-backed engineering review,
 
 The repository-root [`micrantha-prompt-pack.yaml`](../../micrantha-prompt-pack.yaml) is the initial **Micrantha Meta Prompt Pack** consumer surface for Invokrum. It does not replace this library or duplicate prompt prose: its overlays reference these canonical Markdown files directly.
 
-The first profiles are:
+The currently declared workflow profiles are:
 
 - `classify-and-route`;
 - `issue-grooming`;
-- `engineering-artifact-review`.
+- `engineering-artifact-review`;
+- `merge-gate-review` — PR review/fix/merge decision support; resolved instructions do not grant merge authority.
 
 Each profile deterministically composes the shared contracts in this README, the required [cross-project execution overlay](overlays/cross-project-execution.md), and exactly one workflow prompt. Live project/task evidence remains host/runtime input and does not become trusted prompt authority merely by being supplied to a model.
 

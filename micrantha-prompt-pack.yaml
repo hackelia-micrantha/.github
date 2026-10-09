@@ -31,6 +31,9 @@ overlays:
   - id: issue-grooming
     class: workflow
     source: docs/prompts/issues/issue-grooming.md
+  - id: merge-gate-review
+    class: workflow
+    source: docs/prompts/pull-requests/merge-gate-review.md
 
 profiles:
   - id: classify-and-route
@@ -57,5 +60,13 @@ profiles:
         - cross-project-execution
       workflow:
         - issue-grooming
+  - id: merge-gate-review
+    selections:
+      foundation:
+        - shared-engineering-contracts
+      scope:
+        - cross-project-execution
+      workflow:
+        - merge-gate-review
 
 variables: []
