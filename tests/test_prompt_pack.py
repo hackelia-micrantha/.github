@@ -16,11 +16,13 @@ EXPECTED_SOURCES = {
     "docs/prompts/planning/classify-and-route.md",
     "docs/prompts/issues/issue-grooming.md",
     "docs/prompts/reviews/engineering-artifact-review.md",
+    "docs/prompts/pull-requests/merge-gate-review.md",
 }
 EXPECTED_PROFILES = {
     "classify-and-route",
     "issue-grooming",
     "engineering-artifact-review",
+    "merge-gate-review",
 }
 
 
@@ -45,6 +47,16 @@ class PromptPackTests(unittest.TestCase):
         self.assertEqual(EXPECTED_SOURCES, sources)
         missing = [source for source in sorted(sources) if not (ROOT / source).is_file()]
         self.assertEqual([], missing, f"pack references missing canonical sources: {missing}")
+
+    def test_installed_root_candidate_covers_pack_profiles_and_sources(self) -> None:
+        from tools.verify_prompt_pack_installed_root import ENTRY_POINT, PROFILES, SOURCES
+
+        overlays = self._section("overlays", "profiles")
+        sources = set(re.findall(r"^    source: ([^\n]+)$", overlays, re.MULTILINE))
+        profile_section = self._section("profiles", "variables")
+        profiles = set(re.findall(r"^  - id: ([a-z0-9-]+)$", profile_section, re.MULTILINE))
+        self.assertEqual(sources | {ENTRY_POINT}, set(SOURCES))
+        self.assertEqual(profiles, set(PROFILES))
 
     def test_required_foundation_scope_and_workflow_classes_are_exactly_one(self) -> None:
         classes = self._section("classes", "overlays")
@@ -81,6 +93,7 @@ class PromptPackTests(unittest.TestCase):
             "classify-and-route": "planning/classify-and-route.md",
             "issue-grooming": "issues/issue-grooming.md",
             "engineering-artifact-review": "reviews/engineering-artifact-review.md",
+            "merge-gate-review": "pull-requests/merge-gate-review.md",
         }
         for prompt_id, relative_path in expected.items():
             entry = (

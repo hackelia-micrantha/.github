@@ -102,7 +102,7 @@ jobs:
           evidence="$RUNNER_TEMP/micrantha-prompt-pack-evidence"
           mkdir -p "$evidence"
 
-          for profile in classify-and-route issue-grooming engineering-artifact-review; do
+          for profile in classify-and-route issue-grooming engineering-artifact-review merge-gate-review; do
             profile_dir="$evidence/$profile"
             mkdir -p "$profile_dir"
             "$invokrum" validate \
