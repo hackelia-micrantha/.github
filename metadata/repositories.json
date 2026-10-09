@@ -653,9 +653,9 @@
       "repositoryRole": "canonical",
       "implementationAuthority": "hackelia-micrantha/phyllotaxis",
       "releaseAuthority": "hackelia-micrantha/phyllotaxis",
-      "distributionMode": "internal",
+      "distributionMode": "package",
       "publicDistributionRepository": "hackelia-micrantha/phyllotaxis-community",
-      "notes": "Published requirements, architecture, contracts, interfaces, and CLI design are authoritative in phyllotaxis-community; this repository owns private implementation and release evidence."
+      "notes": "Published requirements, architecture, contracts, interfaces, and CLI design are authoritative in phyllotaxis-community; private phyllotaxis remains canonical implementation/build/release authority and directly publishes the reviewed public npm package. The community repository is a design/contract projection, not the npm package host."
     },
     {
       "repository": "hackelia-micrantha/phyllotaxis-community",

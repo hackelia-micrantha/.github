@@ -157,6 +157,72 @@ Do not redo without reconciliation:
 
 Persist this only when recovery, handoff, auditability, or runtime integration benefits from it. Do not create per-run state files merely for ceremony.
 
+## Session resilience and context pressure
+
+Long-running interactive sessions are disposable execution workers, not durable run records. Preserve correctness across context growth, transport instability, or worker replacement by keeping the run reconstructable from authoritative state plus a compact ledger/handoff.
+
+### Context hygiene
+
+Keep live context focused on the current graph transition. Prefer:
+
+- exact repository, work-item, revision, run, job, and artifact identifiers over repeated narrative history;
+- compact findings and evidence summaries that point back to durable source evidence;
+- targeted file ranges, diffs, workflow jobs, and issue/PR state rather than repeatedly loading whole repositories, files, or logs;
+- current accepted decisions and unresolved findings rather than retaining superseded discussion;
+- the run ledger as the continuity representation when detailed conversational history is no longer needed.
+
+Do not repeatedly reload or restate evidence that remains valid for the exact current candidate. When evidence becomes obsolete, superseded, or invalidated by a candidate change, remove it from the active working summary rather than carrying it forward indefinitely.
+
+### Proactive checkpoint and rollover
+
+Refresh a restart-safe ledger or handoff when doing so materially reduces recovery risk, especially when:
+
+- a consequential effect completes;
+- the exact candidate/revision changes materially;
+- several review/fix/verify cycles or substantial cross-repository evidence have accumulated;
+- large logs, diffs, research, or runtime observations have materially expanded working context;
+- repeated tool/transport failures suggest session degradation;
+- important identifiers, findings, or decisions are being repeatedly reconstructed;
+- the execution runtime reports material context pressure.
+
+When continuing in the current worker/session is materially riskier or more expensive than reconstruction from the compact ledger, use:
+
+```text
+checkpoint -> rollover -> recover -> reconcile -> continue
+```
+
+Rollover must not reset mutation/effect authority, retry or investigation budgets, unresolved findings, evidence freshness requirements, exact-candidate binding, or active policy gates.
+
+Do not create persistent repository state merely to preserve chat context. Persist the ledger only when recovery, handoff, auditability, or runtime integration materially benefits from durable storage.
+
+### Tool and transport failure semantics
+
+Timeouts, disconnects, connector failures, provider failures, and session termination are infrastructure/transport outcomes until evidence establishes otherwise; they are not candidate/product failures by default.
+
+For read-only or explicitly idempotent operations, use bounded retry/backoff where the runtime supports it. Repeated materially equivalent failures should trigger a changed hypothesis, narrower retrieval, checkpoint/rollover, or escalation rather than unbounded retry.
+
+For mutations:
+
+```text
+timeout/disconnect != failed mutation
+```
+
+Treat the external effect as unknown until authoritative read-back establishes whether it occurred. Never blindly repeat a potentially non-idempotent mutation after a transport failure.
+
+Runtime-specific wall-clock timeouts, context-window thresholds, restart mechanisms, cancellation semantics, and backoff schedules belong to the owning runtime/project configuration rather than this shared guidance.
+
+### Refresh discipline
+
+Refresh authoritative state:
+
+- at initial discovery and recovery;
+- after relevant external mutations;
+- when externally mutable evidence may have changed;
+- before consequential gates;
+- when a material assumption becomes questionable.
+
+Otherwise prefer targeted refresh of the affected subject over repeating a complete repository/status scan. Refresh the exact PR/head/checks when CI changes, the exact issue/thread when tracking changes, and the broader project graph only when dependencies, scope, or a final gate require it.
+
 ## Transition rules
 
 ### Discover -> Snapshot
