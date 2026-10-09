@@ -356,6 +356,15 @@ Default guidance unless a project defines stronger limits:
 
 Budget exhaustion does not authorize broader access, looser validation, or weaker acceptance criteria.
 
+
+### Causal convergence and stopping discipline
+
+Before another review, repair, or evaluation loop, state the decision it serves, the causal lever, the exact evidence to inspect, a falsifiable pass condition, and the consequence of failure. Apply that consequence before naming the next step. A successful tool call or an interesting observation does not by itself justify continuing or expanding the work.
+
+Inspect the actual failing artifact in full when accessible before assigning a cause; a summary or last diagnostic line alone is not the failure. Change one causal factor per loop so the result is attributable. Where coupled changes are inseparable, declare a composite experiment and do not claim attribution to any one factor. Never alter evidence, fixtures, scripts, or acceptance criteria merely to make a candidate pass; an invalid verifier requires a separately justified and reviewed correction.
+
+A third attempt with materially the same mechanism, prompt, instrument, or readers must change the causal lever or park/escalate the question. After three consecutive comparable failures of the same gate, examine the design and the validity of the gate before another local defect-fix iteration. These are stopping/replanning triggers, not new quotas or permission to bypass existing validation and authority gates.
+
 ## Escalation conditions
 
 Escalate rather than improvise when:

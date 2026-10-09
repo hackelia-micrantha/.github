@@ -87,6 +87,15 @@ Do not merely summarize or praise the artifact. Identify defects that could caus
 - Is priority repository-global and separate from blocked status?
 - Does an epic identify its next executable slice and outcome-based exit criteria?
 
+
+### 9. Reader purpose and evaluation validity
+
+- **Drift:** Does a proposed addition help the intended reader or advisor understand and act on the source, or merely improve a count that became its own workstream? If the intended rule is already in instructions the model receives, classify a lapse as non-compliance rather than an absent rule; do not restate it.
+- **Human profiles:** When human-written examples define a profile family, use their observed patterns to decide which kinds of material belong. An absent pattern stays out unless supported by a reason. Do not set profile length, bullet, or category count targets from those examples.
+- **Over-fit:** Would the same criterion hold for a different document shape or type, model, and reader? Remove numbers, orderings, labels, and thresholds reverse-engineered from one run unless independently justified.
+- **Measurement:** For stochastic document/model/reader comparisons, obtain at least three comparable replicates per condition and report the within-document spread as the noise floor; an effect inside that spread is inconclusive. Report only counts a named script actually computed, and define exactly what it counted. Do not generalize from a single reader or model.
+- **Convergence:** For repeated review or evaluation passes, apply the stopping, failure-consequence, and one-causal-change discipline in the [agent execution contract](../../engineering/agent-execution-contract.md), rather than growing the artifact after every observation.
+
 ## Required output
 
 ### A. Verdict
