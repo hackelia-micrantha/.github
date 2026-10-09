@@ -2,6 +2,29 @@
 
 This directory contains reusable prompts for evidence-backed engineering review, planning, decision-making, delivery, and security work across Micrantha repositories and registered `ryjen/*` project surfaces.
 
+
+## Invokrum consumer pack
+
+The repository-root [`micrantha-prompt-pack.yaml`](../../micrantha-prompt-pack.yaml) is the initial **Micrantha Meta Prompt Pack** consumer surface for Invokrum. It does not replace this library or duplicate prompt prose: its overlays reference these canonical Markdown files directly.
+
+The first profiles are:
+
+- `classify-and-route`;
+- `issue-grooming`;
+- `engineering-artifact-review`.
+
+Each profile deterministically composes the shared contracts in this README, the required [cross-project execution overlay](overlays/cross-project-execution.md), and exactly one workflow prompt. Live project/task evidence remains host/runtime input and does not become trusted prompt authority merely by being supplied to a model.
+
+From a source checkout on a supported Invokrum host:
+
+```bash
+invokrum validate --pack ./micrantha-prompt-pack.yaml --profile issue-grooming
+invokrum inspect --pack ./micrantha-prompt-pack.yaml --profile issue-grooming --format json
+invokrum lock --pack ./micrantha-prompt-pack.yaml --profile issue-grooming > /tmp/micrantha-issue-grooming.lock
+```
+
+The pack uses exact repository revision plus Invokrum manifest/lock identity for source-checkout traceability. Immutable distribution should stage these exact canonical bytes into an `invokrum.pack-bundle/v1` candidate; generated bundle copies are release artifacts, not independently editable prompt sources. See [the pack-layout QART](../engineering/qart-micrantha-meta-prompt-pack.md).
+
 ## Cross-project execution overlay
 
 Every reusable prompt in this library applies the [Micrantha / Ryjen cross-project execution overlay](overlays/cross-project-execution.md) unless the prompt explicitly documents a narrower or incompatible scope rule.

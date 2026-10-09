@@ -1,0 +1,237 @@
+{
+  "format": "micrantha.prompt-pack-golden/v1",
+  "invokrum_version": "0.2.1",
+  "profiles": {
+    "classify-and-route": {
+      "context_sha256": "9ddc29f31b99b538c38e0ae755d561c9944b221ce20612f1d381c88e70dc0977",
+      "inspect": {
+        "command": "inspect",
+        "entries": [
+          {
+            "byte_length": 17590,
+            "class": "foundation",
+            "overlay": "shared-engineering-contracts",
+            "source": "docs/prompts/README.md"
+          },
+          {
+            "byte_length": 10134,
+            "class": "scope",
+            "overlay": "cross-project-execution",
+            "source": "docs/prompts/overlays/cross-project-execution.md"
+          },
+          {
+            "byte_length": 6347,
+            "class": "workflow",
+            "overlay": "classify-and-route",
+            "source": "docs/prompts/planning/classify-and-route.md"
+          }
+        ],
+        "format": "invokrum.cli/v1",
+        "output_bytes": 34075,
+        "pack": "micrantha-meta-prompts",
+        "profile": "classify-and-route",
+        "schema": "invokrum.dev/v1",
+        "source_bytes": 34071
+      },
+      "lock": {
+        "canonicalization": "invokrum.canonical-json/v1",
+        "digest_algorithm": "sha256",
+        "format": "invokrum.lock/v1",
+        "manifest": {
+          "engine_inputs_digest": "497c15df458fb53c50d0c3ca7832e936ceb87b8bad230bb8a53039cc65aad1d8",
+          "output": {
+            "byte_length": 34075,
+            "digest": "9ddc29f31b99b538c38e0ae755d561c9944b221ce20612f1d381c88e70dc0977"
+          },
+          "overlays": [
+            {
+              "byte_length": 17590,
+              "class": "foundation",
+              "digest": "fa259a3b35339b6742a345fe421d90f43611818c5e7495954f143d4b58ed2000",
+              "id": "shared-engineering-contracts",
+              "source": "docs/prompts/README.md"
+            },
+            {
+              "byte_length": 10134,
+              "class": "scope",
+              "digest": "59f3b620bac3d37f027c1053b53ee2e76169a058e5643408ddbad78426621e68",
+              "id": "cross-project-execution",
+              "source": "docs/prompts/overlays/cross-project-execution.md"
+            },
+            {
+              "byte_length": 6347,
+              "class": "workflow",
+              "digest": "a6b90a1b8d356f56a0afedb9c28bc9bf5c7c5ed3fa41974853562b06ce373514",
+              "id": "classify-and-route",
+              "source": "docs/prompts/planning/classify-and-route.md"
+            }
+          ],
+          "pack": {
+            "digest": "403a18cb3d1c8aa0febae5479cd779872cf0ae145471e3191794f54d583fb4e8",
+            "id": "micrantha-meta-prompts",
+            "schema": "invokrum.dev/v1"
+          },
+          "profile": {
+            "digest": "2a5ac57b9c31e45ae653d6db1f9a324dbe839fa6dbb1238288692ef22af0f58e",
+            "id": "classify-and-route"
+          }
+        },
+        "manifest_digest": "59fe3c63f90d7e1d22e6dc74569f8f67239278715b23889fd797014061fb9598"
+      }
+    },
+    "engineering-artifact-review": {
+      "context_sha256": "8c9e651cd43aa17bbc92dbf71c263f53cc6039080a4cac9e3cf3fb7dbf88ed25",
+      "inspect": {
+        "command": "inspect",
+        "entries": [
+          {
+            "byte_length": 17590,
+            "class": "foundation",
+            "overlay": "shared-engineering-contracts",
+            "source": "docs/prompts/README.md"
+          },
+          {
+            "byte_length": 10134,
+            "class": "scope",
+            "overlay": "cross-project-execution",
+            "source": "docs/prompts/overlays/cross-project-execution.md"
+          },
+          {
+            "byte_length": 6622,
+            "class": "workflow",
+            "overlay": "engineering-artifact-review",
+            "source": "docs/prompts/reviews/engineering-artifact-review.md"
+          }
+        ],
+        "format": "invokrum.cli/v1",
+        "output_bytes": 34350,
+        "pack": "micrantha-meta-prompts",
+        "profile": "engineering-artifact-review",
+        "schema": "invokrum.dev/v1",
+        "source_bytes": 34346
+      },
+      "lock": {
+        "canonicalization": "invokrum.canonical-json/v1",
+        "digest_algorithm": "sha256",
+        "format": "invokrum.lock/v1",
+        "manifest": {
+          "engine_inputs_digest": "cd032e13a2826eb281354badc8054dda99b4712c4a5e906b748d9b795be64ae9",
+          "output": {
+            "byte_length": 34350,
+            "digest": "8c9e651cd43aa17bbc92dbf71c263f53cc6039080a4cac9e3cf3fb7dbf88ed25"
+          },
+          "overlays": [
+            {
+              "byte_length": 17590,
+              "class": "foundation",
+              "digest": "fa259a3b35339b6742a345fe421d90f43611818c5e7495954f143d4b58ed2000",
+              "id": "shared-engineering-contracts",
+              "source": "docs/prompts/README.md"
+            },
+            {
+              "byte_length": 10134,
+              "class": "scope",
+              "digest": "59f3b620bac3d37f027c1053b53ee2e76169a058e5643408ddbad78426621e68",
+              "id": "cross-project-execution",
+              "source": "docs/prompts/overlays/cross-project-execution.md"
+            },
+            {
+              "byte_length": 6622,
+              "class": "workflow",
+              "digest": "380c1d7dd2dfdaa2fcce852cb1abc8d5398e1019dfdf4c8375ceb7b3a49f0986",
+              "id": "engineering-artifact-review",
+              "source": "docs/prompts/reviews/engineering-artifact-review.md"
+            }
+          ],
+          "pack": {
+            "digest": "403a18cb3d1c8aa0febae5479cd779872cf0ae145471e3191794f54d583fb4e8",
+            "id": "micrantha-meta-prompts",
+            "schema": "invokrum.dev/v1"
+          },
+          "profile": {
+            "digest": "50c66ff86b02fae89affb95a37d9b145e51316130a16b7ab62fe13b0c79ec836",
+            "id": "engineering-artifact-review"
+          }
+        },
+        "manifest_digest": "ca0f858939636c1486fe6b1996e06b28a5a813e74e3a3b44af67d35b8e9a7ce4"
+      }
+    },
+    "issue-grooming": {
+      "context_sha256": "ce6d76d43ea2f2e2329f42f0cb4627019476f21532d3b7489b3786c45bc23a69",
+      "inspect": {
+        "command": "inspect",
+        "entries": [
+          {
+            "byte_length": 17590,
+            "class": "foundation",
+            "overlay": "shared-engineering-contracts",
+            "source": "docs/prompts/README.md"
+          },
+          {
+            "byte_length": 10134,
+            "class": "scope",
+            "overlay": "cross-project-execution",
+            "source": "docs/prompts/overlays/cross-project-execution.md"
+          },
+          {
+            "byte_length": 9288,
+            "class": "workflow",
+            "overlay": "issue-grooming",
+            "source": "docs/prompts/issues/issue-grooming.md"
+          }
+        ],
+        "format": "invokrum.cli/v1",
+        "output_bytes": 37016,
+        "pack": "micrantha-meta-prompts",
+        "profile": "issue-grooming",
+        "schema": "invokrum.dev/v1",
+        "source_bytes": 37012
+      },
+      "lock": {
+        "canonicalization": "invokrum.canonical-json/v1",
+        "digest_algorithm": "sha256",
+        "format": "invokrum.lock/v1",
+        "manifest": {
+          "engine_inputs_digest": "bfd1f4eeb5f7f183921553b59a3282fc7afc803ec9b54f9cf302cd5f9b995a73",
+          "output": {
+            "byte_length": 37016,
+            "digest": "ce6d76d43ea2f2e2329f42f0cb4627019476f21532d3b7489b3786c45bc23a69"
+          },
+          "overlays": [
+            {
+              "byte_length": 17590,
+              "class": "foundation",
+              "digest": "fa259a3b35339b6742a345fe421d90f43611818c5e7495954f143d4b58ed2000",
+              "id": "shared-engineering-contracts",
+              "source": "docs/prompts/README.md"
+            },
+            {
+              "byte_length": 10134,
+              "class": "scope",
+              "digest": "59f3b620bac3d37f027c1053b53ee2e76169a058e5643408ddbad78426621e68",
+              "id": "cross-project-execution",
+              "source": "docs/prompts/overlays/cross-project-execution.md"
+            },
+            {
+              "byte_length": 9288,
+              "class": "workflow",
+              "digest": "856938d27f4007dae05bf0d67139238e7318535c478a95a0af8662621ab0e140",
+              "id": "issue-grooming",
+              "source": "docs/prompts/issues/issue-grooming.md"
+            }
+          ],
+          "pack": {
+            "digest": "403a18cb3d1c8aa0febae5479cd779872cf0ae145471e3191794f54d583fb4e8",
+            "id": "micrantha-meta-prompts",
+            "schema": "invokrum.dev/v1"
+          },
+          "profile": {
+            "digest": "0fac4fcfcd11910190d3539239b7703b8efdf9508108c1a731561714b253ac24",
+            "id": "issue-grooming"
+          }
+        },
+        "manifest_digest": "effc23e32cdbbad0d69c8861675444379d41b9d0d5754db86eb82899ee4b9904"
+      }
+    }
+  }
+}

@@ -3,6 +3,7 @@ name: Meta validation
 on:
   pull_request:
     paths:
+      - micrantha-prompt-pack.yaml
       - AGENTS.md
       - .github/workflows/**
       - docs/architecture/**
@@ -14,6 +15,7 @@ on:
       - skills/**
       - tests/**
       - tools/label_sync.py
+      - tools/verify_prompt_pack_evidence.py
       - tools/release_readiness.py
       - tools/repository_health.py
       - tools/source_posture.py
@@ -23,6 +25,7 @@ on:
     branches:
       - main
     paths:
+      - micrantha-prompt-pack.yaml
       - AGENTS.md
       - .github/workflows/**
       - docs/architecture/**
@@ -33,6 +36,7 @@ on:
       - skills/**
       - tests/**
       - tools/label_sync.py
+      - tools/verify_prompt_pack_evidence.py
       - tools/release_readiness.py
       - tools/repository_health.py
       - tools/source_posture.py
@@ -72,3 +76,105 @@ jobs:
 
       - name: Run unit tests
         run: python -m unittest discover -s tests -v
+
+      - name: Install pinned Invokrum validation CLI
+        env:
+          INVOKRUM_VERSION: "0.2.1"
+          INVOKRUM_SHA256: "1d78bc0a9e595fb0e6bfab6cfc699dfc5e8eb2b680fc25c0b5494ee80877112e"
+        run: |
+          set -euo pipefail
+          archive="$RUNNER_TEMP/invokrum.tar.gz"
+          bindir="$RUNNER_TEMP/invokrum-bin"
+          mkdir -p "$bindir"
+          curl --fail --location --retry 3 --silent --show-error \
+            "https://github.com/hackelia-micrantha/invokrum-community/releases/download/v${INVOKRUM_VERSION}/invokrum-v${INVOKRUM_VERSION}-x86_64-unknown-linux-gnu.tar.gz" \
+            --output "$archive"
+          printf '%s  %s\n' "$INVOKRUM_SHA256" "$archive" | sha256sum --check -
+          tar -xzf "$archive" -C "$bindir"
+          "$bindir/invokrum" --version
+
+      - name: Validate and generate Micrantha prompt-pack evidence
+        run: |
+          set -euo pipefail
+          invokrum="$RUNNER_TEMP/invokrum-bin/invokrum"
+          evidence="$RUNNER_TEMP/micrantha-prompt-pack-evidence"
+          mkdir -p "$evidence"
+
+          for profile in classify-and-route issue-grooming engineering-artifact-review; do
+            profile_dir="$evidence/$profile"
+            mkdir -p "$profile_dir"
+            "$invokrum" validate \
+              --pack ./micrantha-prompt-pack.yaml \
+              --profile "$profile" \
+              --format json > "$profile_dir/validate.json"
+            "$invokrum" inspect \
+              --pack ./micrantha-prompt-pack.yaml \
+              --profile "$profile" \
+              --format json > "$profile_dir/inspect.json"
+            "$invokrum" compose \
+              --pack ./micrantha-prompt-pack.yaml \
+              --profile "$profile" > "$profile_dir/context.md"
+            "$invokrum" lock \
+              --pack ./micrantha-prompt-pack.yaml \
+              --profile "$profile" > "$profile_dir/invokrum.lock"
+            "$invokrum" verify \
+              --lock "$profile_dir/invokrum.lock" \
+              --pack ./micrantha-prompt-pack.yaml \
+              --profile "$profile" \
+              --format json > "$profile_dir/verify.json"
+          done
+
+      - name: Compare prompt-pack evidence with committed goldens
+        run: |
+          python tools/verify_prompt_pack_evidence.py \
+            tests/fixtures/micrantha-prompt-pack-golden.json \
+            "$RUNNER_TEMP/micrantha-prompt-pack-evidence"
+
+      - name: Prove canonical source drift fails verification
+        run: |
+          set -euo pipefail
+          invokrum="$RUNNER_TEMP/invokrum-bin/invokrum"
+          evidence="$RUNNER_TEMP/micrantha-prompt-pack-evidence"
+          drift_root="$RUNNER_TEMP/micrantha-prompt-pack-drift"
+
+          mkdir -p "$drift_root"
+          cp micrantha-prompt-pack.yaml "$drift_root/"
+          for source in \
+            docs/prompts/README.md \
+            docs/prompts/overlays/cross-project-execution.md \
+            docs/prompts/planning/classify-and-route.md \
+            docs/prompts/issues/issue-grooming.md \
+            docs/prompts/reviews/engineering-artifact-review.md
+          do
+            mkdir -p "$drift_root/$(dirname "$source")"
+            cp "$source" "$drift_root/$source"
+          done
+
+          printf '\n<!-- intentional prompt-pack drift -->\n' \
+            >> "$drift_root/docs/prompts/issues/issue-grooming.md"
+
+          set +e
+          "$invokrum" verify \
+            --lock "$evidence/issue-grooming/invokrum.lock" \
+            --pack "$drift_root/micrantha-prompt-pack.yaml" \
+            --profile issue-grooming \
+            --format json > "$evidence/intentional-drift.json"
+          status=$?
+          set -e
+
+          test "$status" -ne 0
+          python - "$evidence/intentional-drift.json" <<'PY'
+          import json
+          import sys
+
+          report = json.load(open(sys.argv[1], encoding="utf-8"))
+          assert report["verified"] is False
+          assert report["drifts"]
+          PY
+
+      - name: Upload Micrantha prompt-pack evidence
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: micrantha-prompt-pack-evidence-${{ github.sha }}
+          path: ${{ runner.temp }}/micrantha-prompt-pack-evidence
+          if-no-files-found: error
