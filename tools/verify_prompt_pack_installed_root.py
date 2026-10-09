@@ -114,7 +114,22 @@ def prove(invokrum: Path, source_root: Path) -> dict:
         if invoke(invokrum, *tampered_args, success=False).returncode == 0:
             raise RuntimeError("modified candidate passed original subject/manifest verification")
 
-        # Installation verification must remain valid after a rejected candidate.
+        missing = scratch / "missing"
+        shutil.copytree(candidate, missing)
+        (missing / "docs/prompts/overlays/cross-project-execution.md").unlink()
+        missing_args = list(install_args)
+        missing_args[1] = str(missing)
+        if invoke(invokrum, *missing_args, success=False).returncode == 0:
+            raise RuntimeError("candidate missing a required overlay was installed")
+
+        invalid = invoke(
+            invokrum, "validate", "--pack", str(installed_root / ENTRY_POINT),
+            "--profile", "unregistered-profile", "--format", "json", success=False,
+        )
+        if invalid.returncode == 0:
+            raise RuntimeError("unregistered profile was accepted")
+
+        # Installation verification must remain valid after rejected candidates.
         control = invoke(
             invokrum, "compose", "--pack", str(installed_root / ENTRY_POINT),
             "--profile", "issue-grooming",
@@ -129,6 +144,8 @@ def prove(invokrum: Path, source_root: Path) -> dict:
             "publisher_authentication": "not-provided",
             "installation_reuse_verified": True,
             "source_mutation_rejected": True,
+            "missing_overlay_rejected": True,
+            "unknown_profile_rejected": True,
             "offline_profile_sha256": outputs,
         }
 

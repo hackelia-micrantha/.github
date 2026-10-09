@@ -32,6 +32,16 @@ class CandidateTest(unittest.TestCase):
                 self.assertEqual(entry["digest"], hashlib.sha256(payload).hexdigest())
                 self.assertEqual(entry["byte_length"], len(payload))
 
+    def test_missing_canonical_source_fails_closed(self) -> None:
+        with tempfile.TemporaryDirectory() as scratch:
+            root = Path(scratch)
+            source = root / "source"
+            file = source / SOURCES[0]
+            file.parent.mkdir(parents=True, exist_ok=True)
+            file.write_bytes(b"pack")
+            with self.assertRaises(ValueError):
+                make_candidate(source, root / "candidate")
+
     def test_source_symlink_fails_closed(self) -> None:
         with tempfile.TemporaryDirectory() as scratch:
             root = Path(scratch)
