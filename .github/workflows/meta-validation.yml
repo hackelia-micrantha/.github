@@ -15,6 +15,7 @@ on:
       - skills/**
       - tests/**
       - tools/label_sync.py
+      - tools/verify_prompt_pack_evidence.py
       - tools/release_readiness.py
       - tools/repository_health.py
       - tools/source_posture.py
@@ -35,6 +36,7 @@ on:
       - skills/**
       - tests/**
       - tools/label_sync.py
+      - tools/verify_prompt_pack_evidence.py
       - tools/release_readiness.py
       - tools/repository_health.py
       - tools/source_posture.py
