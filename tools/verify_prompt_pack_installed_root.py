@@ -57,6 +57,23 @@ def invoke(invokrum: Path, *args: str, success: bool = True) -> subprocess.Compl
     return process
 
 
+def validate_installed_root(installed_root: Path, store: Path) -> None:
+    """Require a real directory rooted inside the selected local store."""
+    if installed_root.is_symlink() or not installed_root.is_dir():
+        raise RuntimeError("installer returned a linked or missing installed root")
+    try:
+        resolved_root = installed_root.resolve(strict=True)
+        resolved_store = store.resolve(strict=True)
+    except (OSError, RuntimeError) as error:
+        raise RuntimeError("installer root/store could not be resolved") from error
+    if (
+        not installed_root.is_relative_to(store)
+        or resolved_root == resolved_store
+        or not resolved_root.is_relative_to(resolved_store)
+    ):
+        raise RuntimeError("installer returned a root outside the selected private store")
+
+
 def prove(invokrum: Path, source_root: Path) -> dict:
     with tempfile.TemporaryDirectory(prefix="micrantha-installed-proof-") as tmp:
         scratch = Path(tmp)
@@ -85,8 +102,7 @@ def prove(invokrum: Path, source_root: Path) -> dict:
             raise RuntimeError("installed subject, reuse, or digest-only identity mismatch")
 
         installed_root = Path(first["root"])
-        if not installed_root.is_dir() or not installed_root.is_relative_to(store.resolve()):
-            raise RuntimeError("installer returned a root outside the selected private store")
+        validate_installed_root(installed_root, store)
 
         outputs = {}
         for profile in PROFILES:
