@@ -68,14 +68,11 @@ Require:
 - security response and patch expectations;
 - archived or superseded documentation preserved and linked when it exists.
 
-
 ## Reader utility and editorial restraint
 
-Start with the reader's question and what they can do with the result, not a length, coverage count, or shape target. Do not make supporting explanation larger than the substantive guidance it supports. Repeated document growth is a reason to remove or consolidate content, not proof of greater completeness.
+Start with the reader's question and useful next action, not a length or coverage target. Keep supporting mechanism smaller than the substantive guidance. Before adding a field, category, check, exception, or study, name the reader decision or system branch that uses it and the observed failure or open decision it answers; otherwise remove or consolidate. Avoid default word, bullet, and item quotas; use a justified ceiling only where needed.
 
-Before adding a field, category, check, exception, or evaluation study, identify the actual reader decision or system branch that uses it and the observed failure or open decision it answers. Prefer an existing rule or simpler wording over a parallel mechanism. Do not introduce exceptions for failures not observed. Do not impose default quotas for words, bullets, sections, or items; use a justified ceiling when the reader or delivery contract needs one.
-
-When revising live guidance, delete or consolidate what the change supersedes in the same change rather than layering a new instruction over an old one. Preserve historical decisions and evidence in their designated records with successor links, but keep the current operational path singular and short. A change that only adds prose needs a concrete reader benefit.
+Delete superseded live guidance in the same change rather than layering instructions. Preserve historical decisions/evidence in their established records with successor links. Treat a change that only adds prose, or a document that grows on every review round, as a prompt to prove reader value or cut material.
 
 ## Public claims
 

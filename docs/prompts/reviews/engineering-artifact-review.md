@@ -87,14 +87,15 @@ Do not merely summarize or praise the artifact. Identify defects that could caus
 - Is priority repository-global and separate from blocked status?
 - Does an epic identify its next executable slice and outcome-based exit criteria?
 
+### 9. Reader-facing and empirical artifacts (when applicable)
 
-### 9. Reader purpose and evaluation validity
+Apply these checks only when the artifact summarizes material for a reader, defines human-content profiles, or makes empirical claims about model/reader performance:
 
-- **Drift:** Does a proposed addition help the intended reader or advisor understand and act on the source, or merely improve a count that became its own workstream? If the intended rule is already in instructions the model receives, classify a lapse as non-compliance rather than an absent rule; do not restate it.
-- **Human profiles:** When human-written examples define a profile family, use their observed patterns to decide which kinds of material belong. An absent pattern stays out unless supported by a reason. Do not set profile length, bullet, or category count targets from those examples.
-- **Over-fit:** Would the same criterion hold for a different document shape or type, model, and reader? Remove numbers, orderings, labels, and thresholds reverse-engineered from one run unless independently justified.
-- **Measurement:** For stochastic document/model/reader comparisons, obtain at least three comparable replicates per condition and report the within-document spread as the noise floor; an effect inside that spread is inconclusive. Report only counts a named script actually computed, and define exactly what it counted. Do not generalize from a single reader or model.
-- **Convergence:** For repeated review or evaluation passes, apply the stopping, failure-consequence, and one-causal-change discipline in the [agent execution contract](../../engineering/agent-execution-contract.md), rather than growing the artifact after every observation.
+- **Drift:** Can the intended reader or advisor use the addition, or does it serve a count that became its own workstream? If instructions already state the requirement, report non-compliance rather than adding duplicate guidance.
+- **Human profiles:** Let actual human examples establish appropriate content kinds, not item or length targets; omit unsupported patterns unless there is an explicit reason.
+- **Over-fit:** Would the rule survive a different document shape/type, model, and reader? Reject run-specific ordinals, labels, counts, or thresholds without independent justification.
+- **Measurement:** For variable empirical comparisons, use at least three comparable replicates per condition; report within-document spread as the noise floor and treat differences inside that spread as inconclusive. Attribute a count only to a named script and define what it counted.
+- **Convergence:** For repeated evaluations, follow the [execution contract](../../engineering/agent-execution-contract.md) rather than changing criteria or expanding prose after every result.
 
 ## Required output
 

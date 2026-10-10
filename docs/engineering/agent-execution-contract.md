@@ -356,14 +356,13 @@ Default guidance unless a project defines stronger limits:
 
 Budget exhaustion does not authorize broader access, looser validation, or weaker acceptance criteria.
 
-
 ### Causal convergence and stopping discipline
 
-Before another review, repair, or evaluation loop, state the decision it serves, the causal lever, the exact evidence to inspect, a falsifiable pass condition, and the consequence of failure. Apply that consequence before naming the next step. A successful tool call or an interesting observation does not by itself justify continuing or expanding the work.
+Before each substantive loop, identify the decision it serves, one causal intervention, its pass condition, and the consequence if it fails. Apply the consequence before choosing a next step; a successful command or interesting result does not itself justify more work.
 
-Inspect the actual failing artifact in full when accessible before assigning a cause; a summary or last diagnostic line alone is not the failure. Change one causal factor per loop so the result is attributable. Where coupled changes are inseparable, declare a composite experiment and do not claim attribution to any one factor. Never alter evidence, fixtures, scripts, or acceptance criteria merely to make a candidate pass; an invalid verifier requires a separately justified and reviewed correction.
+When a gate fails, examine the complete causally relevant artifact and evidence, not a selected diagnostic excerpt, before naming a cause. Change one causal factor at a time so the result is attributable; accompanying tests and documentation may verify that same change. Never modify evidence or lower a gate merely to obtain a pass. A genuinely defective verifier requires its own justified review.
 
-A third attempt with materially the same mechanism, prompt, instrument, or readers must change the causal lever or park/escalate the question. After three consecutive comparable failures of the same gate, examine the design and the validity of the gate before another local defect-fix iteration. These are stopping/replanning triggers, not new quotas or permission to bypass existing validation and authority gates.
+If a third attempt would reuse the same mechanism, prompt, instrument, or readers without material new evidence, change the lever or park/escalate. Three consecutive comparable failures of one gate require reconsidering the design and gate before another local defect fix. Existing retry limits and effect-authority boundaries still apply.
 
 ## Escalation conditions
 
