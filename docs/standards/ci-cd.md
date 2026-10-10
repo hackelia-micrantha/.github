@@ -110,6 +110,24 @@ When repository-tracked generated source is justified, document at minimum:
 
 The exception does not permit arbitrary source writes outside the declared paths and does not convert generated output into independent authority over its inputs.
 
+## Micrantha runner placement
+
+For Micrantha/Ryjen GitHub Actions workloads, **self-hosted execution is the default**. Runner assignment is based on the actual platform requirement of each job, not the operating system of a convenient hosted runner:
+
+| Workload | Placement |
+| --- | --- |
+| Ordinary Linux, backend, frontend, CLI, infrastructure, Nix, container, and generic validation | Exact repository-scoped Dubnium JIT (or a separately reviewed native self-hosted route) |
+| Android compilation, Gradle, unit tests, lint, static analysis, packaging, signing, and release | Exact repository-scoped Dubnium JIT with project-owned toolchain dependencies |
+| Android emulator/device-instrumentation tests that actually require an emulator | Reviewed GitHub-hosted Linux `ubuntu-*` exception |
+| Native Windows / MSVC validation and release | Reviewed GitHub-hosted Windows `windows-*` exception |
+| Native Apple/macOS, iOS build, Xcode and simulator qualification | Reviewed GitHub-hosted macOS `macos-*` exception |
+
+A hosted exception is not conferred by a job name or repository-controlled claim. Bind it to reviewed repository/workflow/job identity, static runner selector, and evidence of the genuine platform requirement; the Android hosted-Linux exception should additionally bind to the reviewed workflow content as described in Dubnium #903/#904. Unknown, dynamic, widened, reused, or generic `ubuntu-*` selectors fail closed. Do not move Android compilation or release work to hosted Ubuntu merely because emulator tests share the same repository.
+
+**Preserve security before enforcing placement.** Untrusted public pull-request code may not run on privileged self-hosted infrastructure. A `pull_request` workflow controlled by the PR candidate is not an independent trusted fork-rejection gate merely because its job condition rejects forks. Use a reviewed base-controlled or external gate and isolated ephemeral execution, or record the workflow as blocked/non-conformant pending that boundary. Do not convert a hosted fork-rejection job to JIT by changing `runs-on` alone. Metadata-only trust/recovery workflows require a separately reviewed independent self-hosted path if hosted Ubuntu is to be retired completely; do not create circular runner-recovery dependencies.
+
+This is a compute-placement standard, not a decision to retain GitHub as the permanent CI control plane. Preserve portable Nix/mise task interfaces and provider-neutral CI attachment/authority semantics for GitLab and local forges. Do not alter required-check identity, publication authority, or exact-candidate evidence as a side effect of runner migration.
+
 ## Self-hosted runners
 
 Self-hosted runners are privileged infrastructure and require an explicit trust model.
