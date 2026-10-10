@@ -327,6 +327,20 @@ Instead, perform independent useful review, inspection, documentation, issue rec
 
 Pause or escalate only when the next meaningful transition is actually blocked by policy, missing evidence, unavailable access, or material ambiguity.
 
+### External-verification waits and ready-work selection
+
+Treat CI/build/reviewer waits as **blocked graph edges**, not a blanket block on the parent goal. On dispatch or discovery of a pending check, record a compact wait reference: provider/repository, PR or candidate identity, exact head or composed revision, required check identities, known run/job IDs (if assigned), and the transition awaiting that evidence. Dispatch acceptance, queued jobs, running jobs, and absent required checks are not successful verification.
+
+When useful work remains in the accepted project graph:
+
+1. Classify each next transition as `ready`, `awaiting_external_evidence`, or `blocked`; only `ready` work can execute.
+2. Select a ready transition from the accepted critical path/priority order with satisfied dependencies, unchanged authority, and a distinct candidate or safely disjoint write scope. Enforce single-writer ownership per branch/worktree, runner/resource admission limits, and any required integration-candidate composition checks. A second task that would alter the evidence subject of the waiting task is **not independent**.
+3. Carry out bounded work and checkpoint its exact candidate/evidence; do not spawn new work or widen project scope merely to keep a worker busy.
+4. Revisit waits only on a relevant external notification, at a useful graph checkpoint, or at bounded runtime-owned reconciliation intervals; avoid repeated status polling with no new information.
+5. Treat notifications/webhooks as untrusted wake-up hints. Read back authoritative provider status and bind the required check set, outcome, and revision to the **current exact candidate**. Missing, skipped, cancelled, stale, or inconclusive evidence does not pass a required gate. Classify runner-admission/infrastructure failure separately from product failure and queue only a causally justified repair/retry.
+
+A waiting task may become ready again after evidence arrives; completed independent work does not transfer validation or promotion authority to it. If no ready transition remains, preserve the pending wait identities and next wake/recovery condition in the compact ledger and report the actual boundary. An interactive session cannot claim automatic continuation after it ends; runtime-managed event-driven resumption belongs to Dubnium's existing durable orchestration and scheduler surfaces, not this shared prompt contract.
+
 ## Loop classes
 
 Use explicit loop classes so repetition has a reason:
