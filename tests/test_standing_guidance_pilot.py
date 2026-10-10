@@ -2,6 +2,8 @@
 import importlib.util
 import json
 import sys
+import io
+import urllib.error
 import tempfile
 import unittest
 from unittest import mock
@@ -122,7 +124,11 @@ class PilotTests(unittest.TestCase):
                     return {"data": [{"id": "fake-model", "owned_by": "test"}]}
                 requests.append(payload)
                 return {
+                    "id": f"mock-completion-{len(requests)}",
+                    "model": "fake-model",
+                    "system_fingerprint": "mock-build-sha",
                     "choices": [{
+                        "finish_reason": "stop",
                         "message": {"content": '{"decision":"ready","findings":[]}'}
                     }],
                     "usage": {"prompt_tokens": 5, "completion_tokens": 8},
@@ -144,12 +150,72 @@ class PilotTests(unittest.TestCase):
                 {"baseline", "treatment"},
             )
             self.assertEqual(evidence["model"], "fake-model")
+            self.assertTrue(all(
+                r["response_metadata"]["served_model"] == "fake-model"
+                and r["response_metadata"]["finish_reason"] == "stop"
+                and r["response_metadata"]["system_fingerprint"] == "mock-build-sha"
+                for r in evidence["runs"]
+            ))
             self.assertEqual(evidence["negative_case_status"], "not_run_not_enforced")
             with mock.patch.object(sys, "argv", args), \
                  mock.patch.object(module, "treatment_context", return_value=(b"treated", "invokrum 0.2.1")), \
                  mock.patch.object(module, "request_json", side_effect=fake_request):
                 with self.assertRaises(FileExistsError):
                     module.main()
+
+    def test_completion_model_identity_and_finish_reason_are_required(self):
+        good = {
+            "id": "run-1", "model": "test-model", "system_fingerprint": "fp1",
+            "choices": [{"finish_reason": "stop",
+                         "message": {"content": '{"decision":"ready","findings":[]}'}}],
+        }
+        self.assertEqual(module.completion_content(good, "test-model")[0],
+                         '{"decision":"ready","findings":[]}')
+        for change in (
+            {"model": "other-model"}, {"model": None}, {"model": ""},
+            {"choices": [{"finish_reason": "length", "message": {"content": "{}"}}]},
+            {"choices": [{"finish_reason": "content_filter", "message": {"content": "{}"}}]},
+            {"choices": [{"message": {"content": "{}"}}]},
+        ):
+            altered = {**good, **change}
+            with self.subTest(change=change), self.assertRaises(ValueError):
+                module.completion_content(altered, "test-model")
+
+    def test_bounded_response_rejects_large_and_non_json_body(self):
+        with mock.patch.object(module.urllib.request, "build_opener") as builder:
+            response = io.BytesIO(b" " * (module.MAX_RESPONSE_BYTES + 1))
+            builder.return_value.open.return_value.__enter__.return_value = response
+            with self.assertRaises(ValueError):
+                module.request_json("http://127.0.0.1:8000/v1/models")
+        with mock.patch.object(module.urllib.request, "build_opener") as builder:
+            response = io.BytesIO(b"{bad json")
+            builder.return_value.open.return_value.__enter__.return_value = response
+            with self.assertRaises(ValueError):
+                module.request_json("http://127.0.0.1:8000/v1/models")
+
+    def test_http_error_is_bounded_diagnostic_and_partial_evidence(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            result = Path(tmp) / "failed.json"
+            args = ["pilot", "--run", "--output", str(result)]
+            def fake_request(url, payload=None):
+                if url.endswith("/models"):
+                    return {"data": [{"id": "fake-model"}]}
+                raise urllib.error.HTTPError(
+                    url, 400, "Bad Request", {},
+                    io.BytesIO(b'{"error":{"message":"Unsupported parameter: seed"}}'),
+                )
+            with mock.patch.object(sys, "argv", args), \
+                 mock.patch.object(module, "treatment_context",
+                                   return_value=(b"treated", "invokrum 0.2.1")), \
+                 mock.patch.object(module, "request_json", side_effect=fake_request):
+                with self.assertRaises(urllib.error.HTTPError):
+                    module.main()
+            recorded = json.loads(result.read_text())
+            self.assertEqual(recorded["runs"], [])
+            self.assertEqual(recorded["error"]["http_status"], 400)
+            self.assertEqual(recorded["error"]["http_reason"], "Bad Request")
+            self.assertEqual(recorded["error"]["parameter_hints"], ["seed"])
+            self.assertLessEqual(len(recorded["error"]["http_reason"]), 128)
 
     def test_bad_fixture_fails_closed(self):
         fixture = json.loads(module.FIXTURE.read_text())

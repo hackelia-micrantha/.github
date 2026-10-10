@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import http.client
 import json
 import os
 import subprocess
@@ -19,6 +20,7 @@ FIXTURE = ROOT / "tests/fixtures/standing-guidance-pilot.json"
 PACK = ROOT / "micrantha-prompt-pack.yaml"
 GOLDEN = ROOT / "tests/fixtures/micrantha-prompt-pack-golden.json"
 PROFILE = "engineering-artifact-review"
+MAX_RESPONSE_BYTES = 1024 * 1024  # upper bound for each adapter response
 BASELINE = (
     "Review the engineering artifact for decision readiness. "
     "Identify material defects; do not invent blockers. "
@@ -91,7 +93,13 @@ def request_json(url: str, payload: dict | None = None) -> dict:
     # Ignore proxy environment variables and refuse redirects to non-loopback hosts.
     opener = urllib.request.build_opener(urllib.request.ProxyHandler({}), RejectRedirect)
     with opener.open(req, timeout=90) as response:
-        return json.load(response)
+        data = response.read(MAX_RESPONSE_BYTES + 1)
+        if len(data) > MAX_RESPONSE_BYTES:
+            raise ValueError("Model endpoint JSON response exceeds 1 MiB limit")
+        try:
+            return json.loads(data)
+        except (UnicodeError, json.JSONDecodeError) as exc:
+            raise ValueError("Model endpoint returned invalid JSON") from exc
 
 
 def parse_answer(content: str) -> dict | None:
@@ -113,20 +121,69 @@ def parse_answer(content: str) -> dict | None:
         return None
 
 
-def completion_content(result: dict) -> str:
-    """Validate the expected success envelope before any score or evidence claim."""
+def response_metadata(response: object) -> dict:
+    """Bounded attribution fields from a completion; absent fields stay unknown."""
+    if not isinstance(response, dict):
+        return {}
+    choice = response.get("choices")
+    first = choice[0] if isinstance(choice, list) and choice else None
+    values = {
+        "response_id": response.get("id"),
+        "served_model": response.get("model"),
+        "system_fingerprint": response.get("system_fingerprint"),
+        "finish_reason": first.get("finish_reason") if isinstance(first, dict) else None,
+    }
+    return {
+        key: val[:256] if isinstance(val, str) else None
+        for key, val in values.items()
+    }
+
+
+def completion_content(result: dict, requested_model: str) -> tuple[str, dict]:
+    """Validate model attribution and completion integrity before scoring."""
     if not isinstance(result, dict):
-        raise ValueError("Malformed completion: expected a JSON object")
+        raise ValueError("Malformed completion: expected JSON object")
+    served_model = result.get("model")
+    if not isinstance(served_model, str) or not served_model.strip():
+        raise ValueError("Completion model identity missing")
+    if served_model != requested_model:
+        raise ValueError("Completion model identity does not match requested model")
     choices = result.get("choices")
-    if not isinstance(choices, list) or not choices:
-        raise ValueError("Malformed completion: missing nonempty choices")
+    if not isinstance(choices, list) or len(choices) != 1:
+        raise ValueError("Malformed completion: expected exactly one choice")
     first = choices[0]
     if not isinstance(first, dict) or not isinstance(first.get("message"), dict):
         raise ValueError("Malformed completion: missing message")
+    if first.get("finish_reason") != "stop":
+        raise ValueError("Completion was not finished normally; cannot score")
     content = first["message"].get("content")
     if not isinstance(content, str):
         raise ValueError("Malformed completion: content must be a string")
-    return content
+    return content, response_metadata(result)
+
+
+def failure_detail(exc: Exception) -> dict:
+    """Save bounded, non-sensitive HTTP status/reason without raw error bodies."""
+    detail = {"failure_type": type(exc).__name__}
+    if isinstance(exc, urllib.error.HTTPError):
+        detail["http_status"] = int(exc.code)
+        # Do not persist raw HTTP reason/body: local adapters may echo tokens
+        # or portions of user prompts. Keep status plus safe categorical hints.
+        detail["http_reason"] = http.client.responses.get(exc.code, "HTTP error")[:128]
+        try:
+            body = exc.read(2049)
+            if len(body) <= 2048:
+                parsed = json.loads(body)
+                error = parsed.get("error") if isinstance(parsed, dict) else None
+                msg = error.get("message") if isinstance(error, dict) else None
+                if isinstance(msg, str):
+                    lowered = msg.lower()
+                    if any(flag in lowered for flag in ("unsupported", "invalid", "unknown", "unrecognized")):
+                        hints = ["seed", "max_tokens", "temperature", "model"]
+                        detail["parameter_hints"] = [p for p in hints if p in lowered]
+        except (UnicodeError, ValueError, OSError):
+            pass  # A failed diagnostic parse must not obscure the HTTP failure.
+    return detail
 
 
 def score(case: dict, answer: dict | None) -> dict | None:
@@ -237,9 +294,7 @@ def main() -> int:
         evidence["model"] = model
         evidence["model_advertised_metadata"] = next(m for m in models if m["id"] == model)
     except (OSError, ValueError, urllib.error.URLError) as exc:
-        evidence["error"] = {
-            "stage": "model_discovery", "failure_type": type(exc).__name__,
-        }
+        evidence["error"] = {"stage": "model_discovery", **failure_detail(exc)}
         save_evidence(args.output, evidence)
         raise
     save_evidence(args.output, evidence)
@@ -262,14 +317,17 @@ def main() -> int:
                         {"role": "user", "content": prompt},
                     ],
                 }
+                result = None  # Do not attribute a later failed call to an earlier response.
                 try:
                     result = request_json(endpoint + "/chat/completions", payload)
-                    raw = completion_content(result)
+                    raw, metadata = completion_content(result, model)
                 except (OSError, ValueError, urllib.error.URLError) as exc:
                     evidence["error"] = {
                         "case_id": case["id"], "repetition": repetition,
-                        "condition": condition, "failure_type": type(exc).__name__,
+                        "condition": condition, **failure_detail(exc),
                     }
+                    if result is not None:
+                        evidence["error"]["response_metadata"] = response_metadata(result)
                     save_evidence(args.output, evidence)
                     raise
                 parsed = parse_answer(raw)
@@ -277,6 +335,7 @@ def main() -> int:
                     "case_id": case["id"], "repetition": repetition,
                     "condition": condition, "seed": payload["seed"],
                     "content": raw, "usage": result.get("usage"),
+                    "response_metadata": metadata,
                     "parsed": parsed, "screen": score(case, parsed),
                 })
                 save_evidence(args.output, evidence)

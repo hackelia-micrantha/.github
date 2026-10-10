@@ -26,7 +26,11 @@ relative to a minimal task-specific review instruction?
 - Measures: decision-key matches, seeded material-section hits, unkeyed
   material sections, malformed outputs, and reported token usage (when the
   server actually returns it). Inspect per-case repeat spread; do not
-  generalize to all models, readers or artifact types.
+  generalize to all models, readers or artifact types. Each scored call must
+  include matching requested/served model IDs and `finish_reason=stop`.
+  Record response ID, system fingerprint when provided, and token usage without
+  inventing values. A matching model ID can still be a mutable alias; without
+  independently pinned weights/server build, actual model revision is unverified.
 
 The mechanical ID screen is **not** an independent semantic grader. Blinded
 human adjudication must review raw text for missed/false findings and whether
