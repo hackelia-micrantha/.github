@@ -9,10 +9,9 @@ on:
         type: string
         default: nix flake check --print-build-logs
       runner:
-        description: GitHub runner label
-        required: false
+        description: Exact reviewed repository runner label; caller must bind policy
+        required: true
         type: string
-        default: ubuntu-latest
       working-directory:
         description: Repository-relative working directory
         required: false
