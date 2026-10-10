@@ -327,6 +327,12 @@ Instead, perform independent useful review, inspection, documentation, issue rec
 
 Pause or escalate only when the next meaningful transition is actually blocked by policy, missing evidence, unavailable access, or material ambiguity.
 
+### External CI wait handoff
+
+When CI, a build, or review is pending, park **only** the transition gated by that evidence. Record a compact wait reference: provider/repository, PR or merge-queue subject, exact candidate revision, required check identities, known run IDs, and the dependent transition. Continue already-authorized work that does not require the pending result: read-only inspection, security review, and evidence gathering may examine the **same exact candidate** while its CI is pending. Concurrent mutable transitions require satisfied dependencies and non-conflicting write scopes; they must not change the waiting candidate or invalidate its evidence. Preserve single-writer branch/worktree ownership, runner admission limits, and composed-candidate gates.
+
+External notifications are **wake hints**, not evidence or authority. On notification or bounded reconciliation, read back the current provider result, required check set, and exact candidate. Missing, skipped, cancelled, or stale checks do not pass a gate; distinguish runner/infrastructure failure from product failure. Avoid indefinite polling. If no independent work is eligible, checkpoint the pending wait and wake condition rather than inventing another task. An interactive session cannot resume itself after it ends; durable wake-up is owned by Dubnium's existing orchestration runtime.
+
 ## Loop classes
 
 Use explicit loop classes so repetition has a reason:
