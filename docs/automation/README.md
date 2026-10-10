@@ -29,7 +29,7 @@ The starter templates intentionally remain small:
 
 Repositories own the actual task definitions, test coverage, build graph, and required checks. A starter template is an adoption aid, not proof that the repository satisfies the organization standards.
 
-GitHub replaces `$default-branch` when a starter template is installed. Repositories should review generated event triggers, runner selection, concurrency, permissions, task names, and the pinned shared-workflow revision before making the workflow required.
+GitHub replaces `$default-branch` when a starter template is installed. **Before enabling a template**, replace `runner-REPLACE_WITH_APPROVED_KEY` with the exact repository-approved runner selector and review public-PR/fork execution boundaries, event triggers, concurrency, permissions, task names, and the pinned shared-workflow revision. The placeholder intentionally matches no registered runner and is not a working default; untrusted fork code must not run on privileged JIT.
 
 The starter templates are pinned to the reviewed automation-v1 candidate commit `c0016c206607f6f101b8e6b70340ad7d4ab52837`. They must not be changed back to `@main`; advancing the pin is a reviewed shared-automation version change.
 
@@ -44,7 +44,7 @@ They:
 
 - use read-only `contents` permission;
 - do not inherit or request caller secrets;
-- use GitHub-hosted runners by default;
+- require a caller-supplied reviewed runner label; do not silently fall back to GitHub-hosted Linux;
 - expose bounded inputs for task, command, runner, working directory, and delegated-job timeout;
 - pin external actions to reviewed commit SHAs;
 - avoid deployment, release, mutation, or approval behavior.
