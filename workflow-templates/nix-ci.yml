@@ -1,8 +1,8 @@
 name: Nix flake CI
 
 on:
-  pull_request:
-    branches: [$default-branch]
+  # Templates do not execute PR-controlled workflow definitions on privileged JIT.
+  # Enable PR validation only with a separately reviewed trusted admission boundary.
   push:
     branches: [$default-branch]
 
