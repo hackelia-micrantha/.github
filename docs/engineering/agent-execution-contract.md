@@ -356,6 +356,14 @@ Default guidance unless a project defines stronger limits:
 
 Budget exhaustion does not authorize broader access, looser validation, or weaker acceptance criteria.
 
+### Causal convergence and stopping discipline
+
+Before each substantive loop, identify the decision it serves, one causal intervention, its pass condition, and the consequence if it fails. Apply the consequence before choosing a next step; a successful command or interesting result does not itself justify more work.
+
+When a gate fails, examine the complete causally relevant artifact and evidence, not a selected diagnostic excerpt, before naming a cause. Change one causal factor at a time so the result is attributable; accompanying tests and documentation may verify that same change. Never modify evidence or lower a gate merely to obtain a pass. A genuinely defective verifier requires its own justified review.
+
+If a third attempt would reuse the same mechanism, prompt, instrument, or readers without material new evidence, change the lever or park/escalate. Three consecutive comparable failures of one gate require reconsidering the design and gate before another local defect fix. Existing retry limits and effect-authority boundaries still apply.
+
 ## Escalation conditions
 
 Escalate rather than improvise when:

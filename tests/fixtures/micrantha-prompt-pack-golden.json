@@ -80,7 +80,7 @@
       }
     },
     "engineering-artifact-review": {
-      "context_sha256": "46db9b6ff7dde3db5bb1ae04f15b7d98fde551a539bb88c092faa963ad7a859d",
+      "context_sha256": "ed65c11210ca6d56dc855d4248d707be6a7e856df4a9100f915a455bc64394d2",
       "inspect": {
         "command": "inspect",
         "entries": [
@@ -97,25 +97,25 @@
             "source": "docs/prompts/overlays/cross-project-execution.md"
           },
           {
-            "byte_length": 6622,
+            "byte_length": 7926,
             "class": "workflow",
             "overlay": "engineering-artifact-review",
             "source": "docs/prompts/reviews/engineering-artifact-review.md"
           }
         ],
         "format": "invokrum.cli/v1",
-        "output_bytes": 34488,
+        "output_bytes": 35792,
         "pack": "micrantha-meta-prompts",
         "profile": "engineering-artifact-review",
         "schema": "invokrum.dev/v1",
-        "source_bytes": 34484
+        "source_bytes": 35788
       },
       "lock": {
         "format": "invokrum.lock/v1",
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "2de51b01449e18df996a205c72f99bb1364eff84dd1b36f469f73dedd6165958",
+          "engine_inputs_digest": "2897edfb141052c72cf5aa03fabac11f9243b12cebf1a656b0fb764b60f4b5c3",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -144,16 +144,16 @@
               "class": "workflow",
               "id": "engineering-artifact-review",
               "source": "docs/prompts/reviews/engineering-artifact-review.md",
-              "byte_length": 6622,
-              "digest": "380c1d7dd2dfdaa2fcce852cb1abc8d5398e1019dfdf4c8375ceb7b3a49f0986"
+              "byte_length": 7926,
+              "digest": "999e8019b67da9d37f6d33141f0ae2db16c502eb4335ab4af43ea6849ce891c4"
             }
           ],
           "output": {
-            "byte_length": 34488,
-            "digest": "46db9b6ff7dde3db5bb1ae04f15b7d98fde551a539bb88c092faa963ad7a859d"
+            "byte_length": 35792,
+            "digest": "ed65c11210ca6d56dc855d4248d707be6a7e856df4a9100f915a455bc64394d2"
           }
         },
-        "manifest_digest": "cfd7fd5999fa6c4d32cbbcca192380d63ef7a52114302693831c9b7b8663822b"
+        "manifest_digest": "8e06374cb54734cbd4175abca8ed4e8d3551a822295c56a83bc17de17626c2ca"
       }
     },
     "issue-grooming": {

@@ -87,6 +87,16 @@ Do not merely summarize or praise the artifact. Identify defects that could caus
 - Is priority repository-global and separate from blocked status?
 - Does an epic identify its next executable slice and outcome-based exit criteria?
 
+### 9. Reader-facing and empirical artifacts (when applicable)
+
+Apply these checks only when the artifact summarizes material for a reader, defines human-content profiles, or makes empirical claims about model/reader performance:
+
+- **Drift:** Can the intended reader or advisor use the addition, or does it serve a count that became its own workstream? If instructions already state the requirement, report non-compliance rather than adding duplicate guidance.
+- **Human profiles:** Let actual human examples establish appropriate content kinds, not item or length targets; omit unsupported patterns unless there is an explicit reason.
+- **Over-fit:** Would the rule survive a different document shape/type, model, and reader? Reject run-specific ordinals, labels, counts, or thresholds without independent justification.
+- **Measurement:** For variable empirical comparisons, use at least three comparable replicates per condition; report within-document spread as the noise floor and treat differences inside that spread as inconclusive. Attribute a count only to a named script and define what it counted.
+- **Convergence:** For repeated evaluations, follow the [execution contract](../../engineering/agent-execution-contract.md) rather than changing criteria or expanding prose after every result.
+
 ## Required output
 
 ### A. Verdict
