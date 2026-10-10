@@ -31,6 +31,14 @@ class RunnerPlacementContracts(unittest.TestCase):
                 self.assertNotIn("default:", runner)
                 self.assertNotIn("ubuntu-", runner)
 
+    def test_shared_nix_reuses_jit_nix_substrate(self) -> None:
+        text = SHARED[0].read_text(encoding="utf-8")
+        self.assertIn("if: ${{ startsWith(inputs.runner, 'runner-') }}", text)
+        self.assertIn("command -v nix", text)
+        self.assertIn("nix --version", text)
+        self.assertIn("if: ${{ !startsWith(inputs.runner, 'runner-') }}", text)
+        self.assertIn("uses: cachix/install-nix-action@", text)
+
     def test_starters_are_unconfigured_and_push_only(self) -> None:
         for path in STARTERS:
             with self.subTest(path=path.name):
