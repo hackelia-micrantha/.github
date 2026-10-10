@@ -2,7 +2,7 @@
 
 Use this entry point when the operator says **proceed**, **continue**, **keep going**, **next**, or an equivalent short continuation request during an established Micrantha/Ryjen engineering task.
 
-For an explicit complex-project **end-to-end delivery** request, use [Deliver to Done](deliver-to-done.md) to anchor the consumer outcome and delivery evidence. An ordinary **proceed** continues the existing completion contract; it does not select a new goal or authorize new effects.
+For an explicit complex-project **end-to-end delivery** request, use [Deliver to Done](long-running-agent-execution.md#deliver-to-done) to anchor the consumer outcome and delivery evidence. An ordinary **proceed** continues the existing completion contract; it does not select a new goal or authorize new effects.
 
 This is **intent routing**, not a new execution contract. Compose the current [Supervisor operating profile](../../engineering/chatgpt-supervisor-operating-profile.md), [long-running execution skill](../../../skills/long-running-execution/SKILL.md), [long-running agent execution prompt](long-running-agent-execution.md), and the narrowest applicable review/CI/security/merge-gate prompts. Apply the [cross-project execution overlay](../overlays/cross-project-execution.md).
 
