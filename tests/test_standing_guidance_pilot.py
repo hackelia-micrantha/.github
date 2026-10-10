@@ -52,6 +52,42 @@ class PilotTests(unittest.TestCase):
             "decision": "ready", "findings": [],
         })["unkeyed_material_sections"], [])
 
+    def test_missing_or_invalid_reasons_do_not_count_as_valid_findings(self):
+        template = '{"decision":"fix","findings":[{"section":"R2","severity":"blocker",%s}]}'
+        invalid = ('"extra":"no reason"', '"reason":42', '"reason":null',
+                   '"reason":""', '"reason":"  "')
+        for field in invalid:
+            with self.subTest(field=field):
+                self.assertIsNone(module.parse_answer(template % field))
+        self.assertIsNotNone(module.parse_answer(
+            template % '"reason":"Unauthenticated header is trusted"'
+        ))
+
+    def test_malformed_completion_keeps_partial_failure_evidence(self):
+        with tempfile.TemporaryDirectory() as temp:
+            out = Path(temp) / "partial.json"
+            args = ["pilot", "--run", "--output", str(out)]
+            for malformed in ({"choices": []}, {"choices": [{}]},
+                              {"choices": [{"message": {}}]},
+                              {"choices": [{"message": {"content": 42}}]}):
+                if out.exists():
+                    out.unlink()
+                def fake_request(url, payload=None):
+                    if url.endswith("/models"):
+                        return {"data": [{"id": "fake-model"}]}
+                    return malformed
+                with self.subTest(result=malformed), \
+                     mock.patch.object(sys, "argv", args), \
+                     mock.patch.object(module, "treatment_context", return_value=(b"treatment", "invokrum 0.2.1")), \
+                     mock.patch.object(module, "request_json", side_effect=fake_request):
+                    with self.assertRaises(ValueError):
+                        module.main()
+                evidence = json.loads(out.read_text())
+                self.assertEqual(evidence["runs"], [])
+                self.assertEqual(evidence["error"]["case_id"], "rfc-authz")
+                self.assertEqual(evidence["error"]["failure_type"], "ValueError")
+                self.assertEqual(evidence["error"]["condition"], "baseline")
+
     def test_eighteen_calls_and_persisted_evidence_with_mock_transport(self):
         # This is synthetic harness validation, NOT actual model evaluation.
         with tempfile.TemporaryDirectory() as temp:

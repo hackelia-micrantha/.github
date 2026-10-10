@@ -102,12 +102,31 @@ def parse_answer(content: str) -> dict | None:
         if not isinstance(parsed.get("findings"), list):
             return None
         if any(not isinstance(f, dict) or not isinstance(f.get("section"), str)
+               or not f["section"].strip()
                or f.get("severity") not in {"blocker", "material", "suggestion"}
+               or not isinstance(f.get("reason"), str)
+               or not f["reason"].strip()
                for f in parsed["findings"]):
             return None
         return parsed
     except (json.JSONDecodeError, TypeError):
         return None
+
+
+def completion_content(result: dict) -> str:
+    """Validate the expected success envelope before any score or evidence claim."""
+    if not isinstance(result, dict):
+        raise ValueError("Malformed completion: expected a JSON object")
+    choices = result.get("choices")
+    if not isinstance(choices, list) or not choices:
+        raise ValueError("Malformed completion: missing nonempty choices")
+    first = choices[0]
+    if not isinstance(first, dict) or not isinstance(first.get("message"), dict):
+        raise ValueError("Malformed completion: missing message")
+    content = first["message"].get("content")
+    if not isinstance(content, str):
+        raise ValueError("Malformed completion: content must be a string")
+    return content
 
 
 def score(case: dict, answer: dict | None) -> dict | None:
@@ -224,6 +243,7 @@ def main() -> int:
                 }
                 try:
                     result = request_json(endpoint + "/chat/completions", payload)
+                    raw = completion_content(result)
                 except (OSError, ValueError, urllib.error.URLError) as exc:
                     evidence["error"] = {
                         "case_id": case["id"], "repetition": repetition,
@@ -231,7 +251,6 @@ def main() -> int:
                     }
                     save_evidence(args.output, evidence)
                     raise
-                raw = result["choices"][0]["message"]["content"]
                 parsed = parse_answer(raw)
                 evidence["runs"].append({
                     "case_id": case["id"], "repetition": repetition,
