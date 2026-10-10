@@ -79,7 +79,7 @@ On policy conflict, missing authority, material ambiguity, or exhausted budget, 
 
 Continue automatically through reversible, authorized, low-risk transitions while useful work remains.
 
-Do not stop merely because CI/builds/reviews are queued or running. Apply the [shared external-verification wait and ready-work selection contract](../../engineering/agent-execution-contract.md#external-verification-waits-and-ready-work-selection): persist the exact pending gate, choose only an authorized dependency-independent transition with isolated mutable scope, and reconcile results against current exact-head evidence instead of repeatedly polling.
+Do not stop merely because CI/builds/reviews are queued or running. Continue independent useful work that does not depend on the pending result.
 
 Do not ask for a generic `proceed` confirmation after each successful substep. Stop only when:
 
