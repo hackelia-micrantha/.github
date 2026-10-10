@@ -38,6 +38,10 @@ class RunnerPlacementContracts(unittest.TestCase):
         self.assertIn("nix --version", text)
         self.assertIn("if: ${{ !startsWith(inputs.runner, 'runner-') }}", text)
         self.assertIn("uses: cachix/install-nix-action@", text)
+        self.assertIn("EXTRA_NIX_CONFIG: ${{ inputs.extra-nix-config }}", text)
+        self.assertIn("ENABLE_KVM: ${{ inputs.enable-kvm }}", text)
+        self.assertIn('[[ -n "$EXTRA_NIX_CONFIG" || "$ENABLE_KVM" != "false" ]]', text)
+        self.assertIn("JIT Nix and KVM configuration must be owned", text)
 
     def test_starters_are_unconfigured_and_push_only(self) -> None:
         for path in STARTERS:
