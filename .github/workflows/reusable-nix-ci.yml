@@ -53,7 +53,15 @@ jobs:
       - name: Verify reviewed JIT Nix substrate
         if: ${{ startsWith(inputs.runner, 'runner-') }}
         shell: bash
+        env:
+          EXTRA_NIX_CONFIG: ${{ inputs.extra-nix-config }}
+          ENABLE_KVM: ${{ inputs.enable-kvm }}
         run: |
+          set -euo pipefail
+          if [[ -n "$EXTRA_NIX_CONFIG" || "$ENABLE_KVM" != "false" ]]; then
+            echo "JIT Nix and KVM configuration must be owned by the reviewed runner/project policy." >&2
+            exit 1
+          fi
           command -v nix
           nix --version
 
