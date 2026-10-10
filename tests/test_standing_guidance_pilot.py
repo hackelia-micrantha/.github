@@ -77,7 +77,7 @@ class PilotTests(unittest.TestCase):
                 def fake_request(url, payload=None):
                     if url.endswith("/models"):
                         return {"data": [{"id": "fake-model"}]}
-                    return malformed
+                    return {"model": "fake-model", **malformed}
                 with self.subTest(result=malformed), \
                      mock.patch.object(sys, "argv", args), \
                      mock.patch.object(module, "treatment_context", return_value=(b"treatment", "invokrum 0.2.1")), \
@@ -180,6 +180,30 @@ class PilotTests(unittest.TestCase):
             altered = {**good, **change}
             with self.subTest(change=change), self.assertRaises(ValueError):
                 module.completion_content(altered, "test-model")
+
+    def test_wrong_served_model_is_a_recorded_partial_failure(self):
+        with tempfile.TemporaryDirectory() as temp:
+            out = Path(temp) / "mismatch.json"
+            args = ["pilot", "--run", "--output", str(out)]
+            def fake_request(url, payload=None):
+                if url.endswith("/models"):
+                    return {"data": [{"id": "model-a"}]}
+                return {
+                    "id": "response-42", "model": "model-b",
+                    "system_fingerprint": "other-build",
+                    "choices": [{"finish_reason": "stop",
+                                 "message": {"content": '{"decision":"ready","findings":[]}'}}],
+                }
+            with mock.patch.object(sys, "argv", args), \
+                 mock.patch.object(module, "treatment_context",
+                                   return_value=(b"treated", "invokrum 0.2.1")), \
+                 mock.patch.object(module, "request_json", side_effect=fake_request):
+                with self.assertRaises(ValueError):
+                    module.main()
+            evidence = json.loads(out.read_text())
+            self.assertEqual(evidence["runs"], [])
+            self.assertEqual(evidence["error"]["response_metadata"]["served_model"], "model-b")
+            self.assertEqual(evidence["error"]["response_metadata"]["response_id"], "response-42")
 
     def test_bounded_response_rejects_large_and_non_json_body(self):
         with mock.patch.object(module.urllib.request, "build_opener") as builder:
