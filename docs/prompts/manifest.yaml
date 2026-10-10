@@ -38,14 +38,6 @@ prompts:
     do_not_use_when: There is no reliably identified active task or the task is trivial; never infer consequential effect authority.
     output: current exact state, verified transitions, active gates, next eligible action or precise blocker
 
-  - id: deliver-to-done
-    name: Deliver to Done — Outcome-Driven Supervisor
-    file: planning/deliver-to-done.md
-    category: planning
-    use_when: A substantial project task has a stated consumer outcome and should be carried through integrated delivery and verified completion.
-    do_not_use_when: Trivial tasks, ordinary status review, or continuing an already scoped run without a delivery-goal change (use proceed).
-    output: completion contract, critical-path slices and verification, exact delivered state or precise blocked transition
-
   - id: update-issues
     name: Update Issues — Evidence Reconciliation
     file: issues/update-issues.md
