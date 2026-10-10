@@ -163,6 +163,21 @@ def save_evidence(path: Path, data: dict) -> None:
     os.replace(tmp, path)
 
 
+def model_entries(response: object) -> list[dict]:
+    """Require the minimal OpenAI-compatible model-discovery envelope."""
+    if not isinstance(response, dict) or not isinstance(response.get("data"), list):
+        raise ValueError("Malformed models response: data must be a list")
+    models = response["data"]
+    if not models or any(
+        not isinstance(entry, dict)
+        or not isinstance(entry.get("id"), str)
+        or not entry["id"].strip()
+        for entry in models
+    ):
+        raise ValueError("Malformed models response: expected nonempty models with string IDs")
+    return models
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--invokrum", default="invokrum")
@@ -209,19 +224,25 @@ def main() -> int:
         return 0
     if args.output is None:
         parser.error("--output is required with --run")
-    models = request_json(endpoint + "/models").get("data", [])
-    names = [m["id"] for m in models]
-    if not names:
-        raise ValueError("No models reported by endpoint")
-    model = args.model or names[0]
-    if model not in names:
-        raise ValueError(f"Requested model {model!r} absent from endpoint")
-    evidence["model"] = model
-    evidence["model_advertised_metadata"] = next(m for m in models if m["id"] == model)
-
-    # Exclusive creation avoids silent overwrites. Persist raw evidence after each call.
+    # Reserve a new result path before contacting the endpoint; even discovery
+    # failures retain exact preflight identity and are not mistaken for a run.
     with args.output.open("x", encoding="utf-8") as target:
         json.dump(evidence, target, indent=2)
+    try:
+        models = model_entries(request_json(endpoint + "/models"))
+        names = [m["id"] for m in models]
+        model = args.model or names[0]
+        if model not in names:
+            raise ValueError(f"Requested model {model!r} absent from endpoint")
+        evidence["model"] = model
+        evidence["model_advertised_metadata"] = next(m for m in models if m["id"] == model)
+    except (OSError, ValueError, urllib.error.URLError) as exc:
+        evidence["error"] = {
+            "stage": "model_discovery", "failure_type": type(exc).__name__,
+        }
+        save_evidence(args.output, evidence)
+        raise
+    save_evidence(args.output, evidence)
     for case in fixture["cases"]:
         for repetition in range(3):
             for condition, system_text in (

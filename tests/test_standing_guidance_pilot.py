@@ -88,6 +88,29 @@ class PilotTests(unittest.TestCase):
                 self.assertEqual(evidence["error"]["failure_type"], "ValueError")
                 self.assertEqual(evidence["error"]["condition"], "baseline")
 
+    def test_malformed_models_response_keeps_partial_failure_evidence(self):
+        with tempfile.TemporaryDirectory() as temp:
+            out = Path(temp) / "models-error.json"
+            args = ["pilot", "--run", "--output", str(out)]
+            bad_responses = (
+                [], {"data": None}, {"data": []}, {"data": [None]},
+                {"data": [{}]}, {"data": [{"id": 32}]},
+                {"data": [{"id": ""}]}, {"data": [{"id": "  "}]},
+            )
+            for response in bad_responses:
+                if out.exists():
+                    out.unlink()
+                with self.subTest(response=response), \
+                     mock.patch.object(sys, "argv", args), \
+                     mock.patch.object(module, "treatment_context", return_value=(b"treated", "invokrum 0.2.1")), \
+                     mock.patch.object(module, "request_json", return_value=response):
+                    with self.assertRaises(ValueError):
+                        module.main()
+                evidence = json.loads(out.read_text())
+                self.assertEqual(evidence["runs"], [])
+                self.assertEqual(evidence["error"]["stage"], "model_discovery")
+                self.assertEqual(evidence["error"]["failure_type"], "ValueError")
+
     def test_eighteen_calls_and_persisted_evidence_with_mock_transport(self):
         # This is synthetic harness validation, NOT actual model evaluation.
         with tempfile.TemporaryDirectory() as temp:
