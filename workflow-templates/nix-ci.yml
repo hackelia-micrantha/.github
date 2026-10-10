@@ -19,3 +19,5 @@ jobs:
     uses: hackelia-micrantha/.github/.github/workflows/reusable-nix-ci.yml@c0016c206607f6f101b8e6b70340ad7d4ab52837 # automation-v1 candidate
     with:
       command: nix flake check --print-build-logs
+      # Replace with the registered exact JIT key and review fork boundaries before enabling PRs.
+      runner: runner-REPLACE_WITH_APPROVED_KEY
