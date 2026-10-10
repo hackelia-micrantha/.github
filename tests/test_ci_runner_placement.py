@@ -43,15 +43,19 @@ class RunnerPlacementContracts(unittest.TestCase):
         self.assertIn('[[ -n "$EXTRA_NIX_CONFIG" || "$ENABLE_KVM" != "false" ]]', text)
         self.assertIn("JIT Nix and KVM configuration must be owned", text)
 
-    def test_starters_are_unconfigured_and_push_only(self) -> None:
+    def test_starters_are_unconfigured_and_manual_only(self) -> None:
         for path in STARTERS:
             with self.subTest(path=path.name):
                 text = path.read_text(encoding="utf-8")
                 trigger = text.split("\npermissions:\n", maxsplit=1)[0]
-                self.assertIn("  push:\n", trigger)
-                self.assertIn("    branches: [$default-branch]", trigger)
+                self.assertIn("  workflow_dispatch:\n", trigger)
+                self.assertNotIn("  push:\n", trigger)
                 self.assertNotIn("  pull_request:\n", trigger)
                 self.assertNotIn("  pull_request_target:\n", trigger)
+                self.assertIn(
+                    "if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)",
+                    text,
+                )
                 self.assertIn(f"      runner: {UNCONFIGURED}\n", text)
                 self.assertNotIn("runner: ubuntu-", text)
 
