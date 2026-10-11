@@ -29,6 +29,18 @@ For coding, refactoring, and code-review transitions, use repository-accepted ar
 
 These are **heuristics, not mandatory class hierarchies or pattern quotas**. Prefer the simplest correct and secure design for current requirements and credible change points; avoid speculative interfaces, unnecessary indirection, and pattern-for-pattern's-sake code. Do not impose object-oriented idioms on functional, procedural, or data-oriented implementations. In reviews, identify an observable correctness, testability, maintainability, or extension cost before requesting refactoring; preserve behavior and verify the change. Explain consequential pattern choices and trade-offs briefly, without design-document ceremony for routine code.
 
+## UI state and presentation architecture
+
+For new or materially refactored interactive UI, **prefer a unidirectional state architecture** (Redux-like in data flow, not necessarily the Redux library), with a presenter/viewmodel owning presentation state and the operations that evolve it. Respect existing application architecture where it already satisfies these invariants.
+
+- **Reducers:** deterministic, synchronous state transitions from current state and typed actions/events; avoid I/O, hidden mutation, and side effects in reducers.
+- **Inducers:** explicitly named async/effect operations that coordinate services, navigation, persistence, and other external work, then dispatch actions/results back through reducers. Keep cancellation, stale-result handling, errors, and concurrency observable and testable.
+- **Presenter/viewmodel:** exposes state and user-facing intents/operations; owns or composes reducers and inducers without coupling domain/application logic to the view framework.
+- **View:** declaratively renders observable presenter/viewmodel state and forwards events/intents. A state change should drive recomposition/re-rendering; avoid alternate mutable UI state and imperative view patching that bypass the presenter.
+- **Boundaries:** make transient view-only concerns (for example focus or animation position) explicit, rather than forcing all ephemeral UI mechanics into global state. Choose state scope by ownership; do not introduce a global Redux store or framework dependency for an isolated component without demonstrated value.
+
+In design and code review, trace representative flows as **user intent → inducer (when needed) → action → reducer → new state → rendered view**. Verify pure reducer tests, async success/failure/cancellation and out-of-order completion, lifecycle/subscription cleanup, and observable render behavior at risk-appropriate layers. Treat these as architectural defaults rather than a mandate to rewrite working, idiomatic existing UI without a concrete problem.
+
 ## Default execution graph
 
 For non-trivial implementation and repository work, use this default shape unless a project-owned workflow defines a stronger one:
