@@ -101,6 +101,17 @@ All prompts in this library use the following decision rule:
 
 The goal is not to maximize questions. It is to prevent plausible but materially different interpretations from being converted into confident findings, decisions, priorities, or mutations.
 
+## Shared implementation design discipline
+
+For prompts that **produce, modify, refactor, or review code**, follow the repository's accepted architecture and language/runtime conventions. Apply clean-code principles and SOLID **where they improve the specific design**: cohesive responsibilities, explicit dependencies and contracts, understandable naming/control flow, low coupling, and testable boundaries. Consider established design patterns when recurring variation or integration seams justify them; prefer existing project patterns before introducing a new one.
+
+Treat these as design heuristics, **not** mandatory pattern counts, class hierarchies, or rules that supersede accepted architecture. In particular:
+
+- Keep the simplest implementation that satisfies current requirements, security constraints, and expected change points; avoid speculative abstraction, unnecessary interfaces, indirection, or pattern-for-pattern's-sake design.
+- Evaluate composition versus inheritance, extension versus modification, and dependency direction pragmatically. Do not force object-oriented SOLID vocabulary onto functional, procedural, data-oriented, or language-idiomatic solutions.
+- In code review, identify a **concrete** maintainability, correctness, testability, or extensibility failure before requesting a refactor. Favor small causal repairs and verify observable behavior and compatibility, rather than style-only churn.
+- Where a pattern or abstraction materially affects the solution, explain the trade-off briefly; otherwise do not add ceremony or standalone design documents.
+
 ## Shared validation and static-analysis contract
 
 For prompts that plan, implement, review, merge, complete, or release software, verify validation as a layered system rather than a generic “tests pass” claim.
