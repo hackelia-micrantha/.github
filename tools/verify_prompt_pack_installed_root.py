@@ -105,7 +105,7 @@ def verified_publisher_result(result: dict, subject: str, trusted_key: str) -> b
         and result["publisher_authentication"] == {
             "status": "verified-and-authorized",
             "mechanism": "ed25519-subject-v1",
-            "subject": subject,
+            "subject": subject.removeprefix("sha256:"),
             "identity": {"key.sha256": trusted_key},
         }
     )
