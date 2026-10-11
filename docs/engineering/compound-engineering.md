@@ -8,6 +8,10 @@ The default feedback loop is:
 Plan -> Work -> Review -> Compound -> Repeat
 ```
 
+This is the **durable learning loop**, not the ordinary repair/retry loop inside one task. A runtime may perform bounded `execute -> verify -> repair/replan -> execute` iterations to complete accepted work. Those iterations retain exact lineage and existing authority; they do not become standing guidance merely because they improved the current run.
+
+Only a reusable lesson that survives the relevant review/outcome boundary enters `Compound` for routing, validation, and possible promotion.
+
 This guidance is influenced by Every's [Compound Engineering](https://every.to/guides/compound-engineering) model, adapted to Micrantha's existing evidence, security, governance, and repository-ownership boundaries.
 
 `Compound` is not a new delivery authority, agent framework, memory system, or mandatory ceremony. It is the explicit post-review step that asks whether a useful lesson from completed work can be converted into a durable system improvement.

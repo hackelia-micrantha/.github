@@ -2,6 +2,30 @@
 
 This directory contains reusable prompts for evidence-backed engineering review, planning, decision-making, delivery, and security work across Micrantha repositories and registered `ryjen/*` project surfaces.
 
+
+## Invokrum consumer pack
+
+The repository-root [`micrantha-prompt-pack.yaml`](../../micrantha-prompt-pack.yaml) is the initial **Micrantha Meta Prompt Pack** consumer surface for Invokrum. It does not replace this library or duplicate prompt prose: its overlays reference these canonical Markdown files directly.
+
+The currently declared workflow profiles are:
+
+- `classify-and-route`;
+- `issue-grooming`;
+- `engineering-artifact-review`;
+- `merge-gate-review` — PR review/fix/merge decision support; resolved instructions do not grant merge authority.
+
+Each profile deterministically composes the shared contracts in this README, the required [cross-project execution overlay](overlays/cross-project-execution.md), and exactly one workflow prompt. Live project/task evidence remains host/runtime input and does not become trusted prompt authority merely by being supplied to a model.
+
+From a source checkout on a supported Invokrum host:
+
+```bash
+invokrum validate --pack ./micrantha-prompt-pack.yaml --profile issue-grooming
+invokrum inspect --pack ./micrantha-prompt-pack.yaml --profile issue-grooming --format json
+invokrum lock --pack ./micrantha-prompt-pack.yaml --profile issue-grooming > /tmp/micrantha-issue-grooming.lock
+```
+
+The pack uses exact repository revision plus Invokrum manifest/lock identity for source-checkout traceability. Immutable distribution should stage these exact canonical bytes into an `invokrum.pack-bundle/v1` candidate; generated bundle copies are release artifacts, not independently editable prompt sources. See [the pack-layout QART](../engineering/qart-micrantha-meta-prompt-pack.md).
+
 ## Cross-project execution overlay
 
 Every reusable prompt in this library applies the [Micrantha / Ryjen cross-project execution overlay](overlays/cross-project-execution.md) unless the prompt explicitly documents a narrower or incompatible scope rule.
@@ -22,6 +46,8 @@ The overlay composes with, and does not weaken or duplicate, the shared executio
 | `review CI workflows` | [CI/CD workflow architecture review](ci/ci-workflow-review.md) | CI/CD design needs review for performance, redundant computation, runner efficiency, evidence quality, security, or maintainability |
 | `classify this work` | [Classify and route engineering work](planning/classify-and-route.md) | Raw notes or mixed planning material must become the minimum responsible artifact set |
 | `what is next?` | [Next executable slice](planning/next-executable-slice.md) | A priority, issue, epic, or design needs conversion into one bounded implementation slice |
+| `proceed` / `continue` / `keep going` | [Proceed — operator continuation](planning/proceed.md) | Continue the current authorized engineering task from refreshed evidence without restarting or widening authority |
+| `update issues` / `sync tracking` | [Update issues — evidence reconciliation](issues/update-issues.md) | Reconcile and mutate bounded issue tracking against current implementation, PRs, CI, reviews, and acceptance criteria |
 | `proceed in loops` / `run this to completion` | [Long-running agent execution](planning/long-running-agent-execution.md) | A non-trivial task should continue through review, repair, validation, and gated-effect cycles without repeated continuation prompts |
 | `make this issue well groomed` | [Issue grooming](issues/issue-grooming.md) | An issue or small backlog needs an observable outcome, scope, acceptance criteria, and priority |
 | `do QART` | [QART decision analysis](decisions/qart-analysis.md) | Alternatives and trade-offs remain open |

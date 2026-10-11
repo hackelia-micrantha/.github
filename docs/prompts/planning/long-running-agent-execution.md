@@ -23,6 +23,38 @@ If this invocation is resuming a previous run, assume the prior session may have
 - **Consequential-effect authority:** [NONE / MERGE / RELEASE / DEPLOY / OTHER EXPLICIT EFFECTS]
 - **Required validation/evidence:** [REPOSITORY POLICY / CHECKS / TESTS / REVIEW REQUIREMENTS]
 
+## Deliver to Done
+
+Select this **outcome-driven mode** when the operator explicitly requests a complex project task delivered end-to-end, not for an ordinary `proceed` or a trivial one-step task. This mode specializes *outcome ownership* without creating a new workflow, authority source, retry budget, or completion standard. Preserve every execution/gate/recovery rule above and in the shared contract. Do not change an existing completion contract merely because `proceed` was repeated.
+
+### Compact invocation
+
+> Deliver **[OUTCOME]** to the stated **[MATURITY / CONSUMER]**. Establish an evidence-backed completion contract, recover current authoritative state, select the shortest safe critical path, and continue all authorized inspect/implement/review/fix/validate/integrate/verify transitions without generic continuation prompts. Verify the consumer-facing result and stop only at a verified terminal outcome or precise authority, policy, evidence, or bounded-indeterminate boundary. Do not mistake PRs, CI, or infrastructure activity for delivery.
+
+### Outcome execution overlay
+
+1. **Anchor the outcome.** Resolve the intended consumer and observable result, acceptance criteria, expected maturity, authoritative requirements/decisions, constraints, non-goals, and available authority. Distinguish prototype, integrated candidate, merge-ready, released, and deployed states. Resolve non-material gaps from evidence; escalate materially different interpretations at the affected transition. Keep this small completion contract stable unless intent is explicitly changed.
+2. **Recover current evidence.** Refresh the owning project and *minimal relevant* repository/consumer graph: main/base, exact candidate, existing issues/PRs/reviews, CI, contracts, delivery state, and prior handoff. Check uncertain writes by read-back before retry; do not replay effects or reconcile branches with unrelated main changes merely for freshness.
+3. **Own the critical path.** Identify the earliest unmet prerequisite on the shortest safe path to the consumer outcome. Prefer restoring security/correctness and critical infrastructure, removing blocking dependencies, completing integration, then proving delivery. Reuse active work and established designs. Separate completion blockers from optional polish; choose one reversible and independently verifiable slice at a time.
+4. **Execute to evidence.** For each substantive loop, identify the unmet criterion, causal hypothesis, single intervention, expected proof, and consequence if it fails. Apply only authorized changes; verify against the *exact resulting candidate* with risk-shaped testing/static analysis and independent review where policy requires it. Diagnose infrastructure, oracle, implementation, and authority failures separately. Re-review after repair; never edit evidence or weaken gates to pass.
+5. **Enforce convergence.** Ask whether the next action serves the original consumer outcome rather than the last tool result (**drift/momentum**). If guidance already covers a failure, correct non-compliance rather than restating it. If a third attempt repeats the same lever/readers without new evidence (**swirl**), change approach or escalate. Remove superseded material instead of layering, avoid fixture-only over-fitting, and do not expand into speculative services or new issues. Inherit the existing retry budgets across recovery.
+6. **Prove actual delivery.** Apply the [implementation completeness review](../reviews/implementation-completeness.md) to the stated maturity. Where applicable, verify the consumer's reachable end-to-end path, integration contracts, failure/security cases, exact-head validation, package/install/accessibility, operational recovery, and accuracy of public claims. A merged PR, green CI, or running process is not sufficient evidence of a usable product. Declare absent layers not applicable only with rationale.
+7. **Gate consequential effects.** Check exact subject identity, fresh evidence, unresolved blockers, independent review/policy, and **separate explicit authorization** before merge, release, publish, deploy, delete, permissions/credentials, external communication, or consequential closure. If blocked, continue independent useful work; never treat permission to implement or "proceed" as effect authority. Verify every authorized effect by external read-back.
+8. **Recover and close out.** Use the existing compact run ledger for exact revisions, completed versus missing evidence, current gate, uncertain effects, retry usage, and next eligible transition. Do not depend on chat continuity or claim autonomous work after the session ends. Reconcile existing issues/docs only within authorized scope; run a bounded Compound assessment *after* the outcome decision, without inventing learning artifacts.
+
+### Terminal outcome classification
+
+Choose the first accurate state; do not equate individual milestones with completion:
+
+- **Complete — verified:** the exact requested consumer outcome and applicable acceptance evidence are verified.
+- **Complete for stated maturity:** the declared prototype/incubating/etc. scope is verified and bounded enhancements are explicitly non-blocking.
+- **Ready — authority required:** all feasible pre-effect gates are satisfied, but the requested next consequential effect lacks explicit authority.
+- **Blocked — external dependency / decision:** a named missing capability, required evidence, policy approval, or material decision prevents the next transition.
+- **Indeterminate — bounded:** applicable evidence or retry budget cannot determine the effect/candidate state reliably; no unsafe retry.
+- **Superseded:** current authoritative evidence shows the outcome was already delivered or replaced.
+
+A terminal report must identify the intended versus observed outcome, exact subject/revision, verification evidence, any consequential effects and read-back, the smallest remaining delivery gap, and the exact next eligible transition or boundary. Avoid manufacturing work solely to populate closeout.
+
 ## Execution model
 
 Treat the run as:
@@ -58,6 +90,26 @@ Do not ask for a generic `proceed` confirmation after each successful substep. S
 - required evidence/capability is unavailable;
 - the retry/investigation budget is exhausted.
 
+## Session resilience and context pressure
+
+Treat the current interactive session as a disposable worker. Keep the run reconstructable from authoritative state plus the compact ledger rather than depending on uninterrupted conversational history.
+
+Prefer exact identifiers, bounded evidence summaries, targeted file/log ranges, and affected-subject refreshes over repeatedly loading broad unchanged state. Checkpoint or refresh the ledger when the candidate changes materially, consequential effects complete, substantial evidence accumulates, important state must be repeatedly reconstructed, or repeated transport failures make continuation fragile.
+
+When rollover to a fresh worker/session is available and continuation in place is materially less reliable, use:
+
+```text
+checkpoint -> rollover -> recover -> reconcile -> continue
+```
+
+Rollover does not reset authority, retry/investigation budgets, unresolved findings, candidate-bound evidence, freshness requirements, or active gates.
+
+Classify timeout/disconnect/provider/connector failures separately from candidate failures. For mutations, treat an interrupted result as unknown until authoritative read-back establishes whether the effect occurred; do not blindly retry potentially non-idempotent writes.
+
+Use targeted authoritative refresh after relevant mutations, externally mutable evidence changes, and before consequential gates. Avoid repeatedly enumerating the full project/repository state when only one PR, issue, head, workflow, or dependency changed.
+
+Concrete context thresholds, operation timeouts, restart/cancellation mechanics, and retry/backoff schedules belong to the owning runtime/project configuration.
+
 ## Recovery and session resumption
 
 When this is a fresh session continuing earlier work, or when a disconnect/tool failure leaves the previous operation uncertain, begin with:
@@ -76,6 +128,8 @@ Recovery must:
 6. reconstruct the active graph node, unresolved findings, evidence, gates, and retry budget from current state;
 7. invalidate stale candidate-bound evidence or approval when the candidate materially changed;
 8. resume from the first unverified safe transition rather than replaying the previous session blindly.
+
+Do not interpret `recover -> reconcile -> continue` as an unconditional instruction to merge/rebase/update from `main`. If `main` advanced, inspect the intervening changes. Preserve the existing topic-branch candidate when those changes are unrelated to its behavior, contracts, dependencies, generated/build inputs, validation assumptions, and admission policy. Recompose with current `main` only when the newer changes can materially affect the candidate or its evidence, create an actual conflict, or repository policy requires the composed candidate.
 
 Examples of effects that require reconciliation before retry include branch/file writes, issue/PR creation or updates, merges, releases, deployments, deletions, permissions/credentials, and external communications.
 
@@ -107,12 +161,15 @@ For each implementation loop:
 
 1. review the exact candidate against the requested outcome and accepted constraints;
 2. classify findings before changing code;
-3. make the smallest coherent repair;
-4. validate the exact changed candidate;
-5. re-review after validation;
-6. repeat only when new findings, changed evidence, or a materially changed hypothesis justify another cycle.
+3. for intent-to-implementation mismatches, classify the relationship as **missing**, **partial**, **contradicts**, or **unrequested** before diagnosing root cause;
+4. make the smallest coherent repair;
+5. validate the exact changed candidate;
+6. re-review after validation;
+7. repeat only when new findings, changed evidence, or a materially changed hypothesis justify another cycle.
 
-Classify failures as at least one of:
+Keep intent-gap type separate from failure cause, severity, priority, and final completion state. `unrequested` behavior is not automatically a defect; it may require justification, scope correction, compatibility review, or removal.
+
+Classify failures/root causes as at least one of:
 
 - implementation/correctness defect;
 - requirement/design mismatch;

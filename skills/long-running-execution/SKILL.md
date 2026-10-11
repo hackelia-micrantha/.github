@@ -80,7 +80,7 @@ current state -> blocked/escalate
 ## Workflow
 
 0. **Recover interrupted work when applicable.** Treat a prior session as potentially interrupted before, during, or after any external effect. Resolve authoritative current state first; reconcile the latest durable ledger/handoff if available; classify intended prior operations as verified complete, partial/uncertain, not started, or stale/conflicted; and perform read-after-write/idempotency checks before retrying uncertain effects. Resume from the first unverified safe transition, not from the last conversational sentence.
-1. **Discover authoritative state.** Inspect current code, issues, pull requests, branch/revision state, CI, accepted decisions, and repository-local policy needed for the goal. Do not reconstruct canonical state from conversation memory when an authoritative source exists.
+1. **Discover authoritative state.** Inspect current code, issues, pull requests, branch/revision state, CI, accepted decisions, and repository-local policy needed for the goal. Do not reconstruct canonical state from conversation memory when an authoritative source exists. Treat an advanced `main` as state to inspect, not an automatic instruction to rewrite the topic branch: merge/rebase/update only when intervening changes materially interact with the candidate or its verification, create an actual conflict, or repository admission policy requires a composed-current-main candidate.
 2. **Snapshot the exact subject.** Record the candidate/revision identity when later evidence or approval must bind to it.
 3. **Select bounded work.** Reuse accepted work items and architecture. Decompose only as needed for a reversible, independently verifiable increment.
 4. **Compose task-specific skills.** Use specialized skills such as `implementation-plan`, `pr-review`, `merge-readiness`, `security-review`, `test-strategy`, `release-integration`, or project-local skills where they govern a transition. Preserve the strictest authority, evidence, and completion requirement of all composed skills.
@@ -94,6 +94,18 @@ current state -> blocked/escalate
 12. **Execute only authorized effects.** Use expected-head/candidate protection where supported. Do not infer effect authority from prior successful reasoning, green CI, issue ownership, or write access.
 13. **Verify the resulting effect.** Confirm the intended externally observable state rather than treating an API/workflow success response as outcome proof. Preserve enough read-back in durable state to distinguish a completed effect from an interrupted one.
 14. **Close out or escalate precisely.** Report the resulting revision/state, evidence, effects, and remaining non-blocking work; or report the exact blocked transition and the smallest missing decision/capability.
+15. **Run the Compound assessment after a meaningful reviewed/terminal outcome.** Ask whether the system would catch or prevent the material lesson automatically next time. Route reusable findings to the weakest durable owner/control that reliably addresses them (for example test/invariant/tooling, docs/runbook, candidate Invokrum guidance, implementation/API, ADR/RFC, or governance proposal). `No reusable learning` is valid. Do not promote prompt/context guidance, policy, capabilities, defaults, or other trusted persistent state directly from the run; emit or update the appropriate candidate/tracked work and leave promotion to its owning authority.
+
+## Session resilience
+
+Keep the active session reconstructable from authoritative state plus the compact run ledger/handoff.
+
+- Prefer targeted refreshes, exact identifiers, and bounded evidence summaries over repeatedly loading unchanged broad repository state, whole files, or full logs.
+- Refresh/checkpoint the ledger when substantial context accumulates, the candidate changes materially, a consequential effect completes, or repeated transport failures make continuation fragile.
+- If worker/session rollover is available and continuing in-place has become materially less reliable, use `checkpoint -> rollover -> recover -> reconcile -> continue`.
+- Rollover does not reset authority, retry/investigation budgets, unresolved findings, evidence freshness, exact-candidate binding, or gates.
+- Treat a timeout/disconnect during mutation as an unknown effect until authoritative read-back proves success or absence; never blindly replay a potentially non-idempotent write.
+- Leave concrete context thresholds, wall-clock timeouts, restart/cancellation behavior, and backoff schedules to the owning runtime/project configuration.
 
 ## Recovery rules
 
@@ -182,6 +194,7 @@ A pending check is not itself a completion condition while independent useful wo
 
 ## References
 
+- `docs/engineering/chatgpt-supervisor-operating-profile.md` (interactive ChatGPT/Work bootstrap; non-normative relative to the execution contract)
 - `docs/engineering/agent-execution-contract.md`
 - `docs/engineering/ai-assisted-sdlc.md`
 - `docs/prompts/planning/long-running-agent-execution.md`

@@ -15,8 +15,8 @@ The checker does not replace repository-owned build, package, release, signing, 
 repository-owned release/build tooling
   -> build the real candidate artifact/package
   -> inspect generated output
-  -> exercise the supported clean-consumer path
-  -> normalize bounded evidence
+  -> normalize bounded producer evidence (prestage)
+  -> after publication, exercise the supported clean-consumer path (release)
             |
             v
 metadata/release-readiness.schema.json
@@ -44,6 +44,19 @@ Repository-owned release tooling should generate evidence only after exercising 
 - whether the generated artifact contains prohibited private/security/development material.
 
 The organization checker does not fetch arbitrary URLs or infer those facts from prose.
+
+## Evidence phases
+
+Normalized evidence may set `phase` to one of:
+
+- `prestage` — producer-side evidence for an immutable candidate before the public artifact is available for acquisition;
+- `release` — final/default readiness evidence for an externally consumable release.
+
+For backward compatibility, an omitted `phase` means `release`.
+
+`prestage` is intentionally narrow. It exists for staged-publication flows where digest, SBOM, provenance, package inspection, identity, and smoke evidence must be validated before publication makes clean-consumer acquisition possible. It does **not** waive repository posture, release authority, immutable acquisition intent, credential boundaries, artifact inspection, or CLI smoke checks.
+
+For a public distribution, `release` evidence still requires a clean/cache-miss consumer path with private credentials unavailable. A successful `prestage` check therefore means only that producer evidence is consistent enough to enter the separately authorized staging/publication step; it is not a release-readiness or promotion decision.
 
 ## Normalized identity
 

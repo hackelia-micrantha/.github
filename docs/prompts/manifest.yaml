@@ -30,6 +30,22 @@ prompts:
     do_not_use_when: Diagnosing one concrete failing run (use ci-failure-triage); reviewing a product code PR without a workflow-architecture concern.
     output: workflow architecture summary, execution graph, redundancy matrix, performance findings, security/evidence findings, prioritized changes, human decisions, final assessment
 
+  - id: proceed
+    name: Proceed — Operator Continuation
+    file: planning/proceed.md
+    category: planning
+    use_when: The operator asks to proceed, continue, keep going, or resume an established non-trivial engineering run.
+    do_not_use_when: There is no reliably identified active task or the task is trivial; never infer consequential effect authority.
+    output: current exact state, verified transitions, active gates, next eligible action or precise blocker
+
+  - id: update-issues
+    name: Update Issues — Evidence Reconciliation
+    file: issues/update-issues.md
+    category: issues
+    use_when: The operator explicitly asks to update issues or sync tracking for an active project/workstream.
+    do_not_use_when: The operator requests only a read-only issue review or an unrelated code/merge/deploy action.
+    output: linked issue mutations with evidence, unchanged/blocked items, next executable slice
+
   - id: next-executable-slice
     name: Next Executable Slice
     file: planning/next-executable-slice.md

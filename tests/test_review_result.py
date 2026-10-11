@@ -268,6 +268,71 @@ class ReviewResultTests(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "nonstandard JSON constant"):
             load_strict_json(path)
 
+    def test_strict_json_loader_rejects_duplicate_keys(self) -> None:
+        path = self.root / "duplicate.json"
+        path.write_text('{"result": "blocked", "result": "clean"}', encoding="utf-8")
+        with self.assertRaisesRegex(ValueError, "duplicate JSON object key"):
+            load_strict_json(path)
+
+    def test_private_bundle_rejects_public_source_transfer(self) -> None:
+        bundle = self.bundle(source_exposure="private")
+        bundle["review"]["external_source_transfer"]["state"] = "public-source"
+        unsigned = dict(bundle)
+        unsigned.pop("bundle_sha256")
+        bundle["bundle_sha256"] = hashlib.sha256(
+            json.dumps(
+                unsigned, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+            ).encode("utf-8")
+        ).hexdigest()
+        errors = validate_result(bundle, self.result(bundle, execution_location="external"))
+        self.assertIn(
+            "private/restricted source cannot claim public-source transfer", errors,
+        )
+
+    def test_explicit_transfer_requires_authorization_reference(self) -> None:
+        bundle = self.bundle(source_exposure="private")
+        bundle["review"]["external_source_transfer"]["state"] = "explicitly-authorized"
+        unsigned = dict(bundle)
+        unsigned.pop("bundle_sha256")
+        bundle["bundle_sha256"] = hashlib.sha256(
+            json.dumps(
+                unsigned, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+            ).encode("utf-8")
+        ).hexdigest()
+        errors = validate_result(bundle, self.result(bundle, execution_location="external"))
+        self.assertIn("explicit external transfer requires authorization_ref", errors)
+
+    def test_source_transfer_rejects_unknown_or_nonstring_states(self) -> None:
+        for field, bad in (
+            ("source_exposure", "unknown"),
+            ("source_exposure", ["private"]),
+        ):
+            with self.subTest(field=field, bad=bad):
+                bundle = self.bundle(source_exposure="private")
+                bundle["review"][field] = bad
+                unsigned = dict(bundle)
+                unsigned.pop("bundle_sha256")
+                bundle["bundle_sha256"] = hashlib.sha256(
+                    json.dumps(unsigned, sort_keys=True, separators=(",", ":"),
+                               ensure_ascii=False).encode("utf-8")
+                ).hexdigest()
+                errors = validate_result(bundle, self.result(bundle))
+                self.assertIn("bundle source_exposure is invalid", errors)
+
+    def test_public_source_cannot_claim_prohibited_transfer(self) -> None:
+        bundle = self.bundle()
+        bundle["review"]["external_source_transfer"]["state"] = "prohibited"
+        unsigned = dict(bundle)
+        unsigned.pop("bundle_sha256")
+        bundle["bundle_sha256"] = hashlib.sha256(
+            json.dumps(unsigned, sort_keys=True, separators=(",", ":"),
+                       ensure_ascii=False).encode("utf-8")
+        ).hexdigest()
+        self.assertIn(
+            "public source must use public-source transfer",
+            validate_result(bundle, self.result(bundle)),
+        )
+
     def test_result_schema_matches_contract_identifier(self) -> None:
         schema_path = (
             Path(__file__).resolve().parents[1]

@@ -33,6 +33,17 @@ A capability is not complete merely because code merged. Completion requires the
 
 Apply expectations appropriate to the declared maturity. A prototype may intentionally lack production operations, but must not be represented as stable.
 
+## Intent-to-implementation gap classification
+
+When implementation and authoritative intent do not agree, classify the gap before deciding severity, cause, or remediation:
+
+- **missing** — a required outcome, acceptance criterion, contract, or invariant is absent;
+- **partial** — the required behavior exists but does not fully satisfy the authoritative intent;
+- **contradicts** — current behavior conflicts with an authoritative requirement, accepted decision, or required invariant;
+- **unrequested** — current behavior extends beyond the stated intent and requires review for justification, scope, compatibility, or removal.
+
+Use this taxonomy only for **intent-to-implementation relationship**. Keep it separate from root cause (for example implementation defect, stale evidence, environment failure), severity, priority, and completion status. An `unrequested` behavior is not automatically a defect, and a `partial` behavior is not automatically safe enough to close.
+
 ## Evidence to inspect
 
 Inspect applicable:
@@ -177,6 +188,11 @@ State the authoritative intended outcome, actual current behavior, intended user
 ### C. Material findings
 
 List only findings that affect completion, maturity, safety, usability, truthful representation, the applicable test pyramid, or required static-analysis/build/CI gates.
+
+For intent-to-implementation findings, include the gap type (`missing`, `partial`, `contradicts`, or `unrequested`) and keep it distinct from severity/root cause. Prefer a compact table when multiple findings exist:
+
+| Finding | Gap type | Evidence | Completion impact | Root cause / next action |
+| --- | --- | --- | --- | --- |
 
 ### D. Remaining work
 
