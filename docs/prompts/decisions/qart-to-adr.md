@@ -28,6 +28,7 @@ An ADR is appropriate only when:
 - viable alternatives were considered fairly;
 - the recommendation is supported by current evidence;
 - material security, operational, compatibility, and migration consequences are understood;
+- expected observable consequences and material reassessment triggers are recorded when meaningful, or the source explains why outcome calibration would be artificial;
 - unresolved questions do not change the selected alternative;
 - the decision has an owner or authoritative scope;
 - implementation can proceed without reopening the central choice.
@@ -97,8 +98,11 @@ Record:
 - operational, observability, recovery, and ownership obligations;
 - migration, compatibility, versioning, and rollback effects;
 - testing and validation expectations;
+- expected observable consequences and the evidence/review trigger that would materially support or weaken the decision, where meaningful;
 - repository and contract implications;
 - future reassessment or supersession triggers.
+
+Do not add numeric forecasts merely to make an ADR look measurable. When later outcome evidence exists, link it without rewriting the historical decision context; amend or supersede the ADR through the repository's normal decision lifecycle when the evidence changes the authoritative choice.
 
 Do not hide implementation work inside “consequences.” Link or propose separate executable issues.
 
@@ -189,6 +193,16 @@ Use:
 ### Validation
 
 - ...
+
+## Expected outcomes and review
+
+- **Expected observable consequences:** [OUTCOMES OR "Not meaningfully measurable" with reason]
+- **Material assumptions:** [ASSUMPTIONS]
+- **Evidence that would support or weaken the decision:** [EVIDENCE]
+- **Review trigger:** [DATE / EVENT / THRESHOLD / NONE WITH REASON]
+- **Supersession condition:** [CONDITION]
+
+Later review evidence should be linked here or through a successor decision record without retroactively rewriting the original decision basis.
 
 ## Implementation follow-up
 

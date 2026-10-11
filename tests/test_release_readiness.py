@@ -146,6 +146,177 @@ class ReleaseReadinessTests(unittest.TestCase):
             [],
         )
 
+    def package_prestage_evidence(self) -> tuple[dict[str, object], dict[str, object]]:
+        canonical = self.entry(
+            "hackelia-micrantha/phyllotaxis",
+            visibility="private",
+            source_exposure="private",
+            repository_role="canonical",
+            distribution_mode="package",
+            implementationAuthority="hackelia-micrantha/phyllotaxis",
+            releaseAuthority="hackelia-micrantha/phyllotaxis",
+        )
+        evidence = self.binary_evidence()
+        evidence["phase"] = "prestage"
+        evidence["repository"] = "hackelia-micrantha/phyllotaxis"
+        evidence["release"]["releaseAuthority"] = "hackelia-micrantha/phyllotaxis"
+        evidence["acquisition"]["mode"] = "package"
+        evidence["artifacts"] = [
+            {
+                "path": "dist/cli.js",
+                "kind": "executable",
+                "executable": True,
+            },
+            {
+                "path": "man/phyllo.1",
+                "kind": "man-page",
+                "executable": False,
+            },
+        ]
+        evidence["cli"]["executablePath"] = "dist/cli.js"
+        evidence["cli"]["manPagePath"] = "man/phyllo.1"
+        evidence.pop("cleanConsumer")
+        return canonical, evidence
+
+    def test_package_distribution_accepts_package_native_section_1_man_page(self) -> None:
+        canonical, evidence = self.package_prestage_evidence()
+
+        self.assertEqual(
+            release_readiness.validate_release_evidence(
+                self.registry(canonical), evidence
+            ),
+            [],
+        )
+
+    def test_package_distribution_rejects_arbitrary_section_1_man_page_location(self) -> None:
+        canonical, evidence = self.package_prestage_evidence()
+        evidence["artifacts"][1]["path"] = "docs/phyllo.1"
+        evidence["cli"]["manPagePath"] = "docs/phyllo.1"
+
+        errors = release_readiness.validate_release_evidence(
+            self.registry(canonical), evidence
+        )
+
+        self.assertTrue(any("[cli.man]" in error for error in errors))
+
+    def test_binary_distribution_still_requires_installed_man_layout(self) -> None:
+        evidence = self.binary_evidence()
+        evidence["artifacts"][1]["path"] = "man/invokrum.1"
+        evidence["cli"]["manPagePath"] = "man/invokrum.1"
+
+        errors = release_readiness.validate_release_evidence(
+            self.invokrum_registry(), evidence
+        )
+
+        self.assertTrue(any("[cli.man]" in error for error in errors))
+
+    def test_private_canonical_public_package_requires_clean_consumer_evidence(self) -> None:
+        canonical = self.entry(
+            "hackelia-micrantha/phyllotaxis",
+            visibility="private",
+            source_exposure="private",
+            repository_role="canonical",
+            distribution_mode="package",
+            implementationAuthority="hackelia-micrantha/phyllotaxis",
+            releaseAuthority="hackelia-micrantha/phyllotaxis",
+        )
+        evidence = self.binary_evidence()
+        evidence["repository"] = "hackelia-micrantha/phyllotaxis"
+        evidence["release"]["releaseAuthority"] = "hackelia-micrantha/phyllotaxis"
+        evidence["acquisition"]["mode"] = "package"
+        evidence["cleanConsumer"] = {
+            "tested": False,
+            "cacheMiss": False,
+            "privateCredentialsAvailable": False,
+            "passed": False,
+        }
+
+        errors = release_readiness.validate_release_evidence(
+            self.registry(canonical), evidence
+        )
+
+        self.assertTrue(any("[consumer.clean]" in error for error in errors))
+
+    def test_private_canonical_public_package_accepts_clean_consumer_evidence(self) -> None:
+        canonical = self.entry(
+            "hackelia-micrantha/phyllotaxis",
+            visibility="private",
+            source_exposure="private",
+            repository_role="canonical",
+            distribution_mode="package",
+            implementationAuthority="hackelia-micrantha/phyllotaxis",
+            releaseAuthority="hackelia-micrantha/phyllotaxis",
+        )
+        evidence = self.binary_evidence()
+        evidence["repository"] = "hackelia-micrantha/phyllotaxis"
+        evidence["release"]["releaseAuthority"] = "hackelia-micrantha/phyllotaxis"
+        evidence["acquisition"]["mode"] = "package"
+
+        self.assertEqual(
+            release_readiness.validate_release_evidence(
+                self.registry(canonical), evidence
+            ),
+            [],
+        )
+
+    def test_prestage_public_package_does_not_require_clean_consumer_success(self) -> None:
+        canonical = self.entry(
+            "hackelia-micrantha/phyllotaxis",
+            visibility="private",
+            source_exposure="private",
+            repository_role="canonical",
+            distribution_mode="package",
+            implementationAuthority="hackelia-micrantha/phyllotaxis",
+            releaseAuthority="hackelia-micrantha/phyllotaxis",
+        )
+        evidence = self.binary_evidence()
+        evidence["phase"] = "prestage"
+        evidence["repository"] = "hackelia-micrantha/phyllotaxis"
+        evidence["release"]["releaseAuthority"] = "hackelia-micrantha/phyllotaxis"
+        evidence["acquisition"]["mode"] = "package"
+        evidence.pop("cleanConsumer")
+
+        self.assertEqual(
+            release_readiness.validate_release_evidence(
+                self.registry(canonical), evidence
+            ),
+            [],
+        )
+
+    def test_prestage_public_package_still_rejects_private_credentials(self) -> None:
+        canonical = self.entry(
+            "hackelia-micrantha/phyllotaxis",
+            visibility="private",
+            source_exposure="private",
+            repository_role="canonical",
+            distribution_mode="package",
+            implementationAuthority="hackelia-micrantha/phyllotaxis",
+            releaseAuthority="hackelia-micrantha/phyllotaxis",
+        )
+        evidence = self.binary_evidence()
+        evidence["phase"] = "prestage"
+        evidence["repository"] = "hackelia-micrantha/phyllotaxis"
+        evidence["release"]["releaseAuthority"] = "hackelia-micrantha/phyllotaxis"
+        evidence["acquisition"]["mode"] = "package"
+        evidence["acquisition"]["requiresPrivateCredentials"] = True
+        evidence.pop("cleanConsumer")
+
+        errors = release_readiness.validate_release_evidence(
+            self.registry(canonical), evidence
+        )
+
+        self.assertTrue(any("[acquisition.credentials]" in error for error in errors))
+
+    def test_unknown_evidence_phase_fails_closed(self) -> None:
+        evidence = self.binary_evidence()
+        evidence["phase"] = "candidate"
+
+        errors = release_readiness.validate_release_evidence(
+            self.invokrum_registry(), evidence
+        )
+
+        self.assertTrue(any("[evidence.phase]" in error for error in errors))
+
     def test_binary_distribution_cannot_compile_private_implementation_source(self) -> None:
         evidence = self.binary_evidence()
         evidence["acquisition"]["sourceBuild"] = True

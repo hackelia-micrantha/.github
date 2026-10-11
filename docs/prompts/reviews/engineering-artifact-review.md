@@ -56,6 +56,8 @@ Do not merely summarize or praise the artifact. Identify defects that could caus
 - Are credible alternatives, including current state or defer when viable, considered fairly?
 - Are recommendations supported and confidence stated?
 - Are trade-offs, residual risks, reversibility, and revisit triggers clear?
+- For consequential decisions with meaningfully observable outcomes, are expected consequences, material assumptions, and a review date/event/threshold explicit?
+- When outcome evidence already exists, is it separated from causal claims and from the original historical decision basis?
 - Does an ADR record an accepted durable decision rather than an active proposal?
 
 ### 5. Architecture and contracts
@@ -84,6 +86,16 @@ Do not merely summarize or praise the artifact. Identify defects that could caus
 - Does validation cover primary, failure, security, compatibility, migration, rollback, and operational paths where material?
 - Is priority repository-global and separate from blocked status?
 - Does an epic identify its next executable slice and outcome-based exit criteria?
+
+### 9. Reader-facing and empirical artifacts (when applicable)
+
+Apply these checks only when the artifact summarizes material for a reader, defines human-content profiles, or makes empirical claims about model/reader performance:
+
+- **Drift:** Can the intended reader or advisor use the addition, or does it serve a count that became its own workstream? If instructions already state the requirement, report non-compliance rather than adding duplicate guidance.
+- **Human profiles:** Let actual human examples establish appropriate content kinds, not item or length targets; omit unsupported patterns unless there is an explicit reason.
+- **Over-fit:** Would the rule survive a different document shape/type, model, and reader? Reject run-specific ordinals, labels, counts, or thresholds without independent justification.
+- **Measurement:** For variable empirical comparisons, use at least three comparable replicates per condition; report within-document spread as the noise floor and treat differences inside that spread as inconclusive. Attribute a count only to a named script and define what it counted.
+- **Convergence:** For repeated evaluations, follow the [execution contract](../../engineering/agent-execution-contract.md) rather than changing criteria or expanding prose after every result.
 
 ## Required output
 

@@ -8,7 +8,7 @@ See the [complete engineering prompt library](../README.md) for project review, 
 
 | Prompt | Use when | Expected output |
 | --- | --- | --- |
-| [Research paper relevance review](research-paper-relevance-review.md) | A paper, preprint, technical report, or academic result may affect Micrantha architecture, security, governance, runtime, tooling, or roadmap | Evidence assessment, key takeaways, project relevance matrix, gap analysis, action classification, repository ownership, and prioritized recommendations |
+| [Research paper discovery](research-paper-discovery.md) | The reading queue is empty/stale, new research may affect current architecture, or the portfolio has uncovered evidence gaps | Deduplicated candidate shortlist, coverage gaps, triage, and prioritized reading queue |\n| [Research paper relevance review](research-paper-relevance-review.md) | A paper, preprint, technical report, or academic result may affect Micrantha architecture, security, governance, runtime, tooling, or roadmap | Evidence assessment, key takeaways, project relevance matrix, gap analysis, action classification, repository ownership, and prioritized recommendations |
 
 ## Operating model
 
@@ -23,8 +23,8 @@ Use the shared ambiguity and agent-execution contracts in [`../README.md`](../RE
 3. Map those findings to concrete repositories, contracts, threat surfaces, or capabilities.
 4. Compare the paper against existing implementation and accepted design evidence before declaring a gap.
 5. Classify candidate actions as `adopt`, `experiment`, `document`, `monitor`, or `reject/defer`.
-6. Route consequential uncertainty to the smallest responsible artifact: spike, QART, RFC, ADR, threat model, specification change, or implementation issue.
-7. Run the relevant project-review or security prompt when a paper implies broader repository reconciliation.
+7. Route consequential uncertainty to the smallest responsible artifact: spike, QART, RFC, ADR, threat model, specification change, or implementation issue.
+8. Run the relevant project-review or security prompt when a paper implies broader repository reconciliation.
 
 ## Scope controls
 

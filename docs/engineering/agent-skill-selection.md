@@ -8,6 +8,8 @@ When an available shared or project-local skill clearly matches the requested wo
 
 Skill selection chooses an execution contract. It does **not** grant additional mutation or effect authority.
 
+Interactive ChatGPT/Work sessions may use the [ChatGPT Supervisor operating profile](./chatgpt-supervisor-operating-profile.md) as their bootstrap into this selector and the shared execution contracts. The profile is not a replacement selector or an authority source.
+
 ## Long-running execution selector
 
 Automatically select [`long-running-execution`](../../skills/long-running-execution/SKILL.md) for a non-trivial engineering run when operator intent includes or clearly means:
@@ -73,6 +75,7 @@ The shared [`AGENTS.md`](../../AGENTS.md) is the executable reference for this r
 
 ## Related contracts
 
+- [ChatGPT Supervisor operating profile](./chatgpt-supervisor-operating-profile.md)
 - [Long-running agent execution](./agent-execution-contract.md)
 - [AI-assisted SDLC phase discipline](./ai-assisted-sdlc.md)
 - [`long-running-execution` skill](../../skills/long-running-execution/SKILL.md)

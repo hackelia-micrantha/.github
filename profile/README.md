@@ -6,7 +6,25 @@ Micrantha is an engineering studio and software ecosystem focused on secure, obs
 
 Core areas include **platform engineering**, **mobile systems**, **infrastructure automation**, **developer tooling**, and **governed agentic development**, with an emphasis on data sovereignty and user-controlled systems.
 
-🌐 [micrantha.com](https://micrantha.com) · [Projects](#project-families) · [Engineering standards](#engineering-standards) · [Contributing](https://github.com/hackelia-micrantha/.github/blob/main/CONTRIBUTING.md)
+🌐 [micrantha.com](https://micrantha.com) · [Collaborate](#looking-for-collaborators) · [Projects](#project-families) · [Engineering standards](#engineering-standards) · [Contributing](https://github.com/hackelia-micrantha/.github/blob/main/CONTRIBUTING.md)
+
+---
+
+## Looking for collaborators
+
+Micrantha is actively looking for people and organizations that can help turn the ecosystem into durable, useful, independently sustainable software.
+
+- **Project contributors** — engineering, security review, testing, documentation, design, accessibility, packaging, integrations, and field testing across the public projects.
+- **A strategic partner** — an organization or individual interested in product direction, open-source sustainability, distribution, applied research, commercialization, or bringing the technology into real operating environments.
+- **A co-founder or long-term operating partner** — someone interested in helping shape Micrantha beyond individual repositories, with complementary product, business, research, community, or engineering strengths.
+- **Hardware and infrastructure resources** — GPU-capable systems, accelerators, storage, networking equipment, hosted compute/CI capacity, or other resources that can expand local AI, conformance, build, and systems-testing capability.
+- **Project adoption and practical feedback** — teams willing to try individual tools, challenge assumptions, contribute real-world requirements, or help validate where the projects are and are not useful.
+
+**Current Anthesis trial need:** Anthesis is specifically looking for existing agentic systems—coding agents, supervisor/specialist systems, MCP/tool workflows, automation platforms, and similar runtimes—for bounded trial runs around one consequential action. The goal is to gather integration, bypass-resistance, policy-model, evidence, approval-UX, and operational feedback, including negative results. See the [Anthesis collaboration section](https://anthesis.micrantha.com/#collaborate).
+
+Support can take the form of time, expertise, equipment, infrastructure, sponsorship, introductions, or direct project work. Collaboration does not bypass project governance, security review, or repository trust boundaries.
+
+For public project work, start with the relevant repository and the organization [contributing guide](https://github.com/hackelia-micrantha/.github/blob/main/CONTRIBUTING.md).
 
 ---
 
