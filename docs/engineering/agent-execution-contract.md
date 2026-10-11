@@ -384,7 +384,16 @@ Escalate rather than improvise when:
 - newly discovered architecture materially widens scope or authority;
 - a potentially consequential non-idempotent effect is uncertain and cannot be reconciled from authoritative state.
 
-Escalation should report the exact blocked transition, evidence already gathered, safe work already completed, and the smallest decision or capability needed to continue.
+Escalation must end with an **actionable blocked-state handoff**, not only a blocker description. Report the exact blocked transition, current subject/revision, evidence already gathered, safe work already completed, retry/investigation already performed, and the smallest decision, capability, authority, or external evidence needed to continue.
+
+Then give the smallest ordered **next steps** that would actually move the run forward:
+
+1. finish or identify any still-authorized independent work; if such work remains executable now, do it before declaring the run blocked;
+2. name the exact operator or external-owner action required, when one is required, rather than asking for generic continuation;
+3. state the observable condition that would clear the blocker or make the next decision possible; and
+4. state the first safe transition to execute once that condition is satisfied.
+
+When materially different operator choices remain, provide bounded options and recommend a default when evidence supports one. Do not use `proceed`, `wait`, `retry`, or `check later` as a substitute for a concrete next step. If resolution depends on a future external event, name the event/owner and the evidence to re-check without implying that the current interactive session will resume itself.
 
 ## Effect policy
 
