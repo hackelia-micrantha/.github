@@ -27,6 +27,22 @@ Native, platform, deployment, release, and end-to-end jobs should be added when 
 
 Change-aware gating is allowed when the classifier is tested, defaults safely, handles renames and generated files deliberately, and does not skip validation for unknown or shared-impact paths.
 
+## Branch and integration candidates
+
+Apply the [branching and integration standard](branching-and-integration.md).
+
+CI evidence is revision- and composition-specific:
+
+- topic-branch checks validate that topic candidate;
+- checks on a temporary integration branch validate the composed integration candidate;
+- component-branch success does not prove an integration branch when composition can change behavior;
+- final admission to `main` must satisfy the repository's required evidence for the exact accepted candidate;
+- release/deployment evidence remains distinct from merge evidence.
+
+Where concurrent pull requests can make a previously tested candidate stale, prefer merge-queue or equivalent exact-candidate validation rather than assuming independently green branches compose safely.
+
+A temporary integration branch may have stronger or additional composition-sensitive checks than its component branches. Stable publication must not acquire authority merely because CI ran on an integration branch.
+
 ## Workflow permissions
 
 Use least-privilege permissions at workflow and job scope. Default to read-only repository access and grant write capabilities only to the job that requires them.

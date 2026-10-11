@@ -25,7 +25,7 @@ The JSON bundle deliberately does **not** embed the patch. Before the bundle is 
 1. generated review-bundle JSON;
 2. the exact patch file whose SHA-256 is recorded in that JSON.
 
-This avoids duplicating private source into durable metadata. The manifest records the declared base/candidate revision pair and patch digest, but the generator does **not** prove that an arbitrary caller-supplied patch was derived from those revisions. A reviewer adapter must independently materialize or fetch the exact base/candidate revisions and verify that the supplied patch/diff corresponds to that range before treating the review as exact-head evidence.
+This avoids duplicating private source into durable metadata. The generator verifies the supplied patch bytes against the canonical diff between the two commit objects available in the specified local repository, with replacement-object handling disabled. It does **not** establish that those local objects are the current authoritative GitHub PR base and head. The reviewer adapter and publisher must independently bind the verified pair to GitHub's actual immutable PR revisions and recheck the head before treating the result as current exact-head evidence.
 
 ## Generate a bundle
 

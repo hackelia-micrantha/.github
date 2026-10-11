@@ -50,6 +50,16 @@ def git_stdout(repository_root: Path, args: list[str]) -> bytes:
     env["LC_ALL"] = "C"
     env["GIT_CONFIG_NOSYSTEM"] = "1"
     env["GIT_CONFIG_GLOBAL"] = os.devnull
+    env["GIT_NO_REPLACE_OBJECTS"] = "1"
+    for name in (
+        "GIT_DIR",
+        "GIT_WORK_TREE",
+        "GIT_COMMON_DIR",
+        "GIT_OBJECT_DIRECTORY",
+        "GIT_ALTERNATE_OBJECT_DIRECTORIES",
+        "GIT_INDEX_FILE",
+    ):
+        env.pop(name, None)
     completed = subprocess.run(
         ["git", "-C", str(repository_root), *args],
         stdout=subprocess.PIPE,
@@ -77,7 +87,15 @@ def verify_patch_range(
         git_stdout(root, ["rev-parse", "--show-toplevel"]).decode("utf-8").strip()
     ).resolve()
     for revision in (patch_base_sha, reviewed_sha):
-        git_stdout(top_level, ["cat-file", "-e", f"{revision}^{{commit}}"])
+        object_type = git_stdout(top_level, ["cat-file", "-t", revision]).decode(
+            "ascii", errors="strict"
+        ).strip()
+        if object_type != "commit":
+            raise ValueError(
+                f"revision {revision} must name a commit object directly, got {object_type}"
+            )
+
+    git_stdout(top_level, ["merge-base", "--is-ancestor", patch_base_sha, reviewed_sha])
 
     expected = git_stdout(
         top_level,
@@ -297,8 +315,15 @@ def parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     args = parser().parse_args(argv)
     try:
-        if args.output is not None and args.output.resolve() == args.patch.resolve():
-            raise ValueError("output path must not overwrite the review patch")
+        if args.output is not None:
+            output_path = args.output.resolve()
+            patch_path = args.patch.resolve()
+            same_path = output_path == patch_path
+            same_file = output_path.exists() and patch_path.exists() and output_path.samefile(
+                patch_path
+            )
+            if same_path or same_file:
+                raise ValueError("output path must not overwrite the review patch")
         bundle = build_bundle(args)
     except (OSError, UnicodeError, ValueError) as exc:
         print(json.dumps({"error": str(exc), "ok": False}, sort_keys=True))

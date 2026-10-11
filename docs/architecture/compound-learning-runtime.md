@@ -12,6 +12,24 @@ The central design rule is:
 
 > No single component both observes a lesson and silently turns that lesson into future authority.
 
+## Two feedback loops
+
+Keep ordinary **within-task execution adaptation** separate from **cross-run durable learning**.
+
+```text
+inner execution loop
+  execute -> verify -> classify feedback -> bounded repair/replan -> next exact invocation
+
+outer Compound loop
+  reviewed/terminal outcome -> candidate learning -> validate -> promote -> future run
+```
+
+The inner loop belongs to the runtime orchestrator. In Dubnium this is tracked by `ryjen/dubnium#1346`: verifier, completion, and execution feedback may produce a new bounded task-context/invocation revision while preserving exact intent, authority, budget, source, candidate, and evidence lineage. A repair/replan iteration is not itself a promoted learning.
+
+The outer loop is the Compound path defined by this document. It begins only when a reusable lesson is considered for future runs. Durable prompt/context guidance then follows the existing candidate -> Invokrum exact composition/evaluation -> separately authorized promotion path.
+
+A useful correction discovered during the inner loop may later become candidate evidence for the outer loop. It must not be copied directly from an iteration into trusted standing guidance, policy, capabilities, or defaults.
+
 ## Component model
 
 ```text

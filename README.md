@@ -78,6 +78,7 @@ The repository registry is an advisory machine-readable projection of the canoni
   - [RFC template](docs/engineering/templates/rfc.md)
   - [ADR template](docs/engineering/templates/adr.md)
 - [Shared engineering skills](skills/README.md) — reusable defaults/reference contracts; operational skills remain project-local by default
+- [ChatGPT Supervisor operating profile](docs/engineering/chatgpt-supervisor-operating-profile.md) — versioned bootstrap profile for recursive ChatGPT/Work + GitHub/Desktop Commander engineering sessions
 - [Compound engineering](docs/engineering/compound-engineering.md) — Plan → Work → Review → Compound → Repeat
 - [AI-assisted SDLC phase discipline](docs/engineering/ai-assisted-sdlc.md) — explicit phase-local context, durable handoffs, verification, review, and authority boundaries
 - [AI model selection and escalation](docs/engineering/ai-model-selection.md) — risk-adaptive model choice; frontier inference is an escalation option rather than a universal requirement
