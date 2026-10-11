@@ -90,7 +90,9 @@ def validate_publisher_inputs(
     return trusted_key
 
 
-def verify_source_commit(source_root: Path, source_commit: str) -> str:
+def verify_source_commit(
+    source_root: Path, source_commit: str, staged_root: Path | None = None,
+) -> str:
     """Bind each canonical pack source to an explicit clean 40-hex Git revision."""
     if len(source_commit) != 40 or any(ch not in "0123456789abcdef" for ch in source_commit):
         raise ValueError("source commit must be a full lowercase 40-hex Git SHA")
@@ -116,6 +118,8 @@ def verify_source_commit(source_root: Path, source_commit: str) -> str:
         pinned_bytes = git("show", f"{source_commit}:{source}")
         if (root / source).read_bytes() != pinned_bytes:
             raise ValueError(f"canonical source differs from the selected commit: {source}")
+        if staged_root is not None and (staged_root / source).read_bytes() != pinned_bytes:
+            raise ValueError(f"staged source differs from the selected commit: {source}")
     return source_commit
 
 
@@ -149,6 +153,8 @@ def prove(
         scratch = Path(tmp)
         candidate = scratch / "candidate"
         canonical, digest = make_candidate(source_root, candidate)
+        if source_commit is not None:
+            verify_source_commit(source_root, source_commit, candidate)
         manifest = scratch / "bundle-manifest.json"
         manifest.write_bytes(canonical)
         subject = f"sha256:{digest}"
