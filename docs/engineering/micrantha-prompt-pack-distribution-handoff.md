@@ -35,7 +35,9 @@ expected_commit = '<full-40-hex-reviewed-source-commit>'
 verify_source_commit(source_root, expected_commit)
 
 with TemporaryDirectory() as temporary:
-    _, digest = make_candidate(source_root, Path(temporary) / "candidate")
+    staged_root = Path(temporary) / "candidate"
+    _, digest = make_candidate(source_root, staged_root)
+    verify_source_commit(source_root, expected_commit, staged_root)
     print(f"source_commit={expected_commit}")
     print(f"subject=sha256:{digest}")
 ```
@@ -55,7 +57,7 @@ python tools/verify_prompt_pack_installed_root.py \
 
 Invokrum's CLI accepts an unprefixed 64-lowercase-hex SHA-256 key fingerprint for `--trusted-key-sha256` (distinct from the `sha256:<bundle-subject>` flag). The selected fingerprint must come from an **independent host trust decision**, not the candidate.
 
-The opt-in harness checks only input completeness and fingerprint syntax, then regenerates the canonical candidate from `SOURCES`, recomputes the subject and calls **Invokrum** for public-key and signature-size checks, cryptographic verification, and host-pinned identity authorization. It does not implement a second signature verifier. It requires the exact v2 `verified-and-authorized` receipt for the host-pinned public-key fingerprint and subject; verifies installed-root containment, byte-identical composition of every declared profile, deterministic lock/verify, and exact reinstall reuse; and rejects corrupt signatures, unrecognized trusted identities, altered candidate files, missing required overlays, and a signature replayed against a different internally consistent bundle/manifest/subject. The harness never creates a signing key, issues signatures, publishes an artifact, or claims host freshness. Authenticated proof requires the same explicit source commit and records it in the external qualification evidence, not in the Invokrum bundle. The raw signature and trust inputs remain caller-owned and outside the pack.
+The opt-in harness checks only input completeness and fingerprint syntax, then regenerates the canonical candidate from `SOURCES`, recomputes the subject and calls **Invokrum** for public-key and signature-size checks, cryptographic verification, and host-pinned identity authorization. It does not implement a second signature verifier. It requires the exact v2 `verified-and-authorized` receipt for the host-pinned public-key fingerprint and subject; verifies installed-root containment, byte-identical composition of every declared profile, deterministic lock/verify, and exact reinstall reuse; and rejects corrupt signatures, unrecognized trusted identities, altered candidate files, missing required overlays, and a signature replayed against a different internally consistent bundle/manifest/subject. The harness never creates a signing key, issues signatures, publishes an artifact, or claims host freshness. Authenticated proof verifies both checkout bytes and staged candidate bytes against the same pinned Git objects, and records the source commit in external qualification evidence (not in the Invokrum bundle). The raw signature and trust inputs remain caller-owned and outside the pack.
 
 In the default CI mode (no publisher inputs), the harness continues testing digest-only installation and records `publisher_authentication: not-provided`. **This is not production signed-distribution acceptance.** A partially supplied publisher option set fails before installation. Do not allow v1 or unsigned evidence to satisfy a v2 acceptance gate.
 
