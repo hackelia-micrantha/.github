@@ -29,11 +29,11 @@ python tools/verify_prompt_pack_installed_root.py \
   --pack-root /trusted/clean/source-checkout \
   --publisher-public-key /trusted/publisher.ed25519.pub \
   --publisher-signature /trusted/bundle-subject.sig \
-  --trusted-key-sha256 'sha256:<host-approved-64-lowercase-hex-fingerprint>' \
+  --trusted-key-sha256 '<host-approved-64-lowercase-hex-fingerprint>' \
   --output /private/qualified-pack.json
 ```
 
-The opt-in harness regenerates the canonical candidate from `SOURCES`, recomputes the subject and calls **Invokrum**, not a second signature verifier. It requires the exact v2 `verified-and-authorized` receipt for the host-pinned public-key fingerprint and subject; verifies installed-root containment, byte-identical composition of every declared profile, deterministic lock/verify, and exact reinstall reuse; and rejects corrupt signatures, unrecognized trusted identities, altered candidate files, and missing required overlays. The harness never creates a signing key, issues signatures, publishes an artifact, or claims host freshness. The raw signature and trust inputs remain caller-owned and outside the pack.
+Invokrum's CLI accepts an unprefixed 64-lowercase-hex SHA-256 key fingerprint for `--trusted-key-sha256` (distinct from the `sha256:<bundle-subject>` flag). The selected fingerprint must come from an **independent host trust decision**, not the candidate.\n\nThe opt-in harness regenerates the canonical candidate from `SOURCES`, recomputes the subject and calls **Invokrum**, not a second signature verifier. It requires the exact v2 `verified-and-authorized` receipt for the host-pinned public-key fingerprint and subject; verifies installed-root containment, byte-identical composition of every declared profile, deterministic lock/verify, and exact reinstall reuse; and rejects corrupt signatures, unrecognized trusted identities, altered candidate files, and missing required overlays. The harness never creates a signing key, issues signatures, publishes an artifact, or claims host freshness. The raw signature and trust inputs remain caller-owned and outside the pack.
 
 In the default CI mode (no publisher inputs), the harness continues testing digest-only installation and records `publisher_authentication: not-provided`. **This is not production signed-distribution acceptance.** A partially supplied publisher option set fails before installation. Do not allow v1 or unsigned evidence to satisfy a v2 acceptance gate.
 
