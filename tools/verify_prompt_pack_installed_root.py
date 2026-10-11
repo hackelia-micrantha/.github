@@ -197,6 +197,14 @@ def prove(
             if invoke(invokrum, *denied, success=False).returncode == 0:
                 raise RuntimeError("unauthorized publisher identity was accepted")
 
+        wrong_subject = list(install_args)
+        subject_index = wrong_subject.index("--subject") + 1
+        wrong_subject[subject_index] = "sha256:" + (
+            ("0" if digest[0] != "0" else "1") + digest[1:]
+        )
+        if invoke(invokrum, *wrong_subject, success=False).returncode == 0:
+            raise RuntimeError("bundle subject substitution was accepted")
+
         changed = scratch / "changed"
         shutil.copytree(candidate, changed)
         with (changed / "docs/prompts/issues/issue-grooming.md").open("ab") as stream:
@@ -238,6 +246,7 @@ def prove(
             ),
             "installation_reuse_verified": True,
             "source_mutation_rejected": True,
+            "subject_mismatch_rejected": True,
             "missing_overlay_rejected": True,
             "bad_signature_rejected": True if trusted_key is not None else None,
             "untrusted_publisher_rejected": True if trusted_key is not None else None,
