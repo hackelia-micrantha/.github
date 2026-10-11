@@ -5,7 +5,6 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import hmac
 import json
 import shutil
 import subprocess
@@ -76,26 +75,19 @@ def validate_installed_root(installed_root: Path, store: Path) -> None:
         raise RuntimeError("installer returned a root outside the selected private store")
 
 
-def publisher_identity(public_key: Path | None, signature: Path | None, trusted_key: str | None) -> str | None:
-    """Validate explicit host-supplied publisher inputs; never derive host trust from a pack."""
-    present = (public_key is not None, signature is not None, trusted_key is not None)
-    if not any(present):
+def validate_publisher_inputs(
+    public_key: Path | None, signature: Path | None, trusted_key: str | None,
+) -> str | None:
+    """Require complete caller-owned inputs; Invokrum validates the key and signature."""
+    supplied = (public_key is not None, signature is not None, trusted_key is not None)
+    if not any(supplied):
         return None
-    if not all(present):
+    if not all(supplied):
         raise ValueError("publisher key, signature, and trusted fingerprint must be supplied together")
-    assert public_key is not None and signature is not None and trusted_key is not None
-    if len(public_key.read_bytes()) != 32 or len(signature.read_bytes()) != 64:
-        raise ValueError("publisher evidence must use raw Ed25519 key/signature byte lengths")
-    if (
-        len(trusted_key) != 64
-        or any(char not in "0123456789abcdef" for char in trusted_key)
-    ):
+    assert trusted_key is not None
+    if len(trusted_key) != 64 or any(char not in "0123456789abcdef" for char in trusted_key):
         raise ValueError("trusted fingerprint must be exactly 64 lowercase hex digits")
-    actual = hashlib.sha256(public_key.read_bytes()).hexdigest()
-    if not hmac.compare_digest(actual, trusted_key):
-        raise ValueError("publisher public key does not match the host-pinned trust identity")
     return trusted_key
-
 
 def verified_publisher_result(result: dict, subject: str, trusted_key: str) -> bool:
     """Check the installer output shape; cryptographic proof remains Invokrum's responsibility."""
@@ -117,7 +109,7 @@ def prove(
     publisher_signature: Path | None = None,
     trusted_key_sha256: str | None = None,
 ) -> dict:
-    trusted_key = publisher_identity(publisher_public_key, publisher_signature, trusted_key_sha256)
+    trusted_key = validate_publisher_inputs(publisher_public_key, publisher_signature, trusted_key_sha256)
     with tempfile.TemporaryDirectory(prefix="micrantha-installed-proof-") as tmp:
         scratch = Path(tmp)
         candidate = scratch / "candidate"
