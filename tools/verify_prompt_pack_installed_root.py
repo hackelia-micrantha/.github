@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import hmac
 import json
 import shutil
 import subprocess
@@ -75,7 +76,49 @@ def validate_installed_root(installed_root: Path, store: Path) -> None:
         raise RuntimeError("installer returned a root outside the selected private store")
 
 
-def prove(invokrum: Path, source_root: Path) -> dict:
+def publisher_identity(public_key: Path | None, signature: Path | None, trusted_key: str | None) -> str | None:
+    """Validate explicit host-supplied publisher inputs; never derive host trust from a pack."""
+    present = (public_key is not None, signature is not None, trusted_key is not None)
+    if not any(present):
+        return None
+    if not all(present):
+        raise ValueError("publisher key, signature, and trusted fingerprint must be supplied together")
+    assert public_key is not None and signature is not None and trusted_key is not None
+    if len(public_key.read_bytes()) != 32 or len(signature.read_bytes()) != 64:
+        raise ValueError("publisher evidence must use raw Ed25519 key/signature byte lengths")
+    if (
+        len(trusted_key) != 71
+        or not trusted_key.startswith("sha256:")
+        or any(char not in "0123456789abcdef" for char in trusted_key[7:])
+    ):
+        raise ValueError("trusted fingerprint must be sha256: followed by 64 lowercase hex digits")
+    actual = "sha256:" + hashlib.sha256(public_key.read_bytes()).hexdigest()
+    if not hmac.compare_digest(actual, trusted_key):
+        raise ValueError("publisher public key does not match the host-pinned trust identity")
+    return trusted_key
+
+
+def verified_publisher_result(result: dict, subject: str, trusted_key: str) -> bool:
+    """Check the installer output shape; cryptographic proof remains Invokrum's responsibility."""
+    return (
+        result.get("installation_format") == "invokrum.installation/v2"
+        and isinstance(result.get("publisher_authentication"), dict)
+        and result["publisher_authentication"] == {
+            "status": "verified-and-authorized",
+            "mechanism": "ed25519-subject-v1",
+            "subject": subject,
+            "identity": {"key.sha256": trusted_key},
+        }
+    )
+
+
+def prove(
+    invokrum: Path, source_root: Path,
+    publisher_public_key: Path | None = None,
+    publisher_signature: Path | None = None,
+    trusted_key_sha256: str | None = None,
+) -> dict:
+    trusted_key = publisher_identity(publisher_public_key, publisher_signature, trusted_key_sha256)
     with tempfile.TemporaryDirectory(prefix="micrantha-installed-proof-") as tmp:
         scratch = Path(tmp)
         candidate = scratch / "candidate"
@@ -89,18 +132,32 @@ def prove(invokrum: Path, source_root: Path) -> dict:
             "--bundle-manifest", str(manifest), "--subject", subject,
             "--store", str(store), "--format", "json",
         )
+        if trusted_key is not None:
+            assert publisher_public_key is not None and publisher_signature is not None
+            install_args += (
+                "--publisher-public-key", str(publisher_public_key),
+                "--publisher-signature", str(publisher_signature),
+                "--trusted-key-sha256", trusted_key,
+            )
         first = json.loads(invoke(invokrum, *install_args).stdout)
         second = json.loads(invoke(invokrum, *install_args).stdout)
         if not (
             first.get("format") == second.get("format") == "invokrum.cli/v1"
             and first.get("command") == second.get("command") == "install"
-            and first.get("installation_format") == second.get("installation_format") == "invokrum.installation/v1"
-            and first.get("publisher_authentication") == second.get("publisher_authentication") == "not-provided"
+            and (
+                (trusted_key is None
+                 and first.get("installation_format") == second.get("installation_format") == "invokrum.installation/v1"
+                 and first.get("publisher_authentication") == second.get("publisher_authentication") == "not-provided")
+                or
+                (trusted_key is not None
+                 and verified_publisher_result(first, subject, trusted_key)
+                 and verified_publisher_result(second, subject, trusted_key))
+            )
             and first.get("subject") == second.get("subject") == subject
             and first.get("root") == second.get("root")
             and first.get("reused") is False and second.get("reused") is True
         ):
-            raise RuntimeError("installed subject, reuse, or digest-only identity mismatch")
+            raise RuntimeError("installed subject, reuse, or publisher identity mismatch")
 
         installed_root = Path(first["root"])
         validate_installed_root(installed_root, store)
@@ -121,6 +178,24 @@ def prove(invokrum: Path, source_root: Path) -> dict:
             if verified.get("verified") is not True:
                 raise RuntimeError(f"installed lock verification failed for {profile}")
             outputs[profile] = hashlib.sha256(resolved).hexdigest()
+
+        if trusted_key is not None:
+            assert publisher_signature is not None
+            # Bad proof must fail without poisoning the verified installed root.
+            invalid_signature = scratch / "invalid.sig"
+            invalid_signature.write_bytes(b"\\0" * 64)
+            rejected = list(install_args)
+            rejected[rejected.index("--publisher-signature") + 1] = str(invalid_signature)
+            if invoke(invokrum, *rejected, success=False).returncode == 0:
+                raise RuntimeError("invalid publisher signature was accepted")
+
+            denied = list(install_args)
+            fingerprint_index = denied.index("--trusted-key-sha256") + 1
+            denied[fingerprint_index] = "sha256:" + (
+                ("0" if trusted_key[7] != "0" else "1") + trusted_key[8:]
+            )
+            if invoke(invokrum, *denied, success=False).returncode == 0:
+                raise RuntimeError("unauthorized publisher identity was accepted")
 
         changed = scratch / "changed"
         shutil.copytree(candidate, changed)
@@ -157,11 +232,15 @@ def prove(invokrum: Path, source_root: Path) -> dict:
         return {
             "format": "micrantha.installed-prompt-pack-proof/v1",
             "subject": subject,
-            "mode": "digest-pinned-only",
-            "publisher_authentication": "not-provided",
+            "mode": "authenticated-local" if trusted_key is not None else "digest-pinned-only",
+            "publisher_authentication": (
+                first["publisher_authentication"] if trusted_key is not None else "not-provided"
+            ),
             "installation_reuse_verified": True,
             "source_mutation_rejected": True,
             "missing_overlay_rejected": True,
+            "bad_signature_rejected": True if trusted_key is not None else None,
+            "untrusted_publisher_rejected": True if trusted_key is not None else None,
             "unknown_profile_rejected": True,
             "offline_profile_sha256": outputs,
         }
@@ -171,9 +250,15 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--invokrum", type=Path, required=True)
     parser.add_argument("--pack-root", type=Path, default=Path("."))
+    parser.add_argument("--publisher-public-key", type=Path)
+    parser.add_argument("--publisher-signature", type=Path)
+    parser.add_argument("--trusted-key-sha256")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    evidence = prove(args.invokrum.resolve(), args.pack_root.resolve())
+    evidence = prove(
+        args.invokrum.resolve(), args.pack_root.resolve(),
+        args.publisher_public_key, args.publisher_signature, args.trusted_key_sha256,
+    )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     print("Installed-root composition, reuse, and mutation rejection verified")
