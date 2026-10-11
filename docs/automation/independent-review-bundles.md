@@ -108,7 +108,7 @@ A `clean` result cannot contain findings or blocked reasons. A `findings` result
 Example validation:
 
 ```sh
-python tools/review_result.py \
+python -m tools.review_result \
   /tmp/pr-119.review-bundle.json \
   /tmp/pr-119.review-result.json
 ```

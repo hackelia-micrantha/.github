@@ -4,6 +4,8 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import subprocess
+import sys
 from pathlib import Path
 import tempfile
 import unittest
@@ -332,6 +334,28 @@ class ReviewResultTests(unittest.TestCase):
             "public source must use public-source transfer",
             validate_result(bundle, self.result(bundle)),
         )
+
+    def test_documented_module_entrypoint_runs(self) -> None:
+        completed = subprocess.run(
+            [sys.executable, "-m", "tools.review_result", "--help"],
+            cwd=Path(__file__).resolve().parents[1],
+            capture_output=True, text=True, check=False,
+        )
+        self.assertEqual(0, completed.returncode, completed.stderr)
+
+    def test_result_schema_encodes_fail_closed_state_constraints(self) -> None:
+        schema_path = (Path(__file__).resolve().parents[1] / "metadata"
+                       / "independent-review-result.schema.json")
+        schema = json.loads(schema_path.read_text(encoding="utf-8"))
+        states = {
+            item["if"]["properties"]["result"]["const"]: item["then"]["properties"]
+            for item in schema["allOf"]
+        }
+        self.assertEqual(0, states["clean"]["findings"]["maxItems"])
+        self.assertEqual(0, states["clean"]["blocked_reasons"]["maxItems"])
+        self.assertEqual(1, states["findings"]["findings"]["minItems"])
+        self.assertEqual(0, states["findings"]["blocked_reasons"]["maxItems"])
+        self.assertEqual(1, states["blocked"]["blocked_reasons"]["minItems"])
 
     def test_result_schema_matches_contract_identifier(self) -> None:
         schema_path = (
