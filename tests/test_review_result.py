@@ -292,6 +292,13 @@ class ReviewResultTests(unittest.TestCase):
     def test_explicit_transfer_requires_authorization_reference(self) -> None:
         bundle = self.bundle(source_exposure="private")
         bundle["review"]["external_source_transfer"]["state"] = "explicitly-authorized"
+        unsigned = dict(bundle)
+        unsigned.pop("bundle_sha256")
+        bundle["bundle_sha256"] = hashlib.sha256(
+            json.dumps(
+                unsigned, sort_keys=True, separators=(",", ":"), ensure_ascii=False,
+            ).encode("utf-8")
+        ).hexdigest()
         errors = validate_result(bundle, self.result(bundle, execution_location="external"))
         self.assertIn("explicit external transfer requires authorization_ref", errors)
 
