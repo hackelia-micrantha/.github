@@ -239,6 +239,28 @@ class ReviewBundleTests(unittest.TestCase):
         self.assertEqual(2, exit_code)
         self.assertTrue(self.patch.read_text(encoding="utf-8").startswith("diff --git"))
 
+    def test_git_verifier_disables_lazy_fetch(self) -> None:
+        from tools.review_bundle import git_stdout
+        with mock.patch("tools.review_bundle.subprocess.run") as run:
+            run.return_value.returncode = 0
+            run.return_value.stdout = b""
+            git_stdout(self.root, ["version"])
+            self.assertEqual("1", run.call_args.kwargs["env"]["GIT_NO_LAZY_FETCH"])
+
+    def test_output_swap_never_opens_patch_for_writing(self) -> None:
+        alias = self.root / "bundle.json"
+        args = argparse.Namespace(patch=self.patch, output=alias)
+        def swap_after_path_check(_):
+            alias.symlink_to(self.patch)
+            return {"schema": "test"}
+        with mock.patch("tools.review_bundle.parser") as parser, mock.patch(
+            "tools.review_bundle.build_bundle", side_effect=swap_after_path_check
+        ):
+            parser.return_value.parse_args.return_value = args
+            self.assertEqual(0, main([]))
+        self.assertTrue(self.patch.read_text(encoding="utf-8").startswith("diff --git"))
+        self.assertFalse(alias.is_symlink())
+
     def test_schema_encodes_subject_transfer_and_prompt_invariants(self) -> None:
         schema_path = (
             Path(__file__).resolve().parents[1]

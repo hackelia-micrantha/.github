@@ -49,22 +49,37 @@
       ],
       "properties": {
         "kind": {
-          "enum": ["human", "automated-service", "external-model", "local-model"]
+          "enum": [
+            "human",
+            "automated-service",
+            "external-model",
+            "local-model"
+          ]
         },
         "identity": {
           "type": "string",
           "minLength": 1
         },
         "provider": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "minLength": 1
         },
         "model": {
-          "type": ["string", "null"],
+          "type": [
+            "string",
+            "null"
+          ],
           "minLength": 1
         },
         "execution_location": {
-          "enum": ["local", "external", "unknown"]
+          "enum": [
+            "local",
+            "external",
+            "unknown"
+          ]
         },
         "independence_basis": {
           "type": "string",
@@ -94,21 +109,37 @@
       }
     },
     "result": {
-      "enum": ["clean", "findings", "blocked"]
+      "enum": [
+        "clean",
+        "findings",
+        "blocked"
+      ]
     },
     "findings": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["id", "severity", "title", "description", "evidence_refs"],
+        "required": [
+          "id",
+          "severity",
+          "title",
+          "description",
+          "evidence_refs"
+        ],
         "properties": {
           "id": {
             "type": "string",
             "minLength": 1
           },
           "severity": {
-            "enum": ["critical", "high", "medium", "low", "info"]
+            "enum": [
+              "critical",
+              "high",
+              "medium",
+              "low",
+              "info"
+            ]
           },
           "title": {
             "type": "string",
@@ -145,5 +176,70 @@
         "minLength": 1
       }
     }
-  }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "clean"
+          }
+        },
+        "required": [
+          "result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "findings": {
+            "maxItems": 0
+          },
+          "blocked_reasons": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "findings"
+          }
+        },
+        "required": [
+          "result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "findings": {
+            "minItems": 1
+          },
+          "blocked_reasons": {
+            "maxItems": 0
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "result": {
+            "const": "blocked"
+          }
+        },
+        "required": [
+          "result"
+        ]
+      },
+      "then": {
+        "properties": {
+          "blocked_reasons": {
+            "minItems": 1
+          }
+        }
+      }
+    }
+  ]
 }

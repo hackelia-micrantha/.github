@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 import re
 import subprocess
+import tempfile
 import sys
 from typing import Any
 
@@ -51,6 +52,7 @@ def git_stdout(repository_root: Path, args: list[str]) -> bytes:
     env["GIT_CONFIG_NOSYSTEM"] = "1"
     env["GIT_CONFIG_GLOBAL"] = os.devnull
     env["GIT_NO_REPLACE_OBJECTS"] = "1"
+    env["GIT_NO_LAZY_FETCH"] = "1"
     for name in (
         "GIT_DIR",
         "GIT_WORK_TREE",
@@ -334,7 +336,18 @@ def main(argv: list[str] | None = None) -> int:
         if args.output is None:
             sys.stdout.write(rendered)
         else:
-            args.output.write_text(rendered, encoding="utf-8")
+            # Create with O_EXCL in the same directory, then atomically replace the
+            # destination. Never open an attacker-swapped destination for writing.
+            fd, temporary = tempfile.mkstemp(prefix=".review-bundle-", dir=args.output.parent)
+            try:
+                with os.fdopen(fd, "w", encoding="utf-8") as stream:
+                    stream.write(rendered)
+                    stream.flush()
+                    os.fsync(stream.fileno())
+                os.replace(temporary, args.output)
+            finally:
+                if os.path.exists(temporary):
+                    os.unlink(temporary)
     except OSError as exc:
         print(json.dumps({"error": str(exc), "ok": False}, sort_keys=True))
         return 2
