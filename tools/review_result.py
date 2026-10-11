@@ -8,6 +8,8 @@ findings, merge, release, deploy, or mutate a repository.
 from __future__ import annotations
 
 import argparse
+from dataclasses import dataclass
+from enum import StrEnum
 import hashlib
 import json
 from pathlib import Path
@@ -104,31 +106,61 @@ def bundle_scope(bundle: dict[str, Any]) -> list[str]:
     return scope
 
 
-def transfer_state(bundle: dict[str, Any]) -> str:
-    review = bundle.get("review")
-    if not isinstance(review, dict):
-        raise ValueError("bundle review object is missing")
-    transfer = review.get("external_source_transfer")
-    if not isinstance(transfer, dict):
-        raise ValueError("bundle external_source_transfer is missing")
-    state = transfer.get("state")
-    authorization_ref = transfer.get("authorization_ref")
-    exposure = review.get("source_exposure")
-    if exposure not in {"public", "private", "restricted"}:
-        raise ValueError("bundle source_exposure is invalid")
-    if state not in {"public-source", "prohibited", "explicitly-authorized"}:
-        raise ValueError("bundle external source-transfer state is invalid")
-    if exposure == "public" and state != "public-source":
-        raise ValueError("public source must use public-source transfer")
-    if exposure != "public" and state == "public-source":
-        raise ValueError("private/restricted source cannot claim public-source transfer")
-    if state == "explicitly-authorized":
-        if not isinstance(authorization_ref, str) or not authorization_ref.strip():
-            raise ValueError("explicit external transfer requires authorization_ref")
-    elif authorization_ref is not None:
-        raise ValueError("non-authorized transfer must not have authorization_ref")
-    return state
+class SourceExposure(StrEnum):
+    PUBLIC = "public"
+    PRIVATE = "private"
+    RESTRICTED = "restricted"
 
+
+class TransferState(StrEnum):
+    PUBLIC_SOURCE = "public-source"
+    PROHIBITED = "prohibited"
+    EXPLICITLY_AUTHORIZED = "explicitly-authorized"
+
+
+@dataclass(frozen=True)
+class SourceTransfer:
+    exposure: SourceExposure
+    state: TransferState
+    authorization_ref: str | None
+
+    @classmethod
+    def from_bundle(cls, bundle: dict[str, Any]) -> SourceTransfer:
+        review = bundle.get("review")
+        if not isinstance(review, dict):
+            raise ValueError("bundle review object is missing")
+        transfer = review.get("external_source_transfer")
+        if not isinstance(transfer, dict):
+            raise ValueError("bundle external_source_transfer is missing")
+        try:
+            exposure = SourceExposure(review.get("source_exposure"))
+        except (ValueError, TypeError):
+            raise ValueError("bundle source_exposure is invalid") from None
+        try:
+            state = TransferState(transfer.get("state"))
+        except (ValueError, TypeError):
+            raise ValueError("bundle external source-transfer state is invalid") from None
+        return cls(exposure, state, transfer.get("authorization_ref"))
+
+    def validate(self) -> None:
+        if self.exposure is SourceExposure.PUBLIC:
+            if self.state is not TransferState.PUBLIC_SOURCE:
+                raise ValueError("public source must use public-source transfer")
+        elif self.state is TransferState.PUBLIC_SOURCE:
+            raise ValueError("private/restricted source cannot claim public-source transfer")
+
+        if self.state is TransferState.EXPLICITLY_AUTHORIZED:
+            if (not isinstance(self.authorization_ref, str)
+                    or not self.authorization_ref.strip()):
+                raise ValueError("explicit external transfer requires authorization_ref")
+        elif self.authorization_ref is not None:
+            raise ValueError("non-authorized transfer must not have authorization_ref")
+
+
+def transfer_state(bundle: dict[str, Any]) -> TransferState:
+    posture = SourceTransfer.from_bundle(bundle)
+    posture.validate()
+    return posture.state
 
 def validate_finding(value: Any, index: int, errors: list[str]) -> None:
     if not isinstance(value, dict):
@@ -267,7 +299,7 @@ def validate_result(bundle: dict[str, Any], result: dict[str, Any]) -> list[str]
     if reviewer.get("mutation_tools_available") is not False:
         errors.append("review context must not have mutation tools")
 
-    if source_transfer_state == "prohibited" and location != "local":
+    if source_transfer_state is TransferState.PROHIBITED and location != "local":
         errors.append(
             "private/restricted source with prohibited external transfer requires local execution"
         )
