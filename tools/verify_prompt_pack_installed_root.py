@@ -87,12 +87,11 @@ def publisher_identity(public_key: Path | None, signature: Path | None, trusted_
     if len(public_key.read_bytes()) != 32 or len(signature.read_bytes()) != 64:
         raise ValueError("publisher evidence must use raw Ed25519 key/signature byte lengths")
     if (
-        len(trusted_key) != 71
-        or not trusted_key.startswith("sha256:")
-        or any(char not in "0123456789abcdef" for char in trusted_key[7:])
+        len(trusted_key) != 64
+        or any(char not in "0123456789abcdef" for char in trusted_key)
     ):
-        raise ValueError("trusted fingerprint must be sha256: followed by 64 lowercase hex digits")
-    actual = "sha256:" + hashlib.sha256(public_key.read_bytes()).hexdigest()
+        raise ValueError("trusted fingerprint must be exactly 64 lowercase hex digits")
+    actual = hashlib.sha256(public_key.read_bytes()).hexdigest()
     if not hmac.compare_digest(actual, trusted_key):
         raise ValueError("publisher public key does not match the host-pinned trust identity")
     return trusted_key
@@ -191,8 +190,8 @@ def prove(
 
             denied = list(install_args)
             fingerprint_index = denied.index("--trusted-key-sha256") + 1
-            denied[fingerprint_index] = "sha256:" + (
-                ("0" if trusted_key[7] != "0" else "1") + trusted_key[8:]
+            denied[fingerprint_index] = (
+                ("0" if trusted_key[0] != "0" else "1") + trusted_key[1:]
             )
             if invoke(invokrum, *denied, success=False).returncode == 0:
                 raise RuntimeError("unauthorized publisher identity was accepted")
