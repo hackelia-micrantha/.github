@@ -133,7 +133,7 @@ Finding disposition rules are fail closed:
 Example validation:
 
 ```sh
-python tools/review_evidence.py \
+python -m tools.review_evidence \
   /tmp/pr-119.review-bundle.json \
   /tmp/pr-119.review-result.json \
   /tmp/pr-119.review-evidence.json

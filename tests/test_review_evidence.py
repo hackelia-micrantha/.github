@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import subprocess
+import sys
 from pathlib import Path
 import tempfile
 import unittest
@@ -107,6 +109,14 @@ class ReviewEvidenceTests(unittest.TestCase):
                 "mutation_authorized": False,
             },
         }
+
+    def test_documented_module_entrypoint_runs(self) -> None:
+        completed = subprocess.run(
+            [sys.executable, "-m", "tools.review_evidence", "--help"],
+            cwd=Path(__file__).resolve().parents[1],
+            capture_output=True, text=True, check=False,
+        )
+        self.assertEqual(0, completed.returncode, completed.stderr)
 
     def test_clean_review_can_complete_without_findings(self) -> None:
         bundle = self.bundle()
