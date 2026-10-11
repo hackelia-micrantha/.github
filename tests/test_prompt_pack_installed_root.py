@@ -7,7 +7,10 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from tools.verify_prompt_pack_installed_root import SOURCES, make_candidate, validate_installed_root
+from tools.verify_prompt_pack_installed_root import (
+    SOURCES, make_candidate, publisher_identity, validate_installed_root,
+    verified_publisher_result,
+)
 
 
 class CandidateTest(unittest.TestCase):
@@ -31,6 +34,53 @@ class CandidateTest(unittest.TestCase):
                 payload = (candidate / entry["path"]).read_bytes()
                 self.assertEqual(entry["digest"], hashlib.sha256(payload).hexdigest())
                 self.assertEqual(entry["byte_length"], len(payload))
+
+    def test_publisher_inputs_are_complete_and_host_pinned(self) -> None:
+        with tempfile.TemporaryDirectory() as scratch:
+            root = Path(scratch)
+            key = root / "publisher.pub"
+            sig = root / "subject.sig"
+            key.write_bytes(bytes(range(32)))
+            sig.write_bytes(bytes(range(64)))
+            fingerprint = "sha256:" + hashlib.sha256(key.read_bytes()).hexdigest()
+            self.assertIsNone(publisher_identity(None, None, None))
+            self.assertEqual(fingerprint, publisher_identity(key, sig, fingerprint))
+            with self.assertRaises(ValueError):
+                publisher_identity(key, None, fingerprint)
+            with self.assertRaises(ValueError):
+                publisher_identity(key, sig, "sha256:" + "0" * 64)
+            with self.assertRaises(ValueError):
+                publisher_identity(key, sig, "sha256:" + "A" * 64)
+            with self.assertRaises(ValueError):
+                publisher_identity(key, sig, fingerprint + "0")
+            sig.write_bytes(b"x" * 63)
+            with self.assertRaises(ValueError):
+                publisher_identity(key, sig, fingerprint)
+
+    def test_authenticated_result_rejects_unsigned_and_identity_mismatch(self) -> None:
+        subject = "sha256:" + "a" * 64
+        key = "sha256:" + "b" * 64
+        good = {
+            "installation_format": "invokrum.installation/v2",
+            "publisher_authentication": {
+                "status": "verified-and-authorized",
+                "mechanism": "ed25519-subject-v1",
+                "subject": subject,
+                "identity": {"key.sha256": key},
+            },
+        }
+        self.assertTrue(verified_publisher_result(good, subject, key))
+        self.assertFalse(verified_publisher_result(
+            {"installation_format": "invokrum.installation/v1",
+             "publisher_authentication": "not-provided"}, subject, key))
+        for wrong in (
+            {"status": "not-provided"},
+            {**good["publisher_authentication"], "subject": "sha256:" + "c" * 64},
+            {**good["publisher_authentication"], "identity": {"key.sha256": "sha256:" + "c" * 64}},
+            {**good["publisher_authentication"], "mechanism": "some-other-mechanism"},
+        ):
+            self.assertFalse(verified_publisher_result(
+                {**good, "publisher_authentication": wrong}, subject, key))
 
     def test_installed_root_accepts_real_private_directory(self) -> None:
         with tempfile.TemporaryDirectory() as scratch:
