@@ -32,10 +32,20 @@ def reject_json_constant(value: str) -> None:
     raise ValueError(f"nonstandard JSON constant: {value}")
 
 
+def reject_duplicate_keys(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+    value: dict[str, Any] = {}
+    for key, item in pairs:
+        if key in value:
+            raise ValueError(f"duplicate JSON object key: {key}")
+        value[key] = item
+    return value
+
+
 def load_strict_json(path: Path) -> dict[str, Any]:
     value = json.loads(
         path.read_text(encoding="utf-8"),
         parse_constant=reject_json_constant,
+        object_pairs_hook=reject_duplicate_keys,
     )
     if not isinstance(value, dict):
         raise ValueError(f"{path} must contain one JSON object")
@@ -102,8 +112,21 @@ def transfer_state(bundle: dict[str, Any]) -> str:
     if not isinstance(transfer, dict):
         raise ValueError("bundle external_source_transfer is missing")
     state = transfer.get("state")
+    authorization_ref = transfer.get("authorization_ref")
+    exposure = review.get("source_exposure")
+    if exposure not in {"public", "private", "restricted"}:
+        raise ValueError("bundle source_exposure is invalid")
     if state not in {"public-source", "prohibited", "explicitly-authorized"}:
         raise ValueError("bundle external source-transfer state is invalid")
+    if exposure == "public" and state != "public-source":
+        raise ValueError("public source must use public-source transfer")
+    if exposure != "public" and state == "public-source":
+        raise ValueError("private/restricted source cannot claim public-source transfer")
+    if state == "explicitly-authorized":
+        if not isinstance(authorization_ref, str) or not authorization_ref.strip():
+            raise ValueError("explicit external transfer requires authorization_ref")
+    elif authorization_ref is not None:
+        raise ValueError("non-authorized transfer must not have authorization_ref")
     return state
 
 
