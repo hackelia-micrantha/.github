@@ -183,7 +183,7 @@ def prove(
             assert publisher_signature is not None
             # Bad proof must fail without poisoning the verified installed root.
             invalid_signature = scratch / "invalid.sig"
-            invalid_signature.write_bytes(b"\\0" * 64)
+            invalid_signature.write_bytes(bytes(64))
             rejected = list(install_args)
             rejected[rejected.index("--publisher-signature") + 1] = str(invalid_signature)
             if invoke(invokrum, *rejected, success=False).returncode == 0:
