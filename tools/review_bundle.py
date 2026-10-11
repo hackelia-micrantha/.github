@@ -60,6 +60,7 @@ def git_stdout(repository_root: Path, args: list[str]) -> bytes:
         "GIT_OBJECT_DIRECTORY",
         "GIT_ALTERNATE_OBJECT_DIRECTORIES",
         "GIT_INDEX_FILE",
+        "GIT_GRAFT_FILE",
     ):
         env.pop(name, None)
     completed = subprocess.run(
@@ -338,16 +339,32 @@ def main(argv: list[str] | None = None) -> int:
         else:
             # Create with O_EXCL in the same directory, then atomically replace the
             # destination. Never open an attacker-swapped destination for writing.
-            fd, temporary = tempfile.mkstemp(prefix=".review-bundle-", dir=args.output.parent)
+            # Bind creation and replacement to the same opened directory inode;
+            # never resolve a mutable parent path a second time.
+            parent = args.output.parent.resolve(strict=True)
+            directory_fd = os.open(parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
             try:
-                with os.fdopen(fd, "w", encoding="utf-8") as stream:
-                    stream.write(rendered)
-                    stream.flush()
-                    os.fsync(stream.fileno())
-                os.replace(temporary, args.output)
+                if os.stat(parent).st_ino != os.fstat(directory_fd).st_ino or os.stat(parent).st_dev != os.fstat(directory_fd).st_dev:
+                    raise OSError("output parent changed before opening")
+                temporary_name = ".review-bundle-" + os.urandom(12).hex()
+                fd = os.open(
+                    temporary_name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
+                    0o600, dir_fd=directory_fd,
+                )
+                try:
+                    with os.fdopen(fd, "w", encoding="utf-8") as stream:
+                        stream.write(rendered)
+                        stream.flush()
+                        os.fsync(stream.fileno())
+                    os.replace(temporary_name, args.output.name,
+                               src_dir_fd=directory_fd, dst_dir_fd=directory_fd)
+                finally:
+                    try:
+                        os.unlink(temporary_name, dir_fd=directory_fd)
+                    except FileNotFoundError:
+                        pass
             finally:
-                if os.path.exists(temporary):
-                    os.unlink(temporary)
+                os.close(directory_fd)
     except OSError as exc:
         print(json.dumps({"error": str(exc), "ok": False}, sort_keys=True))
         return 2
