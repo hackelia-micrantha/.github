@@ -65,7 +65,7 @@ class CandidateTest(unittest.TestCase):
             "publisher_authentication": {
                 "status": "verified-and-authorized",
                 "mechanism": "ed25519-subject-v1",
-                "subject": subject,
+                "subject": subject.removeprefix("sha256:"),
                 "identity": {"key.sha256": key},
             },
         }
