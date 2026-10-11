@@ -23,6 +23,12 @@ These concerns stay separate because they answer different questions:
 
 Conversation history may help reconstruct context, but it is not canonical run state when correctness, recovery, authority, or later transitions depend on that state.
 
+## Implementation design heuristics
+
+For coding, refactoring, and code-review transitions, use repository-accepted architecture and language/runtime idioms first. Apply clean-code and SOLID principles where they address concrete needs: cohesive responsibilities, clear names and control flow, explicit contracts and dependencies, testable boundaries, and low coupling. Reuse established design patterns when actual variation or integration seams justify them.
+
+These are **heuristics, not mandatory class hierarchies or pattern quotas**. Prefer the simplest correct and secure design for current requirements and credible change points; avoid speculative interfaces, unnecessary indirection, and pattern-for-pattern's-sake code. Do not impose object-oriented idioms on functional, procedural, or data-oriented implementations. In reviews, identify an observable correctness, testability, maintainability, or extension cost before requesting refactoring; preserve behavior and verify the change. Explain consequential pattern choices and trade-offs briefly, without design-document ceremony for routine code.
+
 ## Default execution graph
 
 For non-trivial implementation and repository work, use this default shape unless a project-owned workflow defines a stronger one:
