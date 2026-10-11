@@ -89,6 +89,36 @@ def validate_publisher_inputs(
         raise ValueError("trusted fingerprint must be exactly 64 lowercase hex digits")
     return trusted_key
 
+
+def verify_source_commit(source_root: Path, source_commit: str) -> str:
+    """Bind each canonical pack source to an explicit clean 40-hex Git revision."""
+    if len(source_commit) != 40 or any(ch not in "0123456789abcdef" for ch in source_commit):
+        raise ValueError("source commit must be a full lowercase 40-hex Git SHA")
+    root = source_root.resolve(strict=True)
+
+    def git(*args: str) -> bytes:
+        command = subprocess.run(
+            ["git", "-C", str(root), *args], capture_output=True, check=False, timeout=20,
+        )
+        if command.returncode != 0:
+            raise ValueError(f"source Git verification failed: {args[0]}")
+        return command.stdout
+
+    top = Path(git("rev-parse", "--show-toplevel").decode("utf-8").strip()).resolve(strict=True)
+    if top != root:
+        raise ValueError("pack source root must be the selected Git worktree root")
+    if git("rev-parse", "--verify", "HEAD").decode("ascii").strip() != source_commit:
+        raise ValueError("source checkout HEAD does not match the expected commit")
+    if git("status", "--porcelain", "--untracked-files=normal").strip():
+        raise ValueError("source checkout has uncommitted or untracked changes")
+    for source in SOURCES:
+        # git show returns raw blob bytes; do not normalize whitespace or line endings.
+        pinned_bytes = git("show", f"{source_commit}:{source}")
+        if (root / source).read_bytes() != pinned_bytes:
+            raise ValueError(f"canonical source differs from the selected commit: {source}")
+    return source_commit
+
+
 def verified_publisher_result(result: dict, subject: str, trusted_key: str) -> bool:
     """Check the installer output shape; cryptographic proof remains Invokrum's responsibility."""
     return (
@@ -108,8 +138,13 @@ def prove(
     publisher_public_key: Path | None = None,
     publisher_signature: Path | None = None,
     trusted_key_sha256: str | None = None,
+    source_commit: str | None = None,
 ) -> dict:
     trusted_key = validate_publisher_inputs(publisher_public_key, publisher_signature, trusted_key_sha256)
+    if trusted_key is not None and source_commit is None:
+        raise ValueError("authenticated proof requires an explicit source commit")
+    if source_commit is not None:
+        verify_source_commit(source_root, source_commit)
     with tempfile.TemporaryDirectory(prefix="micrantha-installed-proof-") as tmp:
         scratch = Path(tmp)
         candidate = scratch / "candidate"
@@ -205,6 +240,20 @@ def prove(
         if invoke(invokrum, *tampered_args, success=False).returncode == 0:
             raise RuntimeError("modified candidate passed original subject/manifest verification")
 
+        if trusted_key is not None:
+            # An internally consistent *different* candidate/manifest/subject must
+            # reject the valid original signature, independent of bundle digest checks.
+            alternate = scratch / "alternate-candidate"
+            alternate_manifest, alternate_digest = make_candidate(changed, alternate)
+            altered_manifest_path = scratch / "alternate.bundle.json"
+            altered_manifest_path.write_bytes(alternate_manifest)
+            alternate_args = list(install_args)
+            alternate_args[1] = str(alternate)
+            alternate_args[alternate_args.index("--bundle-manifest") + 1] = str(altered_manifest_path)
+            alternate_args[alternate_args.index("--subject") + 1] = f"sha256:{alternate_digest}"
+            if invoke(invokrum, *alternate_args, success=False).returncode == 0:
+                raise RuntimeError("publisher signature was accepted for a different valid subject")
+
         missing = scratch / "missing"
         shutil.copytree(candidate, missing)
         (missing / "docs/prompts/overlays/cross-project-execution.md").unlink()
@@ -228,7 +277,7 @@ def prove(
         if hashlib.sha256(control).hexdigest() != outputs["issue-grooming"]:
             raise RuntimeError("rejected candidate affected installed content")
 
-        return {
+        evidence = {
             "format": "micrantha.installed-prompt-pack-proof/v1",
             "subject": subject,
             "mode": "authenticated-local" if trusted_key is not None else "digest-pinned-only",
@@ -241,9 +290,13 @@ def prove(
             "missing_overlay_rejected": True,
             "bad_signature_rejected": True if trusted_key is not None else None,
             "untrusted_publisher_rejected": True if trusted_key is not None else None,
+            "signature_subject_mismatch_rejected": True if trusted_key is not None else None,
             "unknown_profile_rejected": True,
             "offline_profile_sha256": outputs,
         }
+        if source_commit is not None:
+            evidence["source_commit"] = source_commit
+        return evidence
 
 
 def main() -> int:
@@ -253,11 +306,13 @@ def main() -> int:
     parser.add_argument("--publisher-public-key", type=Path)
     parser.add_argument("--publisher-signature", type=Path)
     parser.add_argument("--trusted-key-sha256")
+    parser.add_argument("--source-commit", help="Exact 40-hex Git source commit (required with publisher)")
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     evidence = prove(
         args.invokrum.resolve(), args.pack_root.resolve(),
         args.publisher_public_key, args.publisher_signature, args.trusted_key_sha256,
+        args.source_commit,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8")
