@@ -8,7 +8,7 @@ import unittest
 from pathlib import Path
 
 from tools.verify_prompt_pack_installed_root import (
-    SOURCES, make_candidate, publisher_identity, validate_installed_root,
+    SOURCES, make_candidate, validate_publisher_inputs, validate_installed_root,
     verified_publisher_result,
 )
 
@@ -36,26 +36,22 @@ class CandidateTest(unittest.TestCase):
                 self.assertEqual(entry["byte_length"], len(payload))
 
     def test_publisher_inputs_are_complete_and_host_pinned(self) -> None:
-        with tempfile.TemporaryDirectory() as scratch:
-            root = Path(scratch)
-            key = root / "publisher.pub"
-            sig = root / "subject.sig"
-            key.write_bytes(bytes(range(32)))
-            sig.write_bytes(bytes(range(64)))
-            fingerprint = hashlib.sha256(key.read_bytes()).hexdigest()
-            self.assertIsNone(publisher_identity(None, None, None))
-            self.assertEqual(fingerprint, publisher_identity(key, sig, fingerprint))
-            with self.assertRaises(ValueError):
-                publisher_identity(key, None, fingerprint)
-            with self.assertRaises(ValueError):
-                publisher_identity(key, sig, "0" * 64)
-            with self.assertRaises(ValueError):
-                publisher_identity(key, sig, "A" * 64)
-            with self.assertRaises(ValueError):
-                publisher_identity(key, sig, fingerprint + "0")
-            sig.write_bytes(b"x" * 63)
-            with self.assertRaises(ValueError):
-                publisher_identity(key, sig, fingerprint)
+        # These are only CLI input checks, not cryptographic verification.
+        key = Path("caller-owned-public-key")
+        signature = Path("caller-owned-signature")
+        fingerprint = "a" * 64
+        self.assertIsNone(validate_publisher_inputs(None, None, None))
+        self.assertEqual(fingerprint, validate_publisher_inputs(key, signature, fingerprint))
+        with self.assertRaises(ValueError):
+            validate_publisher_inputs(key, None, fingerprint)
+        with self.assertRaises(ValueError):
+            validate_publisher_inputs(None, signature, fingerprint)
+        with self.assertRaises(ValueError):
+            validate_publisher_inputs(key, signature, None)
+        for invalid in ("", "0" * 63, "A" * 64, "0" * 65, "sha256:" + "a" * 64):
+            with self.subTest(invalid=invalid):
+                with self.assertRaises(ValueError):
+                    validate_publisher_inputs(key, signature, invalid)
 
     def test_authenticated_result_rejects_unsigned_and_identity_mismatch(self) -> None:
         subject = "sha256:" + "a" * 64
