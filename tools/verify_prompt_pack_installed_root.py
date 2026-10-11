@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 import shutil
 import subprocess
 import tempfile
@@ -99,8 +100,15 @@ def verify_source_commit(
     root = source_root.resolve(strict=True)
 
     def git(*args: str) -> bytes:
+        # Git refs/replace and inherited GIT_* variables must not redefine
+        # what the pinned commit SHA means during trusted-source verification.
+        clean_env = {k: v for k, v in os.environ.items() if not k.startswith("GIT_")}
+        clean_env["GIT_NO_REPLACE_OBJECTS"] = "1"
+        clean_env["GIT_CONFIG_NOSYSTEM"] = "1"
+        clean_env["GIT_CONFIG_GLOBAL"] = os.devnull
         command = subprocess.run(
-            ["git", "-C", str(root), *args], capture_output=True, check=False, timeout=20,
+            ["git", "--no-replace-objects", "-C", str(root), *args],
+            env=clean_env, capture_output=True, check=False, timeout=20,
         )
         if command.returncode != 0:
             raise ValueError(f"source Git verification failed: {args[0]}")
@@ -121,6 +129,16 @@ def verify_source_commit(
         if staged_root is not None and (staged_root / source).read_bytes() != pinned_bytes:
             raise ValueError(f"staged source differs from the selected commit: {source}")
     return source_commit
+
+
+
+def snapshot_publisher_inputs(public_key: Path, signature: Path, private_root: Path) -> tuple[Path, Path]:
+    """Copy immutable evidence bytes for both accepted install and replay checks."""
+    key_copy = private_root / "publisher.ed25519.pub"
+    signature_copy = private_root / "publisher.ed25519.sig"
+    key_copy.write_bytes(public_key.read_bytes())
+    signature_copy.write_bytes(signature.read_bytes())
+    return key_copy, signature_copy
 
 
 def verified_publisher_result(result: dict, subject: str, trusted_key: str) -> bool:
@@ -166,9 +184,12 @@ def prove(
         )
         if trusted_key is not None:
             assert publisher_public_key is not None and publisher_signature is not None
+            key_copy, signature_copy = snapshot_publisher_inputs(
+                publisher_public_key, publisher_signature, scratch,
+            )
             install_args += (
-                "--publisher-public-key", str(publisher_public_key),
-                "--publisher-signature", str(publisher_signature),
+                "--publisher-public-key", str(key_copy),
+                "--publisher-signature", str(signature_copy),
                 "--trusted-key-sha256", trusted_key,
             )
         first = json.loads(invoke(invokrum, *install_args).stdout)
