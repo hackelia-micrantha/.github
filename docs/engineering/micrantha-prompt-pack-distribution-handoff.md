@@ -23,6 +23,21 @@ Use a clean, exact source checkout and a pinned **authenticated-capable** Invokr
 
 A trusted host or release process must provide all three external publisher inputs for an authenticated candidate, **after** a separately authorized signer signs the exact subject:
 
+A staging-only subject calculation can use the same canonical source builder without authorizing or creating a signature:
+
+```python
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from tools.verify_prompt_pack_installed_root import make_candidate
+
+with TemporaryDirectory() as temporary:
+    _, digest = make_candidate(Path("."), Path(temporary) / "candidate")
+    print(f"sha256:{digest}")
+```
+
+Run this from the **clean, pinned source checkout**. The separately authorized signer must sign the Invokrum `ed25519-subject-v1` **versioned message for that subject**, not simply the printed text. Rebuilding the candidate for qualification must produce the same subject or fail signature verification.
+
+
 ```sh
 python tools/verify_prompt_pack_installed_root.py \
   --invokrum /trusted/path/invokrum \
@@ -33,7 +48,9 @@ python tools/verify_prompt_pack_installed_root.py \
   --output /private/qualified-pack.json
 ```
 
-Invokrum's CLI accepts an unprefixed 64-lowercase-hex SHA-256 key fingerprint for `--trusted-key-sha256` (distinct from the `sha256:<bundle-subject>` flag). The selected fingerprint must come from an **independent host trust decision**, not the candidate.\n\nThe opt-in harness regenerates the canonical candidate from `SOURCES`, recomputes the subject and calls **Invokrum**, not a second signature verifier. It requires the exact v2 `verified-and-authorized` receipt for the host-pinned public-key fingerprint and subject; verifies installed-root containment, byte-identical composition of every declared profile, deterministic lock/verify, and exact reinstall reuse; and rejects corrupt signatures, unrecognized trusted identities, altered candidate files, and missing required overlays. The harness never creates a signing key, issues signatures, publishes an artifact, or claims host freshness. The raw signature and trust inputs remain caller-owned and outside the pack.
+Invokrum's CLI accepts an unprefixed 64-lowercase-hex SHA-256 key fingerprint for `--trusted-key-sha256` (distinct from the `sha256:<bundle-subject>` flag). The selected fingerprint must come from an **independent host trust decision**, not the candidate.
+
+The opt-in harness checks only input completeness and fingerprint syntax, then regenerates the canonical candidate from `SOURCES`, recomputes the subject and calls **Invokrum** for public-key and signature-size checks, cryptographic verification, and host-pinned identity authorization. It does not implement a second signature verifier. It requires the exact v2 `verified-and-authorized` receipt for the host-pinned public-key fingerprint and subject; verifies installed-root containment, byte-identical composition of every declared profile, deterministic lock/verify, and exact reinstall reuse; and rejects corrupt signatures, unrecognized trusted identities, altered candidate files, and missing required overlays. The harness never creates a signing key, issues signatures, publishes an artifact, or claims host freshness. The raw signature and trust inputs remain caller-owned and outside the pack.
 
 In the default CI mode (no publisher inputs), the harness continues testing digest-only installation and records `publisher_authentication: not-provided`. **This is not production signed-distribution acceptance.** A partially supplied publisher option set fails before installation. Do not allow v1 or unsigned evidence to satisfy a v2 acceptance gate.
 
