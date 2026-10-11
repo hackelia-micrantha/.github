@@ -23,7 +23,7 @@ Use a clean, exact source checkout and a pinned **authenticated-capable** Invokr
 
 A trusted host or release process must provide all three external publisher inputs for an authenticated candidate, **after** a separately authorized signer signs the exact subject:
 
-A staging-only subject calculation can use the same canonical source builder without authorizing or creating a signature:
+Before requesting a signature, derive the subject from a **trusted, exact 40-hex source revision**, not a mutable branch or arbitrary working tree. This check requires checkout HEAD to match, rejects untracked/modified files, and compares every bundled source byte against the corresponding Git object:
 
 ```python
 from pathlib import Path
@@ -36,11 +36,11 @@ verify_source_commit(source_root, expected_commit)
 
 with TemporaryDirectory() as temporary:
     _, digest = make_candidate(source_root, Path(temporary) / "candidate")
-    print(f"sha256:{digest}")
+    print(f"source_commit={expected_commit}")
+    print(f"subject=sha256:{digest}")
 ```
 
-Run this from the **clean, pinned source checkout**. The separately authorized signer must sign the Invokrum `ed25519-subject-v1` **versioned message for that subject**, not simply the printed text. Rebuilding the candidate for qualification must produce the same subject or fail signature verification.
-
+Supply that expected commit from a trusted release/review decision, never pack metadata. Run this from the **clean, pinned source checkout**. The separately authorized signer must sign the Invokrum `ed25519-subject-v1` **versioned message for that subject**, not simply the printed text. Rebuilding the candidate for qualification must produce the same subject or fail signature verification.
 
 ```sh
 python tools/verify_prompt_pack_installed_root.py \
@@ -55,7 +55,7 @@ python tools/verify_prompt_pack_installed_root.py \
 
 Invokrum's CLI accepts an unprefixed 64-lowercase-hex SHA-256 key fingerprint for `--trusted-key-sha256` (distinct from the `sha256:<bundle-subject>` flag). The selected fingerprint must come from an **independent host trust decision**, not the candidate.
 
-The opt-in harness checks only input completeness and fingerprint syntax, then regenerates the canonical candidate from `SOURCES`, recomputes the subject and calls **Invokrum** for public-key and signature-size checks, cryptographic verification, and host-pinned identity authorization. It does not implement a second signature verifier. It requires the exact v2 `verified-and-authorized` receipt for the host-pinned public-key fingerprint and subject; verifies installed-root containment, byte-identical composition of every declared profile, deterministic lock/verify, and exact reinstall reuse; and rejects corrupt signatures, unrecognized trusted identities, altered candidate files, and missing required overlays. The harness never creates a signing key, issues signatures, publishes an artifact, or claims host freshness. The raw signature and trust inputs remain caller-owned and outside the pack.
+The opt-in harness checks only input completeness and fingerprint syntax, then regenerates the canonical candidate from `SOURCES`, recomputes the subject and calls **Invokrum** for public-key and signature-size checks, cryptographic verification, and host-pinned identity authorization. It does not implement a second signature verifier. It requires the exact v2 `verified-and-authorized` receipt for the host-pinned public-key fingerprint and subject; verifies installed-root containment, byte-identical composition of every declared profile, deterministic lock/verify, and exact reinstall reuse; and rejects corrupt signatures, unrecognized trusted identities, altered candidate files, missing required overlays, and a signature replayed against a different internally consistent bundle/manifest/subject. The harness never creates a signing key, issues signatures, publishes an artifact, or claims host freshness. Authenticated proof requires the same explicit source commit and records it in the external qualification evidence, not in the Invokrum bundle. The raw signature and trust inputs remain caller-owned and outside the pack.
 
 In the default CI mode (no publisher inputs), the harness continues testing digest-only installation and records `publisher_authentication: not-provided`. **This is not production signed-distribution acceptance.** A partially supplied publisher option set fails before installation. Do not allow v1 or unsigned evidence to satisfy a v2 acceptance gate.
 
