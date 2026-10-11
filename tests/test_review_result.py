@@ -310,8 +310,14 @@ class ReviewResultTests(unittest.TestCase):
             with self.subTest(field=field, bad=bad):
                 bundle = self.bundle(source_exposure="private")
                 bundle["review"][field] = bad
+                unsigned = dict(bundle)
+                unsigned.pop("bundle_sha256")
+                bundle["bundle_sha256"] = hashlib.sha256(
+                    json.dumps(unsigned, sort_keys=True, separators=(",", ":"),
+                               ensure_ascii=False).encode("utf-8")
+                ).hexdigest()
                 errors = validate_result(bundle, self.result(bundle))
-                self.assertIn("bundle_sha256 does not match canonical bundle content", errors)
+                self.assertIn("bundle source_exposure is invalid", errors)
 
     def test_public_source_cannot_claim_prohibited_transfer(self) -> None:
         bundle = self.bundle()
