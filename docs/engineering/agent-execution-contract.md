@@ -339,6 +339,18 @@ When CI, a build, or review is pending, park **only** the transition gated by th
 
 External notifications are **wake hints**, not evidence or authority. On notification or bounded reconciliation, read back the current provider result, required check set, and exact candidate. Missing, skipped, cancelled, or stale checks do not pass a gate; distinguish runner/infrastructure failure from product failure. Avoid indefinite polling. If no independent work is eligible, checkpoint the pending wait and wake condition rather than inventing another task. An interactive session cannot resume itself after it ends; durable wake-up is owned by Dubnium's existing orchestration runtime.
 
+### Ready-work multitasking loop
+
+When one or more transitions are waiting on CI, external review, or another asynchronous dependency, use a **bounded ready-work loop** rather than ending the run at the first pending check:
+
+1. **Reconcile:** read the compact run ledger and refresh only changed external evidence (including exact candidate/head and required-check status) at an event, a natural checkpoint, or a bounded reconciliation interval; never spin or busy-poll.
+2. **Select:** inspect the authorized task graph for the highest-priority ready transition whose dependencies are satisfied. Prefer meaningful work already in scope (review, tests, security inspection, issue disposition, preparation for the next independent slice). Do not manufacture tasks to fill a wait.
+3. **Execute and checkpoint:** complete one bounded transition, record its candidate/evidence and changed readiness, then return to selection. For concurrent mutations, enforce disjoint write ownership, resource/runner limits, and exact-candidate preservation. Read-only inspection can share the pending candidate.
+4. **Admit on evidence:** when an external result is available, verify it against the current provider, exact candidate and required check set before admitting its dependent transition. Handle failed, stale, missing, skipped, or cancelled evidence through the normal diagnosis/gate path.
+5. **Exit:** stop the loop when the requested outcome is verified; when all eligible independent work is exhausted and only external waits remain, checkpoint each wait identity, owner, wake condition, and first safe post-wake action and hand off. Also exit at an authority boundary, exhausted budget, or unresolved material ambiguity.
+
+The scheduler loop changes **which already-authorized transition runs next**, not effect authority or approval semantics. Loop iterations must make progress in work completed, evidence, or a causal hypothesis; a repeated identical status check is not progress. Multiple pending tasks must not consume the same scarce runner capacity or mutate the same worktree concurrently. Interactive sessions do not self-restart; durable event-driven continuation belongs to the owning runtime.
+
 ## Loop classes
 
 Use explicit loop classes so repetition has a reason:
