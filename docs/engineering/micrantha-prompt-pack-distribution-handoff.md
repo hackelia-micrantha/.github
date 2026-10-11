@@ -28,10 +28,14 @@ A staging-only subject calculation can use the same canonical source builder wit
 ```python
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from tools.verify_prompt_pack_installed_root import make_candidate
+from tools.verify_prompt_pack_installed_root import make_candidate, verify_source_commit
+
+source_root = Path('.').resolve()
+expected_commit = '<full-40-hex-reviewed-source-commit>'
+verify_source_commit(source_root, expected_commit)
 
 with TemporaryDirectory() as temporary:
-    _, digest = make_candidate(Path("."), Path(temporary) / "candidate")
+    _, digest = make_candidate(source_root, Path(temporary) / "candidate")
     print(f"sha256:{digest}")
 ```
 
@@ -42,6 +46,7 @@ Run this from the **clean, pinned source checkout**. The separately authorized s
 python tools/verify_prompt_pack_installed_root.py \
   --invokrum /trusted/path/invokrum \
   --pack-root /trusted/clean/source-checkout \
+  --source-commit '<full-40-hex-reviewed-source-commit>' \
   --publisher-public-key /trusted/publisher.ed25519.pub \
   --publisher-signature /trusted/bundle-subject.sig \
   --trusted-key-sha256 '<host-approved-64-lowercase-hex-fingerprint>' \
