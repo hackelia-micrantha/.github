@@ -342,10 +342,19 @@ def main(argv: list[str] | None = None) -> int:
             # Bind creation and replacement to the same opened directory inode;
             # never resolve a mutable parent path a second time.
             parent = args.output.parent.resolve(strict=True)
+            if parent != output_path.parent:
+                raise OSError("output directory changed during bundle construction")
             directory_fd = os.open(parent, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW)
             try:
                 if os.stat(parent).st_ino != os.fstat(directory_fd).st_ino or os.stat(parent).st_dev != os.fstat(directory_fd).st_dev:
                     raise OSError("output parent changed before opening")
+                try:
+                    target = os.stat(args.output.name, dir_fd=directory_fd, follow_symlinks=False)
+                    patch = args.patch.stat()
+                    if (target.st_dev, target.st_ino) == (patch.st_dev, patch.st_ino):
+                        raise OSError("output aliases the review patch")
+                except FileNotFoundError:
+                    pass
                 temporary_name = ".review-bundle-" + os.urandom(12).hex()
                 fd = os.open(
                     temporary_name, os.O_WRONLY | os.O_CREAT | os.O_EXCL | os.O_NOFOLLOW,
