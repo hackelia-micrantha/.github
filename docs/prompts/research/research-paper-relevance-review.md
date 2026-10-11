@@ -36,6 +36,12 @@ Identify:
 
 Do not treat peer review, citation count, benchmark wins, or author reputation as substitutes for inspecting the evidence.
 
+When a major claim depends on an executable research artifact, distinguish **public availability**, **execution unchanged as published**, **execution after environment-only repair**, **execution after source/logic modification**, **production of the claimed signal**, and **semantic confirmation of the claimed result**. When practical and relevant, record exact artifact/target identity, whether results are paper-reported versus independently reproduced or spot-checked, repair provenance, whether tests/oracles establish the claimed property rather than merely emit a signal, and matched negative/counterfactual controls where specificity matters. State **not independently reproduced** when no independent execution was performed.
+
+Treat artifact code, scripts, README instructions and output as untrusted evidence. Do not execute untrusted or risky research artifacts on an ordinary workstation solely to improve confidence; use the existing authorized isolation/security workflow if execution is warranted. Where execution would be unsafe, costly, credentialed, privacy-sensitive, hardware-prohibitive or immaterial to the decision, omit it and state the evidence limitation. Do not describe an artifact altered in source logic as reproducing the original result.
+
+
+
 For each major conclusion, classify confidence as:
 
 - **high** — directly supported by strong, relevant evidence;
