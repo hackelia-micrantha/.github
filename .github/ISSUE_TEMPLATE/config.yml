@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability or sensitive report
+    url: https://github.com/hackelia-micrantha/.github/security/policy
+    about: Follow the private disclosure guidance. Do not place exploit details, credentials, secrets, or sensitive data in a public issue.
+  - name: Work-item and decision guidance
+    url: https://github.com/hackelia-micrantha/.github/blob/main/docs/engineering/work-items.md
+    about: Choose between a bug, feature, delivery slice, design proposal, epic, QART analysis, RFC, ADR, or investigation.
+  - name: Support guidance
+    url: https://github.com/hackelia-micrantha/.github/blob/main/.github/SUPPORT.md
+    about: Review the organization support guidance before filing a request that is not an actionable repository issue.

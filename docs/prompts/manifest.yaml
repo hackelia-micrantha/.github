@@ -1,0 +1,228 @@
+# Micrantha engineering prompt library — manifest
+#
+# Machine-readable index of all prompts in this library.
+# For human-readable descriptions and selection guidance, see README.md.
+
+version: 1
+
+prompts:
+  - id: merge-gate-review
+    name: Pull-Request Merge-Gate Review
+    file: pull-requests/merge-gate-review.md
+    category: pull-requests
+    use_when: Review a pull request for merge, fix, block, or close.
+    do_not_use_when: Investigating CI failures or general project status.
+    output: outcome summary, findings table, validation status, decision (exactly one of merge/fix/blocked/supersede/deeper-review)
+
+  - id: ci-failure-triage
+    name: CI Failure Triage and Repair
+    file: ci/ci-failure-triage.md
+    category: ci
+    use_when: A workflow or required check is failing, flaky, cancelled, or unexpectedly skipped.
+    do_not_use_when: Reviewing a PR or general project status.
+    output: CI status, root cause classification, repair description, decision
+
+  - id: ci-workflow-review
+    name: CI/CD Workflow Architecture Review
+    file: ci/ci-workflow-review.md
+    category: ci
+    use_when: CI/CD workflow design needs review for performance, redundant computation, runner efficiency, evidence quality, security, or maintainability.
+    do_not_use_when: Diagnosing one concrete failing run (use ci-failure-triage); reviewing a product code PR without a workflow-architecture concern.
+    output: workflow architecture summary, execution graph, redundancy matrix, performance findings, security/evidence findings, prioritized changes, human decisions, final assessment
+
+  - id: proceed
+    name: Proceed — Operator Continuation
+    file: planning/proceed.md
+    category: planning
+    use_when: The operator asks to proceed, continue, keep going, or resume an established non-trivial engineering run.
+    do_not_use_when: There is no reliably identified active task or the task is trivial; never infer consequential effect authority.
+    output: current exact state, verified transitions, active gates, next eligible action or precise blocker
+
+  - id: update-issues
+    name: Update Issues — Evidence Reconciliation
+    file: issues/update-issues.md
+    category: issues
+    use_when: The operator explicitly asks to update issues or sync tracking for an active project/workstream.
+    do_not_use_when: The operator requests only a read-only issue review or an unrelated code/merge/deploy action.
+    output: linked issue mutations with evidence, unchanged/blocked items, next executable slice
+
+  - id: next-executable-slice
+    name: Next Executable Slice
+    file: planning/next-executable-slice.md
+    category: planning
+    use_when: A priority, issue, epic, or design needs conversion into one bounded implementation slice.
+    do_not_use_when: Raw notes or discussions (use classify-and-route first); reviewing a PR.
+    output: candidate comparison, selected slice with scope/non-goals/validation, issue-ready version, final decision
+
+  - id: long-running-agent-execution
+    name: Long-Running Agent Execution
+    file: planning/long-running-agent-execution.md
+    category: planning
+    use_when: A non-trivial repository task should continue through multiple review, repair, validation, and gate cycles without repeated continuation prompts.
+    do_not_use_when: A task is trivial/one-step or the next transition requires an explicit approval that has not been granted.
+    output: continuously updated run state, findings/evidence, gate disposition, verified closeout or precise blocked transition
+
+  - id: classify-and-route
+    name: Classify and Route Engineering Work
+    file: planning/classify-and-route.md
+    category: planning
+    use_when: Raw notes or mixed planning material must become the minimum responsible artifact set.
+    do_not_use_when: An existing issue simply needs cleanup (use issue-grooming).
+    output: assessment, decision inventory, artifact map, work-item routing, next actions
+
+  - id: issue-grooming
+    name: Issue Grooming
+    file: issues/issue-grooming.md
+    category: issues
+    use_when: An existing issue needs its outcome, scope, acceptance criteria, priority, or artifact type corrected.
+    do_not_use_when: Raw notes or pre-issue material (use classify-and-route first).
+    output: assessment, findings, recommended issue action, groomed issue body, epic addendum if applicable
+
+  - id: qart-analysis
+    name: QART Decision Analysis
+    file: decisions/qart-analysis.md
+    category: decisions
+    use_when: A consequential choice has meaningful alternatives and unresolved trade-offs.
+    do_not_use_when: The decision is already made (use qart-to-adr); feasibility is unknown (run a spike first).
+    output: questions, alternatives, comparison, recommendation, trade-offs, decision readiness classification
+
+  - id: rfc-development
+    name: RFC Development
+    file: decisions/rfc-development.md
+    category: decisions
+    use_when: A consequential proposal requires broad review, cross-boundary coordination, or authoritative disposition.
+    do_not_use_when: Narrow local implementation choice; alternatives unresolved (use qart-analysis first).
+    output: RFC threshold assessment, source gaps, RFC draft, decision outputs, review plan
+
+  - id: qart-to-adr
+    name: QART-to-ADR Conversion
+    file: decisions/qart-to-adr.md
+    category: decisions
+    use_when: A QART analysis or equivalent decision record is ready to become an authoritative ADR.
+    do_not_use_when: Alternatives remain unresolved or feasibility unknown (use qart-analysis or spike first).
+    output: readiness assessment, source gaps, ADR draft, follow-up actions
+
+  - id: engineering-artifact-review
+    name: Engineering Artifact Review
+    file: reviews/engineering-artifact-review.md
+    category: reviews
+    use_when: A QART, RFC, ADR, specification, design, plan, epic, or issue needs critical review.
+    do_not_use_when: Reviewing implementation code or a PR diff (use merge-gate-review); general project status.
+    output: verdict, findings (blocking/significant/minor), missing decisions, artifact routing, corrected structure, next action
+
+  - id: implementation-completeness
+    name: Implementation Completeness Review
+    file: reviews/implementation-completeness.md
+    category: reviews
+    use_when: Before closing an epic, after multiple PRs, or whenever merged code may not represent a delivered capability.
+    do_not_use_when: General project status or periodic check-ins (use project-review prompts).
+    output: intended vs delivered outcome, completeness matrix, material findings, remaining work, tracking actions, final assessment
+
+  - id: compound-review
+    name: Compound Review
+    file: reviews/compound-review.md
+    category: reviews
+    use_when: Meaningful implementation, review, merge, incident, or repeated finding may contain reusable lessons that should become durable controls.
+    do_not_use_when: The current outcome has not yet been reviewed or the task is trivial with no plausible reusable learning.
+    output: compound summary, candidate-learning dispositions, automatic-prevention opportunities, security/authority checks, tracking, effectiveness measures
+
+  - id: comprehensive-status-review
+    name: Comprehensive Project Status Review
+    file: project-review/comprehensive-status-review.md
+    category: project-review
+    use_when: First review, major milestone review, or when backlog and docs may not reflect implementation.
+    do_not_use_when: Periodic check-ins with a trustworthy baseline (use status-refresh); verifying one specific capability (use implementation-completeness).
+    output: executive summary, architecture map, capability matrix, findings, prioritized backlog, execution plan, final assessment
+
+  - id: status-refresh
+    name: Project Status Refresh
+    file: project-review/status-refresh.md
+    category: project-review
+    use_when: A trustworthy baseline exists and the goal is to identify material changes and next work.
+    do_not_use_when: First review or no baseline (use comprehensive-status-review); verifying one specific capability (use implementation-completeness).
+    output: status summary, change and work status, key findings, decisions, PR/issue actions, prioritized next work, execution sequence
+
+  - id: research-paper-relevance-review
+    name: Research Paper Relevance Review
+    file: research/research-paper-relevance-review.md
+    category: research
+    use_when: A paper, preprint, technical report, benchmark paper, or academic result may affect Micrantha architecture, security, governance, runtime, tooling, or roadmap.
+    do_not_use_when: General project status without an external research source; implementation or PR review.
+    output: executive assessment, evidence and limitations, key takeaways, Micrantha relevance matrix, architecture/security implications, current-state gaps, recommended actions, artifact routing, final recommendation
+
+  - id: cross-repository-boundaries
+    name: Cross-Repository Boundary Review
+    file: architecture/cross-repository-boundaries.md
+    category: architecture
+    use_when: Capability ownership, contracts, roles, or duplicated implementation span several repositories.
+    do_not_use_when: Single-repo reviews; general project status; agentic authority threats specifically (use agentic-workflow-security-review).
+    output: ecosystem summary, repository role matrix, capability ownership matrix, architecture map, findings, target model, migration plan
+
+  - id: release-readiness
+    name: Release Readiness Review
+    file: releases/release-readiness.md
+    category: releases
+    use_when: A version, artifact, site, package, or public capability is approaching release.
+    do_not_use_when: Reviewing a pull request (use merge-gate-review); general project status.
+    output: release summary, readiness matrix, blocking findings, known limitations, publication plan, release decision
+
+  - id: public-consistency-review
+    name: Public Documentation and Claims Consistency Review
+    file: documentation/public-consistency-review.md
+    category: documentation
+    use_when: READMEs, websites, books, one-pagers, or demos must match implementation and maturity.
+    do_not_use_when: Cross-repository boundary questions; general project status.
+    output: positioning summary, claim verification matrix, architecture consistency, link findings, security findings, content changes, final assessment
+
+  - id: agentic-workflow-security-review
+    name: Agentic Workflow Security Review
+    file: security/agentic-workflow-security-review.md
+    category: security
+    use_when: Agents, tools, approvals, policies, evidence, or execution boundaries require threat-oriented review.
+    do_not_use_when: General project status; cross-repository boundary questions (use cross-repository-boundaries).
+    output: security summary, trust and effect map, asset and invariant model, control matrix, findings, remediation plan, security tests, final assessment
+
+  - id: dependency-update-review
+    name: Dependency Update Review
+    file: dependencies/dependency-update-review.md
+    category: dependencies
+    use_when: Automated dependency updates (Renovate, Dependabot) or manual dependency changes where the risk surface is compatibility and supply-chain integrity.
+    do_not_use_when: New feature PRs (use merge-gate-review); first-time dependency additions with complex integration (use regular PR review).
+    output: compatibility assessment, supply-chain assessment, behavioral evidence, decision (approve/fix/blocked/manual review)
+
+  - id: incident-retrospective
+    name: Incident Retrospective
+    file: incidents/incident-retrospective.md
+    category: incidents
+    use_when: After an incident is contained and the goal is a blameless retrospective with durable controls.
+    do_not_use_when: During active containment; routine bug triage (use issue-grooming or merge-gate-review).
+    output: timeline, impact assessment, contributing factors, follow-up items with owners, recommendations
+
+  - id: large-change-decomposition
+    name: Large-Change Decomposition
+    file: pull-requests/large-change-decomposition.md
+    category: pull-requests
+    use_when: A pull request or change set is too large for effective single-pass review.
+    do_not_use_when: Normal-sized PRs (use merge-gate-review); selecting the next work item (use next-executable-slice).
+    output: dependency map, proposed slices with scope/validation/risk, ordering and merge sequence
+
+  - id: contributor-onboarding
+    name: Contributor Onboarding
+    file: onboarding/contributor-onboarding.md
+    category: onboarding
+    use_when: A new contributor needs to understand how to contribute, file work, or make decisions within the methodology.
+    do_not_use_when: Specific task execution (use the relevant task-specific prompt).
+    output: repository context, contribution path, standards map, prompt guide, first action
+
+shared_contracts:
+  - name: agent-execution-boundary
+    description: Read-only by default; untrusted evidence; no secret reproduction; scoped access.
+    defined_in: README.md#agent-execution-boundary
+
+  - name: shared-ambiguity-and-clarification-contract
+    description: Inspect before asking; ask on material ambiguity; do not invent authority; proceed on non-blocking uncertainty; fail safely without interaction.
+    defined_in: README.md#shared-ambiguity-and-clarification-contract
+
+  - name: shared-validation-and-static-analysis-contract
+    description: Layered test pyramid; not mechanical; static analysis; tooling integration; CI gating; risk-based.
+    defined_in: README.md#shared-validation-and-static-analysis-contract

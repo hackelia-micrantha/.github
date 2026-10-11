@@ -1,0 +1,55 @@
+# Release drafter configuration
+#
+# Automatically generates release notes from merged pull requests.
+# Customize categories and labels per repository.
+#
+# See: https://github.com/release-drafter/release-drafter
+
+name-template: "v$RESOLVED_VERSION"
+tag-template: "v$RESOLVED_VERSION"
+
+categories:
+  - title: "Security"
+    labels:
+      - "type:security"
+  - title: "New capabilities"
+    labels:
+      - "type:feature"
+  - title: "Delivery and integration"
+    labels:
+      - "type:delivery"
+  - title: "Bug fixes"
+    labels:
+      - "type:bug"
+
+change-template: "- $TITLE (#$NUMBER) @$AUTHOR"
+change-title-escapes: "\\<*_&"
+
+version-resolver:
+  major:
+    labels:
+      - "breaking"
+  minor:
+    labels:
+      - "type:feature"
+      - "type:security"
+  patch:
+    labels:
+      - "type:bug"
+      - "type:delivery"
+  default: patch
+
+template: |
+  ## What's changed
+
+  $CHANGES
+
+  **Full changelog**: $PREVIOUS_TAG...v$RESOLVED_VERSION
+
+  ## Validation
+
+  Before publishing, confirm the release-readiness review has passed:
+  - Source identity is an immutable known commit
+  - Applicable test-pyramid layers and static-analysis gates pass
+  - Artifact integrity (checksums, signatures, provenance) is verified
+  - Documentation and public claims match actual maturity
