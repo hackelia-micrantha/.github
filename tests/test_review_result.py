@@ -302,6 +302,31 @@ class ReviewResultTests(unittest.TestCase):
         errors = validate_result(bundle, self.result(bundle, execution_location="external"))
         self.assertIn("explicit external transfer requires authorization_ref", errors)
 
+    def test_source_transfer_rejects_unknown_or_nonstring_states(self) -> None:
+        for field, bad in (
+            ("source_exposure", "unknown"),
+            ("source_exposure", ["private"]),
+        ):
+            with self.subTest(field=field, bad=bad):
+                bundle = self.bundle(source_exposure="private")
+                bundle["review"][field] = bad
+                errors = validate_result(bundle, self.result(bundle))
+                self.assertIn("bundle_sha256 does not match canonical bundle content", errors)
+
+    def test_public_source_cannot_claim_prohibited_transfer(self) -> None:
+        bundle = self.bundle()
+        bundle["review"]["external_source_transfer"]["state"] = "prohibited"
+        unsigned = dict(bundle)
+        unsigned.pop("bundle_sha256")
+        bundle["bundle_sha256"] = hashlib.sha256(
+            json.dumps(unsigned, sort_keys=True, separators=(",", ":"),
+                       ensure_ascii=False).encode("utf-8")
+        ).hexdigest()
+        self.assertIn(
+            "public source must use public-source transfer",
+            validate_result(bundle, self.result(bundle)),
+        )
+
     def test_result_schema_matches_contract_identifier(self) -> None:
         schema_path = (
             Path(__file__).resolve().parents[1]
