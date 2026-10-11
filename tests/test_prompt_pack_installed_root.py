@@ -42,15 +42,15 @@ class CandidateTest(unittest.TestCase):
             sig = root / "subject.sig"
             key.write_bytes(bytes(range(32)))
             sig.write_bytes(bytes(range(64)))
-            fingerprint = "sha256:" + hashlib.sha256(key.read_bytes()).hexdigest()
+            fingerprint = hashlib.sha256(key.read_bytes()).hexdigest()
             self.assertIsNone(publisher_identity(None, None, None))
             self.assertEqual(fingerprint, publisher_identity(key, sig, fingerprint))
             with self.assertRaises(ValueError):
                 publisher_identity(key, None, fingerprint)
             with self.assertRaises(ValueError):
-                publisher_identity(key, sig, "sha256:" + "0" * 64)
+                publisher_identity(key, sig, "0" * 64)
             with self.assertRaises(ValueError):
-                publisher_identity(key, sig, "sha256:" + "A" * 64)
+                publisher_identity(key, sig, "A" * 64)
             with self.assertRaises(ValueError):
                 publisher_identity(key, sig, fingerprint + "0")
             sig.write_bytes(b"x" * 63)
@@ -59,7 +59,7 @@ class CandidateTest(unittest.TestCase):
 
     def test_authenticated_result_rejects_unsigned_and_identity_mismatch(self) -> None:
         subject = "sha256:" + "a" * 64
-        key = "sha256:" + "b" * 64
+        key = "b" * 64
         good = {
             "installation_format": "invokrum.installation/v2",
             "publisher_authentication": {
@@ -76,7 +76,7 @@ class CandidateTest(unittest.TestCase):
         for wrong in (
             {"status": "not-provided"},
             {**good["publisher_authentication"], "subject": "sha256:" + "c" * 64},
-            {**good["publisher_authentication"], "identity": {"key.sha256": "sha256:" + "c" * 64}},
+            {**good["publisher_authentication"], "identity": {"key.sha256": "c" * 64}},
             {**good["publisher_authentication"], "mechanism": "some-other-mechanism"},
         ):
             self.assertFalse(verified_publisher_result(
