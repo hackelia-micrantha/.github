@@ -3,13 +3,14 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 import tempfile
 import unittest
 from pathlib import Path
 
 from tools.verify_prompt_pack_installed_root import (
     SOURCES, make_candidate, validate_publisher_inputs, validate_installed_root,
-    verified_publisher_result,
+    verified_publisher_result, verify_source_commit,
 )
 
 
@@ -52,6 +53,65 @@ class CandidateTest(unittest.TestCase):
             with self.subTest(invalid=invalid):
                 with self.assertRaises(ValueError):
                     validate_publisher_inputs(key, signature, invalid)
+
+    def test_source_commit_requires_clean_exact_git_tree(self) -> None:
+        with tempfile.TemporaryDirectory() as scratch:
+            root = Path(scratch) / "source"
+            root.mkdir()
+            def git(*args: str) -> str:
+                return subprocess.check_output(["git", "-C", str(root), *args], text=True).strip()
+            git("init", "-q")
+            for source in SOURCES:
+                file = root / source
+                file.parent.mkdir(parents=True, exist_ok=True)
+                file.write_bytes(("source " + source + "\\n").encode())
+            git("add", ".")
+            git("-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid",
+                "commit", "-qm", "pin canonical sources")
+            sha = git("rev-parse", "HEAD")
+            self.assertEqual(sha, verify_source_commit(root, sha))
+            with self.assertRaises(ValueError):
+                verify_source_commit(root, "0" * 40)
+            with self.assertRaises(ValueError):
+                verify_source_commit(root, sha[:12])
+            changed = root / SOURCES[-1]
+            original = changed.read_bytes()
+            changed.write_bytes(original + b"intentional drift")
+            with self.assertRaises(ValueError):
+                verify_source_commit(root, sha)
+            changed.write_bytes(original)
+            untracked = root / "untracked.tmp"
+            untracked.write_text("untracked", encoding="utf-8")
+            with self.assertRaises(ValueError):
+                verify_source_commit(root, sha)
+            untracked.unlink()
+            self.assertEqual(sha, verify_source_commit(root, sha))
+            child = root / "docs"
+            with self.assertRaises(ValueError):
+                verify_source_commit(child, sha)
+
+    def test_changed_bundle_has_separately_consistent_subject(self) -> None:
+        with tempfile.TemporaryDirectory() as scratch:
+            root = Path(scratch)
+            source = root / "source"
+            for path in SOURCES:
+                file = source / path
+                file.parent.mkdir(parents=True, exist_ok=True)
+                file.write_bytes(("source " + path + "\\n").encode())
+            original_manifest, original_digest = make_candidate(source, root / "original")
+            altered = source / SOURCES[-1]
+            altered.write_bytes(altered.read_bytes() + b"changed source")
+            second_manifest, second_digest = make_candidate(source, root / "changed")
+            self.assertNotEqual(original_digest, second_digest)
+            self.assertNotEqual(original_manifest, second_manifest)
+            self.assertEqual(hashlib.sha256(second_manifest).hexdigest(), second_digest)
+            second = json.loads(second_manifest)
+            self.assertEqual(second["format"], "invokrum.pack-bundle/v1")
+
+    def test_authenticated_proof_requires_explicit_commit(self) -> None:
+        from tools.verify_prompt_pack_installed_root import prove
+        with self.assertRaisesRegex(ValueError, "source commit"):
+            prove(Path("/nonexistent/invokrum"), Path("."), Path("pub"), Path("sig"), "a" * 64)
 
     def test_authenticated_result_rejects_unsigned_and_identity_mismatch(self) -> None:
         subject = "sha256:" + "a" * 64
