@@ -86,6 +86,13 @@ class CandidateTest(unittest.TestCase):
                 verify_source_commit(root, sha)
             untracked.unlink()
             self.assertEqual(sha, verify_source_commit(root, sha))
+            staged = Path(scratch) / "staged"
+            make_candidate(root, staged)
+            self.assertEqual(sha, verify_source_commit(root, sha, staged))
+            staged_file = staged / SOURCES[-1]
+            staged_file.write_bytes(staged_file.read_bytes() + b"late stage mutation")
+            with self.assertRaisesRegex(ValueError, "staged source differs"):
+                verify_source_commit(root, sha, staged)
             child = root / "docs"
             with self.assertRaises(ValueError):
                 verify_source_commit(child, sha)
