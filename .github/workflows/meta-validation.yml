@@ -21,6 +21,7 @@ on:
       - tools/repository_health.py
       - tools/source_posture.py
       - tools/publication_preflight.py
+      - tools/publication_history_preflight.py
       - workflow-templates/**
       - mise.toml
   push:
@@ -44,6 +45,7 @@ on:
       - tools/repository_health.py
       - tools/source_posture.py
       - tools/publication_preflight.py
+      - tools/publication_history_preflight.py
       - workflow-templates/**
       - mise.toml
 
