@@ -64,6 +64,19 @@ class PublicationHistoryPreflightTest(unittest.TestCase):
                              x["rule"] == "committed-runtime-environment"
                              for x in report["findings"]))
 
+    def test_historical_filename_persists_across_rename(self):
+        self.commit("README.md", "safe text")
+        git(self.root, "mv", "README.md", "old-identity.pem")
+        git(self.root, "commit", "-qm", "rename to security-sensitive path")
+        git(self.root, "mv", "old-identity.pem", "README.md")
+        git(self.root, "commit", "-qm", "restore harmless path")
+        report = self.report()
+        self.assertTrue(any(
+            x["path"] == "old-identity.pem"
+            and x["rule"] == "key-or-credential-file"
+            for x in report["findings"]
+        ))
+
     def test_private_key_report_does_not_contain_key_body(self):
         marker = "SENSITIVE-EXAMPLE-PEM-CONTENT"
         self.commit("config.txt", "-----BEGIN PRIVATE KEY-----\n"
