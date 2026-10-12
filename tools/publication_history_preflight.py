@@ -164,8 +164,9 @@ def audit(repo: Path, max_objects: int, max_blob_bytes: int, max_total_bytes: in
     findings: dict[tuple[str, str, str], dict] = {}
     incomplete_blobs = 0
 
-    def record(oid: str, severity: str, rule: str):
-        for path in sorted(paths[oid] or {"[unattributed blob]"}):
+    def record(oid: str, severity: str, rule: str, specified_path: str | None = None):
+        for path in sorted([specified_path] if specified_path is not None
+                           else paths[oid] or {"[unattributed blob]"}):
             key = (path, severity, rule)
             if key not in findings:
                 findings[key] = {"path": path, "severity": severity, "rule": rule,
@@ -175,7 +176,7 @@ def audit(repo: Path, max_objects: int, max_blob_bytes: int, max_total_bytes: in
     for oid, size in inventory:
         for path in paths[oid] or {"[unattributed blob]"}:
             for severity, rule in path_rules(path):
-                record(oid, severity, rule)
+                record(oid, severity, rule, path)
         if size > max_blob_bytes:
             incomplete_blobs += 1
             record(oid, "review", "uninspected-oversize-blob")
