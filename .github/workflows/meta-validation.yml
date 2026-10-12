@@ -20,6 +20,7 @@ on:
       - tools/release_readiness.py
       - tools/repository_health.py
       - tools/source_posture.py
+      - tools/publication_preflight.py
       - workflow-templates/**
       - mise.toml
   push:
@@ -42,6 +43,7 @@ on:
       - tools/release_readiness.py
       - tools/repository_health.py
       - tools/source_posture.py
+      - tools/publication_preflight.py
       - workflow-templates/**
       - mise.toml
 
@@ -72,6 +74,9 @@ jobs:
 
       - name: Validate source and distribution posture
         run: python tools/source_posture.py metadata/repositories.json
+
+      - name: Validate publication preflight against tracked current tree
+        run: python tools/publication_preflight.py --root .
 
       - name: Validate label synchronization metadata
         run: python tools/label_sync.py validate
