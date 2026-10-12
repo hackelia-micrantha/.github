@@ -88,6 +88,19 @@ def reachable(repo: Path, limit: int) -> tuple[list[str], dict[str, set[str]]]:
     return objects, paths
 
 
+def historical_filenames(repo: Path, max_paths: int) -> set[str]:
+    # A rev-list object ID gets only one representative path. Recover the
+    # complete set of changed filenames independently to avoid path-rule gaps.
+    raw = git(repo, "log", "--all", "--format=", "--name-only", "-z")
+    names = {
+        item.decode("utf-8", "surrogateescape")
+        for item in raw.split(b"\0") if item.strip()
+    }
+    if len(names) > max_paths:
+        raise Incomplete("historical filename limit exceeded")
+    return names
+
+
 def blob_inventory(repo: Path, objects: list[str]) -> list[tuple[str, int]]:
     out: list[tuple[str, int]] = []
     for i in range(0, len(objects), 4096):
@@ -158,6 +171,7 @@ def content_rules(data: bytes):
 
 def audit(repo: Path, max_objects: int, max_blob_bytes: int, max_total_bytes: int):
     objects, paths = reachable(repo, max_objects)
+    all_names = historical_filenames(repo, max_objects)
     inventory = blob_inventory(repo, objects)
     seen_bytes = 0
     pending: list[str] = []
@@ -191,6 +205,18 @@ def audit(repo: Path, max_objects: int, max_blob_bytes: int, max_total_bytes: in
             for severity, rule in content_rules(data):
                 record(oid, severity, rule)
 
+    # Report historical risk-bearing names even when Git assigned their
+    # shared blob an unrelated representative path.
+    for path in sorted(all_names):
+        for severity, rule in path_rules(path):
+            key = (path, severity, rule)
+            if key not in findings:
+                findings[key] = {
+                    "path": path, "severity": severity, "rule": rule,
+                    "example_blob_oid": None, "matched_blob_versions": 0,
+                    "attribution": "historical-path-only",
+                }
+
     counts = Counter(f["severity"] for f in findings.values())
     return {
         "scope": "objects-reachable-from-local-refs",
@@ -205,7 +231,7 @@ def audit(repo: Path, max_objects: int, max_blob_bytes: int, max_total_bytes: in
         "findings": sorted(findings.values(), key=lambda x: (x["path"], x["rule"])),
         "limitations": [
             "Only local refs; external forks, reflogs, PR-only refs and caches not scanned",
-            "Blob paths are representative rev-list attribution, not a complete path history",
+            "Blob-to-path attribution is representative; changed filename coverage also uses git log",
             "No live credential validation, proprietary-IP review or runtime testing",
         ],
     }
