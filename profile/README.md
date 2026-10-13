@@ -117,7 +117,7 @@ These are parallel and composable capabilities rather than one mandatory mobile 
 
 ### Shared engineering substrate
 
-- **[Phyllotaxis](https://github.com/hackelia-micrantha/phyllotaxis)** — shared, themeable design-system/UI substrate for Micrantha project sites. Current contract work starts with **Venation** layout/primitives; related concerns include **Chroma** themes/tokens, **Lamina** surfaces/cards, and **Cambium** migration/generation tooling. The implementation repository is currently private; the link is useful to organization members with access until a reviewed public projection is established.
+- **[Phyllotaxis](https://github.com/hackelia-micrantha/phyllotaxis-community)** — shared, themeable design-system/UI substrate for Micrantha project sites. Current contract work starts with **Venation** layout/primitives; related concerns include **Chroma** themes/tokens, **Lamina** surfaces/cards, and **Cambium** migration/generation tooling. The implementation repository remains private; the linked community repository owns the reviewed public design contracts and documentation.
 - **Organization standards and prompts** — shared engineering, security, testing, release, documentation, review, and Compound-engineering conventions in `.github`.
 
 A shared substrate defines reusable contracts; consuming projects retain their own content, product behavior, information architecture, deployment, and brand decisions.
