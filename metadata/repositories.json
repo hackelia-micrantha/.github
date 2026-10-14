@@ -269,12 +269,12 @@
       "repository": "hackelia-micrantha/achillea",
       "classification": "laboratory",
       "maturity": "incubating",
-      "visibility": "private",
+      "visibility": "public",
       "defaultBranch": "main",
       "archived": false,
       "monitor": true,
       "authority": [
-        "Achillea platform and SDK implementation for guided outdoor experiences"
+        "canonical public Achillea platform/SDK implementation, specifications, documentation, and Asterwild reference/product application"
       ],
       "requiredFiles": [
         "README.md"
@@ -286,10 +286,10 @@
       "maturity": "incubating",
       "visibility": "public",
       "defaultBranch": "main",
-      "archived": false,
-      "monitor": true,
+      "archived": true,
+      "monitor": false,
       "authority": [
-        "public Achillea documentation and community distribution"
+        "legacy Achillea redirect/archive surface; no current project authority"
       ],
       "requiredFiles": [
         "README.md"

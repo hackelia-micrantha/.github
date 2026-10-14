@@ -106,7 +106,7 @@ These scopes complement each other: Dubnium owns the workstation/runtime environ
 ### Mobile and edge
 
 - **[Amaryllis](https://github.com/hackelia-micrantha/amaryllis)** — React Native foundation for on-device multimodal inference and governed AI-enabled UI.
-- **[Achillea](https://github.com/hackelia-micrantha/achillea-community)** — platform/SDK for guided outdoor experiences, with Asterwild as its first product consumer.
+- **[Achillea](https://github.com/hackelia-micrantha/achillea)** — public canonical platform/SDK source for guided outdoor experiences, with Asterwild as its first in-repository product/reference application.
 - **[Bluebell](https://github.com/hackelia-micrantha/bluebell)** — Kotlin Multiplatform SDK/application foundation.
 - **[Digitalis](https://github.com/hackelia-micrantha/digitalis-community)** — mobile attestation and backend-authoritative secure-configuration experiments.
 - **[Envuscator](https://github.com/hackelia-micrantha/envuscator-community)** — build-time mobile configuration obfuscation and delivery tooling.
