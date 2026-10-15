@@ -101,6 +101,16 @@ All prompts in this library use the following decision rule:
 
 The goal is not to maximize questions. It is to prevent plausible but materially different interpretations from being converted into confident findings, decisions, priorities, or mutations.
 
+## Shared named-value and enum guardrail
+
+For software implementation, refactoring, and code review, **do not introduce unexplained magic values**: inline strings, numbers, sentinel values, flags, tokens, timeouts, retry counts, thresholds, sizes, status codes, or other literals whose meaning affects behavior, security, compatibility, or maintenance.
+
+1. **Prefer enums or idiomatic closed union/sum types** for a finite set of related domain values (states, modes, actions, results, error categories) over scattered string or numeric discriminators. Prefer exhaustive handling when the language supports it.
+2. **Otherwise use named, typed constants/defines** with clear meaning and units, owned at the narrowest useful scope. Centralize genuinely shared values rather than duplicating them. Treat environment-specific values as validated configuration, not compiled-in constants.
+3. **Protect external contracts.** Preserve required wire/API/database/protocol values through explicit mappings; test serialization, compatibility, and invalid/unknown inputs. Do not impose a closed enum on an extensible external vocabulary without an explicit forward-compatible unknown-value strategy.
+4. **Avoid ceremonial abstractions.** Obvious language idioms (such as `0`, `1`, `true`, `false`, `null`), local arithmetic, and expressive test data can remain inline where naming would impair clarity. This is not a ban on all literals or a quota for constants and enums.
+5. **Review the semantics.** Flag unexplained or repeated domain literals when they create concrete drift, correctness, security, or maintainability risk. Verify replacements preserve behavior, units, defaults, and compatibility rather than requesting mechanical extraction.
+
 ## Shared validation and static-analysis contract
 
 For prompts that plan, implement, review, merge, complete, or release software, verify validation as a layered system rather than a generic “tests pass” claim.
