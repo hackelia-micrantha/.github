@@ -118,24 +118,15 @@ For local work through Desktop Commander or another local execution surface:
 - preserve useful failed candidates/evidence where appropriate;
 - verify the actual resulting revision, not an earlier candidate.
 
-Use Desktop Commander primarily for:
+### Tool routing
 
-- filesystem inspection;
-- repository/worktree operations;
-- builds;
-- tests;
-- static analysis;
-- local services;
-- runtime inspection;
-- exact local evidence.
+Prefer the GitHub connector for GitHub-native repository reads and writes, including source, branches, commits, issues, pull requests, reviews, and CI evidence. Connector access does not confer mutation, review, or merge authority.
 
-Use GitHub integration primarily for:
+Use Desktop Commander only as transport for an explicitly exposed and authorized Capability Gateway operation. Do not use it to execute arbitrary host commands, directly modify files, run Git commands, or inspect host state outside that boundary. Local builds, tests, static analysis, worktrees, services, and runtime or hardware inspection require a bounded Gateway capability.
 
-- current remote issue/PR/repository state;
-- issue updates;
-- PR state/reviews;
-- remote branch/revision evidence;
-- repository-native mutations where preferable.
+If a GitHub connector limitation (such as large or binary files or unsupported operations) blocks the task, check for an existing suitable Gateway capability and record the reason for fallback. If none exists, report the blocker rather than bypassing authorization. Prefer direct authenticated Gateway access when available.
+
+Preserve identity, least privilege, evidence, exact revisions, independent review, and human approval gates regardless of transport.
 
 Do not change Desktop Commander security/configuration settings during an ordinary engineering execution session unless that configuration change is itself the explicit task.
 

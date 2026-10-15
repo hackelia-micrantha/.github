@@ -34,6 +34,12 @@ Do not modify or merge the pull request unless the invocation explicitly authori
 
 Candidate learnings discovered during review are **non-authoritative**. Do not create issues, rewrite trusted prompts, change policy, or expand tool authority merely because a review suggests a reusable lesson.
 
+## Review-gate classification before requesting a reviewer
+
+Determine from the current issue acceptance criteria, repository policy, and [independent-review governance](../../governance/independent-review.md) whether this candidate materially changes a privileged boundary or has an explicit independent-review gate. An ordinary PR still requires this merge-gate assessment, but does **not** require a second independent reviewer by default. A privileged or explicitly gated PR requires the applicable non-author, read-only, attributable exact-head evidence; lack of reviewer quota is blocked, not approval. Exception handling for mechanically bounded follow-up revisions belongs only to the governing independent-review policy.
+
+Before requesting fresh CI or re-review after a fix, enumerate the changed behavior and affected validation assumptions. Reuse relevant earlier results as *diagnostic evidence* only; require fresh exact-head checks wherever protected/admission policy demands them. Preserve all required check names, static analysis, platform coverage, trust boundaries, and negative cases; do not treat missing/skipped evidence as success. Reserve scarce independent review for the final substantive candidate where possible, and invalidate it after substantive remediation.
+
 ## Evidence to inspect
 
 Inspect:
