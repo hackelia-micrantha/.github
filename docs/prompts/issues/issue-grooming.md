@@ -136,19 +136,6 @@ Recommend whether to:
 - move to the repository that owns the capability or contract;
 - retain as an epic and create its next executable child.
 
-### 9. Backlog navigation and recurring issue hygiene
-
-For a request to **organize**, **simplify**, or periodically **groom a backlog**, distinguish the repository-wide inventory from the **active execution queue**:
-
-- Start with current repository issues **and** pull requests; report issue counts excluding pull requests and do not conflate issue priority with activity or CI readiness. Derive any counts from a bounded, complete, current query or mark coverage incomplete.
-- Reuse one **canonical existing milestone/epic/roadmap as the front door** where practical. Keep a short, dependency-ordered **Now** list (normally three to five **executable** slices), a **Next/Blocked** list, and **Deferred/Explore** outside the daily view. Do not open a new dashboard issue or create a parallel hierarchy merely to tidy navigation.
-- A P0/P1 security or operational risk can remain high priority while **blocked** and absent from `Now`. Record the owning blocker and readiness; do not downgrade underlying priority to make an active list look small. Conversely an epic may coordinate P1 outcomes without itself becoming an executable item.
-- Identify overlapping outcomes by comparing **body, boundaries, acceptance and dependencies**, not title similarity alone. Choose one owning issue, preserve any unique invariants/evidence in it, then close the duplicate only when the replacement is verified and history remains linked. Never silently delete a requirement, decision, security finding or open acceptance obligation.
-- Process unprioritized or stale-looking items in **bounded batches** with explicit repository-global rationale. Age or missing labels alone never establishes completion, obsolescence or low priority. Normalize inconsistent labels/titles conservatively; avoid mass mutations and avoid changing already valid records just to refresh timestamps.
-- Refresh the front door when a slice reaches a reviewed terminal outcome or the next dependency changes. Keep historical decisions below clearly marked as superseded; do not leave an old "priority #1" note above the current operator direction.
-
-For backlog-wide output, identify the front-door issue, `Now`/blocked/deferred lanes, retained canonical owners, closed duplicates with preserved unique constraints, and counts **before and after** only for reliably enumerated scoped records. Treat backlog-size reduction as a navigability result, **not** as evidence of implementation completion.
-
 ## Required output
 
 ### A. Assessment

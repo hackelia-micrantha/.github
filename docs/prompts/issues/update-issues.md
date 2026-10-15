@@ -1,6 +1,6 @@
 # Update Issues — Evidence Reconciliation Prompt
 
-Use this entry point when the operator says **update issues**, **reconcile issues**, **sync tracking**, or an equivalent request during a Micrantha/Ryjen engineering task. This invocation explicitly authorizes **bounded issue-tracking mutations within the established task/project scope**, but does **not** authorize code changes, merges, releases, deployments, new credentials, or unrelated work.
+Use this entry point when the operator says **update issues**, **reconcile issues**, **sync tracking**, **organize the backlog**, or an equivalent request during a Micrantha/Ryjen engineering task. This invocation explicitly authorizes **bounded issue-tracking mutations within the established task/project scope**, but does **not** authorize code changes, merges, releases, deployments, new credentials, or unrelated work.
 
 Compose [Issue Grooming](issue-grooming.md), [Project Status Refresh](../project-review/status-refresh.md) where a baseline exists, [Implementation Completeness Review](../reviews/implementation-completeness.md) for purportedly delivered outcomes, and the [cross-project execution overlay](../overlays/cross-project-execution.md). Use the [Supervisor operating profile](../../engineering/chatgpt-supervisor-operating-profile.md) and shared [execution boundary](../README.md#shared-execution-boundary). For a raw unfiled idea, use [Classify and Route](../planning/classify-and-route.md) first.
 
@@ -19,6 +19,19 @@ Compose [Issue Grooming](issue-grooming.md), [Project Status Refresh](../project
 7. **Use minimum sufficient mutations.** Preserve unique issue discussion/history and approved architecture decisions. Prefer one coherent body edit or concise evidence comment where appropriate. Create a new issue only if there is a separate, bounded, untracked result with clear ownership, rationale, dependencies, testable acceptance criteria, and non-goals. Avoid one issue per log line, test failure, or speculative follow-up.
 8. **Handle uncertain writes safely.** After a timeout or disconnect, read back before retrying. Use current issue state when editing; do not overwrite another actor's newer material changes. Re-read affected issues after mutation to verify actual titles, bodies, labels, state, and relationships.
 9. **Do not exceed authority.** An issue-update request is not permission to modify implementation, merge PRs, publish specs as accepted, deploy, or silently extend to unrelated repositories. If a required issue owner/acceptance decision is materially ambiguous, continue unambiguous updates and isolate only the blocked mutation.
+
+## Backlog organization checks
+
+When the task is to **organize**, **simplify**, or **groom** a repository backlog, apply these additional checks before any mutations:
+
+- Count repository **issues separately from PRs** using a complete, bounded result set; report partial coverage rather than fabricate precision. Count changes are diagnostic, not implementation success.
+- Prefer one **existing** current milestone/epic/roadmap as the issue-navigation front door. A `Now` lane holds normally three to five executable, dependency-ready outcomes, while `Next/Blocked` and `Deferred/Explore` remain discoverable without cluttering the daily queue. Avoid a new dashboard issue or another tracker that mirrors canonical owners.
+- An urgent P0/P1 issue can be blocked and **not executable today**. Preserve the priority and severity while recording owner, prerequisite, admission gate, and unblock condition. Do not demote security or required CI merely to shrink `Now`; do not turn parent epics into extra executable slices.
+- Review apparent duplicates by **outcome, acceptance criteria, constraints, and dependency ownership**, not title similarity. Preserve each unique security invariant, design decision and evidence link on the chosen canonical issue **before** closing a redundant issue as duplicate.
+- Classify unprioritized and stale-looking issues in small, explicit batches. Age, absent labels, or overlapping keywords are not sufficient evidence to close, split, or downgrade work. Avoid mass retitles, label churn, speculative new tickets, or empty timestamp-only comments.
+- Refresh front-door routing after a reviewed terminal change or an actual dependency shift. Put the **latest operator priority** above older directions, marking older priorities as historical; never reactivate expressly paused work from a routine `proceed` or CI completion.
+
+When reporting a bounded backlog pass, include the canonical front-door link, the current `Now`/blocked/deferred lanes, before/after issue counts when verified, each duplicate disposition with retained requirements, the next dependency-ready slice, and any unexamined remainder.
 
 ## Output
 
