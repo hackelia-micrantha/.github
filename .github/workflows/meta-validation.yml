@@ -133,19 +133,6 @@ jobs:
               --format json > "$profile_dir/verify.json"
           done
 
-      # Temporary diagnostic step; remove after the golden fixture is synchronized.
-      - name: Emit merge-gate profile evidence for golden repair
-        run: |
-          echo 'START_MERGE_GATE_INSPECT'
-          cat "$RUNNER_TEMP/micrantha-prompt-pack-evidence/merge-gate-review/inspect.json"
-          echo 'END_MERGE_GATE_INSPECT'
-          echo 'START_MERGE_GATE_LOCK'
-          cat "$RUNNER_TEMP/micrantha-prompt-pack-evidence/merge-gate-review/invokrum.lock"
-          echo 'END_MERGE_GATE_LOCK'
-          echo 'START_MERGE_GATE_CONTEXT_HASH'
-          sha256sum "$RUNNER_TEMP/micrantha-prompt-pack-evidence/merge-gate-review/context.md"
-          echo 'END_MERGE_GATE_CONTEXT_HASH'
-
       - name: Compare prompt-pack evidence with committed goldens
         run: |
           python tools/verify_prompt_pack_evidence.py \
