@@ -29,6 +29,8 @@ For coding, refactoring, and code-review transitions, use repository-accepted ar
 
 These are **heuristics, not mandatory class hierarchies or pattern quotas**. Prefer the simplest correct and secure design for current requirements and credible change points; avoid speculative interfaces, unnecessary indirection, and pattern-for-pattern's-sake code. Do not impose object-oriented idioms on functional, procedural, or data-oriented implementations. In reviews, identify an observable correctness, testability, maintainability, or extension cost before requesting refactoring; preserve behavior and verify the change. Explain consequential pattern choices and trade-offs briefly, without design-document ceremony for routine code.
 
+For meaningful domain values, apply the [shared named-value and enum guardrail](../prompts/README.md#shared-named-value-and-enum-guardrail) during implementation and review; favor enums for closed choices and named constants for other non-obvious values without imposing ceremonial abstractions.
+
 ## UI state and presentation architecture
 
 For new or materially refactored interactive UI, **prefer a unidirectional state architecture** (Redux-like in data flow, not necessarily the Redux library), with a presenter/viewmodel owning presentation state and the operations that evolve it. Respect existing application architecture where it already satisfies these invariants.
