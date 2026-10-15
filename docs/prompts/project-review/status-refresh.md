@@ -135,7 +135,7 @@ Priority is not severity, status, size, confidence, age, or architectural import
 
 For each proposed item record priority rationale, observable outcome, impact, urgency, dependency leverage, readiness, risk of change, strategic fit, effort, dependencies, blockers, acceptance criteria, and non-goals.
 
-Keep P1 to a small executable queue—normally three to five issues per repository. Order work by active containment, dependency chain, readiness, shortest safe path to the milestone, and change risk.
+Keep the **active executable queue** small—normally three to five slices per repository—without converting every high-priority **blocked** dependency or parent epic into a daily action. Use one current existing milestone/roadmap front door, with separate `Now`, `Next/Blocked` and `Deferred` navigation; preserve the priority/severity of blocked security and CI work rather than relabeling it to reduce the queue. Check that the latest operator direction supersedes historical priority notes and does not silently reactivate explicitly paused work. Order executable slices by active containment, dependency chain, readiness, shortest safe path to the milestone, and change risk.
 
 ## Required output
 
