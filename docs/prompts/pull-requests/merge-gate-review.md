@@ -4,6 +4,8 @@ Use this prompt for requests such as **"review," "review to fix or merge,"** or 
 
 Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when reviewing executable software, build logic, configuration, or delivery behavior.
 
+Apply the [shared named-value and enum guardrail](../README.md#shared-named-value-and-enum-guardrail) when reviewing code, including typed domain choices, named constants, and wire-compatibility handling.
+
 Every code review must **freshly re-read all related issue(s)** before assessing scope, correctness, completeness, or merge readiness. Re-check the current issue body, acceptance criteria, and material discussion or updates; do not rely on a previous review, the pull-request summary, or remembered issue state.
 
 Do **not** use this prompt to investigate CI failures — use [CI failure triage](../ci/ci-failure-triage.md). Do **not** use it for general project status or backlog triage — use the [project reviews](../project-review/README.md).
