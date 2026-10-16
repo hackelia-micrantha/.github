@@ -38,6 +38,14 @@ prompts:
     do_not_use_when: There is no reliably identified active task or the task is trivial; never infer consequential effect authority.
     output: current exact state, verified transitions, active gates, next eligible action or precise blocker
 
+  - id: research-queue-to-projects
+    name: Research Queue to Projects — Continuous Reconciliation
+    file: research/research-queue-to-projects.md
+    category: research
+    use_when: Continue an established engineering research reading queue with evidence-led source review and bounded cross-project reconciliation.
+    do_not_use_when: No established queue exists and only general research discovery is requested; do not infer issue, tracker or deployment write authority.
+    output: source disposition, relevant project evidence and issue links, verified tracker state and safely advanced or blocked queue pointer
+
   - id: update-issues
     name: Update Issues — Evidence Reconciliation
     file: issues/update-issues.md
