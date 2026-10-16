@@ -41,7 +41,7 @@ class RunnerPlacementContracts(unittest.TestCase):
         self.assertIn("**No generic hosted fallback.**", standard)
         self.assertIn("**blocked / unqualified**", standard)
         self.assertIn("**policy eligibility is not permission to incur cost**", standard)
-        self.assertIn("exact repository/workflow/job/selector exception", standard)
+        self.assertIn("independently reviewed repository/workflow/job/selector exception", standard)
         self.assertIn("Reviewed GitHub-hosted `windows-*` platform exception", standard)
         self.assertIn("Reviewed GitHub-hosted `macos-*` platform exception", standard)
         self.assertIn("Android compilation/unit/lint/package/release does **not** qualify", standard)
