@@ -32,21 +32,18 @@ class RunnerPlacementContracts(unittest.TestCase):
                 self.assertNotIn("default:", runner)
                 self.assertNotIn("ubuntu-", runner)
 
-    def test_placement_standard_defaults_to_self_hosted_with_narrow_exceptions(self) -> None:
+    def test_placement_standard_prohibits_hosted_fallback(self) -> None:
         standard = PLACEMENT_STANDARD.read_text(encoding="utf-8")
-        self.assertIn(
-            "**self-hosted execution is the default and required for ordinary workloads**",
-            standard,
-        )
-        self.assertIn("**No generic hosted fallback.**", standard)
+        self.assertIn("**self-hosted execution is mandatory**", standard)
+        self.assertIn("No hosted-runner exceptions are currently authorized", standard)
         self.assertIn("**blocked / unqualified**", standard)
-        self.assertIn("**policy eligibility is not permission to incur cost**", standard)
-        self.assertIn("independently reviewed repository/workflow/job/selector exception", standard)
-        self.assertIn("Reviewed GitHub-hosted `windows-*` platform exception", standard)
-        self.assertIn("Reviewed GitHub-hosted `macos-*` platform exception", standard)
-        self.assertIn("Android compilation/unit/lint/package/release does **not** qualify", standard)
-        self.assertIn("independently trusted fork-rejection gate", standard)
-        self.assertNotIn("No hosted-runner exceptions are currently authorized", standard)
+        for stale_exception in (
+            "Reviewed GitHub-hosted Linux",
+            "Reviewed GitHub-hosted Windows",
+            "Reviewed GitHub-hosted macOS",
+        ):
+            with self.subTest(exception=stale_exception):
+                self.assertNotIn(stale_exception, standard)
 
     def test_shared_nix_reuses_jit_nix_substrate(self) -> None:
         text = SHARED[0].read_text(encoding="utf-8")
