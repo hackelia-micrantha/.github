@@ -193,6 +193,8 @@ Check whether:
 
 For self-hosted/JIT infrastructure, separate workflow inefficiency from runner-capacity/controller problems.
 
+**Runner-placement conformance (mandatory for Micrantha/Ryjen):** Classify **every job and matrix leg**, including called/reusable workflows, against the [CI/CD runner-placement standard](../../standards/ci-cd.md) and the current independently enforced Dubnium selector contract. **All execution must use an authorized exact self-hosted runner; no GitHub-hosted Ubuntu, Windows, macOS, Android emulator, dynamic-matrix, recovery, or billing fallback is authorized.** Ordinary Linux and non-emulator Android CI use the exact isolated repository-scoped JIT route. Android emulator/device-instrumented and native Windows/MSVC or Apple/macOS/iOS tests require independently qualified **self-hosted platform capacity**; otherwise report the affected required check **blocked / unqualified**, never skipped-as-green or replaced by Linux-only tests. Reject hosted defaults, foreign/widened/dynamic runner selectors, unproven reusable-workflow routing, self-declared exceptions, and PR-controlled admission. A static `runs-on` input alone cannot establish trust: separately verify base-controlled or external fork/target admission, ephemeral isolation, exact selector identity, required check stability and non-circular privileged/recovery runner placement. Do not increase Actions billing budgets or claim runner or test coverage from workflow YAML without operational proof.
+
 ### 8. Reuse versus copy/paste
 
 Identify duplicated workflow logic across jobs or repositories.

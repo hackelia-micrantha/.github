@@ -9,10 +9,9 @@ on:
         type: string
         default: nix flake check --print-build-logs
       runner:
-        description: GitHub runner label
-        required: false
+        description: Exact reviewed repository runner label; caller must bind policy
+        required: true
         type: string
-        default: ubuntu-latest
       working-directory:
         description: Repository-relative working directory
         required: false
@@ -51,7 +50,23 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Install Nix
+      - name: Verify reviewed JIT Nix substrate
+        if: ${{ startsWith(inputs.runner, 'runner-') }}
+        shell: bash
+        env:
+          EXTRA_NIX_CONFIG: ${{ inputs.extra-nix-config }}
+          ENABLE_KVM: ${{ inputs.enable-kvm }}
+        run: |
+          set -euo pipefail
+          if [[ -n "$EXTRA_NIX_CONFIG" || "$ENABLE_KVM" != "false" ]]; then
+            echo "JIT Nix and KVM configuration must be owned by the reviewed runner/project policy." >&2
+            exit 1
+          fi
+          command -v nix
+          nix --version
+
+      - name: Install Nix on reviewed external native runner
+        if: ${{ !startsWith(inputs.runner, 'runner-') }}
         uses: cachix/install-nix-action@13d8dd58da0234aa297dedd986986ccb8e7f3e24 # v31.11.1
         with:
           github_access_token: ${{ github.token }}
