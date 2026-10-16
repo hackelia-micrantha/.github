@@ -133,6 +133,35 @@ jobs:
               --format json > "$profile_dir/verify.json"
           done
 
+      # PR #194 diagnostic only: remove once the pinned golden is regenerated.
+      - name: Print regenerated prompt-pack golden for reconciliation
+        run: |
+          python - <<'PY'
+          import base64
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          root = Path(os.environ["RUNNER_TEMP"]) / "micrantha-prompt-pack-evidence"
+          golden = json.loads(Path("tests/fixtures/micrantha-prompt-pack-golden.json").read_text())
+          for name in golden["profiles"]:
+              profile = root / name
+              golden["profiles"][name]["context_sha256"] = hashlib.sha256(
+                  (profile / "context.md").read_bytes()
+              ).hexdigest()
+              golden["profiles"][name]["inspect"] = json.loads(
+                  (profile / "inspect.json").read_text()
+              )
+              golden["profiles"][name]["lock"] = json.loads(
+                  (profile / "invokrum.lock").read_text()
+              )
+          payload = (json.dumps(golden, indent=2) + "\\n").encode()
+          print("GOLDEN_BASE64_START")
+          print(base64.b64encode(payload).decode())
+          print("GOLDEN_BASE64_END")
+          PY
+
       - name: Compare prompt-pack evidence with committed goldens
         run: |
           python tools/verify_prompt_pack_evidence.py \
