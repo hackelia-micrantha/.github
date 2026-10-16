@@ -8,6 +8,7 @@ See the [complete engineering prompt library](../README.md) for project review, 
 
 | Prompt | Use when | Expected output |
 | --- | --- | --- |
+| [Research queue to projects](research-queue-to-projects.md) | Keep reviewing a connected research queue, reconcile findings across registered projects, and verify tracker/issues/doc updates before advancing | Source-by-source evidence, bounded cross-project dispositions, verified issue/doc changes, and an up-to-date queue |
 | [Research paper discovery](research-paper-discovery.md) | The reading queue is empty/stale, new research may affect current architecture, or the portfolio has uncovered evidence gaps | Deduplicated candidate shortlist, coverage gaps, triage, and prioritized reading queue |\n| [Research paper relevance review](research-paper-relevance-review.md) | A paper, preprint, technical report, or academic result may affect Micrantha architecture, security, governance, runtime, tooling, or roadmap | Evidence assessment, key takeaways, project relevance matrix, gap analysis, action classification, repository ownership, and prioritized recommendations |
 
 ## Operating model
