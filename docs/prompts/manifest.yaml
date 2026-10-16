@@ -50,9 +50,9 @@ prompts:
     name: Update Issues — Evidence Reconciliation
     file: issues/update-issues.md
     category: issues
-    use_when: The operator explicitly asks to update issues or sync tracking for an active project/workstream.
-    do_not_use_when: The operator requests only a read-only issue review or an unrelated code/merge/deploy action.
-    output: linked issue mutations with evidence, unchanged/blocked items, next executable slice
+    use_when: The operator asks to update/reconcile issues or to organize/simplify a project backlog; organize-only requests plan read-only unless writes were separately authorized.
+    do_not_use_when: The operator requests only a single-issue review (use issue-grooming), raw unfiled planning material (use classify-and-route), or an unrelated code/merge/deploy action.
+    output: verified issue changes when authorized, or a read-only Now/Next-Blocked/Deferred queue proposal with tracking evidence and next executable slice
 
   - id: next-executable-slice
     name: Next Executable Slice
