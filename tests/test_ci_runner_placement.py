@@ -15,6 +15,7 @@ STARTERS = [
     ROOT / "workflow-templates/docs-ci.yml",
 ]
 UNCONFIGURED = "runner-REPLACE_WITH_APPROVED_KEY"
+PLACEMENT_STANDARD = ROOT / "docs/standards/ci-cd.md"
 
 
 class RunnerPlacementContracts(unittest.TestCase):
@@ -30,6 +31,19 @@ class RunnerPlacementContracts(unittest.TestCase):
                 self.assertIn("        type: string\n", runner)
                 self.assertNotIn("default:", runner)
                 self.assertNotIn("ubuntu-", runner)
+
+    def test_placement_standard_prohibits_hosted_fallback(self) -> None:
+        standard = PLACEMENT_STANDARD.read_text(encoding="utf-8")
+        self.assertIn("**self-hosted execution is mandatory**", standard)
+        self.assertIn("No hosted-runner exceptions are currently authorized", standard)
+        self.assertIn("**blocked / unqualified**", standard)
+        for stale_exception in (
+            "Reviewed GitHub-hosted Linux",
+            "Reviewed GitHub-hosted Windows",
+            "Reviewed GitHub-hosted macOS",
+        ):
+            with self.subTest(exception=stale_exception):
+                self.assertNotIn(stale_exception, standard)
 
     def test_shared_nix_reuses_jit_nix_substrate(self) -> None:
         text = SHARED[0].read_text(encoding="utf-8")
