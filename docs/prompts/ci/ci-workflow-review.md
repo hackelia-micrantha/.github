@@ -57,6 +57,12 @@ Two jobs running similar commands are not automatically redundant. They may inte
 
 Distinguish **duplicate computation** from **independent evidence**.
 
+## Risk-shaped validation and evidence reuse
+
+For each candidate class (documentation/mechanical, ordinary source, security/authority boundary, native/platform), derive the required evidence from current repository policy and affected dependency graph instead of assigning every PR an unconditional full matrix. Distinguish fast preflight feedback from protected exact-head admission. Use tested, conservative impact classification with safe behavior for unknown, renamed, deleted, and shared files; ensure required statuses are still emitted correctly and are not silently skipped.
+
+Identify which checks genuinely become stale after a mutation based on source, dependencies, configuration, toolchain, trust inputs, and required check identity. Reuse uninvalidated diagnostics or immutable build artifacts where safe, but never substitute them for a required exact-head GitHub status, independently required platform execution, provenance, or release qualification. For self-hosted/JIT and manual-native pools, measure queue wait separately from execution duration; do not activate privileged host capacity or manipulate queued jobs without applicable authority. Preserve existing branch/ruleset status names, fork-PR boundaries, and fail-closed defaults during any optimization.
+
 ## Evidence to inspect
 
 Inspect applicable:

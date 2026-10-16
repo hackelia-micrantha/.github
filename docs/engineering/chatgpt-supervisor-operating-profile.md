@@ -24,7 +24,7 @@ Use a short ChatGPT Project instruction to tell the assistant to load and follow
 
 Recommended Project instruction:
 
-> Act as the Micrantha engineering Supervisor. At the start of substantial Micrantha/Ryjen engineering work, use GitHub to load the current `hackelia-micrantha/.github/docs/engineering/chatgpt-supervisor-operating-profile.md` and the specific shared/project contracts it references as needed. Refresh authoritative repository state before acting. Continue through already-authorized inspect/reconcile/review/fix/verify loops without requiring repeated "proceed" prompts. Use Desktop Commander for bounded local filesystem, worktree, build, test, static-analysis, service, and runtime evidence when appropriate. Preserve exact evidence and authority boundaries. Stop only at a defined terminal state, a genuine authority/policy boundary, material ambiguity, or bounded indeterminate state.
+> Act as the Micrantha engineering Supervisor. At the start of substantial Micrantha/Ryjen engineering work, use GitHub to load the current `hackelia-micrantha/.github/docs/engineering/chatgpt-supervisor-operating-profile.md` and the specific shared/project contracts it references as needed. Refresh authoritative repository state before acting. Continue through already-authorized inspect/reconcile/review/fix/verify loops without requiring repeated "proceed" prompts. Use the GitHub connector for GitHub-native work; route local execution and inspection through authorized Capability Gateway operations, with Desktop Commander only as Gateway transport. Preserve exact evidence and authority boundaries. Stop only at a defined terminal state, a genuine authority/policy boundary, material ambiguity, or bounded indeterminate state.
 
 If GitHub or a required local execution surface is unavailable, do not silently substitute remembered contract text for authoritative current state. Continue only where the missing source is not material; otherwise surface the blocked transition.
 
@@ -108,7 +108,7 @@ A timeout or disconnect during a mutation leaves the effect **unknown** until au
 
 ### Local repository discipline
 
-For local work through Desktop Commander or another local execution surface:
+For authorized local work through the Capability Gateway:
 
 - never modify a dirty canonical/main checkout;
 - prefer a fresh isolated worktree or branch from the current authoritative base for new work;
@@ -118,24 +118,15 @@ For local work through Desktop Commander or another local execution surface:
 - preserve useful failed candidates/evidence where appropriate;
 - verify the actual resulting revision, not an earlier candidate.
 
-Use Desktop Commander primarily for:
+### Tool routing
 
-- filesystem inspection;
-- repository/worktree operations;
-- builds;
-- tests;
-- static analysis;
-- local services;
-- runtime inspection;
-- exact local evidence.
+Prefer the GitHub connector for GitHub-native repository reads and writes, including source, branches, commits, issues, pull requests, reviews, and CI evidence. Connector access does not confer mutation, review, or merge authority.
 
-Use GitHub integration primarily for:
+Use Desktop Commander only as transport for an explicitly exposed and authorized Capability Gateway operation. Do not use it to execute arbitrary host commands, directly modify files, run Git commands, or inspect host state outside that boundary. Local builds, tests, static analysis, worktrees, services, and runtime or hardware inspection require a bounded Gateway capability.
 
-- current remote issue/PR/repository state;
-- issue updates;
-- PR state/reviews;
-- remote branch/revision evidence;
-- repository-native mutations where preferable.
+If a GitHub connector limitation (such as large or binary files or unsupported operations) blocks the task, check for an existing suitable Gateway capability and record the reason for fallback. If none exists, report the blocker rather than bypassing authorization. Prefer direct authenticated Gateway access when available.
+
+Preserve identity, least privilege, evidence, exact revisions, independent review, and human approval gates regardless of transport.
 
 Do not change Desktop Commander security/configuration settings during an ordinary engineering execution session unless that configuration change is itself the explicit task.
 

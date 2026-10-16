@@ -40,7 +40,6 @@ The overlay composes with, and does not weaken or duplicate, the shared executio
 | --- | --- | --- |
 | `status?` | [Project status refresh](project-review/status-refresh.md) | A trustworthy baseline exists and the goal is to identify material changes and next work |
 | `review the project` | [Comprehensive project status review](project-review/comprehensive-status-review.md) | The implementation, architecture, maturity, or backlog needs broad reconciliation |
-| `continue research` / `review reading queue` | [Research queue to projects](research/research-queue-to-projects.md) | Reconcile the next tracked source across relevant projects and verify issues/docs and tracker before advancing |
 | `review this research paper` | [Research paper relevance review](research/research-paper-relevance-review.md) | A paper, preprint, technical report, benchmark paper, or academic result may affect Micrantha architecture, security, governance, runtime, tooling, or roadmap |
 | `review to fix or merge` | [Pull-request merge-gate review](pull-requests/merge-gate-review.md) | A pull request needs a concrete merge, fix, block, or close decision |
 | `check CI to fix or merge` | [CI failure triage and repair](ci/ci-failure-triage.md) | A workflow or required check is failing, flaky, cancelled, or unexpectedly skipped |
@@ -101,6 +100,16 @@ All prompts in this library use the following decision rule:
 7. **Fail safely without interaction.** In unattended or non-interactive execution, continue through unambiguous read-only work, but stop at the affected decision or mutation boundary and report the smallest clarification needed to resume.
 
 The goal is not to maximize questions. It is to prevent plausible but materially different interpretations from being converted into confident findings, decisions, priorities, or mutations.
+
+## Shared named-value and enum guardrail
+
+For software implementation, refactoring, and code review, **do not introduce unexplained magic values**: inline strings, numbers, sentinel values, flags, tokens, timeouts, retry counts, thresholds, sizes, status codes, or other literals whose meaning affects behavior, security, compatibility, or maintenance.
+
+1. **Prefer enums or idiomatic closed union/sum types** for a finite set of related domain values (states, modes, actions, results, error categories) over scattered string or numeric discriminators. Prefer exhaustive handling when the language supports it.
+2. **Otherwise use named, typed constants/defines** with clear meaning and units, owned at the narrowest useful scope. Centralize genuinely shared values rather than duplicating them. Treat environment-specific values as validated configuration, not compiled-in constants.
+3. **Protect external contracts.** Preserve required wire/API/database/protocol values through explicit mappings; test serialization, compatibility, and invalid/unknown inputs. Do not impose a closed enum on an extensible external vocabulary without an explicit forward-compatible unknown-value strategy.
+4. **Avoid ceremonial abstractions.** Obvious language idioms (such as `0`, `1`, `true`, `false`, `null`), local arithmetic, and expressive test data can remain inline where naming would impair clarity. This is not a ban on all literals or a quota for constants and enums.
+5. **Review the semantics.** Flag unexplained or repeated domain literals when they create concrete drift, correctness, security, or maintainability risk. Verify replacements preserve behavior, units, defaults, and compatibility rather than requesting mechanical extraction.
 
 ## Shared validation and static-analysis contract
 

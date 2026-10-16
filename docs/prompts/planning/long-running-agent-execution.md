@@ -55,6 +55,16 @@ Choose the first accurate state; do not equate individual milestones with comple
 
 A terminal report must identify the intended versus observed outcome, exact subject/revision, verification evidence, any consequential effects and read-back, the smallest remaining delivery gap, and the exact next eligible transition or boundary. Avoid manufacturing work solely to populate closeout.
 
+## Risk-shaped review and validation scheduling
+
+Before requesting review or scheduling expensive CI, classify the candidate using accepted repository/issue requirements and [independent-review governance](../../governance/independent-review.md). Do not infer a mandatory independent-review gate from AI authorship, repository location, a generic review step, or the availability of a review bot. Ordinary reversible work uses applicable deterministic checks and normal merge review. Material privileged/authority/security-boundary changes and explicitly gated issues require non-author independent review of the eligible exact head; unusually broad authority follows the stronger governance requirements. A quota error or unavailable reviewer is **blocked**, never clean.
+
+Prefer the cheapest reliable evidence that decides each required property. Run fast relevant deterministic tests, build checks, static analysis, and negative-path probes before consuming scarce semantic-review or native CI capacity. For privileged changes, perform author/fix iterations first and request non-author review of the final substantive candidate; after a substantive repair, obtain new exact-head independent review as required rather than reusing stale approval.
+
+After each candidate mutation, maintain an evidence-invalidation map: changed paths/semantics, previous evidence identity and inputs, impacted test/toolchain/dependency/trust boundaries, still-valid evidence, invalidated evidence, and required exact-head admission checks. A new commit alone does not prove every prior *diagnostic* result irrelevant, but do not reuse an earlier check as a required exact-head success if repository/provider policy requires a fresh status on the candidate. The independent-review bounded-follow-up exception is governed exclusively by its own policy; no generalized semantic-equivalence shortcut applies.
+
+Dispatch mutually independent implementation/review/CI-preparation tasks while long checks are pending, within capacity and authority limits; do not poll indefinitely or start redundant full-matrix runs. Distinguish queued runner/infrastructure failures from source failures. Never weaken required checks, conceal skips, change protected status names, or bypass privileged runner/host approval to improve throughput.
+
 ## Execution model
 
 Treat the run as:
