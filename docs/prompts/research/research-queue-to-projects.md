@@ -8,7 +8,7 @@ This prompt composes the canonical [research discovery](research-paper-discovery
 
 > Continue the Micrantha engineering research reading queue.
 >
-> Refresh the live Engineering Research Tracker, authoritative project registry, prior reviews and issue/PR state. Select the next highest-priority unreviewed item, evaluate its primary source with the canonical research prompt, compare findings against current implementation and accepted design across **all materially relevant registered projects**, and make the smallest supported documentation or issue changes **only within already granted mutation authority**. Verify repository and tracker writes, advance the queue exactly once, and continue with the next eligible item until the requested scope is exhausted, authority or evidence blocks further action, or a bounded execution limit is reached. On an empty queue, use the canonical discovery prompt if research discovery is in scope. Never invent results, claims, or completed actions.
+> Refresh the live Engineering Research Tracker, authoritative project registry, prior reviews and issue/PR state. Select the next highest-priority unreviewed item, evaluate its primary source with the canonical research prompt, compare findings against current implementation and accepted design across **all materially relevant registered projects**, and make the smallest supported documentation or issue changes **only within already granted mutation authority**. Verify repository and tracker writes; advance the queue at most once **only through an authorized atomic, identity-bound write or exclusive single-writer protocol**, otherwise leave its pointer untouched and report the blocked advancement. Continue with the next eligible item until the requested scope is exhausted, authority or evidence blocks further action, or a bounded execution limit is reached. On an empty queue, use the canonical discovery prompt if research discovery is in scope. Never invent results, claims, or completed actions.
 
 Optional parameters:
 
@@ -33,10 +33,10 @@ Optional parameters:
 ### 1. Refresh and claim no invisible state
 
 - Read the live tracker structure/metadata before accessing cells; identify the **Papers**, **Reading Queue**, **Sources**, **Project Integrations** and other existing tabs and their real schemas. Never assume row numbers persist between sessions.
-- Re-read the current queue immediately before selecting or deleting an item. Check review status across tabs, normalized DOI/arXiv ID/URL, title, source version, related existing issues/docs, and any prior review notes. A source previously reviewed by another session is **not new work**.
+- Re-read the current queue immediately before selecting an item. Check review status across tabs, normalized DOI/arXiv ID/URL, title, source version, related existing issues/docs, and any prior review notes. A source previously reviewed by another session is **not new work**. A re-read is **not** a lock or compare-and-swap and must never authorize a row-indexed queue removal by itself.
 - Refresh relevant project registry relationships, current accepted designs, issue bodies and ownership; use connected repository tools for mutable GitHub content and connected Sheets tools for live spreadsheet state.
 - Preserve chronological source/version identity and record a review date. Do not claim exclusive ownership of a row or that a parallel session has not modified it.
-- If an item has already been fully reviewed and integrated, verify the record, remove only the obsolete queue pointer when safe, and continue without duplicating the review or issue comments.
+- If an item has already been fully reviewed and integrated, verify the record; remove or complete its obsolete queue pointer **only** through the identity-bound admission rule in step 5. Otherwise leave the queue unchanged and report the item as already reviewed without duplicating work.
 
 ### 2. Choose the highest-information-gain eligible item
 
@@ -77,8 +77,8 @@ When authorized, execute:
 3. Independently read back each changed issue/file and check the exact changed text, URL, owner and state. A successful API response alone is not evidence of finished integration.
 4. Record research in the appropriate existing tracker tab: **Papers** for academic publications, **Sources** for standards/issues/web docs/vendor benchmarks. Keep detailed takeaways, caveats, cross-project disposition and exact issue links; use real columns and existing validation/formatting rather than assuming a schema.
 5. For a **paper**, mark the canonical paper record reviewed only after substantive review and authorized changes are verified. For a **non-paper source**, record the date/assessment explicitly in its existing source record, not a fabricated paper row.
-6. Immediately before queue mutation, **re-read the specific top item, its URL and status**. Remove or mark complete only that exact reviewed item; if another session has changed/deleted it, refresh and avoid duplicate deletion. Re-rank remaining rows only if the tab uses numeric ranks and preserve formatting, formulas, validations and unrelated entries.
-7. Read back tracker record, issue/docs and queue. If any write failed, classify `partial` or `blocked` and report; never assert the queue advanced if it did not.
+6. **Advance by stable source identity, never by a stale row index.** Before any queue write, require either a provider-native atomic compare-and-set/transaction that checks the source identity, version and expected status, or an independently enforced **exclusive single-writer claim** spanning verification through mutation. Prefer an identity-keyed, non-destructive completion/status update to physical row deletion. If the available Sheets operation has neither atomic identity conditions nor enforceable exclusive ownership, **do not modify or delete queue rows**: record the verified review elsewhere only if authorized, leave the queue pointer in place, and report advancement as blocked. Re-reading immediately before an unconditional row update/deletion is insufficient. Preserve unrelated rows, formulas, validation and ordering; never delete an adjacent item after a concurrent reorder.
+7. Read back the exact source-keyed tracker record, issue/docs, and queue together with the transaction/claim result. Confirm **this operation** changed **this source identity** exactly once, not merely that another session removed a row. If write ownership, acknowledgement or attribution is absent or ambiguous, classify `partial` or `blocked` and report **queue not verified advanced**.
 
 Do not race writes to the same cell/issue, blindly append duplicate blocks, or re-run already verified side effects. A document citation or model claim is not a GitHub PR, a merged change or tested runtime behavior.
 
@@ -101,11 +101,11 @@ After each completed review, provide a compact result that stands on its own:
 - **Paper/source and verdict** with link and date.
 - **Three to five material findings**, with evidence level and the largest limitations.
 - **Project integration ledger**: relevant projects, already-covered contracts, exact changed issue/doc links, new issues if truly needed, and explicit skipped or deferred actions.
-- **Tracker state**: which sheet/tab/record changed, whether the queue was advanced, and current next item (or no items remaining).
+- **Tracker state**: which sheet/tab/stable source record changed, whether identity-bound queue advancement was independently verified, or which atomic/single-writer gate blocked it; current next item only when reliably known.
 - **Validation and authority**: what was actually executed/read back; what was not verified; any blockers requiring human action.
 
 Do not present proposed fixtures as implemented tests, reopened/queued PRs as merged, or design notes as deployed capabilities.
 
 ## Compact continuation
 
-> **Proceed with research:** Refresh the live Engineering Research Tracker and registered Micrantha project graph; skip already reviewed sources; review the next ranked item using the primary-source relevance prompt; reconcile the smallest justified existing issues/docs across relevant projects; independently verify every write; mark the exact source reviewed and advance its queue record once; repeat while authorized. When the queue is empty, discover and deduplicate new decision-relevant research only if discovery was already authorized. Preserve priorities, trust boundaries, independent evidence requirements and all mutation/merge/deployment gates.
+> **Proceed with research:** Refresh the live Engineering Research Tracker and registered Micrantha project graph; skip already reviewed sources; review the next ranked item using the primary-source relevance prompt; reconcile the smallest justified existing issues/docs across relevant projects; independently verify every write; mark the exact source reviewed and advance its queue pointer at most once only when the identity-bound atomic/single-writer gate is established; otherwise leave it untouched and report blocked; repeat while authorized. When the queue is empty, discover and deduplicate new decision-relevant research only if discovery was already authorized. Preserve priorities, trust boundaries, independent evidence requirements and all mutation/merge/deployment gates.
