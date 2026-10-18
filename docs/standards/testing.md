@@ -19,6 +19,8 @@ For each material change, identify:
 
 Do not add every test type mechanically. Use the combination required by the risk and integration boundary.
 
+Local build/test execution must preserve its validation evidence and then perform a worktree-scoped `mise run clean` as described in the [local Git workspace standard](local-git-workspaces.md), including on failed validation. Cleanup never authorizes deletion of evidence, unrelated work, or shared caches.
+
 ## Architectural testability and behavioural specifications
 
 Testability is an architectural quality, not a reason to replace all real dependencies with mocks or to force one style of test everywhere. Prefer:
