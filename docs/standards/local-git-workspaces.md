@@ -65,6 +65,10 @@ test_step
 
 This performs cleanup after the *sequence*, not between a build and a test that requires its output. A test-only or build-only operation uses the same finalizer with just that stage. Cleanup of generated resources is distinct from retiring a Git worktree, which requires the separate lifecycle checks below.
 
+## Audit and incremental adoption
+
+Use `python3 tools/check_cleanup_finalizers.py --json /path/to/repository` to **flag possible** missing or premature CI cleanup finalizers without installing Mise. The scanner uses only Python’s standard library and recognizes Make, Cargo, Go, Gradle, npm, Yarn, Mise, and Nix-style commands. It is an **advisory static heuristic**, not a YAML interpreter or a substitute for artifact, ownership, and failure-path review. Use `--strict` only on a deliberately qualified repository; CI jobs that use `nix build --no-link` and create no local output may document an explicit `# cleanup: no-local-outputs` exception. Each finding must be confirmed before changing a workflow or deleting files.
+
 ## Lifecycle and retention
 
 1. **Acquire:** resolve canonical repo and primary, check existing task worktree/branch, allocate unique task/actor identity, ensure the base commit is recorded, then `git worktree add`. Do not reuse an unrelated previous task's worktree.
