@@ -27,6 +27,37 @@ The policy controls local directory hygiene; it does **not** authorize publishin
 - Use dedicated task-scoped `TMPDIR` and test resources. Where a tool offers a concurrency-safe shared artifact cache (e.g. `sccache`), use it; do not assume arbitrary build directories are concurrency-safe. Put cache growth under a documented disk budget and use tooling-native cache eviction.
 - Default to **one primary checkout plus only the worktrees needed for active, isolated tasks**. Worktree count is not an artificial cap: parallel agents can fan out when their cost and ownership are justified. Prefer keeping no unused build artifacts over imposing a global worktree maximum.
 
+## Build, test, and clean task contract
+
+Repositories performing local builds or tests **must provide a repository-owned, idempotent `mise clean` task**, using the canonical Mise task names `build`, `test`, and `clean` where those stages apply. The portable invocation is `mise run build`, `mise run test`, `mise run clean` (or equivalent short task invocation on supported Mise versions). Do not introduce fake build/test stages solely to satisfy naming when a repository has no such stage; document any task that cannot yet be migrated and treat a missing `clean` task as an adoption gap, not a successful cleanup.
+
+- **Follow-through:** after each local build and/or test *sequence*, run `mise run clean` as the final stage, **including when build/test failed**. Arrange cleanup in a shell `EXIT` trap, `finally` block, or equivalent so short-circuiting validation does not skip it. If interrupted or force-killed before cleanup, record a pending cleanup and reconcile after active use ends; no process can guarantee cleanup after SIGKILL.
+- **Ownership and scope:** `clean` removes only the current task/worktree's known generated build outputs, temporary test artifacts, and task-owned resources once they are no longer in use. It is safe to repeat and must not touch other agents' worktrees or shared mutable resources. Never substitute `git clean -fdx`, a broad recursive deletion, global Nix garbage collection, or shared compiler/package-cache eviction.
+- **Preserve evidence first:** export build/test exit status, exact revision, required test reports, logs, coverage, and reproducibility metadata to durable evidence outside cleanup targets before `clean`. Preserve published/release artifacts and evidence required by CI or reviewers until they are safely consumed or explicitly retained.
+- **Report both outcomes:** preserve the original build/test result independently from cleanup status; do not let successful cleanup hide a failing test, or a failed cleanup masquerade as a passing run. Treat cleanup failure as a separate actionable finding.
+- **Repository-specific contract:** implement `clean` alongside `build`/`test` in the repository's `mise.toml` or `.mise.toml`. The task must declare precisely which paths/resources it owns. If build outputs live entirely in an immutable shared Nix store (e.g. `nix build --no-link`), `clean` may have no local outputs to remove; document that explicitly rather than evicting shared store objects.
+- **No cross-agent cleanup:** do not run cleanup while another task or process depends on the same mutable outputs. Prefer task-scoped output locations or allocation locks over guessing whether a directory is unused.
+
+A failure-safe local sequence, assuming the repository provides all three tasks:
+
+```bash
+set -euo pipefail
+finish() {
+  result=$?
+  trap - EXIT
+  if ! mise run clean; then
+    echo "cleanup failed (original build/test exit: $result)" >&2
+    exit 1
+  fi
+  exit "$result"
+}
+trap finish EXIT
+mise run build
+mise run test
+```
+
+Run `mise run clean` in the **same task worktree** that produced the outputs. A `test`-only operation uses the same cleanup wrapper without the build step. Cleanup is distinct from *retiring a completed Git worktree*, which remains governed by the lifecycle checks below.
+
 ## Lifecycle and retention
 
 1. **Acquire:** resolve canonical repo and primary, check existing task worktree/branch, allocate unique task/actor identity, ensure the base commit is recorded, then `git worktree add`. Do not reuse an unrelated previous task's worktree.
