@@ -27,36 +27,43 @@ The policy controls local directory hygiene; it does **not** authorize publishin
 - Use dedicated task-scoped `TMPDIR` and test resources. Where a tool offers a concurrency-safe shared artifact cache (e.g. `sccache`), use it; do not assume arbitrary build directories are concurrency-safe. Put cache growth under a documented disk budget and use tooling-native cache eviction.
 - Default to **one primary checkout plus only the worktrees needed for active, isolated tasks**. Worktree count is not an artificial cap: parallel agents can fan out when their cost and ownership are justified. Prefer keeping no unused build artifacts over imposing a global worktree maximum.
 
-## Build, test, and clean task contract
+## Build, test, and cleanup lifecycle
 
-Repositories performing local builds or tests **must provide a repository-owned, idempotent `mise clean` task**, using the canonical Mise task names `build`, `test`, and `clean` where those stages apply. The portable invocation is `mise run build`, `mise run test`, `mise run clean` (or equivalent short task invocation on supported Mise versions). Do not introduce fake build/test stages solely to satisfy naming when a repository has no such stage; document any task that cannot yet be migrated and treat a missing `clean` task as an adoption gap, not a successful cleanup.
+**Every local build or test sequence must have a defined follow-up cleanup action**, regardless of which command runner, language, build system, or CI orchestrator was used. The contract is **build → test → cleanup** when both build and test are needed, or **build → cleanup / test → cleanup** for a single stage. The *lifecycle* is the standard, **not a particular tool or task name**. An action that generates no task-local files may have an explicitly documented no-op cleanup.
 
-- **Follow-through:** after each local build and/or test *sequence*, run `mise run clean` as the final stage, **including when build/test failed**. Arrange cleanup in a shell `EXIT` trap, `finally` block, or equivalent so short-circuiting validation does not skip it. If interrupted or force-killed before cleanup, record a pending cleanup and reconcile after active use ends; no process can guarantee cleanup after SIGKILL.
-- **Ownership and scope:** `clean` removes only the current task/worktree's known generated build outputs, temporary test artifacts, and task-owned resources once they are no longer in use. It is safe to repeat and must not touch other agents' worktrees or shared mutable resources. Never substitute `git clean -fdx`, a broad recursive deletion, global Nix garbage collection, or shared compiler/package-cache eviction.
-- **Preserve evidence first:** export build/test exit status, exact revision, required test reports, logs, coverage, and reproducibility metadata to durable evidence outside cleanup targets before `clean`. Preserve published/release artifacts and evidence required by CI or reviewers until they are safely consumed or explicitly retained.
-- **Report both outcomes:** preserve the original build/test result independently from cleanup status; do not let successful cleanup hide a failing test, or a failed cleanup masquerade as a passing run. Treat cleanup failure as a separate actionable finding.
-- **Repository-specific contract:** implement `clean` alongside `build`/`test` in the repository's `mise.toml` or `.mise.toml`. The task must declare precisely which paths/resources it owns. If build outputs live entirely in an immutable shared Nix store (e.g. `nix build --no-link`), `clean` may have no local outputs to remove; document that explicitly rather than evicting shared store objects.
-- **No cross-agent cleanup:** do not run cleanup while another task or process depends on the same mutable outputs. Prefer task-scoped output locations or allocation locks over guessing whether a directory is unused.
+- **Tool-neutral implementation:** use the repository's native entry points—Mise, Make, Just, npm scripts, Cargo, Nix, a shell script, CI job finalizer, or equivalent. For example, `mise run build; mise run test; mise run clean` expresses the sequence in a Mise-based repository; `make build; make test; make clean` expresses it for Make. These are examples, **not mandatory interfaces**; adopt existing repository-specific clean tasks before adding new commands.
+- **Follow-through on failure:** attempt cleanup in a `finally` / `EXIT` / CI `always()` step **even when build or tests fail**. Capture incomplete cleanup as a follow-up if interrupted, killed, or blocked by an active user of the output. Do not imply SIGKILL cleanup can be guaranteed.
+- **Ownership and scope:** cleanup must be safe to repeat, target only generated outputs and resources owned by the invoking task/worktree, and not mutate another agent's work. Never substitute `git clean -fdx`, broad recursive deletion, global Nix garbage collection, or eviction of shared compiler/package caches.
+- **Evidence before cleanup:** export original command exit status, exact revision, test reports, logs, coverage, and reproduction data outside cleanup targets first. Keep published/release artifacts and required review evidence until their consumers finish; if cleanup is deliberately deferred, record the owner, retained outputs, and next eligible cleanup point.
+- **Independent outcomes:** preserve the original build/test failure code and record cleanup success or failure independently. A successful cleanup must never turn a failed test green. If cleanup fails after otherwise successful work, the overall operation fails; if both fail, the original build/test status remains visible alongside the cleanup failure.
+- **Document repository behavior:** the project-native build/test/cleanup commands and precisely owned output locations must be discoverable in the repository. A missing clean path is an **adoption gap**, not permission to invent an unsafe replacement. Where `nix build --no-link` produces only immutable store results, cleanup can explicitly be a no-op for those outputs; it must not evict shared Nix store objects.
+- **Parallel work:** prefer per-task output locations and scoped resource ownership. Cleanup runs in the producing task's context only once no other running task depends on those outputs.
 
-A failure-safe local sequence, assuming the repository provides all three tasks:
+A failure-safe shell pattern with **illustrative Mise adapters** (substitute the repository's own commands or an equivalent CI finalizer):
 
 ```bash
+build_step()   { mise run build; }  # example, not required
+test_step()    { mise run test; }
+cleanup_step() { mise run clean; }
+
 set -euo pipefail
 finish() {
   result=$?
   trap - EXIT
-  if ! mise run clean; then
-    echo "cleanup failed (original build/test exit: $result)" >&2
-    exit 1
+  cleanup_result=0
+  cleanup_step || cleanup_result=$?
+  if [ "$cleanup_result" -ne 0 ]; then
+    echo "cleanup failed: $cleanup_result (build/test exit: $result)" >&2
+    if [ "$result" -eq 0 ]; then exit "$cleanup_result"; fi
   fi
   exit "$result"
 }
 trap finish EXIT
-mise run build
-mise run test
+build_step
+test_step
 ```
 
-Run `mise run clean` in the **same task worktree** that produced the outputs. A `test`-only operation uses the same cleanup wrapper without the build step. Cleanup is distinct from *retiring a completed Git worktree*, which remains governed by the lifecycle checks below.
+This performs cleanup after the *sequence*, not between a build and a test that requires its output. A test-only or build-only operation uses the same finalizer with just that stage. Cleanup of generated resources is distinct from retiring a Git worktree, which requires the separate lifecycle checks below.
 
 ## Lifecycle and retention
 

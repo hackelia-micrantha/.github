@@ -19,7 +19,7 @@ For each material change, identify:
 
 Do not add every test type mechanically. Use the combination required by the risk and integration boundary.
 
-Local build/test execution must preserve its validation evidence and then perform a worktree-scoped `mise run clean` as described in the [local Git workspace standard](local-git-workspaces.md), including on failed validation. Cleanup never authorizes deletion of evidence, unrelated work, or shared caches.
+Local build/test execution must preserve its validation evidence and invoke a worktree-scoped cleanup action through the repository's native tooling or CI finalizer, as described in the [local Git workspace standard](local-git-workspaces.md), including on failed validation. Mise is one implementation example, not a requirement. Cleanup never authorizes deletion of evidence, unrelated work, or shared caches.
 
 ## Architectural testability and behavioural specifications
 
