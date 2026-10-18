@@ -16,6 +16,8 @@ The policy controls local directory hygiene; it does **not** authorize publishin
 4. Put `/.worktrees/` in the primary checkout's local `.git/info/exclude` or equivalent repository ignore policy. Do not recursively recurse through nested worktrees when auditing, formatting, or packaging the primary checkout.
 5. Use `git worktree add`, `git worktree move`, `git worktree remove`, and `git worktree list --porcelain` to manage linked worktrees. Never raw-move a linked checkout or edit Git administrative pointers directly. Fetching a second full clone is exceptional and must record why sharing the object store is unsuitable.
 6. One active writer per branch. A review agent is read-only in the target worktree or uses its own detached/independent review worktree. Integration work uses a separate `integration/<initiative>` worktree, not the primary checkout.
+7. A task-owned writable worktree retains its **unique named branch** across clone-to-worktree migration; read-only review snapshots may intentionally remain detached. When several old clones use the same branch name at different SHAs, preserve those revisions as detached review snapshots and archived refs rather than stealing or forcing branch ownership.
+8. Worktrees share the same Git refs, config, hooks, object store and maintenance state. Serialize cooperative worktree allocation, branch/ref updates and destructive Git maintenance by the resolved Git common directory (for example, a short-lived local `flock` on a common-dir lock file). This lock only coordinates participants using the convention; it does not intercept arbitrary Git commands. Keep independently untrusted actors in separate trust boundaries rather than sharing an administrative store.
 
 ## Isolation versus space
 
@@ -41,6 +43,7 @@ The policy controls local directory hygiene; it does **not** authorize publishin
 - Never guess unused status from branch naming, absence of upstream, age, or remote UI alone. Protected branches, source-of-truth branches, release branches, and active worktree branches are excluded.
 - A checkout that is clean can still contain unique local commits, tags, stashes, reflog history, ignored files, or valuable CI evidence.
 - No cleanup while a target worktree is in use, locked, under rebase/merge/cherry-pick/bisect, or has status probes that timed out. Probe before and after each operation; fail closed on ambiguous results.
+- Conversion from independent clone to linked worktree requires explicit restoration or intentional-detachment disposition for branch ownership; verify the result against the original HEAD, refs and worktree status. A shallow clone with missing ancestry must be retained until the boundary is reconciled without rewriting another checkout's history.
 - Keep exceptions explicit for large, independent trust boundaries, destructive testing, separate identities/forks, or tool incompatibility; document extra disk cost and cleanup date.
 - No automated cleanup of the Nix store, language caches, container images, or volumes merely because Git worktrees were retired. Such eviction needs separate ownership, resource checks, and authorization.
 
@@ -52,7 +55,7 @@ git -C "$repo" worktree list --porcelain
 git -C "$repo" worktree add -b "fix/1234" "$repo/.worktrees/issue-1234" origin/main
 # ... task-scoped validation and integration ...
 git -C "$repo" worktree remove "$repo/.worktrees/issue-1234" # clean + closed only
-git -C "$repo" branch -d "fix/1234"                        # Git verifies merge
+git -C "$repo" merge-base --is-ancestor "fix/1234" "origin/main" && git -C "$repo" branch -d "fix/1234" # only for ancestry-integrated branches
 ```
 
 Use the [local-workspace hygiene prompt](../prompts/planning/local-workspace-hygiene.md) for an evidence-first cleanup or agent bootstrap.
