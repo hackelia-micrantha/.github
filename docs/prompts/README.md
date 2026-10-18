@@ -49,6 +49,7 @@ The overlay composes with, and does not weaken or duplicate, the shared executio
 | `what is next?` | [Next executable slice](planning/next-executable-slice.md) | A priority, issue, epic, or design needs conversion into one bounded implementation slice |
 | `proceed` / `continue` / `keep going` | [Proceed — operator continuation](planning/proceed.md) | Continue the current authorized engineering task from refreshed evidence without restarting or widening authority |
 | `update issues` / `sync tracking` | [Update issues — evidence reconciliation](issues/update-issues.md) | Reconcile and mutate bounded issue tracking against current implementation, PRs, CI, reviews, and acceptance criteria |
+| `clean local workspaces` / `start isolated task` | [Local workspace hygiene](planning/local-workspace-hygiene.md) | Minimize duplicate checkouts while isolating concurrent agents and preserving unique work |
 | `proceed in loops` / `run this to completion` | [Long-running agent execution](planning/long-running-agent-execution.md) | A non-trivial task should continue through review, repair, validation, and gated-effect cycles without repeated continuation prompts |
 | `make this issue well groomed` | [Issue grooming](issues/issue-grooming.md) | An issue or small backlog needs an observable outcome, scope, acceptance criteria, and priority |
 | `do QART` | [QART decision analysis](decisions/qart-analysis.md) | Alternatives and trade-offs remain open |
