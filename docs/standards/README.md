@@ -7,6 +7,7 @@ These standards define organization-wide defaults for engineering evidence, secu
 - [Testing and validation](testing.md)
 - [CI/CD](ci-cd.md)
 - [Branching and integration](branching-and-integration.md)
+- [Local Git workspace and concurrency](local-git-workspaces.md) — one canonical checkout, isolated worktrees, evidence-gated cleanup
 - [Security engineering](security.md)
   - [Cryptographic survivability](cryptographic-survivability.md)
   - [AI agent insider threat and cumulative exposure](agent-insider-threat.md)

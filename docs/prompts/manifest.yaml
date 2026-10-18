@@ -62,6 +62,14 @@ prompts:
     do_not_use_when: Raw notes or discussions (use classify-and-route first); reviewing a PR.
     output: candidate comparison, selected slice with scope/non-goals/validation, issue-ready version, final decision
 
+  - id: local-workspace-hygiene
+    name: Local Workspace Setup and Cleanup
+    file: planning/local-workspace-hygiene.md
+    category: planning
+    use_when: Start isolated local Git work or reconcile duplicate checkouts and stale worktrees without disrupting concurrent agents.
+    do_not_use_when: A user only wants Git syntax or system-wide disk cleanup unrelated to local Git workspaces.
+    output: canonical checkout inventory, safe mutations and verification, preserved history, disk accounting, and protected residual work
+
   - id: long-running-agent-execution
     name: Long-Running Agent Execution
     file: planning/long-running-agent-execution.md

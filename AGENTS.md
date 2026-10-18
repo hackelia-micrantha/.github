@@ -16,6 +16,10 @@ The profile does not replace this file, repository-local guidance, or the normat
 
 If the profile cannot be read from authoritative repository state and that absence is material to the task, do not substitute remembered copies as if they were current.
 
+## Local workspace default
+
+For local Git work, apply [local Git workspace and concurrency](docs/standards/local-git-workspaces.md): prefer a single primary checkout per repository with task-specific linked worktrees beneath `<primary>/.worktrees/`. Isolate concurrent writers and mutable build state; never infer that a clean checkout or merged-looking branch is disposable. Use the [local workspace hygiene prompt](docs/prompts/planning/local-workspace-hygiene.md) for local cleanup or setup.
+
 ## Intent-based skill selection
 
 Select the most specific applicable skill from [`skills/`](skills/) from operator intent and current authoritative repository state. Do not require the operator to name a skill when the intent clearly matches one.
