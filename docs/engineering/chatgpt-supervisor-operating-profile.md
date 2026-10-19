@@ -537,7 +537,7 @@ Do not hold completion hostage to unrelated optional improvements.
 
 ## External repository contribution preflight
 
-Before drafting, revising, or posting a **substantive comment on an external repository**, load and follow the [canonical external-comment standard](./external-contribution-comments.md). This applies to issue replies, pull-request discussions, inline reviews, and agent-generated contribution drafts.
+Especially when preparing **external PR reviews, inline review findings, or security-review summaries**, and also before drafting, revising, or posting any other **substantive comment on an external repository**, load and follow the [canonical external-comment standard](./external-contribution-comments.md). This applies to issue replies, pull-request discussions, inline reviews, and agent-generated contribution drafts.
 
 Before publication, check:
 
@@ -546,7 +546,7 @@ Before publication, check:
 3. The destination repository's instructions and existing conversation have been reviewed to avoid duplicate or inappropriate comments.
 4. Publication is separately authorized. A passing format check never grants posting authority.
 
-If the draft fails the prefix or accuracy check, **revise before posting**. Short nontechnical acknowledgments follow the exception in the canonical standard. This is a drafting/review preflight, not a claim of runtime-wide automated enforcement.
+If the draft fails the prefix or accuracy check, **revise before posting**. Review approvals without findings and short nontechnical acknowledgments follow the exception in the canonical standard. For inline reviews, lead each independently actionable finding with its own concise explanation; avoid repeating a generic paragraph across findings. This is a drafting/review preflight, not a claim of runtime-wide automated enforcement.
 
 ---
 
