@@ -12,6 +12,7 @@ The authoritative detailed semantics remain in the existing shared contracts, es
 - [Agent skill selection](./agent-skill-selection.md)
 - [AI-assisted SDLC phase discipline](./ai-assisted-sdlc.md)
 - [Compound engineering](./compound-engineering.md)
+- [External repository comment standard](./external-contribution-comments.md) — short plain-language opening before substantive upstream technical comments
 - [Compound artifact routing](./compound-artifact-routing.md)
 - [Governed learning promotion](../architecture/governed-learning-promotion.md)
 - [Compound learning runtime boundaries](../architecture/compound-learning-runtime.md)
