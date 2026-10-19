@@ -2,6 +2,14 @@
 
 **Scope:** Outbound comments written or posted on repositories not owned by Micrantha, including issues, pull requests, review comments, and discussions. Applies to human-assisted drafts and automated/agent-assisted contribution workflows. It does not change repository-specific contribution rules or grant posting authority.
 
+## Primary use: external code and security reviews
+
+This convention is **primarily for substantive review findings** submitted to third-party pull requests, including inline review comments and review summaries. Apply it to external issue/discussion proposals as well, but prioritize review clarity over boilerplate.
+
+For each independently actionable review finding, explain the failure mode in plain language first, then identify the exact affected code/contract, evidence, severity or impact when justified, and the smallest actionable correction or test. Avoid repeating the same ELI5 paragraph on every inline comment: a distinct short explanation for each material finding is better; a review summary may group related findings under one opening. No ELI5 section is required for an approval with no substantive findings or a purely administrative review reply.
+
+Do not add an ELI5 prefix to internal-only review output unless the user or owning project explicitly requests it.
+
 ## Required prefix
 
 Start each substantive external contribution with:
