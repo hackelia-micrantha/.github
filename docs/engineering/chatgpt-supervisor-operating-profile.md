@@ -535,6 +535,21 @@ Do not hold completion hostage to unrelated optional improvements.
 
 ---
 
+## External repository contribution preflight
+
+Before drafting, revising, or posting a **substantive comment on an external repository**, load and follow the [canonical external-comment standard](./external-contribution-comments.md). This applies to issue replies, pull-request discussions, inline reviews, and agent-generated contribution drafts.
+
+Before publication, check:
+
+1. The comment opens with a short, accurate plain-language explanation of the problem and why it matters (normally under `### Explain it like I'm five`).
+2. The technical section identifies the concrete finding, evidence, uncertainty, and actionable request without claiming unrun tests or unverified outcomes.
+3. The destination repository's instructions and existing conversation have been reviewed to avoid duplicate or inappropriate comments.
+4. Publication is separately authorized. A passing format check never grants posting authority.
+
+If the draft fails the prefix or accuracy check, **revise before posting**. Short nontechnical acknowledgments follow the exception in the canonical standard. This is a drafting/review preflight, not a claim of runtime-wide automated enforcement.
+
+---
+
 ## External research
 
 Use external research when current or niche facts materially affect the decision.
