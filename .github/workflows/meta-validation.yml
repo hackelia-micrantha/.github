@@ -133,29 +133,6 @@ jobs:
               --format json > "$profile_dir/verify.json"
           done
 
-      - name: Emit candidate fixture for review (temporary diagnostic)
-        run: |
-          python - <<'PY'
-          import hashlib
-          import json
-          import os
-          from pathlib import Path
-
-          root = Path(os.environ["RUNNER_TEMP"]) / "micrantha-prompt-pack-evidence"
-          candidate = {"format": "micrantha.prompt-pack-golden/v1", "invokrum_version": "0.2.1", "profiles": {}}
-          for folder in sorted(root.iterdir()):
-              if not folder.is_dir():
-                  continue
-              candidate["profiles"][folder.name] = {
-                  "context_sha256": hashlib.sha256((folder / "context.md").read_bytes()).hexdigest(),
-                  "inspect": json.loads((folder / "inspect.json").read_text()),
-                  "lock": json.loads((folder / "invokrum.lock").read_text()),
-              }
-          print("BEGIN_PROMPT_PACK_GOLDEN")
-          print(json.dumps(candidate, sort_keys=True, separators=(",", ":")))
-          print("END_PROMPT_PACK_GOLDEN")
-          PY
-
       - name: Compare prompt-pack evidence with committed goldens
         run: |
           python tools/verify_prompt_pack_evidence.py \
