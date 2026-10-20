@@ -17,12 +17,15 @@ EXPECTED_SOURCES = {
     "docs/prompts/issues/issue-grooming.md",
     "docs/prompts/reviews/engineering-artifact-review.md",
     "docs/prompts/pull-requests/merge-gate-review.md",
+    "docs/prompts/decisions/qart-analysis.md",
 }
 EXPECTED_PROFILES = {
     "classify-and-route",
     "issue-grooming",
     "engineering-artifact-review",
     "merge-gate-review",
+    "qart-analysis",
+    "qats-analysis",
 }
 
 
@@ -74,6 +77,8 @@ class PromptPackTests(unittest.TestCase):
         profile_ids = set(re.findall(r"^  - id: ([a-z0-9-]+)$", profiles, re.MULTILINE))
         self.assertEqual(EXPECTED_PROFILES, profile_ids)
 
+        workflow_by_profile = {profile: profile for profile in EXPECTED_PROFILES}
+        workflow_by_profile["qats-analysis"] = "qart-analysis"
         for profile_id in sorted(EXPECTED_PROFILES):
             pattern = re.compile(
                 rf"  - id: {re.escape(profile_id)}\n"
@@ -83,9 +88,19 @@ class PromptPackTests(unittest.TestCase):
                 r"      scope:\n"
                 r"        - cross-project-execution\n"
                 r"      workflow:\n"
-                rf"        - {re.escape(profile_id)}(?:\n|$)"
+                rf"        - {re.escape(workflow_by_profile[profile_id])}(?:\n|$)"
             )
             self.assertRegex(profiles, pattern)
+
+    def test_qats_reuses_qart_workflow_without_a_second_source(self) -> None:
+        overlays = self._section("overlays", "profiles")
+        profiles = self._section("profiles", "variables")
+        self.assertEqual(1, overlays.count("    source: docs/prompts/decisions/qart-analysis.md\n"))
+        for profile in ("qart-analysis", "qats-analysis"):
+            start = profiles.index(f"  - id: {profile}\n")
+            next_profile = profiles.find("\n  - id: ", start + 1)
+            block = profiles[start:] if next_profile == -1 else profiles[start:next_profile]
+            self.assertRegex(block, r"      workflow:\n        - qart-analysis(?:\n|$)")
 
     def test_workflow_sources_remain_registered_in_prompt_manifest(self) -> None:
         manifest = MANIFEST.read_text(encoding="utf-8")
@@ -94,6 +109,7 @@ class PromptPackTests(unittest.TestCase):
             "issue-grooming": "issues/issue-grooming.md",
             "engineering-artifact-review": "reviews/engineering-artifact-review.md",
             "merge-gate-review": "pull-requests/merge-gate-review.md",
+            "qart-analysis": "decisions/qart-analysis.md",
         }
         for prompt_id, relative_path in expected.items():
             entry = (

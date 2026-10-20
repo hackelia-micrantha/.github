@@ -21,8 +21,9 @@ SOURCES = (
     "docs/prompts/issues/issue-grooming.md",
     "docs/prompts/reviews/engineering-artifact-review.md",
     "docs/prompts/pull-requests/merge-gate-review.md",
+    "docs/prompts/decisions/qart-analysis.md",
 )
-PROFILES = ("classify-and-route", "issue-grooming", "engineering-artifact-review", "merge-gate-review")
+PROFILES = ("classify-and-route", "issue-grooming", "engineering-artifact-review", "merge-gate-review", "qart-analysis", "qats-analysis")
 
 
 def make_candidate(source_root: Path, candidate_root: Path) -> tuple[bytes, str]:

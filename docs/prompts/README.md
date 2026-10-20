@@ -12,9 +12,12 @@ The currently declared workflow profiles are:
 - `classify-and-route`;
 - `issue-grooming`;
 - `engineering-artifact-review`;
-- `merge-gate-review` — PR review/fix/merge decision support; resolved instructions do not grant merge authority.
+- `merge-gate-review` — PR review/fix/merge decision support; resolved instructions do not grant merge authority;
+- `qart-analysis` and `qats-analysis` — two profile names selecting the same canonical QART decision prompt, not separate workflows.
 
 Each profile deterministically composes the shared contracts in this README, the required [cross-project execution overlay](overlays/cross-project-execution.md), and exactly one workflow prompt. Live project/task evidence remains host/runtime input and does not become trusted prompt authority merely by being supplied to a model.
+
+The QART and QATS profiles resolve to identical instruction sources. The caller should express `QATS` in the task/invocation when QATS-ordered presentation is desired; selecting a profile alias alone does not inject a presentation-mode variable into the composed prompt.
 
 From a source checkout on a supported Invokrum host:
 
@@ -52,7 +55,7 @@ The overlay composes with, and does not weaken or duplicate, the shared executio
 | `clean local workspaces` / `start isolated task` | [Local workspace hygiene](planning/local-workspace-hygiene.md) | Minimize duplicate checkouts while isolating concurrent agents and preserving unique work |
 | `proceed in loops` / `run this to completion` | [Long-running agent execution](planning/long-running-agent-execution.md) | A non-trivial task should continue through review, repair, validation, and gated-effect cycles without repeated continuation prompts |
 | `make this issue well groomed` | [Issue grooming](issues/issue-grooming.md) | An issue or small backlog needs an observable outcome, scope, acceptance criteria, and priority |
-| `do QART` | [QART decision analysis](decisions/qart-analysis.md) | Alternatives and trade-offs remain open |
+| `do QART` / `do QATS` / `decision matrix` | [QART / QATS decision analysis](decisions/qart-analysis.md) | Alternatives and trade-offs remain open; QATS emphasizes suggestions without changing decision authority |
 | `draft an RFC` | [RFC development](decisions/rfc-development.md) | A consequential proposal may require broad review or cross-boundary coordination |
 | `convert this to an ADR` | [QART-to-ADR conversion](decisions/qart-to-adr.md) | A decision is sufficiently understood to become authoritative |
 | `review this artifact` | [Engineering artifact review](reviews/engineering-artifact-review.md) | A QART, RFC, ADR, specification, design, plan, epic, or issue needs critical review |
@@ -162,7 +165,7 @@ Use the smallest artifact that resolves the uncertainty or delivers the outcome:
 | Observable implementation outcome | Specialized bug, feature, or security issue; otherwise an engineering delivery slice |
 | Coordination across bounded child work | Epic or plan |
 | Unknown feasibility or evidence | Spike or investigation |
-| Alternatives and trade-offs remain open | QART analysis |
+| Alternatives and trade-offs remain open | QART analysis (QATS alias) |
 | A proposal needs broader review | RFC |
 | A decision is understood and should become authoritative | ADR |
 | Normative behavior or conformance boundary | Specification |

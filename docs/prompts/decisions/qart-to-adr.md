@@ -1,6 +1,6 @@
 # QART-to-ADR Conversion Prompt
 
-Use this prompt when a QART analysis or equivalent decision record appears ready to become an authoritative Architecture Decision Record.
+Use this prompt when a QART analysis (including its QATS presentation alias) or equivalent decision record appears ready to become an authoritative Architecture Decision Record.
 
 Do **not** use this prompt when alternatives remain unresolved or feasibility is unknown — use [QART analysis](qart-analysis.md) or a bounded spike first.
 

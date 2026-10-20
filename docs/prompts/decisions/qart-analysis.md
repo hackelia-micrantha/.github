@@ -2,12 +2,16 @@
 
 Use this prompt when an architectural, product, security, operational, or repository-boundary choice has meaningful alternatives and unresolved trade-offs.
 
+**QART** (Questions, Alternatives, Recommendation, Trade-offs) and **QATS** (Questions, Alternatives, Trade-offs, Suggestions) are aliases for one decision-analysis framework. They share one evidence-backed comparison matrix, decision-readiness rules, prompt, skill, and canonical QART artifact. QATS is an exploratory presentation of the same analysis, not a second workflow or a weaker decision standard.
+
 Do **not** use this prompt when the decision is already made — use [QART-to-ADR conversion](qart-to-adr.md) to record it. Do **not** use it when feasibility is unknown — run a bounded spike first.
 
 ```markdown
-# QART Decision Analysis
+# QART / QATS Decision Analysis
 
-Perform a QART analysis for **[DECISION / PROBLEM]** in **[PROJECT / REPOSITORY / SYSTEM]**.
+Use the same canonical decision model for either invocation. In a QART response, present the evidence-backed Recommendation and then Trade-offs. In a QATS response, present Trade-offs and then Suggestions; suggestions can include the supported recommendation, conditional options, or the smallest evidence-gathering step. In both cases retain the comparison matrix, confidence, decision readiness, and follow-up obligations. A suggestion or recommendation never authorizes or records an accepted decision.
+
+Perform a QART / QATS decision analysis for **[DECISION / PROBLEM]** in **[PROJECT / REPOSITORY / SYSTEM]**.
 
 QART means:
 
@@ -114,6 +118,8 @@ Compare alternatives against explicit criteria. Use only criteria material to th
 - reversibility and future flexibility;
 - consistency with project maturity and strategy.
 
+Use one comparison matrix with decision-relevant criteria as rows and viable alternatives as columns. Include the status quo when viable; explain material evidence gaps and confidence in the accompanying cells or prose. Do not add criteria merely to fill a fixed matrix.
+
 Qualitative comparison is preferred over false-precision scoring. When using ratings, explain the evidence behind them.
 
 For decisions with meaningfully observable outcomes, define how the important decision hypotheses could be reviewed later. Do not require probabilities, metrics, or instrumentation when they would create artificial precision. Distinguish an observed later outcome from evidence that the decision caused that outcome.
@@ -164,6 +170,8 @@ Classify the result:
 
 ## Required output
 
+These headings specify required **content**, not a universal display order. For QART, use the A–J sequence below. For QATS, retain the same content but present **H. Trade-offs and consequences before F. Suggestions**, followed by G. Expected outcomes and review plan, I. Decision readiness, and J. Follow-up work. Keep the evidence-backed recommendation or explicit deferral and its confidence when applicable. Do not drop sections merely because the QATS presentation order differs.
+
 ### A. Decision statement
 
 One precise sentence describing the decision to make.
@@ -188,9 +196,9 @@ Provide complete, non-straw alternatives.
 
 Add prose where a table would hide important nuance.
 
-### F. Recommendation
+### F. Recommendation (QART) / Suggestions (QATS)
 
-State the preferred choice, rationale, confidence, invalidation conditions, and smallest next action.
+State the preferred choice, rationale, confidence, invalidation conditions, and smallest next action. In QATS, clearly distinguish evidence-backed advice from conditional suggestions and unresolved questions; do not imply that suggestions are accepted decisions.
 
 ### G. Expected outcomes and review plan
 
