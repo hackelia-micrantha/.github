@@ -64,7 +64,7 @@ After at least one pull-request run and one default-branch run succeed for the s
 Reusable workflows do not weaken the caller's trust boundary.
 
 - Private or self-hosted callers must preserve their existing fork rejection or trusted-import policy.
-- The caller selects the runner explicitly when the default hosted runner is inappropriate.
+- For the pending next-major shared workflow revision, **every caller must select a reviewed exact runner**; there is no implicit hosted default. Existing `automation-v1` pins retain their earlier optional hosted default until separately migrated. An input runner label does not replace the external selector-policy and fork-admission checks.
 - A reusable workflow does not gain secrets or permissions merely because another caller has them.
 - Repository-scoped credentials, deployment authority, and mutation remain outside the initial shared CI workflows.
 
