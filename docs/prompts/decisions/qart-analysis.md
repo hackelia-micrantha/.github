@@ -11,7 +11,7 @@ Do **not** use this prompt when the decision is already made — use [QART-to-AD
 
 Use the same canonical decision model for either invocation. In a QART response, present the evidence-backed Recommendation and then Trade-offs. In a QATS response, present Trade-offs and then Suggestions; suggestions can include the supported recommendation, conditional options, or the smallest evidence-gathering step. In both cases retain the comparison matrix, confidence, decision readiness, and follow-up obligations. A suggestion or recommendation never authorizes or records an accepted decision.
 
-Perform a QART analysis for **[DECISION / PROBLEM]** in **[PROJECT / REPOSITORY / SYSTEM]**.
+Perform a QART / QATS decision analysis for **[DECISION / PROBLEM]** in **[PROJECT / REPOSITORY / SYSTEM]**.
 
 QART means:
 
@@ -168,6 +168,8 @@ Classify the result:
 
 ## Required output
 
+These headings specify required **content**, not a universal display order. For QART, use the A–J sequence below. For QATS, retain the same content but present **H. Trade-offs and consequences before F. Suggestions**, followed by G. Expected outcomes and review plan, I. Decision readiness, and J. Follow-up work. Keep the evidence-backed recommendation or explicit deferral and its confidence when applicable. Do not drop sections merely because the QATS presentation order differs.
+
 ### A. Decision statement
 
 One precise sentence describing the decision to make.
@@ -192,9 +194,9 @@ Provide complete, non-straw alternatives.
 
 Add prose where a table would hide important nuance.
 
-### F. Recommendation
+### F. Recommendation (QART) / Suggestions (QATS)
 
-State the preferred choice, rationale, confidence, invalidation conditions, and smallest next action.
+State the preferred choice, rationale, confidence, invalidation conditions, and smallest next action. In QATS, clearly distinguish evidence-backed advice from conditional suggestions and unresolved questions; do not imply that suggestions are accepted decisions.
 
 ### G. Expected outcomes and review plan
 
