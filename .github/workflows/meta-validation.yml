@@ -109,7 +109,7 @@ jobs:
           evidence="$RUNNER_TEMP/micrantha-prompt-pack-evidence"
           mkdir -p "$evidence"
 
-          for profile in classify-and-route issue-grooming engineering-artifact-review merge-gate-review; do
+          for profile in classify-and-route issue-grooming engineering-artifact-review merge-gate-review qart-analysis qats-analysis; do
             profile_dir="$evidence/$profile"
             mkdir -p "$profile_dir"
             "$invokrum" validate \
@@ -160,7 +160,9 @@ jobs:
             docs/prompts/overlays/cross-project-execution.md \
             docs/prompts/planning/classify-and-route.md \
             docs/prompts/issues/issue-grooming.md \
-            docs/prompts/reviews/engineering-artifact-review.md
+            docs/prompts/reviews/engineering-artifact-review.md \
+            docs/prompts/pull-requests/merge-gate-review.md \
+            docs/prompts/decisions/qart-analysis.md
           do
             mkdir -p "$drift_root/$(dirname "$source")"
             cp "$source" "$drift_root/$source"

@@ -34,6 +34,9 @@ overlays:
   - id: merge-gate-review
     class: workflow
     source: docs/prompts/pull-requests/merge-gate-review.md
+  - id: qart-analysis
+    class: workflow
+    source: docs/prompts/decisions/qart-analysis.md
 
 profiles:
   - id: classify-and-route
@@ -68,5 +71,21 @@ profiles:
         - cross-project-execution
       workflow:
         - merge-gate-review
+  - id: qart-analysis
+    selections:
+      foundation:
+        - shared-engineering-contracts
+      scope:
+        - cross-project-execution
+      workflow:
+        - qart-analysis
+  - id: qats-analysis
+    selections:
+      foundation:
+        - shared-engineering-contracts
+      scope:
+        - cross-project-execution
+      workflow:
+        - qart-analysis
 
 variables: []

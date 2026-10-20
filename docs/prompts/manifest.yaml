@@ -95,12 +95,12 @@ prompts:
     output: assessment, findings, recommended issue action, groomed issue body, epic addendum if applicable
 
   - id: qart-analysis
-    name: QART Decision Analysis
+    name: QART / QATS Decision Analysis
     file: decisions/qart-analysis.md
     category: decisions
-    use_when: A consequential choice has meaningful alternatives and unresolved trade-offs.
+    use_when: QART, QATS, or a decision matrix is requested for meaningful alternatives and unresolved trade-offs; QATS is a presentation alias of the same analysis.
     do_not_use_when: The decision is already made (use qart-to-adr); feasibility is unknown (run a spike first).
-    output: questions, alternatives, comparison, recommendation, trade-offs, decision readiness classification
+    output: questions, alternatives, shared comparison matrix, evidence-backed recommendation or conditional suggestions, trade-offs, decision readiness classification
 
   - id: rfc-development
     name: RFC Development

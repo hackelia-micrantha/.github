@@ -1,7 +1,7 @@
 # Micrantha prompt-library pre-split preservation audit
 
 **Status:** Non-normative audit and evaluation handoff, not a new prompt contract or authorization. **Stop before splitting the shared foundation.**
-**Baseline:** `hackelia-micrantha/.github/main@027df5216254259bc497830bd8d3ae9ca2a32f77` (2026-10-20). Candidate changes require their own exact-head verification.
+**Initial audit baseline:** `main@027df5216254259bc497830bd8d3ae9ca2a32f77`; **reconciled source baseline:** `main@2b1dd5ec3b55ab690e91406a7f11f530f05671f7` (2026-10-20). Candidate changes require their own exact-head verification.
 
 ## Existing architectural decision
 
@@ -26,11 +26,11 @@ The accepted source-layout QART (`qart-micrantha-meta-prompt-pack.md`) remains i
 
 ## Current selection and discoverability
 
-- Baseline inventory: **30 standalone workflow Markdown files**, **28 discovery manifest entries**, and **four declared Invokrum workflow profiles** (`classify-and-route`, `issue-grooming`, `engineering-artifact-review`, `merge-gate-review`).
+- Baseline inventory: **30 standalone workflow Markdown files**, **28 discovery manifest entries**, and **six declared Invokrum workflow profiles** (`classify-and-route`, `issue-grooming`, `engineering-artifact-review`, `merge-gate-review`, `qart-analysis`, `qats-analysis`; QATS is an alias with the same composed workflow source).
 - Pre-split repair: register `research-paper-discovery` and `invariant-driven-test-design` without duplicating their Markdown prose; repair broken relative links, navigation rows and the obsolete `agent-execution-boundary` anchor.
 - Target after this candidate: **30/30 manifest entries and README links**. This proves static discovery only, not reliable runtime selection.
 - Shared agent skills (13 currently): CI workflow review, documentation sync, implementation plan, issue grooming, long-running execution, merge readiness, PR review, project review, project triage, QART analysis, release integration, security review, test strategy. Skills remain orchestration, not alternative prompt sources.
-- Direct chat can select any Markdown workflow and applicable skill by reference; it must actually load the authoritative source when material. Invokrum currently composes **four** workflows and requires all three existing classes. Neither mode may infer authorization from selecting a profile.
+- Direct chat can select any Markdown workflow and applicable skill by reference; it must actually load the authoritative source when material. Invokrum currently composes **six** workflows and requires all three existing classes. Neither mode may infer authorization from selecting a profile.
 
 ## Comparison to perform before any foundation split
 
@@ -51,7 +51,7 @@ Preserve the task snapshot, exact source revision, selected prompt/skill, model 
 
 ## Guard before splitting
 
-1. Reconcile the complete workflow inventory and navigation on an exact, reviewed candidate; keep the existing four-profile tests and required CI intact.
+1. Reconcile the complete workflow inventory and navigation on an exact, reviewed candidate; keep the existing six-profile tests and required CI intact.
 2. Independently review changes and obtain exact-head CI. `docs/prompts/README.md` is an Invokrum pack input, so even navigation-only edits change canonical composition bytes and require regenerated/verified golden/lock evidence.
 3. Run or explicitly classify the existing #139 paired semantic pilot and an independently enforced safety-negative case; do not substitute static doc review for them.
 4. Demonstrate at least one comparable direct-chat versus Invokrum outcome check or identify the missing host/model capability precisely.
