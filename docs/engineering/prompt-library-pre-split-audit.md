@@ -22,7 +22,7 @@ The accepted source-layout QART (`qart-micrantha-meta-prompt-pack.md`) remains i
 | Durable learning | Compound workflow, learning promotion contracts | Do not promote model feedback or Memory directly into trusted guidance; supersede rather than layer |
 | Local and CI execution | Local worktree and cleanup standard; CI placement and validation standards | Preserve isolated writers, clean lifecycle, reproducibility, appropriate runner and deployment gates |
 | Optimizations | Existing simplification/risk rules; separately open PR #213 | Never absorb unmerged candidate policy or treat performance optimization as an independent completion objective |
-| Prompt context identity | Invokrum source pack, rendered profile, lock and installed-root proof | Four current profiles retain mandatory foundation, scope and workflow composition; a lock is not model compliance |
+| Prompt context identity | Invokrum source pack, rendered profile, lock and installed-root proof | Six current profiles retain mandatory foundation, scope and workflow composition; a lock is not model compliance |
 
 ## Current selection and discoverability
 
@@ -47,7 +47,7 @@ Run a separately recorded, small cross-interface extension only where a comparab
 
 Preserve the task snapshot, exact source revision, selected prompt/skill, model weights/build or provider identity, served-model ID, runtime/harness revision, allowed tools, output, evaluator, repeated runs where stochasticity matters, and Invokrum lock/composition identity if present. Compare correct substantive findings, false blockers, missing requirements, intermediate policy compliance, context/token cost when observable, and final delivered result. Source availability, instruction adherence, deterministic composition and actual success are distinct dimensions.
 
-**Not established yet:** paired model results, cross-interface outcome parity, context savings, agent compliance, gateway-negative safety outcome, publisher authentication, or production host admission. No post-hoc numerical thresholds should be invented.
+**Source-only fixture calculation:** the six committed goldens were refreshed using Invokrum v1's documented framing and canonical integrity format, with historical engine/manifest digests used as calibration. The pinned Invokrum CLI and independent exact-head CI must still regenerate and verify these outputs before acceptance. **Not established yet:** paired model results, cross-interface outcome parity, context savings, agent compliance, gateway-negative safety outcome, publisher authentication, or production host admission. No post-hoc numerical thresholds should be invented.
 
 ## Guard before splitting
 
