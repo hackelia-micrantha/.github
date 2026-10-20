@@ -1,0 +1,48 @@
+# Update Issues — Evidence Reconciliation Prompt
+
+Use this entry point when the operator says **update issues**, **reconcile issues**, **sync tracking**, **organize the backlog**, or an equivalent request during a Micrantha/Ryjen engineering task. Explicit **update/reconcile/sync** requests authorize **bounded issue-tracking mutations within the established task/project scope**. **Organize/simplify/groom the backlog** routes here for read-only classification and a proposed queue by default; edit GitHub issues only when the invocation or an already accepted, in-scope task explicitly authorizes those writes. If write intent is materially ambiguous, present the proposed changes and clarify before mutating. None of these requests authorizes code changes, merges, releases, deployments, new credentials, or unrelated work.
+
+Compose [Issue Grooming](issue-grooming.md), [Project Status Refresh](../project-review/status-refresh.md) where a baseline exists, [Implementation Completeness Review](../reviews/implementation-completeness.md) for purportedly delivered outcomes, and the [cross-project execution overlay](../overlays/cross-project-execution.md). Use the [Supervisor operating profile](../../engineering/chatgpt-supervisor-operating-profile.md) and shared [execution boundary](../README.md#shared-execution-boundary). For a raw unfiled idea, use [Classify and Route](../planning/classify-and-route.md) first.
+
+## Compact invocation
+
+> Update issues for the active project/workstream using current authoritative GitHub evidence. Reconcile existing issues against main, exact PR/CI/review state, delivered behavior, acceptance criteria, decisions, blockers, and dependencies; edit existing tracking in place, close only verifiably completed work, and create a new issue only for a distinct untracked outcome. Verify each mutation by read-back and report the changed issues and unresolved gaps. Do not change code or cross a merge/release/effect boundary.
+
+## Execution contract
+
+1. **Resolve the bounded project graph.** Start from the active issue/PR/workstream and its owning repository. Consult the canonical registry, related repositories, or portfolio inventory only as needed by dependency/ownership evidence. Do not enumerate or mutate the whole organization merely because the user used shorthand.
+2. **Refresh evidence before writes.** Inspect current main, relevant open/closed issues, issue bodies/comments/labels/milestones, open/merged/closed PRs, exact PR heads/bases, reviews and unresolved threads, required CI/build/static-analysis results, accepted QART/RFC/ADR/specs, and actual delivered behavior. Distinguish observations from assumptions and stale history.
+3. **Build an evidence-to-issue reconciliation map.** For each materially affected outcome classify it as **verified complete**, **partially delivered**, **in progress**, **blocked**, **superseded/duplicate**, **not started**, or **indeterminate**. Preserve the distinction between implementation merged, validation qualified, deployed/released, and accepted outcome delivered. Do not mark a work item complete merely because a PR was merged or CI turned green.
+4. **Prefer existing tracking.** Search for duplicates, overlapping issues, parent/child relationships, and cross-project owner issues before creating anything. Update the owning issue's current status, remaining scope, evidence links/exact revisions, dependencies, blockers, non-goals, acceptance criteria, and verification gaps. Link coordination trackers without duplicating canonical requirements.
+5. **Maintain one small execution front door.** When the operator asks to organize the backlog, identify the existing canonical milestone/epic/roadmap and propose its queue read-only; update that existing front door only when issue writes are separately authorized. Do not create another tracker. Expose a **Now** lane of normally three to five independently executable, dependency-ready slices; separate **Next/Blocked** and **Deferred/Explore**. P0/P1 security or CI risks remain their original repository-global priority even when blocked or parked; blocked status, severity, readiness and work scheduling are separate fields. Preserve earlier operator directions as superseded history and honor explicit pauses rather than resuming parked work on generic `proceed`.
+6. **Apply conservative state and priority changes.** Close only when all applicable outcome/acceptance criteria are evidenced; reopen if closure was premature and a material requirement remains. Supersede/mark duplicate only after preserving unique constraints and evidence. Apply repository-global P0–P3 rationale; keep severity, readiness, priority, and blocked status separate. Do not churn labels, titles, comments, or timestamps when nothing material changed.
+7. **Use minimum sufficient mutations.** Preserve unique issue discussion/history and approved architecture decisions. Prefer one coherent body edit or concise evidence comment where appropriate. Create a new issue only if there is a separate, bounded, untracked result with clear ownership, rationale, dependencies, testable acceptance criteria, and non-goals. Avoid one issue per log line, test failure, or speculative follow-up.
+8. **Handle uncertain writes safely.** After a timeout or disconnect, read back before retrying. Use current issue state when editing; do not overwrite another actor's newer material changes. Re-read affected issues after mutation to verify actual titles, bodies, labels, state, and relationships.
+9. **Do not exceed authority.** An issue-update request is not permission to modify implementation, merge PRs, publish specs as accepted, deploy, or silently extend to unrelated repositories. If a required issue owner/acceptance decision is materially ambiguous, continue unambiguous updates and isolate only the blocked mutation.
+
+## Backlog organization checks
+
+When the task is to **organize**, **simplify**, or **groom** a repository backlog, apply these additional checks in read-only mode first; perform any issue mutations only under the explicit write authority stated above:
+
+- Count repository **issues separately from PRs** using a complete, bounded result set; report partial coverage rather than fabricate precision. Count changes are diagnostic, not implementation success.
+- Prefer one **existing** current milestone/epic/roadmap as the issue-navigation front door. A `Now` lane holds normally three to five executable, dependency-ready outcomes, while `Next/Blocked` and `Deferred/Explore` remain discoverable without cluttering the daily queue. Avoid a new dashboard issue or another tracker that mirrors canonical owners.
+- An urgent P0/P1 issue can be blocked and **not executable today**. Preserve the priority and severity while recording owner, prerequisite, admission gate, and unblock condition. Do not demote security or required CI merely to shrink `Now`; do not turn parent epics into extra executable slices.
+- Review apparent duplicates by **outcome, acceptance criteria, constraints, and dependency ownership**, not title similarity. Preserve each unique security invariant, design decision and evidence link on the chosen canonical issue **before** closing a redundant issue as duplicate.
+- Classify unprioritized and stale-looking issues in small, explicit batches. Age, absent labels, or overlapping keywords are not sufficient evidence to close, split, or downgrade work. Avoid mass retitles, label churn, speculative new tickets, or empty timestamp-only comments.
+- Refresh front-door routing after a reviewed terminal change or an actual dependency shift. Put the **latest operator priority** above older directions, marking older priorities as historical; never reactivate expressly paused work from a routine `proceed` or CI completion.
+
+When reporting a bounded backlog pass, include the canonical front-door link, the current `Now`/blocked/deferred lanes, before/after issue counts when verified, each duplicate disposition with retained requirements, the next dependency-ready slice, and any unexamined remainder.
+
+## Output
+
+Report succinctly:
+
+- **Updated:** existing issue links and the substantive change to each.
+- **Closed/reopened/superseded:** each issue with the evidence and disposition.
+- **Created:** any genuinely new outcome and why no existing issue covered it.
+- **Unchanged/blocked:** relevant issues requiring missing evidence or authority.
+- **Queue navigation:** canonical front-door link, concise `Now` vs `Next/Blocked` vs `Deferred` lanes and the exact unblock condition for the first slice.
+- **Backlog hygiene:** verified duplicate dispositions and bounded classification work; before/after counts only where enumeration is complete and issue/PR totals are distinguished.
+- **Next executable slice:** the highest-leverage authorized next work, if determined.
+
+If reconciliation reveals no material changes, explicitly report **No issue mutations required** and the evidence checked. Do not equate a completed issue-update pass with completion of the underlying engineering task.

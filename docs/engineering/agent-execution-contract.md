@@ -1,0 +1,506 @@
+# Long-running agent execution contract
+
+Micrantha uses this contract to make long-running agent work predictable across interactive ChatGPT/Codex sessions and future governed runtimes.
+
+It operationalizes [AI-assisted SDLC phase discipline](./ai-assisted-sdlc.md). It is a workflow contract, not a new workflow engine, policy engine, evidence format, or authority source.
+
+The core model is:
+
+```text
+Run = Goal + Graph + Policy + State + Evidence + Budget
+```
+
+These concerns stay separate because they answer different questions:
+
+| Concern | Question |
+| --- | --- |
+| Goal | What outcome is this run trying to reach? |
+| Graph | Which state transitions are valid next? |
+| Policy | Which otherwise-valid transitions are authorized? |
+| State | Where is the run now, against which exact subject? |
+| Evidence | What supports the claims required by the next transition? |
+| Budget | How much retry/investigation is permitted before escalation? |
+
+Conversation history may help reconstruct context, but it is not canonical run state when correctness, recovery, authority, or later transitions depend on that state.
+
+## Implementation design heuristics
+
+For coding, refactoring, and code-review transitions, use repository-accepted architecture and language/runtime idioms first. Apply clean-code and SOLID principles where they address concrete needs: cohesive responsibilities, clear names and control flow, explicit contracts and dependencies, testable boundaries, and low coupling. Reuse established design patterns when actual variation or integration seams justify them.
+
+These are **heuristics, not mandatory class hierarchies or pattern quotas**. Prefer the simplest correct and secure design for current requirements and credible change points; avoid speculative interfaces, unnecessary indirection, and pattern-for-pattern's-sake code. Do not impose object-oriented idioms on functional, procedural, or data-oriented implementations. In reviews, identify an observable correctness, testability, maintainability, or extension cost before requesting refactoring; preserve behavior and verify the change. Explain consequential pattern choices and trade-offs briefly, without design-document ceremony for routine code.
+
+For meaningful domain values, apply the [shared named-value and enum guardrail](../prompts/README.md#shared-named-value-and-enum-guardrail) during implementation and review; favor enums for closed choices and named constants for other non-obvious values without imposing ceremonial abstractions.
+
+## UI state and presentation architecture
+
+For new or materially refactored interactive UI, **prefer a unidirectional state architecture** (Redux-like in data flow, not necessarily the Redux library), with a presenter/viewmodel owning presentation state and the operations that evolve it. Respect existing application architecture where it already satisfies these invariants.
+
+- **Reducers:** deterministic, synchronous state transitions from current state and typed actions/events; avoid I/O, hidden mutation, and side effects in reducers.
+- **Inducers:** explicitly named async/effect operations that coordinate services, navigation, persistence, and other external work, then dispatch actions/results back through reducers. Keep cancellation, stale-result handling, errors, and concurrency observable and testable.
+- **Presenter/viewmodel:** exposes state and user-facing intents/operations; owns or composes reducers and inducers without coupling domain/application logic to the view framework.
+- **View:** declaratively renders observable presenter/viewmodel state and forwards events/intents. A state change should drive recomposition/re-rendering; avoid alternate mutable UI state and imperative view patching that bypass the presenter.
+- **Boundaries:** make transient view-only concerns (for example focus or animation position) explicit, rather than forcing all ephemeral UI mechanics into global state. Choose state scope by ownership; do not introduce a global Redux store or framework dependency for an isolated component without demonstrated value.
+
+In design and code review, trace representative flows as **user intent → inducer (when needed) → action → reducer → new state → rendered view**. Verify pure reducer tests, async success/failure/cancellation and out-of-order completion, lifecycle/subscription cleanup, and observable render behavior at risk-appropriate layers. Treat these as architectural defaults rather than a mandate to rewrite working, idiomatic existing UI without a concrete problem.
+
+## Default execution graph
+
+For non-trivial implementation and repository work, use this default shape unless a project-owned workflow defines a stronger one:
+
+```mermaid
+stateDiagram-v2
+    [*] --> Discover
+    Discover --> Snapshot
+    Snapshot --> Plan
+    Plan --> Review
+    Review --> Fix: findings
+    Review --> Validate: no findings
+    Fix --> Validate
+    Validate --> ReReview: success
+    Validate --> Diagnose: failure
+    Diagnose --> Fix: actionable
+    Diagnose --> Escalate: ambiguity / policy / exhausted budget
+    ReReview --> Fix: new findings
+    ReReview --> Gate: clean
+    Gate --> Execute: authorized + sufficient evidence
+    Gate --> Blocked: missing authority / evidence
+    Execute --> Verify
+    Verify --> Closeout: exact outcome verified
+    Verify --> Diagnose: regression / partial effect
+    Closeout --> [*]
+```
+
+The graph is intentionally cyclic. A loop is useful only when each cycle changes either the candidate, the evidence, or the hypothesis. Repeating an unchanged causal hypothesis is not progress.
+
+## State semantics
+
+At minimum, a durable run ledger should be able to identify:
+
+- run identity;
+- goal;
+- current graph state;
+- exact subject/revision/candidate identity;
+- last externally verified state and observation;
+- any potentially in-flight external effect and whether it is known idempotent;
+- unresolved findings;
+- evidence gathered and evidence still required;
+- policy gates currently relevant;
+- retry/investigation counters;
+- blockers and escalation reason;
+- next eligible transitions.
+
+A compact representation is sufficient. For example:
+
+```yaml
+run: tidyfs-release-review-2026-09-12
+goal: qualify PR 80 for merge
+state: re-review
+subject:
+  repository: ryjen/tidyfs
+  pr: 80
+  head: af81c72
+last_verified:
+  state: validate
+  subject: af81c72
+  observation: required checks read back as passed for exact head
+in_flight:
+  operation: none
+  idempotent: true
+findings:
+  unresolved: 0
+evidence:
+  exact_head: af81c72
+  required:
+    unit: passed
+    integration: passed
+    release_contract: passed
+policy:
+  merge_requires_exact_head: true
+  merge_authorized: false
+budget:
+  fix_cycles: 2
+  max_fix_cycles: 6
+  same_failure: 0
+  max_same_failure: 2
+next:
+  - gate
+```
+
+Do not infer authorization from the presence of a state file, a green check, a confident model conclusion, or a previous approval bound to another candidate.
+
+## Session recovery and resumption
+
+Interactive AI sessions, browser/app connections, tool transports, and model processes may terminate at arbitrary points. Treat session loss like worker-process failure: the run may continue, but only after reconstructing state from authoritative external observations.
+
+The default restart sequence is:
+
+```text
+recover -> reconcile -> continue
+```
+
+A replacement session must not assume either that the last conversationally described operation succeeded or that it failed. Phrases such as `creating PR`, `merging`, `deploying`, `running tests`, or `done` are not durable effect receipts.
+
+On resumption:
+
+1. resolve current authoritative repository/project/external-system state before any new mutation;
+2. load the latest durable ledger or handoff when available, but reconcile it against current state rather than treating it as canonical by itself;
+3. identify the exact current subject/revision and compare it with the last externally verified subject;
+4. classify prior intended work as **verified complete**, **partial/uncertain**, **not started**, or **stale/conflicted**;
+5. reconcile every uncertain external effect with a read-after-write or equivalent idempotency check before retrying it;
+6. reconstruct the active graph node, unresolved findings, evidence, policy gates, and retry/investigation budget;
+7. invalidate stale evidence or authorization that was bound to a materially different candidate;
+8. resume from the first unverified eligible transition rather than replaying prior steps mechanically.
+
+Typical effects requiring reconciliation include branch or file writes, issue/PR creation or updates, merges, releases, deployments, deletions, permission/credential changes, and external communications.
+
+Repository-state reconciliation does **not** imply unconditional branch synchronization. A topic branch becoming behind `main` is an observation, not automatically a stale/conflicted state. Refresh and inspect the intervening `main` changes; merge/rebase/update the branch only when those changes materially interact with the candidate or its dependencies/contracts/build inputs, invalidate candidate-bound evidence or assumptions, create an actual merge conflict, or repository admission policy requires a composed-current-main candidate. Otherwise preserve the existing exact candidate and its valid evidence.
+
+When an uncertain operation is not safely idempotent and its outcome cannot be established from authoritative state, the correct transition is `blocked/escalate`, not blind retry.
+
+A recovered run inherits retry and investigation budget already consumed when that usage can be established. If counters are uncertain, choose a conservative value rather than resetting them to zero.
+
+For multi-session work, a human-readable handoff may be as small as:
+
+```markdown
+Goal:
+Current subject/revision:
+Last verified state:
+Completed and externally verified:
+Partial or uncertain effects:
+Unresolved findings/blockers:
+Evidence obtained / still required:
+Authority and active gates:
+Retry budget already consumed:
+Next safe transition:
+Do not redo without reconciliation:
+```
+
+Persist this only when recovery, handoff, auditability, or runtime integration benefits from it. Do not create per-run state files merely for ceremony.
+
+## Session resilience and context pressure
+
+Long-running interactive sessions are disposable execution workers, not durable run records. Preserve correctness across context growth, transport instability, or worker replacement by keeping the run reconstructable from authoritative state plus a compact ledger/handoff.
+
+### Context hygiene
+
+Keep live context focused on the current graph transition. Prefer:
+
+- exact repository, work-item, revision, run, job, and artifact identifiers over repeated narrative history;
+- compact findings and evidence summaries that point back to durable source evidence;
+- targeted file ranges, diffs, workflow jobs, and issue/PR state rather than repeatedly loading whole repositories, files, or logs;
+- current accepted decisions and unresolved findings rather than retaining superseded discussion;
+- the run ledger as the continuity representation when detailed conversational history is no longer needed.
+
+Do not repeatedly reload or restate evidence that remains valid for the exact current candidate. When evidence becomes obsolete, superseded, or invalidated by a candidate change, remove it from the active working summary rather than carrying it forward indefinitely.
+
+### Proactive checkpoint and rollover
+
+Refresh a restart-safe ledger or handoff when doing so materially reduces recovery risk, especially when:
+
+- a consequential effect completes;
+- the exact candidate/revision changes materially;
+- several review/fix/verify cycles or substantial cross-repository evidence have accumulated;
+- large logs, diffs, research, or runtime observations have materially expanded working context;
+- repeated tool/transport failures suggest session degradation;
+- important identifiers, findings, or decisions are being repeatedly reconstructed;
+- the execution runtime reports material context pressure.
+
+When continuing in the current worker/session is materially riskier or more expensive than reconstruction from the compact ledger, use:
+
+```text
+checkpoint -> rollover -> recover -> reconcile -> continue
+```
+
+Rollover must not reset mutation/effect authority, retry or investigation budgets, unresolved findings, evidence freshness requirements, exact-candidate binding, or active policy gates.
+
+Do not create persistent repository state merely to preserve chat context. Persist the ledger only when recovery, handoff, auditability, or runtime integration materially benefits from durable storage.
+
+### Tool and transport failure semantics
+
+Timeouts, disconnects, connector failures, provider failures, and session termination are infrastructure/transport outcomes until evidence establishes otherwise; they are not candidate/product failures by default.
+
+For read-only or explicitly idempotent operations, use bounded retry/backoff where the runtime supports it. Repeated materially equivalent failures should trigger a changed hypothesis, narrower retrieval, checkpoint/rollover, or escalation rather than unbounded retry.
+
+For mutations:
+
+```text
+timeout/disconnect != failed mutation
+```
+
+Treat the external effect as unknown until authoritative read-back establishes whether it occurred. Never blindly repeat a potentially non-idempotent mutation after a transport failure.
+
+Runtime-specific wall-clock timeouts, context-window thresholds, restart mechanisms, cancellation semantics, and backoff schedules belong to the owning runtime/project configuration rather than this shared guidance.
+
+### Refresh discipline
+
+Refresh authoritative state:
+
+- at initial discovery and recovery;
+- after relevant external mutations;
+- when externally mutable evidence may have changed;
+- before consequential gates;
+- when a material assumption becomes questionable.
+
+Otherwise prefer targeted refresh of the affected subject over repeating a complete repository/status scan. Refresh the exact PR/head/checks when CI changes, the exact issue/thread when tracking changes, and the broader project graph only when dependencies, scope, or a final gate require it.
+
+## Transition rules
+
+### Discover -> Snapshot
+
+Resolve authoritative repository/project state before planning mutations. Prefer current code, issues, PR heads, CI state, accepted decisions, and repository-owned documentation over remembered conversation state.
+
+Snapshot the exact subject identity when later evidence must bind to it.
+
+### Snapshot -> Plan
+
+Plan only what is needed to reach the requested outcome. Reuse accepted repository decisions and existing issues rather than creating parallel architecture.
+
+For large work, decompose until each increment has:
+
+- bounded mutation scope;
+- explicit exit criteria;
+- practical validation;
+- recoverable failure semantics.
+
+### Plan -> Review -> Fix
+
+Review before mutation when the task is primarily repair, qualification, or continuation of existing work.
+
+Findings should distinguish at least:
+
+- correctness/security defect;
+- missing requirement;
+- missing or stale evidence;
+- infrastructure/environment failure;
+- ambiguity/decision gap;
+- non-blocking cleanup.
+
+Do not change implementation merely because validation failed until the failure has been classified enough to support a causal hypothesis.
+
+### Fix -> Validate
+
+Every material change invalidates evidence that was bound to the prior candidate unless the evidence contract explicitly remains valid.
+
+Validation should prefer the least expensive reliable evidence that can decide the required property:
+
+1. integrity/schema/exact-subject checks;
+2. compiler/static/type checks;
+3. deterministic tests/property checks;
+4. artifact/diff/runtime inspection;
+5. independent semantic verification where necessary;
+6. human disposition where consequence or uncertainty requires it.
+
+### Validate -> Re-review
+
+Green checks are evidence, not semantic completion.
+
+After a repair, re-review the resulting candidate against the original goal, findings, architectural constraints, and applicable policy. This catches repairs that satisfy a test while introducing a new defect, narrowing a contract incorrectly, or changing the intended behavior.
+
+### Re-review -> Gate
+
+A gate evaluates whether the next effect is both valid and authorized.
+
+Typical gated effects include:
+
+- merge;
+- release/tag/publication;
+- deployment;
+- destructive deletion;
+- permissions or credential changes;
+- external communication;
+- issue/acceptance closure when closure makes a consequential claim;
+- cross-repository mutation outside the already authorized scope.
+
+A gate is not satisfied by intent to proceed. It requires the policy-defined evidence and authority for the exact current subject.
+
+### Execute -> Verify
+
+Execution success is distinct from outcome verification.
+
+Examples:
+
+```text
+PR API returned merged
+  != target branch contains intended exact result
+
+release job succeeded
+  != published artifacts are complete and consumable
+
+deployment command succeeded
+  != service is healthy at the intended revision
+```
+
+Verify the externally observable result before closeout when the effect is consequential. Record enough of the read-back that a replacement session can distinguish a completed effect from an interrupted one.
+
+## Continuation policy
+
+For an authorized long-running run, continue automatically through reversible, low-risk transitions while useful work remains.
+
+Do not stop merely because:
+
+- CI is queued or running;
+- one independent check is pending;
+- an external reviewer has not yet responded;
+- a subtask completed while other graph branches remain actionable.
+
+Instead, perform independent useful review, inspection, documentation, issue reconciliation, or evidence gathering that does not depend on the pending result.
+
+Pause or escalate only when the next meaningful transition is actually blocked by policy, missing evidence, unavailable access, or material ambiguity.
+
+### External CI wait handoff
+
+When CI, a build, or review is pending, park **only** the transition gated by that evidence. Record a compact wait reference: provider/repository, PR or merge-queue subject, exact candidate revision, required check identities, known run IDs, and the dependent transition. Continue already-authorized work that does not require the pending result: read-only inspection, security review, and evidence gathering may examine the **same exact candidate** while its CI is pending. Concurrent mutable transitions require satisfied dependencies and non-conflicting write scopes; they must not change the waiting candidate or invalidate its evidence. Preserve single-writer branch/worktree ownership, runner admission limits, and composed-candidate gates.
+
+External notifications are **wake hints**, not evidence or authority. On notification or bounded reconciliation, read back the current provider result, required check set, and exact candidate. Missing, skipped, cancelled, or stale checks do not pass a gate; distinguish runner/infrastructure failure from product failure. Avoid indefinite polling. If no independent work is eligible, checkpoint the pending wait and wake condition rather than inventing another task. An interactive session cannot resume itself after it ends; durable wake-up is owned by Dubnium's existing orchestration runtime.
+
+### Ready-work multitasking loop
+
+When one or more transitions are waiting on CI, external review, or another asynchronous dependency, use a **bounded ready-work loop** rather than ending the run at the first pending check:
+
+1. **Reconcile:** read the compact run ledger and refresh only changed external evidence (including exact candidate/head and required-check status) at an event, a natural checkpoint, or a bounded reconciliation interval; never spin or busy-poll.
+2. **Select:** inspect the authorized task graph for the highest-priority ready transition whose dependencies are satisfied. Prefer meaningful work already in scope (review, tests, security inspection, issue disposition, preparation for the next independent slice). Do not manufacture tasks to fill a wait.
+3. **Execute and checkpoint:** complete one bounded transition, record its candidate/evidence and changed readiness, then return to selection. For concurrent mutations, enforce disjoint write ownership, resource/runner limits, and exact-candidate preservation. Read-only inspection can share the pending candidate.
+4. **Admit on evidence:** when an external result is available, verify it against the current provider, exact candidate and required check set before admitting its dependent transition. Handle failed, stale, missing, skipped, or cancelled evidence through the normal diagnosis/gate path.
+5. **Exit:** stop the loop when the requested outcome is verified; when all eligible independent work is exhausted and only external waits remain, checkpoint each wait identity, owner, wake condition, and first safe post-wake action and hand off. Also exit at an authority boundary, exhausted budget, or unresolved material ambiguity.
+
+The scheduler loop changes **which already-authorized transition runs next**, not effect authority or approval semantics. Loop iterations must make progress in work completed, evidence, or a causal hypothesis; a repeated identical status check is not progress. Multiple pending tasks must not consume the same scarce runner capacity or mutate the same worktree concurrently. Interactive sessions do not self-restart; durable event-driven continuation belongs to the owning runtime.
+
+## Loop classes
+
+Use explicit loop classes so repetition has a reason:
+
+| Loop | Shape | Purpose |
+| --- | --- | --- |
+| Implementation | review -> fix -> validate | repair candidate defects |
+| Qualification | validate -> inspect evidence -> re-review | establish readiness claims |
+| Integration | execute/merge -> downstream validate -> repair | prove composed behavior |
+| Discovery | inspect -> hypothesis -> gather evidence | reduce uncertainty |
+| Recovery | recover -> reconcile -> continue | reconstruct exact state after interruption and resume without duplicate effects |
+| Failure recovery | classify failure -> isolate -> repair -> reproduce | restore a failed path |
+| Governance | proposed effect -> policy -> approval -> execute -> attest | control consequential effects |
+
+A run may nest loop classes, but the ledger should make the active loop and exit criterion clear enough to resume safely.
+
+## Retry and investigation budgets
+
+Unbounded retries hide stagnation and consume reviewer attention.
+
+Default guidance unless a project defines stronger limits:
+
+- same causal failure twice without materially new evidence: change the hypothesis or escalate;
+- repeated tool/infrastructure failure: classify separately from product failure and use a bounded retry count;
+- implementation repair cycles: use a declared budget proportional to task size and risk;
+- destructive or consequential effects: never use blind retry semantics unless the operation is explicitly idempotent and policy permits it.
+
+Budget exhaustion does not authorize broader access, looser validation, or weaker acceptance criteria.
+
+### Causal convergence and stopping discipline
+
+Before each substantive loop, identify the decision it serves, one causal intervention, its pass condition, and the consequence if it fails. Apply the consequence before choosing a next step; a successful command or interesting result does not itself justify more work.
+
+When a gate fails, examine the complete causally relevant artifact and evidence, not a selected diagnostic excerpt, before naming a cause. Change one causal factor at a time so the result is attributable; accompanying tests and documentation may verify that same change. Never modify evidence or lower a gate merely to obtain a pass. A genuinely defective verifier requires its own justified review.
+
+If a third attempt would reuse the same mechanism, prompt, instrument, or readers without material new evidence, change the lever or park/escalate. Three consecutive comparable failures of one gate require reconsidering the design and gate before another local defect fix. Existing retry limits and effect-authority boundaries still apply.
+
+## Escalation conditions
+
+Escalate rather than improvise when:
+
+- a policy requires human authorization;
+- requirements are materially ambiguous and different interpretations change the outcome or risk;
+- required credentials/access/capabilities are unavailable;
+- required evidence cannot be produced with the available verifier/runtime;
+- two materially different approaches remain and choosing incorrectly has significant consequence;
+- the same causal failure persists after the configured retry threshold;
+- the investigation or repair budget is exhausted;
+- newly discovered architecture materially widens scope or authority;
+- a potentially consequential non-idempotent effect is uncertain and cannot be reconciled from authoritative state.
+
+Escalation must end with an **actionable blocked-state handoff**, not only a blocker description. Report the exact blocked transition, current subject/revision, evidence already gathered, safe work already completed, retry/investigation already performed, and the smallest decision, capability, authority, or external evidence needed to continue.
+
+Then give the smallest ordered **next steps** that would actually move the run forward:
+
+1. finish or identify any still-authorized independent work; if such work remains executable now, do it before declaring the run blocked;
+2. name the exact operator or external-owner action required, when one is required, rather than asking for generic continuation;
+3. state the observable condition that would clear the blocker or make the next decision possible; and
+4. state the first safe transition to execute once that condition is satisfied.
+
+When materially different operator choices remain, provide bounded options and recommend a default when evidence supports one. Do not use `proceed`, `wait`, `retry`, or `check later` as a substitute for a concrete next step. If resolution depends on a future external event, name the event/owner and the evidence to re-check without implying that the current interactive session will resume itself.
+
+## Effect policy
+
+Reasoning authority remains broader than execution authority.
+
+A run may inspect and reason across a broad system while mutation authority remains narrow. Project prompts may grant write authority for a bounded repository/task without granting merge, release, deployment, deletion, credential, or external-communication authority.
+
+Authorization should be interpreted against:
+
+- the requested effect;
+- repository/local policy;
+- the exact subject/candidate;
+- freshness/currentness requirements;
+- explicit user or governance approval when required.
+
+Do not carry approval silently across materially changed candidates when the approval/evidence was bound to the prior candidate.
+
+## Project overlays
+
+Projects may specialize this contract with local:
+
+- graph nodes/edges;
+- required checks;
+- retry budgets;
+- human-review gates;
+- release/deployment transitions;
+- evidence formats;
+- run-state storage;
+- model-selection/escalation rules.
+
+Project overlays should strengthen or specialize organization semantics rather than copy the entire contract.
+
+A project-local `AGENTS.md`, skill, issue, policy file, or runtime configuration may express the overlay. The owning repository remains authoritative for its implementation behavior.
+
+## Enforcement ownership
+
+This document defines reusable engineering semantics only.
+
+- **Anthesis** owns policy evaluation, approval, evidence sufficiency, and governed lifecycle semantics where enforced.
+- **Dubnium** owns bounded execution, durable runtime state, recovery, and runtime evidence where used.
+- **Sandcastle** may own mutable-workspace/checkpoint isolation.
+- **Testule/native tools** own executable validation within their contracts.
+- **Repositories** own project-specific graph overlays, tests, acceptance criteria, release requirements, and implementation decisions.
+- **`.github`** owns this shared guidance and reusable prompt contract.
+
+Do not create a second workflow or policy runtime merely to implement this document.
+
+## Completion contract
+
+A long-running run is complete only when it reaches a terminal state or an explicitly reported blocked/escalated state.
+
+Normal successful closeout reports:
+
+- outcome achieved;
+- exact resulting revision/state;
+- material changes made;
+- validation/evidence obtained;
+- consequential effects executed;
+- post-effect verification result;
+- remaining non-blocking work or deliberately deferred items.
+
+A blocked closeout reports:
+
+- blocked graph transition;
+- reason;
+- exact current subject/state;
+- evidence already obtained;
+- retries/investigation already attempted;
+- smallest requirement for continuation.
+
+## Non-goals
+
+- universal orchestration framework;
+- replacing project-local SDLC or release processes;
+- automatic authority escalation;
+- treating multiple model reviewers as independent evidence by default;
+- requiring persistent state for trivial one-step work;
+- using a graph as proof that the resulting software is correct.

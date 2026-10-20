@@ -1,0 +1,248 @@
+# Implementation Completeness Review Prompt
+
+Use this prompt after multiple pull requests, before closing an epic, or whenever merged code may not yet represent a delivered capability. Use it to verify a **specific claimed completion** — a capability, epic, milestone, or set of issues that someone says is done.
+
+Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when assessing executable software, build logic, configuration, or delivery behavior.
+
+Do **not** use this prompt for general project status or periodic check-ins — use [project status refresh](../project-review/status-refresh.md) or the [comprehensive project status review](../project-review/comprehensive-status-review.md).
+
+Compact invocation:
+
+> Verify whether **[CAPABILITY / EPIC]** is substantively complete for its stated maturity: reconcile the claimed outcome against implementation, integration, layered validation, static analysis, documentation, packaging, and user access; classify as complete, partial, blocked, or misrepresented; return bounded closure/follow-up actions; then identify only material reusable lessons that should become durable controls.
+
+```markdown
+# Implementation Completeness Review
+
+Determine whether **[CAPABILITY / EPIC / MILESTONE / ISSUE SET]** is substantively complete, usable, and accurately represented.
+
+## Context
+
+- **Intended outcome:** [OUTCOME]
+- **Authoritative requirements or issue:** [SOURCE]
+- **Relevant repositories and pull requests:** [SCOPE]
+- **Expected maturity:** [PROTOTYPE / INCUBATING / STABLE / MAINTAINED]
+- **Mutation authorization:** [READ ONLY / RECONCILE TRACKING]
+
+## Execution boundary
+
+Begin read-only. Treat issue status, pull-request descriptions, release notes, documentation, demos, model/tool output, and retrieved memory as claims/evidence requiring verification. Do not close issues, change maturity labels, update public claims, create follow-up work, or promote persistent guidance unless explicitly authorized.
+
+## Completion principle
+
+A capability is not complete merely because code merged. Completion requires the applicable implementation, integration, layered validation, static analysis, documentation, packaging, user path, security, and operational behavior to agree with the stated outcome and maturity.
+
+Apply expectations appropriate to the declared maturity. A prototype may intentionally lack production operations, but must not be represented as stable.
+
+## Intent-to-implementation gap classification
+
+When implementation and authoritative intent do not agree, classify the gap before deciding severity, cause, or remediation:
+
+- **missing** — a required outcome, acceptance criterion, contract, or invariant is absent;
+- **partial** — the required behavior exists but does not fully satisfy the authoritative intent;
+- **contradicts** — current behavior conflicts with an authoritative requirement, accepted decision, or required invariant;
+- **unrequested** — current behavior extends beyond the stated intent and requires review for justification, scope, compatibility, or removal.
+
+Use this taxonomy only for **intent-to-implementation relationship**. Keep it separate from root cause (for example implementation defect, stale evidence, environment failure), severity, priority, and completion status. An `unrequested` behavior is not automatically a defect, and a `partial` behavior is not automatically safe enough to close.
+
+## Evidence to inspect
+
+Inspect applicable:
+
+- original requirements, acceptance criteria, issue hierarchy, and non-goals;
+- all pull requests and commits claimed to deliver the outcome;
+- current implementation and integration paths;
+- unit/component, contract/integration, end-to-end, security, migration, compatibility, and failure-path tests;
+- repository build/task tooling and canonical test/static-analysis commands;
+- compile/type checks, linting, source/configuration static analyzers or SAST, and configuration/IaC analysis where applicable;
+- CI/CD, packaging, release artifacts, deployment, and configuration;
+- README, API, CLI, examples, website, book, one-pager, and demo claims;
+- monitoring, logging, audit evidence, rollback, recovery, and ownership;
+- known bugs, TODOs, skipped tests, feature flags, mocks, stubs, and temporary compatibility paths;
+- downstream consumers and related repositories.
+
+## Completeness dimensions
+
+### 1. Outcome and reachability
+
+Verify that:
+
+- the intended user or system can reach the capability;
+- the primary use case works end to end;
+- configuration and installation paths are available;
+- hidden manual steps or private fixtures are not required unless explicitly part of the contract;
+- feature flags, mocks, demo adapters, or local-only assumptions are disclosed.
+
+### 2. Functional behavior
+
+Verify requirements, edge cases, errors, partial failures, compatibility, migration, retries, idempotency, concurrency, and state handling relevant to the outcome.
+
+### 3. Integration and contracts
+
+Confirm:
+
+- upstream and downstream integration works;
+- APIs, schemas, protocols, artifacts, and versioning agree;
+- repository responsibilities are coherent;
+- transitional dual paths have a documented lifecycle;
+- downstream examples or consumers use the current contract.
+
+### 4. Validation and static analysis
+
+Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract). Assess whether the capability has an appropriate test pyramid and static-analysis surface for its supported behavior and maturity. Identify the applicable layers, what meaningful behavior each proves, and any material behavior left unverified.
+
+Identify validation that exists only locally, is CI-only without a reproducible equivalent, is skipped, stale, disabled, incorrectly scoped, or unexpectedly non-blocking. A green aggregate status does not compensate for a missing required layer or analyzer.
+
+### 5. Security and privacy
+
+Review applicable authentication, authorization, capabilities, trust boundaries, untrusted input, secrets, permissions, supply chain, provenance, logging, retention, isolation, and fail-open behavior.
+
+A missing hardening enhancement is not automatically incompleteness. A violated security invariant or undocumented unsafe boundary is.
+
+### 6. Delivery and operations
+
+Check applicable:
+
+- reproducible build and packaging;
+- versioning and release artifacts;
+- deployment and upgrade path;
+- configuration and secret provisioning;
+- observability and audit evidence;
+- rollback, recovery, backup, and failure ownership;
+- runbooks and known limitations.
+
+### 7. Documentation and claims
+
+Ensure documentation accurately distinguishes:
+
+- implemented;
+- validated;
+- released;
+- experimental or demo-only;
+- planned or aspirational;
+- supported and unsupported environments.
+
+### 8. Work tracking
+
+Reconcile:
+
+- completed issues that should close;
+- closed issues with unmet acceptance criteria;
+- umbrella epics whose child work remains;
+- duplicate or obsolete follow-up;
+- missing bounded issues for material remaining work;
+- maturity labels and milestone status.
+
+### 9. Compound assessment
+
+After the completion classification is established, ask for material failures, repeated review findings, workarounds, manual interventions, or successful patterns:
+
+> Would the system catch or prevent this automatically next time?
+
+A valid result is **No reusable learning**. Do not manufacture work to populate this section.
+
+Prefer the weakest durable mechanism that reliably improves future behavior:
+
+- deterministic defect -> test/schema/invariant/static check/CI;
+- operator ambiguity -> docs/runbook/semantic help;
+- reusable reasoning guidance -> candidate prompt/context guidance;
+- bad runtime default -> owning tool/runtime change;
+- governance gap -> policy proposal;
+- uncertain pattern -> defer for evidence.
+
+Candidate learning is non-authoritative. For persistent prompt/context guidance, historical Memory/context is not promoted guidance; use exact candidate composition/lock + separate validation/promotion where Invokrum applies. Cached/indexed currentness is advisory and must be re-resolved from the owning authority before trusted consumption.
+
+## Completion classification
+
+Classify the capability as:
+
+- **Complete and verified**
+- **Complete for stated maturity with bounded follow-up**
+- **Functionally implemented but not delivered**
+- **Integrated but insufficiently validated**
+- **Partial vertical slice**
+- **Prototype or demo-only**
+- **Blocked**
+- **Misrepresented as complete**
+- **Superseded or obsolete**
+- **Insufficient evidence**
+
+## Required output
+
+### A. Intended versus delivered outcome
+
+State the authoritative intended outcome, actual current behavior, intended users, and maturity.
+
+### B. Completeness matrix
+
+| Dimension | Status | Evidence | Missing work | Material to completion? |
+| --- | --- | --- | --- | --- |
+| Outcome and reachability | | | | |
+| Functional behavior | | | | |
+| Integration and contracts | | | | |
+| Validation and static analysis | | | | |
+| Security and privacy | | | | |
+| Delivery and operations | | | | |
+| Documentation and claims | | | | |
+| Work tracking | | | | |
+
+### C. Material findings
+
+List only findings that affect completion, maturity, safety, usability, truthful representation, the applicable test pyramid, or required static-analysis/build/CI gates.
+
+For intent-to-implementation findings, include the gap type (`missing`, `partial`, `contradicts`, or `unrequested`) and keep it distinct from severity/root cause. Prefer a compact table when multiple findings exist:
+
+| Finding | Gap type | Evidence | Completion impact | Root cause / next action |
+| --- | --- | --- | --- | --- |
+
+### D. Remaining work
+
+Separate:
+
+- completion blockers;
+- bounded follow-up compatible with closure;
+- deferred enhancements;
+- obsolete or duplicate work to close.
+
+For required new work, provide issue-ready titles, outcomes, dependencies, and acceptance criteria. Avoid one issue per minor observation.
+
+### E. Tracking actions
+
+Recommend issues or epics to close, reopen, split, supersede, reprioritize, or update. State whether public maturity and documentation claims should change.
+
+### F. Final assessment
+
+Choose exactly one:
+
+- **Close as complete**
+- **Close as complete for stated maturity with bounded follow-up**
+- **Keep open for focused completion work**
+- **Reopen because acceptance criteria remain unmet**
+- **Reclassify as prototype or demo-only**
+- **Blocked by a named dependency or decision**
+- **Supersede or archive**
+- **Insufficient evidence**
+
+Support the conclusion with verified evidence, including the applicable test-pyramid and static-analysis status for executable capabilities.
+
+### G. Compound assessment
+
+Report either **No reusable learning** or a compact table:
+
+| Candidate | Durable target | Evidence | Disposition |
+| --- | --- | --- | --- |
+
+Use only: `track`, `apply under current authorization`, `already covered`, `defer for evidence`, or `reject`.
+
+A Compound candidate is not automatically a reason to keep an otherwise complete capability open. It affects completion only when it identifies a real unmet requirement, safety defect, validation gap, or misleading claim in the current outcome.
+
+## Authorized reconciliation mode
+
+When tracking or documentation mutations are authorized:
+
+1. Apply only the actions supported by the completeness review.
+2. Preserve unique requirements before closing duplicates or superseded work.
+3. Update maturity and public claims conservatively.
+4. Create only coherent material follow-up issues.
+5. Do not auto-promote trusted prompt/policy changes; use the owning validation/authority path.
+6. Report the resulting issue, milestone, documentation, validation, static-analysis, and Compound disposition state.
+```

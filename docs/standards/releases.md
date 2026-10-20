@@ -1,0 +1,162 @@
+# Release and versioning standard
+
+A release is an accountable statement that a specific source revision produced identified artifacts or deployment state with declared support, compatibility, and security properties.
+
+## Release authority
+
+Repository release authority follows [`GOVERNANCE.md`](../../GOVERNANCE.md). The release owner confirms that required evidence exists for the exact revision and artifacts being published. Automation may perform publication but does not independently authorize the release.
+
+## Versioning
+
+Use Semantic Versioning for public libraries, APIs, CLIs, packages, and contracts unless the repository documents a better domain-specific scheme.
+
+- **Major** — incompatible change to the declared supported contract.
+- **Minor** — backward-compatible capability addition.
+- **Patch** — backward-compatible correction or security fix.
+
+Pre-1.0 versions may evolve quickly, but breaking changes must still be intentional and documented. A `0.x` version is not permission to conceal compatibility impact.
+
+Applications, continuously delivered services, operating-system configurations, datasets, websites, or model artifacts may use date, build, channel, or revision-based identities. The scheme must remain monotonic or otherwise unambiguous and traceable to source.
+
+## Release channels
+
+Repositories may define:
+
+- development or nightly;
+- alpha;
+- beta;
+- release candidate;
+- stable;
+- maintenance or long-term support.
+
+Each channel should state its stability, support, compatibility, and upgrade expectations. Promotion between channels should reuse or identify the same artifacts where practical rather than silently rebuilding different content.
+
+## Required release record
+
+A release should identify:
+
+- version or immutable release identity;
+- source commit and tag;
+- release date and owner;
+- supported platforms, configurations, and consumers;
+- changes, fixes, security impact, and known limitations;
+- compatibility, migration, upgrade, and rollback implications;
+- artifacts and checksums;
+- provenance, SBOM, and signatures when required;
+- validation evidence and unresolved exceptions;
+- deprecations and support window.
+
+Release notes should describe externally meaningful outcomes rather than reproduce the commit log.
+
+## Tags and branches
+
+Apply the [branching and integration standard](branching-and-integration.md).
+
+- `main` is the organization-default golden integration line; a commit on `main` is accepted integrated source but is not automatically a stable release.
+- Stable releases normally identify source commits reachable from `main` whose accepted source state is traceable to the reviewed/validated admission candidate, unless a documented maintenance branch owns that supported release line.
+- Protect or restrict release tags according to repository risk.
+- Use annotated or signed tags when authenticity requirements justify them.
+- Do not move or overwrite published stable tags.
+- Feature/milestone tags are optional immutable checkpoints for materially useful integrated states; ordinary merged features do not require tags.
+- A feature/milestone tag does not imply release, deployment, support, or maturity authority unless separately declared.
+- Record hotfix and maintenance branch policy where supported versions diverge.
+- Treat a tag as a reference, not proof that artifacts were correctly built or published.
+
+## Artifacts
+
+Release artifacts should be:
+
+- built from the intended source revision;
+- reproducible or at least provenance-linked;
+- named with version, platform, architecture, and format where applicable;
+- validated after packaging, not only before it;
+- accompanied by checksums and stronger integrity evidence according to risk;
+- free of secrets, credentials, development-only material, and unintended personal data;
+- retained or mirrored according to support commitments.
+
+For mobile, native, container, Nix, package-registry, and provider-adapter releases, validate installation or consumption through the supported channel.
+
+When implementation source is intentionally private, apply the [source exposure and distribution standard](source-exposure-and-distribution.md). Public package definitions must consume immutable reviewed release artifacts rather than requiring exported buildable implementation source, unless an explicit documented exception changes that posture.
+
+For command-line tools, apply the [CLI interoperability standard](cli-interoperability.md) and its [CLI design/UX guidance](cli-design-and-ux.md). The supported package or release artifact must contain the same executable contract and section-1 man page validated by CI. Release identity, packaging, SBOMs, provenance, signatures, and rollback remain governed by this release standard, not a separate CLI-specific release process.
+
+## Supply-chain evidence
+
+Use the level appropriate to the artifact and maturity:
+
+- checksums for downloadable assets;
+- SBOMs for distributable software and container images;
+- provenance or build attestations for higher-risk release pipelines;
+- signing for artifacts, tags, packages, or metadata where identity and tamper resistance are material;
+- immutable digests for deployed images and generated release evidence.
+
+Document the verification procedure. Evidence users cannot verify is incomplete.
+
+## Compatibility and migration
+
+Before release, identify:
+
+- public API, schema, command, configuration, data, file-format, policy, and deployment changes;
+- backward and forward compatibility;
+- mixed-version behavior;
+- required data or configuration migration;
+- deprecation period and successor;
+- rollback limits and irreversible changes.
+
+Breaking changes require an accepted decision or explicit release authority appropriate to their scope. Update consumers, community surfaces, and integration testbeds in dependency order.
+
+For stable operations exposed through more than one transport, compatibility review must confirm that CLI, orchestrator, RPC/service, CI, and library adapters reuse the same canonical versioned domain semantics. Divergent transport-specific domain models require an explicit compatibility decision.
+
+## Security releases
+
+Security fixes should minimize disclosure risk while preserving enough information for users to assess urgency and affected versions.
+
+- Coordinate patch, credential rotation, publication, and disclosure.
+- Avoid publishing exploit details before users have a reasonable remediation path.
+- Identify affected and fixed versions accurately.
+- Do not misclassify an unverified mitigation as a complete fix.
+- Backport according to the declared support policy and risk.
+
+## Release readiness
+
+Use the organization [release-readiness prompt](../prompts/releases/release-readiness.md) or an equivalent gate for material releases. At minimum confirm:
+
+- version identity is correct;
+- required checks ran on the release revision;
+- artifacts were packaged and consumed successfully;
+- security and dependency findings are dispositioned;
+- compatibility, migration, rollback, and known limitations are documented;
+- public documentation matches the released capability;
+- publication credentials and targets are scoped correctly;
+- declared source-exposure posture matches repository visibility, artifact contents, and package-manager/Nix behavior;
+- command-line tools satisfy applicable Unix process, machine-output, non-interactive safety, man-page, and conformance requirements from the CLI interoperability standard;
+- multi-transport operations preserve one canonical domain contract rather than parallel CLI-versus-orchestrator semantics.
+
+Missing applicable CLI interoperability or cross-transport contract evidence is a release blocker for a surface claimed as supported or stable. A public source-building package that contradicts an intentional private-implementation boundary is likewise a release blocker until the package or declared posture is corrected. Experimental channels may explicitly disclose unavailable pre-release behavior instead of claiming support.
+
+## Publication authority across repositories
+
+The authoritative implementation repository owns product or contract release identity. Community, website, adapter, and distribution repositories publish their own packaging or integration releases without redefining upstream component maturity.
+
+For a private-canonical/public-distribution topology, the public distribution surface must be independently consumable without private-repository credentials and must preserve traceability to the authorized canonical revision and immutable artifact.
+
+When GitHub and GitLab both participate, document which repository or registry is authoritative for source, tags, packages, release notes, and mirrors. Mirrors must not create conflicting release histories.
+
+## Rollback, yanking, and revocation
+
+Define how to:
+
+- stop or pause publication;
+- yank or deprecate a package without erasing history;
+- revoke a signing identity or compromised artifact;
+- roll back a deployment or configuration;
+- communicate a broken or unsafe release;
+- preserve evidence for incident review.
+
+Do not delete published evidence merely to make a failed release disappear.
+
+## Deprecation and end of support
+
+Deprecation should identify the affected surface, replacement, migration path, warning period, final supported version, and end-of-support date where applicable.
+
+A repository moving to Superseded, Maintenance, or Archived must update release channels and public documentation according to the [repository lifecycle](../governance/repository-lifecycle.md).

@@ -1,0 +1,58 @@
+# Micrantha engineering standards
+
+These standards define organization-wide defaults for engineering evidence, security, delivery, documentation, and work-item taxonomy. They complement [`GOVERNANCE.md`](../../GOVERNANCE.md), the [repository lifecycle](../governance/repository-lifecycle.md), and repository-local requirements.
+
+## Standards
+
+- [Testing and validation](testing.md)
+- [CI/CD](ci-cd.md)
+- [Branching and integration](branching-and-integration.md)
+- [Local Git workspace and concurrency](local-git-workspaces.md) — one canonical checkout, isolated worktrees, evidence-gated cleanup
+- [Security engineering](security.md)
+  - [Cryptographic survivability](cryptographic-survivability.md)
+  - [AI agent insider threat and cumulative exposure](agent-insider-threat.md)
+- [Observability](observability.md) — standards-first telemetry, privacy/measurement, opt-out, composability, and offline compatibility
+- [Observability profile v1](observability-profile-v1.md) — minimal cross-project interoperability profile
+- [Source exposure and distribution](source-exposure-and-distribution.md)
+- [Repository bootstrap](repository-bootstrap.md) — explicit unresolved/resolved/not-applicable decisions for assumption-free new-repository automation
+- [Thin repository template](repository-template.md) — optional assumption-free GitHub creation transport and reference skeleton
+- [Configuration and executable-extension trust](configuration.md) — authority-aware configuration composition, executable provenance/identity, and governed plugin boundaries
+- [CLI interoperability](cli-interoperability.md) — normative process, machine/transport semantics, safety, and manual-page contract
+- [CLI design and UX](cli-design-and-ux.md) — user-facing tables, help, frameworks, extensions, and adoption without duplicating release authority
+- [Tool result trust and observation](tool-result-trust.md)
+- [Releases and versioning](releases.md)
+- [Documentation](documentation.md)
+- [Labels and work-item taxonomy](labels.md)
+
+## Application
+
+Apply requirements according to the repository's classification, maturity, risk, supported surface, and deployment model. A small experimental library does not need the same controls as a stable release pipeline or an authorization service, but it must state its limitations honestly.
+
+Repository-local standards may be stricter. A local exception should identify:
+
+- the organization default being changed;
+- why the default does not fit;
+- the replacement control or evidence;
+- affected security, compatibility, release, or support claims;
+- the accountable owner and review date.
+
+Exceptions do not authorize misleading maturity claims, weakened security boundaries without risk acceptance, or bypass of required release and validation gates.
+
+## Shared principles
+
+1. Validate outcomes and contracts, not only implementation details.
+2. Treat failure, migration, rollback, and security paths as first-class behavior.
+3. Keep CI least-privileged, deterministic, observable, and resistant to untrusted input.
+4. Do not describe planned, experimental, or partially integrated behavior as fully delivered.
+5. Preserve traceability from decisions and issues to code, validation, release evidence, and documentation.
+6. Prefer small, bounded, independently reviewable changes.
+7. Record limitations and residual risks instead of hiding them behind generic checklists.
+8. For command-line tools and multi-transport operations, preserve one canonical semantic contract while keeping transport-specific framing explicit.
+9. Treat externally influenced tool/connector/model content as data with preserved provenance; observations do not become authority by crossing an internal boundary.
+10. Separate authoring from validation: authoritative source changes enter history through explicit commits; CI verifies them rather than silently rewriting the revision under review.
+11. Treat source visibility and artifact distribution as explicit threat-model and product decisions; private source may raise attacker cost but must never be the control that makes an otherwise insecure design safe.
+12. Project-specific CI dependencies belong in repository-owned flakes; shared runner images remain minimal bootstrap substrates and are optimized against measured space and time budgets.
+
+## Maturity relationship
+
+The [repository lifecycle](../governance/repository-lifecycle.md) defines when stronger evidence becomes necessary. Experimental repositories may use reduced ceremony, while Incubating, Active, Stable, and Maintenance repositories progressively require stronger validation, compatibility, release, operational, and support evidence.

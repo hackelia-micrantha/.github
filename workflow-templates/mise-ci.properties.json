@@ -1,0 +1,7 @@
+{
+  "name": "Micrantha Mise CI",
+  "description": "Run the repository-defined mise CI task through the shared read-only workflow.",
+  "iconName": "octicon check-circle",
+  "categories": ["Continuous integration"],
+  "filePatterns": ["^mise\\.toml$", "^\\.mise\\.toml$"]
+}

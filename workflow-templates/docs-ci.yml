@@ -1,0 +1,21 @@
+name: Documentation CI
+
+on:
+  pull_request:
+    branches: [$default-branch]
+  push:
+    branches: [$default-branch]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: docs-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docs:
+    # Define a repository-owned `docs-ci` task; shared execution is pinned to the automation-v1 candidate.
+    uses: hackelia-micrantha/.github/.github/workflows/reusable-mise-ci.yml@c0016c206607f6f101b8e6b70340ad7d4ab52837 # automation-v1 candidate
+    with:
+      task: docs-ci

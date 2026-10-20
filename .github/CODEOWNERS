@@ -1,0 +1,15 @@
+# Organization-wide defaults for the .github repository.
+# Repository steward: @ryjen (organization owner)
+#
+# CODEOWNERS records stewardship/review routing. It does not satisfy a separate
+# non-author independent-review gate when the listed owner authored the change.
+# See docs/governance/independent-review.md.
+
+# Default owner for everything in this repository
+* @ryjen
+
+# Shared automation and governance — require steward review
+/.github/workflows/ @ryjen
+/docs/ @ryjen
+/GOVERNANCE.md @ryjen
+/CONTRIBUTING.md @ryjen

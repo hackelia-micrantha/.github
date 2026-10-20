@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://micrantha.com/schemas/labels.schema.json",
+  "title": "Micrantha label synchronization manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "organization", "labels", "repositories"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schemaVersion": {"const": 1},
+    "organization": {"type": "string", "minLength": 1},
+    "labels": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "color", "description"],
+        "properties": {
+          "name": {"type": "string", "pattern": "^[a-z][a-z0-9-]*:[A-Za-z0-9][A-Za-z0-9.-]*$"},
+          "color": {"type": "string", "pattern": "^[0-9a-fA-F]{6}$"},
+          "description": {"type": "string", "minLength": 1, "maxLength": 100},
+          "aliases": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+        }
+      }
+    },
+    "repositories": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["repository", "mode", "labels"],
+        "properties": {
+          "repository": {"type": "string", "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"},
+          "mode": {"const": "report-only"},
+          "labels": {"type": "array", "minItems": 1, "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+          "notes": {"type": "string"}
+        }
+      }
+    }
+  }
+}
