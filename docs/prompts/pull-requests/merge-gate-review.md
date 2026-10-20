@@ -6,6 +6,8 @@ Apply the [shared validation and static-analysis contract](../README.md#shared-v
 
 Apply the [shared named-value and enum guardrail](../README.md#shared-named-value-and-enum-guardrail) when reviewing code, including typed domain choices, named constants, and wire-compatibility handling.
 
+When this review produces **outbound substantive findings for a third-party repository**, apply the [external repository comment standard](../../engineering/external-contribution-comments.md) before publishing: lead each actionable finding with a short, accurate plain-language explanation, then provide technical evidence and a bounded remediation. Do not add this prefix to internal-only review output. Reviewing never grants authority to post comments.
+
 Every code review must **freshly re-read all related issue(s)** before assessing scope, correctness, completeness, or merge readiness. Re-check the current issue body, acceptance criteria, and material discussion or updates; do not rely on a previous review, the pull-request summary, or remembered issue state.
 
 Do **not** use this prompt to investigate CI failures — use [CI failure triage](../ci/ci-failure-triage.md). Do **not** use it for general project status or backlog triage — use the [project reviews](../project-review/README.md).
