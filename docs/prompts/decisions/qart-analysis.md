@@ -96,6 +96,8 @@ For each alternative describe:
 
 Do not include straw alternatives merely to make the recommendation appear stronger.
 
+For optimization decisions, apply the [shared evidence-gated optimization guardrail](../README.md#shared-evidence-gated-optimization-guardrail). Distinguish observed or contractual constraints from hypothetical demand, compare the status quo and simplest viable alternative, and make added lifecycle complexity and reassessment triggers explicit.
+
 ## 3. Evaluation
 
 Compare alternatives against explicit criteria. Use only criteria material to the decision, such as:
