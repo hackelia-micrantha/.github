@@ -17,6 +17,8 @@ The currently declared workflow profiles are:
 
 Each profile deterministically composes the shared contracts in this README, the required [cross-project execution overlay](overlays/cross-project-execution.md), and exactly one workflow prompt. Live project/task evidence remains host/runtime input and does not become trusted prompt authority merely by being supplied to a model.
 
+The QART and QATS profiles resolve to identical instruction sources. The caller should express `QATS` in the task/invocation when QATS-ordered presentation is desired; selecting a profile alias alone does not inject a presentation-mode variable into the composed prompt.
+
 From a source checkout on a supported Invokrum host:
 
 ```bash
