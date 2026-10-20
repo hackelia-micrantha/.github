@@ -116,6 +116,22 @@ For software implementation, refactoring, and code review, **do not introduce un
 4. **Avoid ceremonial abstractions.** Obvious language idioms (such as `0`, `1`, `true`, `false`, `null`), local arithmetic, and expressive test data can remain inline where naming would impair clarity. This is not a ban on all literals or a quota for constants and enums.
 5. **Review the semantics.** Flag unexplained or repeated domain literals when they create concrete drift, correctness, security, or maintainability risk. Verify replacements preserve behavior, units, defaults, and compatibility rather than requesting mechanical extraction.
 
+## Shared evidence-gated optimization guardrail
+
+For software, architecture, infrastructure, CI/CD, and engineering review work, prefer the simplest correct, secure, maintainable solution that meets accepted requirements and credible near-term constraints. Optimization is not an independent objective.
+
+Before adding caches, parallelism, pooling, configurable machinery, generalized abstractions, services, or other performance/scale mechanisms:
+
+1. **Identify the constraint.** Name the observed bottleneck, explicit resource/performance contract, proven algorithmic limit, or credible near-term risk. Separate measurement from hypothesis.
+2. **Use proportionate evidence.** Prefer representative profiles, timings, budgets, operational observations, contract limits, or sound complexity analysis. Do not demand benchmark machinery for obvious low-risk simplifications or removal of redundant work.
+3. **Compare simpler options.** Include the status quo and the smallest sufficient change, such as doing less work, reusing an existing mechanism, or improving an algorithm before adding state or infrastructure.
+4. **Count lifecycle costs.** Consider correctness, security/attack surface, dependencies, failure modes, migrations, testing, observability, storage, compute, and ongoing ownership. Never weaken required validation or trust boundaries for speed.
+5. **Define proof and reassessment.** State how the change will be validated relative to the constraint and what would justify revisiting it, including rollback where material.
+
+Choose **Keep**, **Simplify**, **Optimize**, or **Defer**. If an optimization lacks a justified constraint or credible evidence, default to deferral with a concrete reassessment trigger *only when the potential need is real*; do not create speculative issues as placeholders.
+
+Proactive work is appropriate for known security/correctness requirements, explicit performance or capacity contracts, demonstrated asymptotic limits, or a credible near-term change whose later migration cost is materially greater. An active incident is not required. This is a risk-shaped review heuristic, **not** a blanket benchmark quota, mandatory scoring framework, or automatic merge blocker. In review and execution loops, check for drift from the requested outcome, repeated non-convergent optimization (swirl), duplicated mechanisms, and retained superseded complexity.
+
 ## Shared validation and static-analysis contract
 
 For prompts that plan, implement, review, merge, complete, or release software, verify validation as a layered system rather than a generic “tests pass” claim.

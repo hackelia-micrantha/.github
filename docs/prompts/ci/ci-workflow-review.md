@@ -45,6 +45,8 @@ trigger
 
 Optimization is valid when it removes unnecessary computation, waiting, transfer, or duplication **without reducing the distinct evidence or security boundary the pipeline is required to provide**.
 
+Apply the [shared evidence-gated optimization guardrail](../README.md#shared-evidence-gated-optimization-guardrail) before adding caches, concurrency, infrastructure, or extra configuration. Distinguish removing demonstrably redundant work from introducing a mechanism whose runtime benefit and lifetime cost remain speculative.
+
 Two jobs running similar commands are not automatically redundant. They may intentionally validate different:
 
 - platforms or toolchains;
