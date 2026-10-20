@@ -3,7 +3,7 @@
   "invokrum_version": "0.2.1",
   "profiles": {
     "classify-and-route": {
-      "context_sha256": "be40efc1a675c6be12d6c188fd9249d307b1626df95d88f6e289548b585c38c5",
+      "context_sha256": "84e35fa4031966cf374452eb9bad1f8f37cb79c3942d9f62b254b451a3ef3e25",
       "inspect": {
         "command": "inspect",
         "entries": [
@@ -80,7 +80,7 @@
       }
     },
     "engineering-artifact-review": {
-      "context_sha256": "95b4ba547c2e982b01f00edd79b775fcf461270601f217c74f39fa909be0fa77",
+      "context_sha256": "9f53a82733aa3fa4457cb1dee580a6e95a020498126aaabc12939a1283ec7f92",
       "inspect": {
         "command": "inspect",
         "entries": [
@@ -157,7 +157,7 @@
       }
     },
     "issue-grooming": {
-      "context_sha256": "efaded29b6bcdb4aee38454235c4beb986f8ae757792bdafbb46e0ba3ff503fb",
+      "context_sha256": "b4750dd753aa0972d7675bc9dbd9acb2059afbbf7ad93ce85ed60b2bd827696f",
       "inspect": {
         "command": "inspect",
         "entries": [
@@ -234,7 +234,7 @@
       }
     },
     "merge-gate-review": {
-      "context_sha256": "389269e84f8d7a2233de14014a70d5ef8087d20bf65e3728d75c8b56ac6aa097",
+      "context_sha256": "077f9e34dde9bc49359fd2d575fb6197ea6cf8b71264de1f7aeec0b337e7558c",
       "inspect": {
         "command": "inspect",
         "entries": [
