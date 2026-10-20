@@ -81,6 +81,8 @@ State what exists now, what is missing or broken, and which claims are verified 
 
 Include only work required for the outcome. Exclude adjacent refactors, optional integrations, speculative abstractions, and future polish unless they are necessary for correctness or safety.
 
+For optimization issues, apply the [shared evidence-gated optimization guardrail](../README.md#shared-evidence-gated-optimization-guardrail): document the observed or contractual constraint, simplest sufficient option, evidence of value, and a reassessment trigger if deferred. Do not create issues solely for hypothetical future scale.
+
 ### 4. Dependencies and order
 
 Record:
