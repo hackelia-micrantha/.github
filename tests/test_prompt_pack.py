@@ -123,5 +123,22 @@ class PromptPackTests(unittest.TestCase):
             self.assertIn(f"    file: {relative_path}\n", prompt_block)
 
 
+    def test_every_workflow_is_discoverable(self) -> None:
+        """Keep the declarative index complete until generic Invokrum parity is available."""
+        manifest = MANIFEST.read_text(encoding="utf-8")
+        readme = (PROMPTS / "README.md").read_text(encoding="utf-8")
+        registered = re.findall(r"^    file: ([^\n]+)$", manifest, re.MULTILINE)
+        actual = {
+            path.relative_to(PROMPTS).as_posix()
+            for path in PROMPTS.rglob("*.md")
+            if path.name != "README.md"
+            and path.relative_to(PROMPTS).parts[0] != "overlays"
+        }
+        self.assertEqual(len(registered), len(set(registered)), "duplicate manifest files")
+        self.assertEqual(actual, set(registered), "workflow inventory drift")
+        for path in sorted(actual):
+            self.assertIn(f"]({path})", readme, f"workflow absent from chooser: {path}")
+
+
 if __name__ == "__main__":
     unittest.main()

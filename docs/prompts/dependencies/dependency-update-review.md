@@ -2,7 +2,7 @@
 
 Use this prompt for automated dependency updates (Renovate, Dependabot) or manual dependency changes where the risk surface is compatibility and supply-chain integrity rather than new logic.
 
-Do **not** use this prompt for new feature pull requests — use [merge-gate review](pull-requests/merge-gate-review.md). Do **not** use it for first-time dependency additions with complex integration — those belong in a regular PR with full merge-gate review.
+Do **not** use this prompt for new feature pull requests — use [merge-gate review](../pull-requests/merge-gate-review.md). Do **not** use it for first-time dependency additions with complex integration — those belong in a regular PR with full merge-gate review.
 
 ```markdown
 # Dependency Update Review

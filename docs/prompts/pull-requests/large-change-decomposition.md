@@ -2,7 +2,7 @@
 
 Use this prompt when a pull request or change set is too large for effective single-pass review, or when a series of commits needs to be decomposed into independently reviewable, safely mergeable slices.
 
-Do **not** use this prompt for reviewing a normal-sized PR — use [merge-gate review](pull-requests/merge-gate-review.md). Do **not** use it for selecting the next work item — use [next executable slice](planning/next-executable-slice.md).
+Do **not** use this prompt for reviewing a normal-sized PR — use [merge-gate review](merge-gate-review.md). Do **not** use it for selecting the next work item — use [next executable slice](../planning/next-executable-slice.md).
 
 ```markdown
 # Large-Change Decomposition

@@ -2,7 +2,7 @@
 
 Use this prompt after a comprehensive review or another trustworthy baseline. It is intentionally narrower than the full audit and focuses on material changes, unresolved work, and the next executable priorities.
 
-When using a tool-enabled agent, prepend the [agent execution guardrails](README.md#agent-execution-boundary). Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) to recent implementation, build, and CI/CD changes.
+When using a tool-enabled agent, prepend the [agent execution guardrails](../README.md#shared-execution-boundary). Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) to recent implementation, build, and CI/CD changes.
 
 Do **not** use this prompt for a first review or when no trustworthy baseline exists — use [comprehensive project status review](comprehensive-status-review.md). Do **not** use it to verify whether one specific capability is complete — use [implementation completeness](../reviews/implementation-completeness.md).
 
