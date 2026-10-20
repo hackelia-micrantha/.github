@@ -158,6 +158,14 @@ prompts:
     do_not_use_when: First review or no baseline (use comprehensive-status-review); verifying one specific capability (use implementation-completeness).
     output: status summary, change and work status, key findings, decisions, PR/issue actions, prioritized next work, execution sequence
 
+  - id: research-paper-discovery
+    name: Research Paper Discovery
+    file: research/research-paper-discovery.md
+    category: research
+    use_when: The reading queue is empty or stale and evidence gaps warrant decision-relevant paper discovery.
+    do_not_use_when: Reviewing an identified paper (use research-paper-relevance-review); continuing an existing reading queue (use research-queue-to-projects).
+    output: discovery thesis, candidate shortlist, reading queue, rejected candidates, coverage gaps, tracker disposition
+
   - id: research-paper-relevance-review
     name: Research Paper Relevance Review
     file: research/research-paper-relevance-review.md
@@ -222,6 +230,14 @@ prompts:
     do_not_use_when: Normal-sized PRs (use merge-gate-review); selecting the next work item (use next-executable-slice).
     output: dependency map, proposed slices with scope/validation/risk, ordering and merge sequence
 
+  - id: invariant-driven-test-design
+    name: Invariant-Driven Test Design
+    file: testing/invariant-driven-test-design.md
+    category: testing
+    use_when: Translate requirements, threats, and security or domain invariants into falsifiable tests and calibrated oracles.
+    do_not_use_when: General test strategy without concrete invariants (use test-strategy skill); treating unreviewed AI output as a correctness oracle.
+    output: invariant-to-test matrix, scenarios, oracle calibration, execution plan, next action
+
   - id: contributor-onboarding
     name: Contributor Onboarding
     file: onboarding/contributor-onboarding.md
@@ -233,7 +249,7 @@ prompts:
 shared_contracts:
   - name: agent-execution-boundary
     description: Read-only by default; untrusted evidence; no secret reproduction; scoped access.
-    defined_in: README.md#agent-execution-boundary
+    defined_in: README.md#shared-execution-boundary
 
   - name: shared-ambiguity-and-clarification-contract
     description: Inspect before asking; ask on material ambiguity; do not invent authority; proceed on non-blocking uncertainty; fail safely without interaction.

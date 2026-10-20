@@ -40,6 +40,7 @@ The overlay composes with, and does not weaken or duplicate, the shared executio
 | --- | --- | --- |
 | `status?` | [Project status refresh](project-review/status-refresh.md) | A trustworthy baseline exists and the goal is to identify material changes and next work |
 | `review the project` | [Comprehensive project status review](project-review/comprehensive-status-review.md) | The implementation, architecture, maturity, or backlog needs broad reconciliation |
+| `discover relevant research` | [Research paper discovery](research/research-paper-discovery.md) | Find and triage decision-relevant research without creating a broad reading-queue workstream |
 | `continue research` / `review reading queue` | [Research queue to projects](research/research-queue-to-projects.md) | Review the next tracked source across relevant projects, reconcile authorized issues/docs, and safely advance a source-keyed queue pointer only with an atomic/single-writer gate |
 | `review this research paper` | [Research paper relevance review](research/research-paper-relevance-review.md) | A paper, preprint, technical report, benchmark paper, or academic result may affect Micrantha architecture, security, governance, runtime, tooling, or roadmap |
 | `review to fix or merge` | [Pull-request merge-gate review](pull-requests/merge-gate-review.md) | A pull request needs a concrete merge, fix, block, or close decision |
@@ -51,6 +52,7 @@ The overlay composes with, and does not weaken or duplicate, the shared executio
 | `update issues` / `sync tracking` | [Update issues — evidence reconciliation](issues/update-issues.md) | Reconcile and mutate bounded issue tracking against current implementation, PRs, CI, reviews, and acceptance criteria |
 | `clean local workspaces` / `start isolated task` | [Local workspace hygiene](planning/local-workspace-hygiene.md) | Minimize duplicate checkouts while isolating concurrent agents and preserving unique work |
 | `proceed in loops` / `run this to completion` | [Long-running agent execution](planning/long-running-agent-execution.md) | A non-trivial task should continue through review, repair, validation, and gated-effect cycles without repeated continuation prompts |
+| `design invariant-based tests` | [Invariant-driven test design](testing/invariant-driven-test-design.md) | Derive falsifiable scenarios and security oracles without treating AI suggestions as proof |
 | `make this issue well groomed` | [Issue grooming](issues/issue-grooming.md) | An issue or small backlog needs an observable outcome, scope, acceptance criteria, and priority |
 | `do QART` | [QART decision analysis](decisions/qart-analysis.md) | Alternatives and trade-offs remain open |
 | `draft an RFC` | [RFC development](decisions/rfc-development.md) | A consequential proposal may require broad review or cross-boundary coordination |
@@ -61,11 +63,11 @@ The overlay composes with, and does not weaken or duplicate, the shared executio
 | `review repository boundaries` | [Cross-repository boundary review](architecture/cross-repository-boundaries.md) | Ownership, contracts, editions, adapters, labs, or migrations overlap across repositories |
 | `ready to release?` | [Release readiness review](releases/release-readiness.md) | A version, artifact, site, package, or public capability is approaching release |
 | `review docs/site claims` | [Public consistency review](documentation/public-consistency-review.md) | READMEs, websites, books, one-pagers, or demos must match implementation and maturity |
-|| `review agent security` | [Agentic workflow security review](security/agentic-workflow-security-review.md) | Agents, tools, approvals, policies, evidence, or execution boundaries require threat-oriented review |
-|| `review dependency update` | [Dependency update review](dependencies/dependency-update-review.md) | Automated dependency updates (Renovate, Dependabot) or manual dependency changes where the risk surface is compatibility and supply-chain integrity |
-|| `incident retrospective` | [Incident retrospective](incidents/incident-retrospective.md) | After an incident is contained and the goal is a blameless retrospective with durable controls |
-|| `decompose this change` | [Large-change decomposition](pull-requests/large-change-decomposition.md) | A pull request or change set is too large for effective single-pass review |
-|| `onboard me` | [Contributor onboarding](onboarding/contributor-onboarding.md) | A new contributor needs to understand how to contribute, file work, or make decisions |
+| `review agent security` | [Agentic workflow security review](security/agentic-workflow-security-review.md) | Agents, tools, approvals, policies, evidence, or execution boundaries require threat-oriented review |
+| `review dependency update` | [Dependency update review](dependencies/dependency-update-review.md) | Automated dependency updates (Renovate, Dependabot) or manual dependency changes where the risk surface is compatibility and supply-chain integrity |
+| `incident retrospective` | [Incident retrospective](incidents/incident-retrospective.md) | After an incident is contained and the goal is a blameless retrospective with durable controls |
+| `decompose this change` | [Large-change decomposition](pull-requests/large-change-decomposition.md) | A pull request or change set is too large for effective single-pass review |
+| `onboard me` | [Contributor onboarding](onboarding/contributor-onboarding.md) | A new contributor needs to understand how to contribute, file work, or make decisions |
 
 ## Shared execution boundary
 
