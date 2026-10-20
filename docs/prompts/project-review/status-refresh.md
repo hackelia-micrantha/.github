@@ -98,6 +98,8 @@ Identify material:
 
 Distinguish intentional deferral from accidental incompleteness. Do not overstate severity without a plausible failure or threat scenario.
 
+Apply the [shared evidence-gated optimization guardrail](../README.md#shared-evidence-gated-optimization-guardrail) when recent changes introduce caches, concurrency, extra services, or generalization. Recommend keep, simplify, optimize, or defer based on actual constraints and risk; do not promote speculative improvements into milestone blockers.
+
 ### 3. Architecture, testing, static analysis, and consistency
 
 Confirm that recent work remains consistent with project goals, current milestone, documented architecture, repository responsibilities, API and protocol contracts, naming, trust assumptions, and related systems.
