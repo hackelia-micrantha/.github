@@ -2,7 +2,7 @@
 
 Use this prompt for a first review, a major milestone review, or when the existing backlog and documentation may no longer reflect the implementation. This is the broadest review — it establishes the baseline that [status refreshes](status-refresh.md) consume.
 
-When using a tool-enabled agent, prepend the [agent execution guardrails](README.md#agent-execution-boundary). Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) to implementation, build, CI/CD, and completion findings.
+When using a tool-enabled agent, prepend the [agent execution guardrails](../README.md#shared-execution-boundary). Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) to implementation, build, CI/CD, and completion findings.
 
 Do **not** use this prompt for periodic check-ins when a trustworthy baseline already exists — use [status refresh](status-refresh.md). Do **not** use it to verify whether one specific capability is complete — use [implementation completeness](../reviews/implementation-completeness.md).
 

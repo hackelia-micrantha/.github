@@ -4,7 +4,7 @@ Use this prompt for requests such as **"make this issue well groomed," "review t
 
 Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when the issue changes executable software, build logic, configuration, or delivery behavior.
 
-Do **not** use this prompt for raw notes, discussions, or pre-issue material that has not yet been filed. Use [classify and route](planning/classify-and-route.md) first to establish the decision inventory and artifact map.
+Do **not** use this prompt for raw notes, discussions, or pre-issue material that has not yet been filed. Use [classify and route](../planning/classify-and-route.md) first to establish the decision inventory and artifact map.
 
 ```markdown
 # Issue Grooming
