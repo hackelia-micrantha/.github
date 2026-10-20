@@ -66,7 +66,7 @@ See [AI model selection and escalation](../docs/engineering/ai-model-selection.m
 | [`project-review`](project-review/SKILL.md) | Broad repository/project reconciliation |
 | [`project-triage`](project-triage/SKILL.md) | Convert reviewed state into a prioritized executable queue |
 | [`issue-grooming`](issue-grooming/SKILL.md) | Produce bounded, verifiable work items |
-| [`qart-analysis`](qart-analysis/SKILL.md) | Resolve a bounded decision through Questions, Alternatives, Recommendation, Trade-offs |
+| [`qart-analysis`](qart-analysis/SKILL.md) | QART / QATS decision matrix: questions, alternatives, evidence-backed recommendation or suggestions, trade-offs |
 | [`implementation-plan`](implementation-plan/SKILL.md) | Turn accepted intent into ordered, independently verifiable slices |
 | [`long-running-execution`](long-running-execution/SKILL.md) | Carry non-trivial work through bounded review, repair, validation, gate, effect, and verification loops without repeated continuation prompts |
 | [`pr-review`](pr-review/SKILL.md) | Review a change set for correctness, risk, scope, and evidence |
