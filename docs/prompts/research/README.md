@@ -25,8 +25,8 @@ Use the shared ambiguity and agent-execution contracts in [`../README.md`](../RE
 3. Map those findings to concrete repositories, contracts, threat surfaces, or capabilities.
 4. Compare the paper against existing implementation and accepted design evidence before declaring a gap.
 5. Classify candidate actions as `adopt`, `experiment`, `document`, `monitor`, or `reject/defer`.
-7. Route consequential uncertainty to the smallest responsible artifact: spike, QART, RFC, ADR, threat model, specification change, or implementation issue.
-8. Run the relevant project-review or security prompt when a paper implies broader repository reconciliation.
+6. Route consequential uncertainty to the smallest responsible artifact: spike, QART, RFC, ADR, threat model, specification change, or implementation issue.
+7. Run the relevant project-review or security prompt when a paper implies broader repository reconciliation.
 
 ## Scope controls
 
