@@ -179,6 +179,8 @@ For each implementation loop:
 
 Keep intent-gap type separate from failure cause, severity, priority, and final completion state. `unrequested` behavior is not automatically a defect; it may require justification, scope correction, compatibility review, or removal.
 
+Before an optimization-bearing implementation or repair, apply the [shared evidence-gated optimization guardrail](../README.md#shared-evidence-gated-optimization-guardrail). Prefer the smallest sufficient repair; do not turn an unrelated performance hypothesis into an additional workstream.
+
 Classify failures/root causes as at least one of:
 
 - implementation/correctness defect;
