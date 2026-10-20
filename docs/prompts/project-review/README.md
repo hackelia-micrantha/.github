@@ -30,7 +30,7 @@ For repositories that ship command-line tools or expose the same stable operatio
 
 Repository reviews are **read-only by default**. Unless the invocation explicitly authorizes mutations, the reviewer must not modify files, issues, pull requests, labels, settings, workflows, releases, deployments, or external systems.
 
-When using either prompt with an autonomous or tool-enabled agent, apply the [shared agent execution guardrails](../README.md#agent-execution-boundary).
+When using either prompt with an autonomous or tool-enabled agent, apply the [shared agent execution guardrails](../README.md#shared-execution-boundary).
 
 ## Recommended workflow
 

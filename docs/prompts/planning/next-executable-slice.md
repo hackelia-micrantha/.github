@@ -4,7 +4,7 @@ Use this prompt for requests such as **"what is next?" "proceed,"** or **"turn t
 
 Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when the selected slice changes executable software, build logic, configuration, or delivery behavior.
 
-Do **not** use this prompt for raw notes or discussions — use [classify and route](classify-and-route.md) first. Do **not** use it to review a pull request — use [merge-gate review](pull-requests/merge-gate-review.md).
+Do **not** use this prompt for raw notes or discussions — use [classify and route](classify-and-route.md) first. Do **not** use it to review a pull request — use [merge-gate review](../pull-requests/merge-gate-review.md).
 
 Compact invocation:
 

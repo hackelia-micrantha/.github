@@ -4,7 +4,7 @@ Use this prompt before publishing a version, package, image, binary, website, bo
 
 Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when the release contains executable software, build logic, configuration, or delivery behavior.
 
-Do **not** use this prompt to review a pull request — use [merge-gate review](pull-requests/merge-gate-review.md). Do **not** use it for general project status — use the [project reviews](project-review/README.md).
+Do **not** use this prompt to review a pull request — use [merge-gate review](../pull-requests/merge-gate-review.md). Do **not** use it for general project status — use the [project reviews](../project-review/README.md).
 
 Compact invocation:
 

@@ -2,7 +2,7 @@
 
 Use this prompt to critically review a QART analysis, RFC, ADR, specification, design, investigation, plan, epic, or implementation issue.
 
-Do **not** use this prompt to review implementation code or a pull request diff — use [merge-gate review](pull-requests/merge-gate-review.md). Do **not** use it for general project status — use the [project reviews](project-review/README.md).
+Do **not** use this prompt to review implementation code or a pull request diff — use [merge-gate review](../pull-requests/merge-gate-review.md). Do **not** use it for general project status — use the [project reviews](../project-review/README.md).
 
 Compact invocation:
 
