@@ -133,28 +133,6 @@ jobs:
               --format json > "$profile_dir/verify.json"
           done
 
-      - name: Emit updated decision-profile evidence (temporary diagnostic)
-        run: |
-          python - <<'PY'
-          import hashlib
-          import json
-          import os
-          from pathlib import Path
-
-          root = Path(os.environ["RUNNER_TEMP"]) / "micrantha-prompt-pack-evidence"
-          profiles = {}
-          for name in ("qart-analysis", "qats-analysis"):
-              folder = root / name
-              profiles[name] = {
-                  "context_sha256": hashlib.sha256((folder / "context.md").read_bytes()).hexdigest(),
-                  "inspect": json.loads((folder / "inspect.json").read_text()),
-                  "lock": json.loads((folder / "invokrum.lock").read_text()),
-              }
-          print("BEGIN_DECISION_PROFILE_EVIDENCE")
-          print(json.dumps(profiles, sort_keys=True, separators=(",", ":")))
-          print("END_DECISION_PROFILE_EVIDENCE")
-          PY
-
       - name: Compare prompt-pack evidence with committed goldens
         run: |
           python tools/verify_prompt_pack_evidence.py \
