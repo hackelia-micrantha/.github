@@ -311,7 +311,7 @@
       }
     },
     "qart-analysis": {
-      "context_sha256": "0f1232162ee53d0efc278cc7cdf8969f456ed1a89c3da99435f333ff8784fbc2",
+      "context_sha256": "faa45baad3db0be5c741b6e16197fbbe19cb4bcda8241e471374dbe1262147d3",
       "inspect": {
         "command": "inspect",
         "entries": [
@@ -328,25 +328,25 @@
             "source": "docs/prompts/overlays/cross-project-execution.md"
           },
           {
-            "byte_length": 9831,
+            "byte_length": 10523,
             "class": "workflow",
             "overlay": "qart-analysis",
             "source": "docs/prompts/decisions/qart-analysis.md"
           }
         ],
         "format": "invokrum.cli/v1",
-        "output_bytes": 40469,
+        "output_bytes": 41161,
         "pack": "micrantha-meta-prompts",
         "profile": "qart-analysis",
         "schema": "invokrum.dev/v1",
-        "source_bytes": 40465
+        "source_bytes": 41157
       },
       "lock": {
         "format": "invokrum.lock/v1",
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "2a01e5177bc904dc38bd08cd9d9ea6818e8cad51f6a8fba195e064cedd5a5831",
+          "engine_inputs_digest": "da39545e8c1451951ac25f2822af1cb9564eb73cd293d941b834abb8fc783f40",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -375,20 +375,20 @@
               "class": "workflow",
               "id": "qart-analysis",
               "source": "docs/prompts/decisions/qart-analysis.md",
-              "byte_length": 9831,
-              "digest": "53c9b5f86129a6b8dc070d4bba4ab817fea5a7a08a10f88e8917530cf5eed254"
+              "byte_length": 10523,
+              "digest": "d3f2cd5b6d2bbd94976dda0fd0b88749a44c4d31b8a49d64e5111c22a0f3b73b"
             }
           ],
           "output": {
-            "byte_length": 40469,
-            "digest": "0f1232162ee53d0efc278cc7cdf8969f456ed1a89c3da99435f333ff8784fbc2"
+            "byte_length": 41161,
+            "digest": "faa45baad3db0be5c741b6e16197fbbe19cb4bcda8241e471374dbe1262147d3"
           }
         },
-        "manifest_digest": "eaec27a9f14a7783f6cd885993553b6c60849d64d18adf25f877450508210e4c"
+        "manifest_digest": "e7bd84ef41d327285541a245eafc83dc182538fcc8423ecc6fb1a4f0c74bc1a5"
       }
     },
     "qats-analysis": {
-      "context_sha256": "0f1232162ee53d0efc278cc7cdf8969f456ed1a89c3da99435f333ff8784fbc2",
+      "context_sha256": "faa45baad3db0be5c741b6e16197fbbe19cb4bcda8241e471374dbe1262147d3",
       "inspect": {
         "command": "inspect",
         "entries": [
@@ -405,25 +405,25 @@
             "source": "docs/prompts/overlays/cross-project-execution.md"
           },
           {
-            "byte_length": 9831,
+            "byte_length": 10523,
             "class": "workflow",
             "overlay": "qart-analysis",
             "source": "docs/prompts/decisions/qart-analysis.md"
           }
         ],
         "format": "invokrum.cli/v1",
-        "output_bytes": 40469,
+        "output_bytes": 41161,
         "pack": "micrantha-meta-prompts",
         "profile": "qats-analysis",
         "schema": "invokrum.dev/v1",
-        "source_bytes": 40465
+        "source_bytes": 41157
       },
       "lock": {
         "format": "invokrum.lock/v1",
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "67936c3ded0216acf52cee7c56b8601444d0b1f853670b8e4cfb50e6bec20b38",
+          "engine_inputs_digest": "568ddb08f2c3cd02f67239c57bbaf9eeb0f215a31cc9554c448ca1eebbf4313d",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -452,16 +452,16 @@
               "class": "workflow",
               "id": "qart-analysis",
               "source": "docs/prompts/decisions/qart-analysis.md",
-              "byte_length": 9831,
-              "digest": "53c9b5f86129a6b8dc070d4bba4ab817fea5a7a08a10f88e8917530cf5eed254"
+              "byte_length": 10523,
+              "digest": "d3f2cd5b6d2bbd94976dda0fd0b88749a44c4d31b8a49d64e5111c22a0f3b73b"
             }
           ],
           "output": {
-            "byte_length": 40469,
-            "digest": "0f1232162ee53d0efc278cc7cdf8969f456ed1a89c3da99435f333ff8784fbc2"
+            "byte_length": 41161,
+            "digest": "faa45baad3db0be5c741b6e16197fbbe19cb4bcda8241e471374dbe1262147d3"
           }
         },
-        "manifest_digest": "a259108c44533a44b1002ddc68a15bcce8978a14eb519da851730586c96fa6f1"
+        "manifest_digest": "d0d48693e6f60e4ac71cc3fa0990149684051e39987ae030aa487ff474dbc309"
       }
     }
   }
