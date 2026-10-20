@@ -100,7 +100,7 @@ class PromptPackTests(unittest.TestCase):
             start = profiles.index(f"  - id: {profile}\n")
             next_profile = profiles.find("\n  - id: ", start + 1)
             block = profiles[start:] if next_profile == -1 else profiles[start:next_profile]
-            self.assertIn("      workflow:\n        - qart-analysis\n", block)
+            self.assertRegex(block, r"      workflow:\n        - qart-analysis(?:\n|$)")
 
     def test_workflow_sources_remain_registered_in_prompt_manifest(self) -> None:
         manifest = MANIFEST.read_text(encoding="utf-8")
