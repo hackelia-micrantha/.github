@@ -126,6 +126,8 @@ Check consistency with:
 
 Flag unnecessary indirection, duplicate mechanisms, leaky abstractions, partial migrations, or architecture decisions hidden inside implementation changes.
 
+Apply the [shared evidence-gated optimization guardrail](../README.md#shared-evidence-gated-optimization-guardrail) to optimization-driven complexity. Check the constraint, proportionate evidence, simpler alternatives, lifecycle burden, and proposed verification. Flag unjustified speculative scope without inventing a universal benchmark gate.
+
 Recommend QART or an ADR only when the decision cannot safely remain implicit.
 
 ### 6. Documentation and delivery
