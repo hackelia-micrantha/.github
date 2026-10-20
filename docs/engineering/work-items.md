@@ -38,7 +38,9 @@ This is not mandatory ceremony. Skip artifacts that do not resolve uncertainty, 
 
 ## Selection rules
 
-### Use QART when
+### Use QART (or its QATS alias) when
+
+QATS means Questions, Alternatives, Trade-offs, Suggestions. Both names select the same decision matrix and canonical QART record. QATS may foreground exploratory suggestions; neither name grants decision or implementation authority.
 
 - more than one credible alternative exists;
 - the trade-off affects architecture, security, operations, compatibility, governance, cost, or delivery;
