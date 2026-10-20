@@ -1,9 +1,11 @@
 ---
 name: qart-analysis
-description: Resolve one bounded decision through Questions, Alternatives, Recommendation, and Trade-offs before promoting the decision to an ADR or broader RFC.
+description: Analyze one bounded decision through QART (Questions, Alternatives, Recommendation, Trade-offs) or its QATS (Questions, Alternatives, Trade-offs, Suggestions) alias before promoting an accepted decision to an ADR or broader RFC.
 ---
 
-# QART analysis
+# QART / QATS analysis
+
+Both names select this one skill, prompt and decision matrix. QATS changes presentation emphasis toward conditional suggestions, not the evidence threshold, artifact type, or authorization boundary. Do not create a second QATS skill or template.
 
 ## Trigger
 
