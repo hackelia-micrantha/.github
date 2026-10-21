@@ -150,7 +150,7 @@ Use the organization [testing standard](../standards/testing.md) and [CI/CD stan
 All prompts follow [`CONTRIBUTING.md`](../../CONTRIBUTING.md):
 
 - **P0 — interrupt:** active work must be displaced because a critical capability, security boundary, release path, or required validation gate is currently broken or dangerously exposed.
-- **P1 — next:** a small executable next-up queue that materially unlocks the current milestone or closes a significant risk.
+- **P1 — next:** a small executable next-up queue that materially unlocks the current milestone, prevents verified near-term financial loss, enables near-term revenue, or closes a significant risk. Apply the [financial cost-of-delay guardrail](../../CONTRIBUTING.md#financial-impact-and-cost-of-delay-guardrail) without automatically promoting ordinary recurring bills to P0.
 - **P2 — planned:** important and groomed work that does not displace P0/P1.
 - **P3 — later / explore:** valid but uncommitted, exploratory, duplicated, or insufficiently defined work.
 
