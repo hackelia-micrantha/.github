@@ -201,7 +201,7 @@ historically valid signature / ciphertext / proof
   != current authorization
 ```
 
-Each project must define retention, archival, compromise, destruction, and historical-verification semantics appropriate to its protocol and recovery model. Profile rejection governs operations that *use* cryptographic algorithms; it must not automatically forbid independently authorized lifecycle cleanup by stable key handle, such as revocation or destruction. If the provider or key material is unavailable, record an indeterminate or failed cleanup result rather than claiming successful erasure.
+Each project must define retention, archival, compromise, destruction, and historical-verification semantics appropriate to its protocol and recovery model. Profile rejection governs operations that *use* cryptographic algorithms; it must not automatically forbid independently authorized lifecycle cleanup by stable key handle, such as revocation or destruction. Distinguish **revocation** (an enforceable control-plane denial for future authorized use of a key handle) from **destruction** (an evidenced cryptographic-custody/erasure action). Revocation may still succeed without the crypto provider or key material when its separate authorization enforcement and verification remain operational; its evidence must identify the scope of denial and must not claim erased key bytes or prevent use outside that control plane. An unavailable provider or key cannot establish destruction: record the destruction result as failed or indeterminate until appropriate custody/erasure evidence exists.
 
 Research basis:
 
@@ -426,7 +426,7 @@ Material cryptographic lifecycle events should preserve bounded non-secret evide
 - key handle or opaque identity, not raw key;
 - actor/requester;
 - policy/approval reference where required;
-- operation or lifecycle transition type: generate, wrap, unwrap, rewrap, rotate, algorithm/profile transformation, provider/custody migration, revoke, destroy, recover; distinguish rotation from profile or custody changes; bind migrations to old/new key-instance and profile/provider identities and bind revocation/destruction to the exact target key handle and verified disposition;
+- operation or lifecycle transition type: generate, wrap, unwrap, rewrap, rotate, algorithm/profile transformation, provider/custody migration, revoke, destroy, recover; distinguish rotation from profile or custody changes; bind migrations to old/new key-instance and profile/provider identities; for revocation record exact handle, denied-use scope, enforcement evidence and result; for destruction record exact target, custody action, independently supported erasure result or uncertainty;
 - result and verifier;
 - timestamp/epoch;
 - implementation/configuration revision.
@@ -455,7 +455,8 @@ Where applicable, test:
 
 - reject unsupported profiles for cryptographic-use operations (including creation, signing, encryption, verification, and decryption); reject new/forward commitments under retired profiles, while allowing only explicitly policy-authorized, bounded historical verification/decryption where the necessary implementation remains supported; do not make profile support a prerequisite for separately authorized revoke/destroy by stable key handle;
 - positive historical verification/decryption cases bound to the exact archived artifact, key instance, profile and retention policy, alongside negative cases rejecting new commitments with that retired profile and all cryptographic use of truly unsupported profiles;
-- authorized revoke/destroy of a retired or unsupported-profile key by stable handle, including rejection of unauthorized cleanup, missing-provider/key failure, and no false successful erasure claim;
+- independently authorized control-plane revocation of a retired/unsupported-profile key handle, including absent cryptographic provider/material when the denial control plane remains operational; verify denied future authorized use within that control plane, and reject unauthorized revocation or false claims of global key invalidation;
+- independently authorized destruction of retired/unsupported-profile key material, including unavailable provider, missing key, partial failure and indeterminate erasure evidence; never report successful destruction without the requisite custody/erasure proof;
 - algorithm/profile transformation and provider/custody migration evidence binding old/new identities, authorization, result and rollback or recovery disposition;
 - downgrade resistance;
 - stale key/profile replay;
