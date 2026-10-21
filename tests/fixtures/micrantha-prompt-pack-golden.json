@@ -38,7 +38,7 @@
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "e4cb24873b750ca30a6405f07a31278e6208ffd4d40b010f59ff4fe938553777",
+          "engine_inputs_digest": "4d84189a480ab4046ebd2bf057d032d1936b110735f0a08dfda1e774a5e2b656",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -76,7 +76,7 @@
             "digest": "95aa07465c42c17d54a4acc24771306bf5a66f9331b545c92c7df85bec4f7e60"
           }
         },
-        "manifest_digest": "3b15b9f4f1be885067106e54e24c93b42605c2631038b3b87dc4a5f7155aa3ec"
+        "manifest_digest": "967cb6de8feacfb96697db78ac44ef337e69a2d82029d3de38b0958ce9a53017"
       }
     },
     "engineering-artifact-review": {
@@ -115,7 +115,7 @@
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "d3bea84e3a8ce7f17ca9baec98be5ec1e9298dbbc5ce6a03947b43eed694bc0e",
+          "engine_inputs_digest": "e20b6200466406ac9d0b7edf4ab80b7a749210de8c7b63ec763fb57efc841561",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -153,7 +153,7 @@
             "digest": "1fe072984c78c4061db1d83942a8fff567ea33b3497c30fc4d2aa337a15f68a5"
           }
         },
-        "manifest_digest": "8ad7afd2f051755437bf01c37e56bbd8d1a020e2d448ec7f2cb20033254173f6"
+        "manifest_digest": "756d378ff63ad43486a11d60c2731d177ea2ea9e9b31bbbcae1cf91cdd8be80c"
       }
     },
     "issue-grooming": {
@@ -192,7 +192,7 @@
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "80bdf7778c5d2caddf2c76dc8b62e0019895d993fb854e9c1f0eb8a84e13a3e5",
+          "engine_inputs_digest": "f600efee2b0f6d76a16507f1c2c674d1c686eca7abbcee3e271890de2905c20f",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -230,7 +230,7 @@
             "digest": "33895353189e6008c4e3121eaf069fd26e075ee5b8d6287ecd01617580ad8ce9"
           }
         },
-        "manifest_digest": "0c6ead12d2cc6de8d178f7288044e48cb94553a505495bd10d9b70ea9bc926f1"
+        "manifest_digest": "18b0819a17cb6472e719ca7319538556c2f4f82aa69dadc9eb034db836df4629"
       }
     },
     "merge-gate-review": {
@@ -269,7 +269,7 @@
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "1b2c0adf20739d3f61fcc73ff9a07703a4ee94fd610cbc19f681e72fa4f6dae2",
+          "engine_inputs_digest": "724f30c30315d907f306edac11193b85fb276981a17bd071607e9bcba8c0b7ab",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -307,7 +307,7 @@
             "digest": "7339f11f7a663ddfcc102bd62d1c64da0abba8d2f44e3ab072ae59ccad2f8352"
           }
         },
-        "manifest_digest": "38a240a837dcf1ff79c67c1c47f93d0589d484f37c7cfe8dcd2c6095882c11b2"
+        "manifest_digest": "26522d8ae7fabd58f47bf73c4671317daa2fb71fb40bd763d78db18b10088b51"
       }
     },
     "qart-analysis": {
@@ -346,7 +346,7 @@
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "7b80b7d0e1680992aff8f5653a7891d29c0e3bab216d368c98abac65abea2326",
+          "engine_inputs_digest": "6644bc938fdd2027d3b6e3d8261356621b442c73fb66892b7039d7fb7046664f",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -384,7 +384,7 @@
             "digest": "c48cd5b6344d7055423d55c829d104bc815675dfd540e1c83c7e814c4d7d367d"
           }
         },
-        "manifest_digest": "b504cba8c69f45e20979a7465793754669f8369b15ad7077cc4a379be18c18c1"
+        "manifest_digest": "4edc0e67026d6455e6eb21cc87e5bea5fed07828a2ff253bf9e86690e8cd6ee1"
       }
     },
     "qats-analysis": {
@@ -423,7 +423,7 @@
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "1ec81e0d8a023085562e206dd0c2a6ef5ca256d53ea03c3ecf9c6dda3a7c685e",
+          "engine_inputs_digest": "8a7349d5fda28030268f0fb2ccae8a837b0a2a8625000a7038dc0ee84072b250",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -461,7 +461,7 @@
             "digest": "c48cd5b6344d7055423d55c829d104bc815675dfd540e1c83c7e814c4d7d367d"
           }
         },
-        "manifest_digest": "8e8ef42933be3e38c7c9aeea5e6ca15575dbbfcc55e5260987ffc319c9e3d138"
+        "manifest_digest": "b22f3e9b0d3ff7183fd1ed029876c2b1d4a05f187469c57df62dff5435e7f7dd"
       }
     }
   }
