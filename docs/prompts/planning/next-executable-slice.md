@@ -8,7 +8,7 @@ Do **not** use this prompt for raw notes or discussions — use [classify and ro
 
 Compact invocation:
 
-> Select the next bounded implementation slice for **[PROJECT / EPIC]**: rank candidates by containment, dependency leverage, milestone value, readiness, and risk; define one slice with outcome, scope, non-goals, validation, and acceptance criteria; and return an issue-ready version plus the final decision.
+> Select the next bounded implementation slice for **[PROJECT / EPIC]**: rank candidates by containment, verified cost of delay (including recurring spend and near-term revenue), dependency leverage, milestone value, readiness, and risk; define one slice with outcome, scope, non-goals, validation, and acceptance criteria; and return an issue-ready version plus the final decision.
 
 ```markdown
 # Next Executable Slice
@@ -53,14 +53,15 @@ Do not select work merely because it is easy, old, or already partially coded.
 Rank candidate slices by:
 
 1. active security, correctness, release, or data-loss containment;
-2. dependency leverage and work unblocked;
-3. contribution to the current milestone;
-4. readiness of requirements, contracts, and acceptance criteria;
-5. ability to deliver a verifiable vertical outcome;
-6. change risk, reversibility, and reviewability;
-7. effort relative to milestone value.
+2. verified avoidable recurring expenses, near-term revenue or credit loss, billing deadlines, and time-to-savings, weighed against safe cutover readiness;
+3. dependency leverage and work unblocked;
+4. contribution to the current milestone;
+5. readiness of requirements, contracts, and acceptance criteria;
+6. ability to deliver a verifiable vertical outcome;
+7. change risk, reversibility, and reviewability;
+8. effort relative to milestone value.
 
-Use the repository-global P0–P3 priority from `CONTRIBUTING.md`. Blocking is a status, not a reason to demote priority.
+Use the repository-global P0–P3 priority and [financial impact/cost-of-delay guardrail](../../../CONTRIBUTING.md#financial-impact-and-cost-of-delay-guardrail) from `CONTRIBUTING.md`. When costs are material, capture the billed baseline, expected net savings, urgency, one-time cutover cost, and billing-cessation evidence; do not invent figures. Blocking is a status, not a reason to demote priority.
 
 ## Slice rules
 
