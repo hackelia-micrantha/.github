@@ -201,7 +201,7 @@ historically valid signature / ciphertext / proof
   != current authorization
 ```
 
-Each project must define retention, archival, compromise, destruction, and historical-verification semantics appropriate to its protocol and recovery model.
+Each project must define retention, archival, compromise, destruction, and historical-verification semantics appropriate to its protocol and recovery model. Profile rejection governs operations that *use* cryptographic algorithms; it must not automatically forbid independently authorized lifecycle cleanup by stable key handle, such as revocation or destruction. If the provider or key material is unavailable, record an indeterminate or failed cleanup result rather than claiming successful erasure.
 
 Research basis:
 
@@ -426,7 +426,7 @@ Material cryptographic lifecycle events should preserve bounded non-secret evide
 - key handle or opaque identity, not raw key;
 - actor/requester;
 - policy/approval reference where required;
-- operation or lifecycle transition type: generate, wrap, unwrap, rewrap, rotate, algorithm/profile transformation, provider/custody migration, revoke, destroy, recover; distinguish rotation from profile or custody changes and bind every transition to the old/new key-instance and profile/provider identities;
+- operation or lifecycle transition type: generate, wrap, unwrap, rewrap, rotate, algorithm/profile transformation, provider/custody migration, revoke, destroy, recover; distinguish rotation from profile or custody changes; bind migrations to old/new key-instance and profile/provider identities and bind revocation/destruction to the exact target key handle and verified disposition;
 - result and verifier;
 - timestamp/epoch;
 - implementation/configuration revision.
@@ -453,8 +453,9 @@ Refresh focused analysis when a change affects:
 
 Where applicable, test:
 
-- unsupported profile rejection for every operation; for retired profiles, reject new/forward commitments (including creation, encryption, and signing), while allowing only explicitly policy-authorized, bounded historical consumer operations such as verification or decryption;
-- positive historical verification/decryption cases bound to the exact archived artifact, key instance, profile and retention policy, alongside a negative case rejecting new commitments with that same retired profile;
+- reject unsupported profiles for cryptographic-use operations (including creation, signing, encryption, verification, and decryption); reject new/forward commitments under retired profiles, while allowing only explicitly policy-authorized, bounded historical verification/decryption where the necessary implementation remains supported; do not make profile support a prerequisite for separately authorized revoke/destroy by stable key handle;
+- positive historical verification/decryption cases bound to the exact archived artifact, key instance, profile and retention policy, alongside negative cases rejecting new commitments with that retired profile and all cryptographic use of truly unsupported profiles;
+- authorized revoke/destroy of a retired or unsupported-profile key by stable handle, including rejection of unauthorized cleanup, missing-provider/key failure, and no false successful erasure claim;
 - algorithm/profile transformation and provider/custody migration evidence binding old/new identities, authorization, result and rollback or recovery disposition;
 - downgrade resistance;
 - stale key/profile replay;
