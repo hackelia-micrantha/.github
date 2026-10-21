@@ -41,7 +41,7 @@ CI evidence is revision- and composition-specific:
 - validation may transfer across a transformation only when the [branching and integration standard](branching-and-integration.md) permits an explicit mechanically verifiable validation-equivalence contract for that evidence class;
 - release/deployment evidence remains distinct from merge evidence.
 
-Where exact-revision validation is required and no applicable validation-equivalence contract exists, the exact accepted revision must itself be validated before it can be treated as a golden admitted state. Provider convenience or a green PR-head check does not weaken that requirement.
+Where exact-revision validation is required and no applicable validation-equivalence contract exists, the exact intended accepted revision must be validated **before the protected destination is updated**. If the provider synthesizes a result only while updating `main`, use a prevalidated reviewable merge-queue/test-merge candidate whose exact result identity is preserved, or establish an explicit mechanically verifiable equivalence proof before the mutation; otherwise the merge method is ineligible. Do not admit an unvalidated revision to `main` and then merely withhold its `golden` label if validation fails. Provider convenience or a green PR-head check does not weaken this pre-admission gate.
 
 Where concurrent pull requests can make a previously tested candidate stale, prefer merge-queue or equivalent exact-candidate validation rather than assuming independently green branches compose safely.
 
