@@ -41,7 +41,7 @@ Where applicable, bind:
 
 - destination branch and repository;
 - admitted candidate identity;
-- resulting accepted commit/tree identity when the merge method synthesizes a different revision;
+- resulting accepted **commit SHA** when the merge method synthesizes a different revision, with the tree SHA recorded additionally when useful (equal trees can have different parents, commit metadata, and admission properties);
 - admission/merge method;
 - required review evidence;
 - required validation/CI evidence;
@@ -145,7 +145,7 @@ Use:
 
 The [independent-review contract](../governance/independent-review.md) is authoritative for review equivalence and exceptions.
 
-A synthesized merge/squash revision is **not** automatically covered by independent review of a different pre-merge head. When exact-head review applies, use a merge/admission method that preserves the reviewed revision or obtain review of the final accepted revision unless the independent-review contract itself explicitly permits the bounded transformation.
+A synthesized merge/squash revision is **not** automatically covered by independent review of a different pre-merge head. When exact-head review is required, independently review the actual final accepted revision **before advancing the protected branch**, or choose an admission method that preserves the independently reviewed exact commit. Only the explicitly scoped, mechanically bounded follow-up exception in the [independent-review contract](../governance/independent-review.md) can permit an otherwise different final revision, with its reviewed ancestor and proof recorded before admission. A hosted operation that creates an unpredictable squash/merge SHA only when updating `main` cannot satisfy pre-admission exact-revision review by reviewing that result afterwards; use an alternative reviewable method or do not admit the change.
 
 This branching standard does not create an additional review-equivalence bypass.
 
@@ -159,11 +159,11 @@ When repository policy requires exact-revision validation, use one of:
 - a merge method that preserves the already validated candidate identity; or
 - a repository-governed validation-equivalence contract that is mechanically verifiable and explicitly scoped to the affected evidence class.
 
-A validation-equivalence contract must bind the relevant candidate/base/result identities and prove that the transformation cannot alter the behavior the reused validation was intended to establish. At minimum consider tree identity, parent/base identity, workflow/configuration inputs, generated artifacts, and any metadata that can affect build/test/release behavior. Record the proof in the admission evidence.
+A validation-equivalence contract must bind the relevant candidate/base/result **commit SHAs** (tree SHA alone is insufficient) and prove *before protected-branch admission* that the bounded transformation cannot alter the behavior the reused validation was intended to establish. At minimum consider tree identity, parent/base identity, workflow/configuration inputs, generated artifacts, and any metadata that can affect build/test/release behavior. Record the proof in the admission evidence; where the provider cannot prove the exact intended result before mutation, reject that merge method for the affected gate.
 
 Validation equivalence does **not** satisfy independent-review requirements unless the independent-review contract separately says so.
 
-If neither exact validation nor an applicable governed validation-equivalence proof exists, the synthesized revision is ineligible for golden admission.
+If neither exact-result validation nor an applicable governed validation-equivalence proof is established **before changing `main`**, the synthesized revision is ineligible for merging/admission to that protected line. Do not merge first and merely withhold a subsequent `golden` label: the required evidence is an admission gate, not a post-merge audit.
 
 Do not choose a merge method solely to make history visually linear if doing so obscures material integration provenance.
 
