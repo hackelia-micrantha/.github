@@ -52,8 +52,8 @@ Release notes should describe externally meaningful outcomes rather than reprodu
 
 Apply the [branching and integration standard](branching-and-integration.md).
 
-- `main` is the organization-default golden integration line; a commit on `main` is accepted integrated source but is not automatically a stable release.
-- Stable releases normally identify source commits reachable from `main` whose accepted source state is traceable to the reviewed/validated admission candidate, unless a documented maintenance branch owns that supported release line.
+- `main` is the organization-default authoritative integration line, but reachability/presence on `main` does **not** by itself establish that an individual commit was accepted through a recorded admission event. Only a specifically admitted commit, identified by its exact accepted SHA and required pre-admission review/validation evidence, qualifies as golden integrated source; no golden state automatically becomes a stable release.
+- Stable releases normally identify **explicitly admitted source commits** on the supported `main` line, with immutable admission identity and verified review/validation evidence; mere reachability, tree equivalence, or presence as intermediate integrated ancestry is insufficient. A documented maintenance branch may own a separate admitted supported release line.
 - Protect or restrict release tags according to repository risk.
 - Use annotated or signed tags when authenticity requirements justify them.
 - Do not move or overwrite published stable tags.
