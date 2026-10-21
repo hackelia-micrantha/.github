@@ -250,6 +250,23 @@
       ]
     },
     {
+      "repository": "hackelia-micrantha/envuscator-web",
+      "classification": "service",
+      "maturity": "incubating",
+      "visibility": "private",
+      "defaultBranch": "main",
+      "archived": false,
+      "monitor": true,
+      "authority": [
+        "private Envuscator licensing and entitlement policy service",
+        "entitlement-authorized private immutable-engine delivery"
+      ],
+      "requiredFiles": [
+        "README.md"
+      ],
+      "notes": "Customer build source, configuration and generated artifacts remain on customer-controlled runners; public product/docs/verification authority belongs to envuscator-community."
+    },
+    {
       "repository": "hackelia-micrantha/envuscator-community",
       "classification": "community-surface",
       "maturity": "incubating",
