@@ -219,7 +219,7 @@ Separate opportunities that advance the current milestone from speculative futur
 Use the Micrantha organization priority model:
 
 - **P0 — interrupt:** active work must be displaced because a critical capability, security boundary, release path, or required validation gate is broken or dangerously exposed.
-- **P1 — next:** belongs in the small next-up queue because it unlocks the current milestone, removes a high-leverage dependency, or closes a significant security or operability gap.
+- **P1 — next:** belongs in the small next-up queue because it unlocks the current milestone, prevents verified near-term financial loss, enables near-term revenue, removes a high-leverage dependency, or closes a significant security or operability gap.
 - **P2 — planned:** important, groomed work that should not displace the current P0/P1 queue.
 - **P3 — later / explore:** valid but uncommitted, exploratory, duplicated, or insufficiently defined work.
 

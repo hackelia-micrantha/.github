@@ -26,6 +26,16 @@ Use for `review PR`, `review this change`, or before a merge-readiness decision 
 7. Reconcile unresolved review threads and identify scope that should be split rather than accepted as review debt.
 8. Produce findings ordered by severity/merge impact with concrete evidence and remediation.
 
+## External review publication
+
+When preparing **substantive findings for a third-party repository**, follow the [canonical external-comment standard](../../docs/engineering/external-contribution-comments.md) before submitting inline comments or a review summary.
+
+- Lead each independently actionable finding with a brief, accurate plain-language explanation of the failure mode; follow with exact code/contract evidence, impact, and a bounded fix or test.
+- A grouped review summary may share one opening; avoid repetitive boilerplate across inline comments. Approvals with no findings and administrative replies need no ELI5 section.
+- Keep private review notes and internal repository reviews in their existing format unless explicitly requested otherwise.
+- Check the upstream project's review conventions and existing threads before commenting. Do not claim tests were executed without independent evidence.
+- This is a **format/review preflight only**. Posting remains subject to the mutation boundary below; reading this skill never authorizes external publication.
+
 ## Mutation boundary
 
 Read-only by default. Do not push fixes, resolve threads, modify labels, or merge unless explicitly authorized.

@@ -44,6 +44,13 @@ class PromptManifestTests(unittest.TestCase):
         ]
         self.assertEqual([], missing, f"README does not link manifest prompts: {missing}")
 
+    def test_local_workspace_prompt_is_registered(self) -> None:
+        entries = dict(self._entries())
+        self.assertEqual(
+            "planning/local-workspace-hygiene.md",
+            entries.get("local-workspace-hygiene"),
+        )
+
     def test_compound_review_is_registered(self) -> None:
         entries = dict(self._entries())
         self.assertEqual("reviews/compound-review.md", entries.get("compound-review"))

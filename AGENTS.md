@@ -8,6 +8,18 @@ Whenever a reusable engineering prompt or skill is selected, also apply the [Mic
 
 Resolve a defined project before assuming repository scope, expand only the project graph required by the task, and preserve repository-local implementation, security, release, and operational authority. The overlay changes scope resolution only; it does not grant mutation or effect authority.
 
+## Interactive ChatGPT / Work bootstrap
+
+For substantial Micrantha/Ryjen engineering performed through ChatGPT or Work, load and apply the current [ChatGPT Supervisor operating profile](docs/engineering/chatgpt-supervisor-operating-profile.md) as the interactive bootstrap before executing repository work.
+
+The profile does not replace this file, repository-local guidance, or the normative execution contracts. It tells interactive hosted sessions how to discover and compose them, refresh authoritative state, use GitHub/Desktop Commander appropriately, and continue bounded review/fix/verify loops without repeated generic continuation prompts.
+
+If the profile cannot be read from authoritative repository state and that absence is material to the task, do not substitute remembered copies as if they were current.
+
+## Local workspace default
+
+For local Git work, apply [local Git workspace and concurrency](docs/standards/local-git-workspaces.md): prefer a single primary checkout per repository with task-specific linked worktrees beneath `<primary>/.worktrees/`. Isolate concurrent writers and mutable build state; never infer that a clean checkout or merged-looking branch is disposable. Use the [local workspace hygiene prompt](docs/prompts/planning/local-workspace-hygiene.md) for local cleanup or setup.
+
 ## Intent-based skill selection
 
 Select the most specific applicable skill from [`skills/`](skills/) from operator intent and current authoritative repository state. Do not require the operator to name a skill when the intent clearly matches one.

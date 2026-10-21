@@ -6,8 +6,17 @@ These standards define organization-wide defaults for engineering evidence, secu
 
 - [Testing and validation](testing.md)
 - [CI/CD](ci-cd.md)
+- [Branching and integration](branching-and-integration.md)
+- [Local Git workspace and concurrency](local-git-workspaces.md) — one canonical checkout, isolated worktrees, evidence-gated cleanup
 - [Security engineering](security.md)
+  - [Cryptographic survivability](cryptographic-survivability.md)
+  - [AI agent insider threat and cumulative exposure](agent-insider-threat.md)
+- [Observability](observability.md) — standards-first telemetry, privacy/measurement, opt-out, composability, and offline compatibility
+- [Observability profile v1](observability-profile-v1.md) — minimal cross-project interoperability profile
 - [Source exposure and distribution](source-exposure-and-distribution.md)
+- [Repository bootstrap](repository-bootstrap.md) — explicit unresolved/resolved/not-applicable decisions for assumption-free new-repository automation
+- [Thin repository template](repository-template.md) — optional assumption-free GitHub creation transport and reference skeleton
+- [Configuration and executable-extension trust](configuration.md) — authority-aware configuration composition, executable provenance/identity, and governed plugin boundaries
 - [CLI interoperability](cli-interoperability.md) — normative process, machine/transport semantics, safety, and manual-page contract
 - [CLI design and UX](cli-design-and-ux.md) — user-facing tables, help, frameworks, extensions, and adoption without duplicating release authority
 - [Tool result trust and observation](tool-result-trust.md)
@@ -42,6 +51,7 @@ Exceptions do not authorize misleading maturity claims, weakened security bounda
 9. Treat externally influenced tool/connector/model content as data with preserved provenance; observations do not become authority by crossing an internal boundary.
 10. Separate authoring from validation: authoritative source changes enter history through explicit commits; CI verifies them rather than silently rewriting the revision under review.
 11. Treat source visibility and artifact distribution as explicit threat-model and product decisions; private source may raise attacker cost but must never be the control that makes an otherwise insecure design safe.
+12. Project-specific CI dependencies belong in repository-owned flakes; shared runner images remain minimal bootstrap substrates and are optimized against measured space and time budgets.
 
 ## Maturity relationship
 

@@ -81,6 +81,8 @@ State what exists now, what is missing or broken, and which claims are verified 
 
 Include only work required for the outcome. Exclude adjacent refactors, optional integrations, speculative abstractions, and future polish unless they are necessary for correctness or safety.
 
+For optimization issues, apply the [shared evidence-gated optimization guardrail](../README.md#shared-evidence-gated-optimization-guardrail): document the observed or contractual constraint, simplest sufficient option, evidence of value, and a reassessment trigger if deferred. Do not create issues solely for hypothetical future scale.
+
 ### 4. Dependencies and order
 
 Record:
@@ -114,7 +116,7 @@ Avoid criteria such as “code complete,” “works,” “tests added,” or �
 Use:
 
 - **P0 — interrupt** for an active critical break or dangerous exposure;
-- **P1 — next** for the small executable queue advancing the current milestone or closing a significant risk;
+- **P1 — next** for the small executable queue advancing the current milestone, avoiding verified near-term financial loss, enabling near-term revenue, or closing a significant risk;
 - **P2 — planned** for important groomed work that should not displace P0/P1;
 - **P3 — later / explore** for valid but uncommitted, exploratory, duplicated, or insufficiently defined work.
 

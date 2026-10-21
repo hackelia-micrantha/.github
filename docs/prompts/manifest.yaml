@@ -30,6 +30,30 @@ prompts:
     do_not_use_when: Diagnosing one concrete failing run (use ci-failure-triage); reviewing a product code PR without a workflow-architecture concern.
     output: workflow architecture summary, execution graph, redundancy matrix, performance findings, security/evidence findings, prioritized changes, human decisions, final assessment
 
+  - id: proceed
+    name: Proceed — Operator Continuation
+    file: planning/proceed.md
+    category: planning
+    use_when: The operator asks to proceed, continue, keep going, or resume an established non-trivial engineering run.
+    do_not_use_when: There is no reliably identified active task or the task is trivial; never infer consequential effect authority.
+    output: current exact state, verified transitions, active gates, next eligible action or precise blocker
+
+  - id: research-queue-to-projects
+    name: Research Queue to Projects — Continuous Reconciliation
+    file: research/research-queue-to-projects.md
+    category: research
+    use_when: Continue an established engineering research reading queue with evidence-led source review and bounded cross-project reconciliation.
+    do_not_use_when: No established queue exists and only general research discovery is requested; do not infer issue, tracker or deployment write authority.
+    output: source disposition, relevant project evidence and issue links, verified tracker state and safely advanced or blocked queue pointer
+
+  - id: update-issues
+    name: Update Issues — Evidence Reconciliation
+    file: issues/update-issues.md
+    category: issues
+    use_when: The operator asks to update/reconcile issues or to organize/simplify a project backlog; organize-only requests plan read-only unless writes were separately authorized.
+    do_not_use_when: The operator requests only a single-issue review (use issue-grooming), raw unfiled planning material (use classify-and-route), or an unrelated code/merge/deploy action.
+    output: verified issue changes when authorized, or a read-only Now/Next-Blocked/Deferred queue proposal with tracking evidence and next executable slice
+
   - id: next-executable-slice
     name: Next Executable Slice
     file: planning/next-executable-slice.md
@@ -37,6 +61,14 @@ prompts:
     use_when: A priority, issue, epic, or design needs conversion into one bounded implementation slice.
     do_not_use_when: Raw notes or discussions (use classify-and-route first); reviewing a PR.
     output: candidate comparison, selected slice with scope/non-goals/validation, issue-ready version, final decision
+
+  - id: local-workspace-hygiene
+    name: Local Workspace Setup and Cleanup
+    file: planning/local-workspace-hygiene.md
+    category: planning
+    use_when: Start isolated local Git work or reconcile duplicate checkouts and stale worktrees without disrupting concurrent agents.
+    do_not_use_when: A user only wants Git syntax or system-wide disk cleanup unrelated to local Git workspaces.
+    output: canonical checkout inventory, safe mutations and verification, preserved history, disk accounting, and protected residual work
 
   - id: long-running-agent-execution
     name: Long-Running Agent Execution
@@ -63,12 +95,12 @@ prompts:
     output: assessment, findings, recommended issue action, groomed issue body, epic addendum if applicable
 
   - id: qart-analysis
-    name: QART Decision Analysis
+    name: QART / QATS Decision Analysis
     file: decisions/qart-analysis.md
     category: decisions
-    use_when: A consequential choice has meaningful alternatives and unresolved trade-offs.
+    use_when: QART, QATS, or a decision matrix is requested for meaningful alternatives and unresolved trade-offs; QATS is a presentation alias of the same analysis.
     do_not_use_when: The decision is already made (use qart-to-adr); feasibility is unknown (run a spike first).
-    output: questions, alternatives, comparison, recommendation, trade-offs, decision readiness classification
+    output: questions, alternatives, shared comparison matrix, evidence-backed recommendation or conditional suggestions, trade-offs, decision readiness classification
 
   - id: rfc-development
     name: RFC Development

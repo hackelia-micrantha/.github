@@ -22,11 +22,12 @@ Use for `define the test strategy`, `review test gaps`, `prepare tests before im
 2. Build a project-appropriate test pyramid/layer model rather than mechanically requiring every layer.
 3. Put deterministic local behavior at unit/component level; protect public schemas/commands/formats with contract tests; exercise owned real boundaries with integration tests; keep end-to-end coverage focused on critical supported paths.
 4. Add negative/security, migration/rollback, compatibility, performance/capacity, and operational exercises only where concrete risk warrants them.
-5. Identify escaped-defect and boundary gaps; require bug fixes to add regression coverage at the lowest trustworthy layer and strengthen the layer that should have caught the escape.
-6. Define fixtures, isolation, determinism, external-dependency policy, flake handling, and test-data security.
-7. Integrate Testule where it can provide reusable test orchestration, fixtures, conformance, evidence capture, or failure injection without making projects depend on unnecessary central runtime authority.
-8. Ensure local canonical commands and CI gates exercise equivalent validation; distinguish required gates from advisory diagnostics.
-9. Define release validation against the packaged/installed artifact, not only the source tree.
+5. For security-sensitive or AI-assisted changes, use the [invariant-driven test-design prompt](../../docs/prompts/testing/invariant-driven-test-design.md) to distinguish accepted requirements from model-proposed cases; calibrate oracles with legitimate positive cases, deliberately violating cases, and independent effect observations rather than mock-only assertions.
+6. Identify escaped-defect and boundary gaps; require bug fixes to add regression coverage at the lowest trustworthy layer and strengthen the layer that should have caught the escape.
+7. Define fixtures, isolation, determinism, external-dependency policy, flake handling, and test-data security.
+8. Integrate Testule where it can provide reusable test orchestration, fixtures, conformance, evidence capture, or failure injection without making projects depend on unnecessary central runtime authority.
+9. Ensure local canonical commands and CI gates exercise equivalent validation; distinguish required gates from advisory diagnostics.
+10. Define release validation against the packaged/installed artifact, not only the source tree.
 
 ## Evidence
 
@@ -41,4 +42,5 @@ Complete when material requirements and risks have a named trustworthy validatio
 - `docs/standards/testing.md`
 - `docs/standards/ci-cd.md`
 - `docs/prompts/README.md` shared validation contract
+- `docs/prompts/testing/invariant-driven-test-design.md` — optional bounded test-design and oracle-calibration workflow
 - Testule project-local contracts and documentation when integration is proposed

@@ -146,6 +146,22 @@ A deterministic failed check is stronger evidence than contradictory reviewer co
 
 Where independent verification is required, independence is a trust property. Different persona names, sessions, or model aliases are insufficient by themselves.
 
+## Repository contribution-policy conformance
+
+A correct patch and a compliant contribution are **different claims**. Repository-owned rules can govern final artifacts (format, tests, commit metadata, disclosures) or **intermediate behavior** (required commands, approval order, prohibited effects). Checking only the final diff cannot establish the second class.
+
+Apply the smallest check at the boundary that owns the requirement:
+
+| Rule class | Verification owner | Evidence |
+| --- | --- | --- |
+| Code/test/style, commit and PR conventions | Repository tooling / CI | Exact candidate, diff, commit and PR metadata |
+| Required workflow steps or sequencing | CI / execution-evidence verifier | Attributable, sufficiently complete ordered action trace; absence of a trace is not proof of compliance |
+| Privileged filesystem, tool, network, or external effects | Dubnium runtime / Capability Gateway with Anthesis policy | Exact scoped grant, effect-time decision, runtime observations and receipt |
+
+Distinguish **applicable**, **satisfied**, **violated**, **not exercised**, and **unverifiable** when reporting policy evidence; do not score unobserved execution as a pass. Record the exact policy source revision, subject revision, check identity, evidence completeness, and any exceptions. Checkers derived from natural-language contributor rules require semantic review and positive/negative cases: deterministic execution does not establish faithful policy translation.
+
+The [SWE-CC study](https://arxiv.org/abs/2610.06193) found that functionally successful coding-agent contributions can violate repository rules, including during intermediate steps. This is motivation for independently verifiable controls, **not** evidence that Micrantha's current repository controls are broken or that every contribution rule needs an Anthesis authorization decision. Invokrum may convey exact-versioned guidance; it does not authorize or independently verify compliance.
+
 ## Risk-adaptive human review
 
 AI output volume can exceed human line-by-line review capacity. The response should be to allocate human attention by consequence, not to remove human accountability or claim that workflow automation guarantees quality.

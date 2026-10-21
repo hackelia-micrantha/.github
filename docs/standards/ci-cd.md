@@ -27,6 +27,22 @@ Native, platform, deployment, release, and end-to-end jobs should be added when 
 
 Change-aware gating is allowed when the classifier is tested, defaults safely, handles renames and generated files deliberately, and does not skip validation for unknown or shared-impact paths.
 
+## Branch and integration candidates
+
+Apply the [branching and integration standard](branching-and-integration.md).
+
+CI evidence is revision- and composition-specific:
+
+- topic-branch checks validate that topic candidate;
+- checks on a temporary integration branch validate the composed integration candidate;
+- component-branch success does not prove an integration branch when composition can change behavior;
+- final admission to `main` must satisfy the repository's required evidence for the exact accepted candidate;
+- release/deployment evidence remains distinct from merge evidence.
+
+Where concurrent pull requests can make a previously tested candidate stale, prefer merge-queue or equivalent exact-candidate validation rather than assuming independently green branches compose safely.
+
+A temporary integration branch may have stronger or additional composition-sensitive checks than its component branches. Stable publication must not acquire authority merely because CI ran on an integration branch.
+
 ## Workflow permissions
 
 Use least-privilege permissions at workflow and job scope. Default to read-only repository access and grant write capabilities only to the job that requires them.
@@ -123,6 +139,77 @@ CI commands should be runnable locally or in an equivalent documented environmen
 Micrantha repositories may use `mise` tasks as the standard entry point for formatting, linting, tests, builds, and release validation. Do not introduce `make` solely as an organizational requirement. Repository-local tools remain acceptable when commands and prerequisites are documented.
 
 Scripts should be bounded, tested where logic is material, and avoid becoming an undocumented second build system.
+
+## Flake-first CI and minimal runner substrate
+
+For active repositories with executable CI, the repository must own its CI/build/test environment through a Nix flake. Repositories with no executable CI surface may declare this requirement not applicable rather than adding a meaningless flake.
+
+The flake is the authoritative declaration of project-specific tooling and should expose stable CI entry points through checks, packages, apps, or—when a derivation is not a practical interface—a bounded CI development shell. Mise may remain the task and orchestration interface; the flake owns the reproducible environment in which those tasks execute.
+
+- Prefer `nix flake check`, `nix build .#...`, or explicit flake-owned apps/checks/packages over imperative toolchain installation in workflows.
+- Keep repository-specific compilers, SDKs, linters, formatters, browsers, generators, package managers, and test utilities in the project flake rather than the shared runner image when they can be represented reproducibly there.
+- Treat irreducible host or platform capabilities—such as an operating-system kernel, hardware/device access, vendor-controlled platform tooling, or host services required before the flake can take control—as explicit external CI inputs. Constrain and attest their identity/version where practical; do not treat them as ambient convenience dependencies.
+- Bind external flake inputs through `flake.lock` or an explicitly documented equivalent lock policy.
+- Keep local developer validation and CI on the same underlying flake contracts where practical.
+- Treat undeclared host or runner dependencies as reproducibility defects.
+- Do not turn a CI devShell into an unstructured ambient dependency bucket.
+
+The generic Dubnium runner image is a **bootstrap execution substrate**, not a shared distribution containing the union of project workloads. It should contain only capabilities required before or independently of project-flake evaluation and materialization, normally:
+
+- the GitHub Actions runner and runtime support required by the runner itself;
+- Nix;
+- Git;
+- CA certificates and bounded network bootstrap;
+- minimal shell/core bootstrap;
+- rootless container/isolation machinery;
+- controller/worker lifecycle hooks, resource and network policy enforcement, diagnostics, and cleanup.
+
+Project-specific dependencies belong outside the generic image unless a measured bootstrap constraint demonstrates that they must be substrate-owned.
+
+As a default classification rule: if checkout has completed and Nix can evaluate and materialize the repository flake before a tool is needed, that tool is presumptively a project/workload dependency rather than runner substrate. Exceptions require evidence that the capability is needed to obtain, evaluate, materialize, isolate, or execute the project environment itself, or is an irreducible platform capability that cannot be flake-owned.
+
+### Space and time budgets
+
+CI and runner performance should be evaluated across both storage/transfer cost and latency. Do not optimize wall-clock time while allowing persistent image, cache, store, or writable-layer growth to become invisible.
+
+For representative warm and clean/cache-miss runs, measure where observable:
+
+**Space**
+
+- compressed/pull image size;
+- unpacked image or closure size;
+- per-job writable-layer growth;
+- Nix store growth attributable to the job;
+- bytes downloaded or materialized;
+- cache/artifact storage growth and retention;
+- reclaimable bytes after cleanup or garbage collection.
+
+**Time**
+
+- queue/admission delay;
+- image availability or pull time;
+- worker/container startup latency;
+- checkout plus flake evaluation time;
+- Nix substitution/materialization time;
+- build/test critical-path execution time;
+- artifact/cache transfer time;
+- cleanup/worker teardown time;
+- end-to-end p50/p95 when enough comparable samples exist.
+
+Establish representative baselines before setting hard numeric budgets. Once evidence exists, prefer ratcheting regression thresholds over arbitrary universal limits.
+
+### Performance and trust invariants
+
+- Prefer immutable Nix derivation identity and trusted binary substitution over repeated builds.
+- Reuse immutable outputs rather than mutable workspaces.
+- Optimize cold-start and cache-miss behavior as well as warm steady state.
+- Minimize generic-image publication/adoption churn caused by project dependencies.
+- Avoid repeated flake evaluation/materialization across jobs when safe reuse is measurable.
+- Preserve intentionally independent validation when it provides distinct platform, trust-boundary, release, compatibility, or provenance evidence.
+- Bound cleanup so ephemeral jobs do not create monotonic disk growth.
+- Do not expose writable shared project state across mutually untrusted jobs.
+- Do not allow untrusted workloads to publish into a trusted binary cache.
+- Do not weaken runner isolation, required checks, or evidence quality merely to improve speed or image size.
 
 ## Concurrency and performance
 

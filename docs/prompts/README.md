@@ -2,6 +2,33 @@
 
 This directory contains reusable prompts for evidence-backed engineering review, planning, decision-making, delivery, and security work across Micrantha repositories and registered `ryjen/*` project surfaces.
 
+
+## Invokrum consumer pack
+
+The repository-root [`micrantha-prompt-pack.yaml`](../../micrantha-prompt-pack.yaml) is the initial **Micrantha Meta Prompt Pack** consumer surface for Invokrum. It does not replace this library or duplicate prompt prose: its overlays reference these canonical Markdown files directly.
+
+The currently declared workflow profiles are:
+
+- `classify-and-route`;
+- `issue-grooming`;
+- `engineering-artifact-review`;
+- `merge-gate-review` — PR review/fix/merge decision support; resolved instructions do not grant merge authority;
+- `qart-analysis` and `qats-analysis` — two profile names selecting the same canonical QART decision prompt, not separate workflows.
+
+Each profile deterministically composes the shared contracts in this README, the required [cross-project execution overlay](overlays/cross-project-execution.md), and exactly one workflow prompt. Live project/task evidence remains host/runtime input and does not become trusted prompt authority merely by being supplied to a model.
+
+The QART and QATS profiles resolve to identical instruction sources. The caller should express `QATS` in the task/invocation when QATS-ordered presentation is desired; selecting a profile alias alone does not inject a presentation-mode variable into the composed prompt.
+
+From a source checkout on a supported Invokrum host:
+
+```bash
+invokrum validate --pack ./micrantha-prompt-pack.yaml --profile issue-grooming
+invokrum inspect --pack ./micrantha-prompt-pack.yaml --profile issue-grooming --format json
+invokrum lock --pack ./micrantha-prompt-pack.yaml --profile issue-grooming > /tmp/micrantha-issue-grooming.lock
+```
+
+The pack uses exact repository revision plus Invokrum manifest/lock identity for source-checkout traceability. Immutable distribution should stage these exact canonical bytes into an `invokrum.pack-bundle/v1` candidate; generated bundle copies are release artifacts, not independently editable prompt sources. See [the pack-layout QART](../engineering/qart-micrantha-meta-prompt-pack.md).
+
 ## Cross-project execution overlay
 
 Every reusable prompt in this library applies the [Micrantha / Ryjen cross-project execution overlay](overlays/cross-project-execution.md) unless the prompt explicitly documents a narrower or incompatible scope rule.
@@ -16,15 +43,19 @@ The overlay composes with, and does not weaken or duplicate, the shared executio
 | --- | --- | --- |
 | `status?` | [Project status refresh](project-review/status-refresh.md) | A trustworthy baseline exists and the goal is to identify material changes and next work |
 | `review the project` | [Comprehensive project status review](project-review/comprehensive-status-review.md) | The implementation, architecture, maturity, or backlog needs broad reconciliation |
+| `continue research` / `review reading queue` | [Research queue to projects](research/research-queue-to-projects.md) | Review the next tracked source across relevant projects, reconcile authorized issues/docs, and safely advance a source-keyed queue pointer only with an atomic/single-writer gate |
 | `review this research paper` | [Research paper relevance review](research/research-paper-relevance-review.md) | A paper, preprint, technical report, benchmark paper, or academic result may affect Micrantha architecture, security, governance, runtime, tooling, or roadmap |
 | `review to fix or merge` | [Pull-request merge-gate review](pull-requests/merge-gate-review.md) | A pull request needs a concrete merge, fix, block, or close decision |
 | `check CI to fix or merge` | [CI failure triage and repair](ci/ci-failure-triage.md) | A workflow or required check is failing, flaky, cancelled, or unexpectedly skipped |
 | `review CI workflows` | [CI/CD workflow architecture review](ci/ci-workflow-review.md) | CI/CD design needs review for performance, redundant computation, runner efficiency, evidence quality, security, or maintainability |
 | `classify this work` | [Classify and route engineering work](planning/classify-and-route.md) | Raw notes or mixed planning material must become the minimum responsible artifact set |
 | `what is next?` | [Next executable slice](planning/next-executable-slice.md) | A priority, issue, epic, or design needs conversion into one bounded implementation slice |
+| `proceed` / `continue` / `keep going` | [Proceed — operator continuation](planning/proceed.md) | Continue the current authorized engineering task from refreshed evidence without restarting or widening authority |
+| `update issues` / `sync tracking` | [Update issues — evidence reconciliation](issues/update-issues.md) | Reconcile and mutate bounded issue tracking against current implementation, PRs, CI, reviews, and acceptance criteria |
+| `clean local workspaces` / `start isolated task` | [Local workspace hygiene](planning/local-workspace-hygiene.md) | Minimize duplicate checkouts while isolating concurrent agents and preserving unique work |
 | `proceed in loops` / `run this to completion` | [Long-running agent execution](planning/long-running-agent-execution.md) | A non-trivial task should continue through review, repair, validation, and gated-effect cycles without repeated continuation prompts |
 | `make this issue well groomed` | [Issue grooming](issues/issue-grooming.md) | An issue or small backlog needs an observable outcome, scope, acceptance criteria, and priority |
-| `do QART` | [QART decision analysis](decisions/qart-analysis.md) | Alternatives and trade-offs remain open |
+| `do QART` / `do QATS` / `decision matrix` | [QART / QATS decision analysis](decisions/qart-analysis.md) | Alternatives and trade-offs remain open; QATS emphasizes suggestions without changing decision authority |
 | `draft an RFC` | [RFC development](decisions/rfc-development.md) | A consequential proposal may require broad review or cross-boundary coordination |
 | `convert this to an ADR` | [QART-to-ADR conversion](decisions/qart-to-adr.md) | A decision is sufficiently understood to become authoritative |
 | `review this artifact` | [Engineering artifact review](reviews/engineering-artifact-review.md) | A QART, RFC, ADR, specification, design, plan, epic, or issue needs critical review |
@@ -75,6 +106,32 @@ All prompts in this library use the following decision rule:
 
 The goal is not to maximize questions. It is to prevent plausible but materially different interpretations from being converted into confident findings, decisions, priorities, or mutations.
 
+## Shared named-value and enum guardrail
+
+For software implementation, refactoring, and code review, **do not introduce unexplained magic values**: inline strings, numbers, sentinel values, flags, tokens, timeouts, retry counts, thresholds, sizes, status codes, or other literals whose meaning affects behavior, security, compatibility, or maintenance.
+
+1. **Prefer enums or idiomatic closed union/sum types** for a finite set of related domain values (states, modes, actions, results, error categories) over scattered string or numeric discriminators. Prefer exhaustive handling when the language supports it.
+2. **Otherwise use named, typed constants/defines** with clear meaning and units, owned at the narrowest useful scope. Centralize genuinely shared values rather than duplicating them. Treat environment-specific values as validated configuration, not compiled-in constants.
+3. **Protect external contracts.** Preserve required wire/API/database/protocol values through explicit mappings; test serialization, compatibility, and invalid/unknown inputs. Do not impose a closed enum on an extensible external vocabulary without an explicit forward-compatible unknown-value strategy.
+4. **Avoid ceremonial abstractions.** Obvious language idioms (such as `0`, `1`, `true`, `false`, `null`), local arithmetic, and expressive test data can remain inline where naming would impair clarity. This is not a ban on all literals or a quota for constants and enums.
+5. **Review the semantics.** Flag unexplained or repeated domain literals when they create concrete drift, correctness, security, or maintainability risk. Verify replacements preserve behavior, units, defaults, and compatibility rather than requesting mechanical extraction.
+
+## Shared evidence-gated optimization guardrail
+
+For software, architecture, infrastructure, CI/CD, and engineering review work, prefer the simplest correct, secure, maintainable solution that meets accepted requirements and credible near-term constraints. Optimization is not an independent objective.
+
+Before adding caches, parallelism, pooling, configurable machinery, generalized abstractions, services, or other performance/scale mechanisms:
+
+1. **Identify the constraint.** Name the observed bottleneck, explicit resource/performance contract, proven algorithmic limit, or credible near-term risk. Separate measurement from hypothesis.
+2. **Use proportionate evidence.** Prefer representative profiles, timings, budgets, operational observations, contract limits, or sound complexity analysis. Do not demand benchmark machinery for obvious low-risk simplifications or removal of redundant work.
+3. **Compare simpler options.** Include the status quo and the smallest sufficient change, such as doing less work, reusing an existing mechanism, or improving an algorithm before adding state or infrastructure.
+4. **Count lifecycle costs.** Consider correctness, security/attack surface, dependencies, failure modes, migrations, testing, observability, storage, compute, and ongoing ownership. Never weaken required validation or trust boundaries for speed.
+5. **Define proof and reassessment.** State how the change will be validated relative to the constraint and what would justify revisiting it, including rollback where material.
+
+Choose **Keep**, **Simplify**, **Optimize**, or **Defer**. If an optimization lacks a justified constraint or credible evidence, default to deferral with a concrete reassessment trigger *only when the potential need is real*; do not create speculative issues as placeholders.
+
+Proactive work is appropriate for known security/correctness requirements, explicit performance or capacity contracts, demonstrated asymptotic limits, or a credible near-term change whose later migration cost is materially greater. An active incident is not required. This is a risk-shaped review heuristic, **not** a blanket benchmark quota, mandatory scoring framework, or automatic merge blocker. In review and execution loops, check for drift from the requested outcome, repeated non-convergent optimization (swirl), duplicated mechanisms, and retained superseded complexity.
+
 ## Shared validation and static-analysis contract
 
 For prompts that plan, implement, review, merge, complete, or release software, verify validation as a layered system rather than a generic “tests pass” claim.
@@ -93,7 +150,7 @@ Use the organization [testing standard](../standards/testing.md) and [CI/CD stan
 All prompts follow [`CONTRIBUTING.md`](../../CONTRIBUTING.md):
 
 - **P0 — interrupt:** active work must be displaced because a critical capability, security boundary, release path, or required validation gate is currently broken or dangerously exposed.
-- **P1 — next:** a small executable next-up queue that materially unlocks the current milestone or closes a significant risk.
+- **P1 — next:** a small executable next-up queue that materially unlocks the current milestone, prevents verified near-term financial loss, enables near-term revenue, or closes a significant risk. Apply the [financial cost-of-delay guardrail](../../CONTRIBUTING.md#financial-impact-and-cost-of-delay-guardrail) without automatically promoting ordinary recurring bills to P0.
 - **P2 — planned:** important and groomed work that does not displace P0/P1.
 - **P3 — later / explore:** valid but uncommitted, exploratory, duplicated, or insufficiently defined work.
 
@@ -108,7 +165,7 @@ Use the smallest artifact that resolves the uncertainty or delivers the outcome:
 | Observable implementation outcome | Specialized bug, feature, or security issue; otherwise an engineering delivery slice |
 | Coordination across bounded child work | Epic or plan |
 | Unknown feasibility or evidence | Spike or investigation |
-| Alternatives and trade-offs remain open | QART analysis |
+| Alternatives and trade-offs remain open | QART analysis (QATS alias) |
 | A proposal needs broader review | RFC |
 | A decision is understood and should become authoritative | ADR |
 | Normative behavior or conformance boundary | Specification |

@@ -2,12 +2,16 @@
 
 Use this prompt when an architectural, product, security, operational, or repository-boundary choice has meaningful alternatives and unresolved trade-offs.
 
+**QART** (Questions, Alternatives, Recommendation, Trade-offs) and **QATS** (Questions, Alternatives, Trade-offs, Suggestions) are aliases for one decision-analysis framework. They share one evidence-backed comparison matrix, decision-readiness rules, prompt, skill, and canonical QART artifact. QATS is an exploratory presentation of the same analysis, not a second workflow or a weaker decision standard.
+
 Do **not** use this prompt when the decision is already made — use [QART-to-ADR conversion](qart-to-adr.md) to record it. Do **not** use it when feasibility is unknown — run a bounded spike first.
 
 ```markdown
-# QART Decision Analysis
+# QART / QATS Decision Analysis
 
-Perform a QART analysis for **[DECISION / PROBLEM]** in **[PROJECT / REPOSITORY / SYSTEM]**.
+Use the same canonical decision model for either invocation. In a QART response, present the evidence-backed Recommendation and then Trade-offs. In a QATS response, present Trade-offs and then Suggestions; suggestions can include the supported recommendation, conditional options, or the smallest evidence-gathering step. In both cases retain the comparison matrix, confidence, decision readiness, and follow-up obligations. A suggestion or recommendation never authorizes or records an accepted decision.
+
+Perform a QART / QATS decision analysis for **[DECISION / PROBLEM]** in **[PROJECT / REPOSITORY / SYSTEM]**.
 
 QART means:
 
@@ -56,6 +60,8 @@ For each question include:
 Cover applicable:
 
 - desired outcome and success criteria;
+- expected observable consequences and what evidence would support or weaken them;
+- material assumptions, review windows, thresholds, or events that could change the recommendation;
 - functional and non-functional requirements;
 - invariants and compatibility obligations;
 - users, operators, maintainers, and threat actors;
@@ -89,9 +95,12 @@ For each alternative describe:
 - failure modes;
 - reversibility;
 - effort and dependency implications;
-- evidence supporting or weakening it.
+- evidence supporting or weakening it;
+- expected observable consequences where meaningful, including what would falsify or materially weaken the alternative.
 
 Do not include straw alternatives merely to make the recommendation appear stronger.
+
+For optimization decisions, apply the [shared evidence-gated optimization guardrail](../README.md#shared-evidence-gated-optimization-guardrail). Distinguish observed or contractual constraints from hypothetical demand, compare the status quo and simplest viable alternative, and make added lifecycle complexity and reassessment triggers explicit.
 
 ## 3. Evaluation
 
@@ -109,7 +118,11 @@ Compare alternatives against explicit criteria. Use only criteria material to th
 - reversibility and future flexibility;
 - consistency with project maturity and strategy.
 
+Use one comparison matrix with decision-relevant criteria as rows and viable alternatives as columns. Include the status quo when viable; explain material evidence gaps and confidence in the accompanying cells or prose. Do not add criteria merely to fill a fixed matrix.
+
 Qualitative comparison is preferred over false-precision scoring. When using ratings, explain the evidence behind them.
+
+For decisions with meaningfully observable outcomes, define how the important decision hypotheses could be reviewed later. Do not require probabilities, metrics, or instrumentation when they would create artificial precision. Distinguish an observed later outcome from evidence that the decision caused that outcome.
 
 ## 4. Recommendation
 
@@ -122,6 +135,8 @@ The recommendation must state:
 - what evidence supports it;
 - what risks remain;
 - what would invalidate or change the recommendation;
+- expected observable outcomes or an explicit statement that they are not meaningfully measurable;
+- the review date, event, threshold, or other trigger for revisiting material assumptions where applicable;
 - whether the choice is reversible;
 - the smallest next action.
 
@@ -155,6 +170,8 @@ Classify the result:
 
 ## Required output
 
+These headings specify required **content**, not a universal display order. For QART, use the A–J sequence below. For QATS, retain the same content but present **H. Trade-offs and consequences before F. Suggestions**, followed by G. Expected outcomes and review plan, I. Decision readiness, and J. Follow-up work. Keep the evidence-backed recommendation or explicit deferral and its confidence when applicable. Do not drop sections merely because the QATS presentation order differs.
+
 ### A. Decision statement
 
 One precise sentence describing the decision to make.
@@ -179,19 +196,31 @@ Provide complete, non-straw alternatives.
 
 Add prose where a table would hide important nuance.
 
-### F. Recommendation
+### F. Recommendation (QART) / Suggestions (QATS)
 
-State the preferred choice, rationale, confidence, invalidation conditions, and smallest next action.
+State the preferred choice, rationale, confidence, invalidation conditions, and smallest next action. In QATS, clearly distinguish evidence-backed advice from conditional suggestions and unresolved questions; do not imply that suggestions are accepted decisions.
 
-### G. Trade-offs and consequences
+### G. Expected outcomes and review plan
+
+For decisions whose consequences can be meaningfully observed, state:
+
+- the key hypothesis or expected consequence;
+- evidence that would support or weaken it;
+- material assumptions;
+- the review date, event, threshold, or other trigger;
+- what would cause the decision to be retained, amended, or superseded.
+
+If this would create artificial measurement or false precision, state **Not meaningfully measurable** and explain why.
+
+### H. Trade-offs and consequences
 
 List accepted costs, remaining risks, operational obligations, migration effects, and reassessment triggers.
 
-### H. Decision readiness
+### I. Decision readiness
 
 Choose one readiness classification and identify the appropriate next artifact or implementation slice.
 
-### I. Follow-up work
+### J. Follow-up work
 
 Separate:
 

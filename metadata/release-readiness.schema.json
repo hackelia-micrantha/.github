@@ -13,6 +13,7 @@
   ],
   "properties": {
     "schemaVersion": {"const": 1},
+    "phase": {"enum": ["prestage", "release"]},
     "repository": {
       "type": "string",
       "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$"
