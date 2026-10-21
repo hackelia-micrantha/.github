@@ -285,7 +285,7 @@ A valid crypto-erasure claim must identify:
 - which key material is required;
 - which copies/escrow/recovery paths exist;
 - whether an attacker could already possess the plaintext or usable key;
-- what evidence establishes key destruction or revocation;
+- what independently verifiable custody evidence establishes destruction or irreversible inaccessibility of required key material across all capable decryption/recovery paths; application-level revocation or authorization denial alone is not crypto-erasure evidence;
 - what backups retain historical key material.
 
 Do not claim physical erasure of arbitrary ciphertext copies.
