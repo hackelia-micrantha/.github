@@ -55,7 +55,6 @@ These repositories are associated with reviewed current projects or shared infra
 | `outermesh-web` | private | `master` | no | Web surface associated with the registered Outermesh project; auxiliary topology/monitoring contract still requires review. |
 | `fortunes-service` | private | `main` | no | Candidate Fortunes service component; reconcile against canonical Fortunes composition. |
 | `fortunes-cli` | private | `master` | no | Candidate Fortunes CLI/adapter; reconcile before monitoring. |
-| `envuscator-web` | private | `main` | no | Candidate Envuscator web surface; catalogue/topology review required. |
 | `actions` | private | `main` | no | Candidate shared automation repository; determine whether `.github` supersedes or delegates any authority. |
 | `mobuild` | private | `main` | no | Canonical root of the registered supporting Mobuild coordination project; repository-health expectations remain intentionally unregistered pending monitoring review. |
 | `mobuild-project` | private | `main` | no | Component/coordination repository within the registered Mobuild project family; topology and monitoring responsibility require explicit review. |
