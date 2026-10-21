@@ -116,7 +116,7 @@ Avoid criteria such as “code complete,” “works,” “tests added,” or �
 Use:
 
 - **P0 — interrupt** for an active critical break or dangerous exposure;
-- **P1 — next** for the small executable queue advancing the current milestone or closing a significant risk;
+- **P1 — next** for the small executable queue advancing the current milestone, avoiding verified near-term financial loss, enabling near-term revenue, or closing a significant risk;
 - **P2 — planned** for important groomed work that should not displace P0/P1;
 - **P3 — later / explore** for valid but uncommitted, exploratory, duplicated, or insufficiently defined work.
 
