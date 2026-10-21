@@ -12,9 +12,9 @@ BDH-CQ (arXiv:2608.09888) is an external research signal reinforcing this direct
 
 The organization-level concern is therefore not how a model reasons internally. It is how independently owned repositories exchange the minimum structured state needed for reproducible, authorized, attributable execution.
 
-## Cross-repository invariant
+## Non-normative cross-repository design observation
 
-> Micrantha cross-repository contracts must remain independent of model-private reasoning representations.
+> Separating cross-repository contracts from model-private reasoning representations is a useful architectural default. Binding requirements remain owned by accepted contracts and decisions in the responsible repositories.
 
 A runtime may use token-by-token reasoning, recurrent/opaque computation, specialist delegation, symbolic execution, or another implementation style behind the same external contract.
 
@@ -42,7 +42,7 @@ observable execution/effects <---------+
         `--> explicit reviewed learning or memory promotion
 ```
 
-## Responsibility boundaries
+## Advisory responsibility map
 
 ### Calathea
 
@@ -72,7 +72,7 @@ Owns runtime materialization, supervisor/specialist execution, ephemeral working
 
 Public organization metadata must not expose private repository locations or sensitive implementation details.
 
-## State and authority rules
+## Candidate state and authority guidance
 
 1. **Canonical state is structured.** Workflow/task truth must have an addressable revision where changes can affect execution or authority.
 2. **Prompts are derived.** A rendered prompt or instruction artifact may be integrity-bound, but it is not the canonical workflow database.
@@ -93,7 +93,7 @@ Public organization metadata must not expose private repository locations or sen
 - **Calathea:** structured workflow-state compilation into the Invokrum boundary (`calathea#47`).
 - **Private runtime:** runtime state/context/memory lifecycle and recovery work remains tracked privately.
 
-These repository-local issues remain authoritative for implementation details. This note owns only the cross-repository responsibility map and invariants.
+These repository-local issues and their accepted contracts remain authoritative for implementation and applicable responsibility boundaries. This note is an advisory synthesis, not a new owner of the responsibility map or invariants. Any missing normative cross-repository requirement must be proposed and accepted through the organization RFC process with accountable decision-owner disposition.
 
 ## Recommended sequencing
 
