@@ -426,7 +426,7 @@ Material cryptographic lifecycle events should preserve bounded non-secret evide
 - key handle or opaque identity, not raw key;
 - actor/requester;
 - policy/approval reference where required;
-- operation type: generate, wrap, unwrap, rewrap, rotate, revoke, destroy, recover;
+- operation or lifecycle transition type: generate, wrap, unwrap, rewrap, rotate, algorithm/profile transformation, provider/custody migration, revoke, destroy, recover; distinguish rotation from profile or custody changes and bind every transition to the old/new key-instance and profile/provider identities;
 - result and verifier;
 - timestamp/epoch;
 - implementation/configuration revision.
@@ -453,7 +453,9 @@ Refresh focused analysis when a change affects:
 
 Where applicable, test:
 
-- unsupported/retired profile rejection;
+- unsupported profile rejection for every operation; for retired profiles, reject new/forward commitments (including creation, encryption, and signing), while allowing only explicitly policy-authorized, bounded historical consumer operations such as verification or decryption;
+- positive historical verification/decryption cases bound to the exact archived artifact, key instance, profile and retention policy, alongside a negative case rejecting new commitments with that same retired profile;
+- algorithm/profile transformation and provider/custody migration evidence binding old/new identities, authorization, result and rollback or recovery disposition;
 - downgrade resistance;
 - stale key/profile replay;
 - cross-tenant/object key confusion;
