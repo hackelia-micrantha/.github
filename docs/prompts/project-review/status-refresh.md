@@ -129,15 +129,15 @@ Do not create one issue per observation. Group related work into coherent outcom
 Use the Micrantha organization model:
 
 - **P0 — interrupt:** active work must be displaced because a critical capability, security boundary, release path, or required validation gate is broken or dangerously exposed.
-- **P1 — next:** belongs in the small next-up queue because it unlocks the current milestone, removes a high-leverage dependency, or closes a significant security or operability gap.
+- **P1 — next:** belongs in the small next-up queue because it unlocks the current milestone, avoids verified time-sensitive financial loss, enables near-term revenue, removes a high-leverage dependency, or closes a significant security or operability gap.
 - **P2 — planned:** important, groomed work that should not displace the current P0/P1 queue.
 - **P3 — later / explore:** valid but uncommitted, exploratory, duplicated, or insufficiently defined work.
 
 Priority is not severity, status, size, confidence, age, or architectural importance. `Blocked` is a status, not a priority; preserve the underlying priority and record the blocker separately.
 
-For each proposed item record priority rationale, observable outcome, impact, urgency, dependency leverage, readiness, risk of change, strategic fit, effort, dependencies, blockers, acceptance criteria, and non-goals.
+For each proposed item record priority rationale, observable outcome, impact, urgency, dependency leverage, readiness, risk of change, strategic fit, effort, dependencies, blockers, acceptance criteria, and non-goals. Apply the [financial impact and cost-of-delay guardrail](../../CONTRIBUTING.md#financial-impact-and-cost-of-delay-guardrail): surface verified avoidable recurring spend, pending renewals, expiring credits, and near-ready migrations, including when otherwise healthy services are still costing money. Distinguish billed costs from estimates and require proof of safe cutover and billing cessation.
 
-Keep the **active executable queue** small—normally three to five slices per repository—without converting every high-priority **blocked** dependency or parent epic into a daily action. Use one current existing milestone/roadmap front door, with separate `Now`, `Next/Blocked` and `Deferred` navigation; preserve the priority/severity of blocked security and CI work rather than relabeling it to reduce the queue. Check that the latest operator direction supersedes historical priority notes and does not silently reactivate explicitly paused work. Order executable slices by active containment, dependency chain, readiness, shortest safe path to the milestone, and change risk.
+Keep the **active executable queue** small—normally three to five slices per repository—without converting every high-priority **blocked** dependency or parent epic into a daily action. Use one current existing milestone/roadmap front door, with separate `Now`, `Next/Blocked` and `Deferred` navigation; preserve the priority/severity of blocked security and CI work rather than relabeling it to reduce the queue. Check that the latest operator direction supersedes historical priority notes and does not silently reactivate explicitly paused work. Order executable slices by active containment, time-sensitive verified financial drag or near-term revenue impact, dependency chain, readiness, shortest safe path to the milestone, and change risk.
 
 ## Required output
 
