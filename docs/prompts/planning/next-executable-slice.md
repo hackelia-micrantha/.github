@@ -61,7 +61,7 @@ Rank candidate slices by:
 7. change risk, reversibility, and reviewability;
 8. effort relative to milestone value.
 
-Use the repository-global P0–P3 priority and [financial impact/cost-of-delay guardrail](../../CONTRIBUTING.md#financial-impact-and-cost-of-delay-guardrail) from `CONTRIBUTING.md`. When costs are material, capture the billed baseline, expected net savings, urgency, one-time cutover cost, and billing-cessation evidence; do not invent figures. Blocking is a status, not a reason to demote priority.
+Use the repository-global P0–P3 priority and [financial impact/cost-of-delay guardrail](../../../CONTRIBUTING.md#financial-impact-and-cost-of-delay-guardrail) from `CONTRIBUTING.md`. When costs are material, capture the billed baseline, expected net savings, urgency, one-time cutover cost, and billing-cessation evidence; do not invent figures. Blocking is a status, not a reason to demote priority.
 
 ## Slice rules
 
