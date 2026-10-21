@@ -32,14 +32,27 @@ Priority is **not** severity, size, status, confidence, or architectural importa
 
 Use judgment rather than a false-precision score. Record the factors that materially drove the decision:
 
-1. **Impact** — security, correctness, operability, user value, or delivery effect.
-2. **Urgency** — cost of waiting; active failure versus future risk.
+1. **Impact** — security, correctness, operability, user value, delivery effect, or financial consequences (avoided expense, revenue enabled, or budget/credit loss).
+2. **Urgency** — cost of waiting, including recurring financial burn, billing/renewal dates, expiring credits, and active failure versus future risk.
 3. **Dependency leverage** — how much ready work the issue unlocks or blocks.
 4. **Readiness** — whether scope, dependencies, acceptance criteria, and ownership are clear.
 5. **Risk of change** — blast radius, reversibility, migration risk, and verification cost.
 6. **Strategic fit** — relationship to the repository's current milestone or product thesis.
 
 A high-impact but poorly understood issue may need a bounded P1/P2 investigation before implementation. A low-risk, ready issue should not leapfrog a more consequential blocker merely because it is easy.
+
+### Financial impact and cost-of-delay guardrail
+
+When prioritizing engineering work, explicitly look for **avoidable recurring spend, imminent payment or renewal deadlines, expiring credits, and near-term revenue blockers**. A nearly finished migration that retires a paid resource is delivery work with a measurable cost of delay, not speculative performance optimization.
+
+- **Establish the exposure:** identify the current billed service/commitment, actual or supported estimated recurring amount and currency, next billing or renewal date if known, and the consequence of doing nothing. Do not treat a list price or an unverified deployment as a paid invoice.
+- **Compare net outcomes:** estimate post-change run rate and savings, one-time migration/verification/operational costs, break-even horizon where relevant, and confidence. Treat sunk cost separately from future avoidable spend; don't invent precision when costs are unknown.
+- **Account for time:** state what continued delay costs and the earliest *safely achievable* date savings or revenue can begin. Re-evaluate when a cutover becomes ready or a billing deadline approaches; a migration that is nearly complete may outrank lower-value new features.
+- **Prioritize proportionately:** verified, actionable, near-term savings or a material revenue unblock generally warrant **P1** ahead of optional polish, exploratory architecture, and speculative optimizations. A payment deadline or ordinary recurring bill alone does **not** justify P0; reserve P0 for genuinely critical, immediate financial impact under the normal interrupt standard. Unproven savings or substantial readiness/safety gaps may instead warrant P2 or a bounded investigation.
+- **Take the shortest safe path:** consider immediate reversible cost containment and finishing an existing near-ready migration before building an additional platform. Do not shortcut correctness, security, data integrity, service continuity, migration verification, independent review, or required release gates to save money.
+- **Verify the saving:** define production cutover, rollback/recovery, provider billing cessation/cancellation, and the evidence needed to declare expenses actually avoided. Merge or deployment alone is not proof that recurring charges stopped. Any paid-plan change, destructive teardown, cancellation, or spending commitment still needs explicit effect authority.
+
+Apply this check during issue grooming, milestone selection, project/portfolio status reviews, and next-slice selection. Prefer concise impact facts in the existing priority rationale rather than inventing a parallel financial score, special label, or new workflow for every expense.
 
 ### Required issue fields
 
@@ -88,11 +101,12 @@ Issue-body priority text remains the durable explanation; labels support filteri
 
 Priority narrows the queue but does not fully determine execution order. Within a priority level, order work by:
 
-1. active incident or security containment;
-2. dependency chain and unblock value;
-3. readiness and available ownership;
-4. shortest safe path to a verifiable milestone;
-5. change risk and rollback capability.
+1. active incident, security, or data-loss containment;
+2. verified avoidable financial loss and time-sensitive cost/revenue outcomes, evaluated against safe readiness;
+3. dependency chain and unblock value;
+4. readiness and available ownership;
+5. shortest safe path to a verifiable milestone;
+6. change risk and rollback capability.
 
 Prefer a small queue:
 
@@ -111,6 +125,7 @@ Review priority when any of these occur:
 - a dependency becomes ready or blocked;
 - an implementation slice merges;
 - the current milestone changes;
+- a recurring charge is discovered, a cancellation/renewal date approaches, or a ready migration can end avoidable spend;
 - an issue proves broader, riskier, or less valuable than expected;
 - duplicate work or a stronger consolidation parent is identified;
 - an issue has had no meaningful activity across multiple planning cycles.
