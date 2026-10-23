@@ -55,8 +55,8 @@ Permissions can only be maintained or reduced across a reusable workflow chain. 
 
 ## Independent PR-review workflow boundary (planned, not active)
 
-The shared workflow entry point for reusable independent code review belongs in
-`.github/.github/workflows/`, with a small, repository-owned caller workflow
+The shared workflow entry point for reusable independent code review belongs under
+`.github/workflows/` in `hackelia-micrantha/.github`, with a small, repository-owned caller workflow
 and an immutable reviewed `uses:` reference. This is distribution/wiring,
 not a second code-review implementation. The existing Mise/Nix CI workflows
 remain unchanged.
@@ -97,8 +97,10 @@ Preserve the existing review policy, branch rules and repository-local gates.
 Rollout order: qualify Dubnium
 [#1637](https://github.com/ryjen/dubnium/issues/1637) and
 [#1725](https://github.com/ryjen/dubnium/issues/1725) with exact-head
-positive/denial/stale/replay evidence; finish the Invokrum-backed
-[meta review fallback](https://github.com/hackelia-micrantha/.github/issues/123);
+positive/denial/stale/replay evidence, including the approved Invokrum
+reviewer-profile/lock required for the path tracked by
+[meta review fallback #123](https://github.com/hackelia-micrantha/.github/issues/123).
+Other #123 migration follow-ups are not automatically a dependency gate;
 then implement and pin a thin `workflow_call` entry point, exercise one
 private and one public non-required caller, verify stable check identity and
 fork/JIT source-exposure behavior, and only then consider a repository-owned
