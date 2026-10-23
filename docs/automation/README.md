@@ -65,17 +65,25 @@ remain unchanged.
   policy/profile references, starter template if justified by an actual pilot,
   immutable workflow version and adoption guidance. No bespoke reviewer
   executor, schema validator or host credential belongs here.
-- `hackelia-micrantha/actions` owns reusable GitHub/GitLab provider adapters
-  and applicable conformance checks. It is **private**: a public caller cannot
-  use its private actions or reusable workflows. If an adapter must run from
-  public repositories, publish only a reviewed, minimal public facade or use
-  an approved, immutable runner-owned client; do not expose private adapter
-  source or require broad personal access tokens.
+- `hackelia-micrantha/actions` is an existing **private** adapter and
+  conformance implementation for Envuscator and runner-selector policy. Its
+  authority over generic organization-wide code-review adapters is **not yet
+  assigned**: the repository catalogue and repository-health exclusion record
+  must be reconciled through a separate accepted ownership decision before
+  routing such implementation there. Public callers cannot consume its
+  private actions or reusable workflows. If a generic adapter is later
+  assigned there, publish only a reviewed minimal public facade or use an
+  approved immutable runner-owned client; do not expose private source or
+  require broad personal access tokens.
 - `ryjen/dubnium` owns the authenticated, bounded, read-only reviewer
   execution, trusted GitHub source/actor/run/attempt rebinding, Supervisor
   inference and durable private result. Invokrum owns exact prompt/lock
-  composition, Keylix/Anthesis own identity/governance admission. An ordinary
-  JIT runner conveys review intent, never host execution authority.
+  composition; Keylix supplies cryptographic sender binding and proof-of-
+  possession primitives, **not** identity-provider policy or application
+  authorization. Trusted host/GitHub provenance verification establishes the
+  authenticated source and principal; Anthesis governs capability admission
+  and approvals. An ordinary JIT runner conveys review intent, never host
+  execution authority.
 
 **Do not activate a required review status check yet.** The existing Dubnium
 GitHub intake currently yields `snapshot_only_not_a_review`: it is not a
