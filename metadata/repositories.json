@@ -497,7 +497,7 @@
       "notes": "Must not fork the reusable semantics owned by calathea-community."
     },
     {
-      "repository": "hackelia-micrantha/musicpkg",
+      "repository": "hackelia-micrantha/contentpkg",
       "classification": "laboratory",
       "maturity": "experimental",
       "visibility": "private",
@@ -505,8 +505,8 @@
       "archived": false,
       "monitor": true,
       "authority": [
-        "MUSICPKG private engineering implementation and publication staging",
-        "unpublished architecture, security research, adversarial testing, and operational tooling"
+        "CONTENTPKG monorepo private engineering; currently MUSICPKG v0.2 implementation and publication staging",
+        "unpublished CONTENTPKG/BOOKPKG architecture, MUSICPKG security research, adversarial testing, and operational tooling"
       ],
       "requiredFiles": [
         "README.md",
@@ -514,8 +514,8 @@
       ],
       "sourceExposure": "private",
       "repositoryRole": "canonical",
-      "implementationAuthority": "hackelia-micrantha/musicpkg",
-      "releaseAuthority": "hackelia-micrantha/musicpkg",
+      "implementationAuthority": "hackelia-micrantha/contentpkg",
+      "releaseAuthority": "hackelia-micrantha/contentpkg",
       "distributionMode": "internal",
       "publicDistributionRepository": "hackelia-micrantha/musicpkg-community",
       "notes": "Published wire-format, verification, and conformance contracts are authoritative in musicpkg-community; private implementation must not silently redefine them."
@@ -541,11 +541,11 @@
       ],
       "sourceExposure": "public",
       "repositoryRole": "projection",
-      "implementationAuthority": "hackelia-micrantha/musicpkg",
+      "implementationAuthority": "hackelia-micrantha/contentpkg",
       "releaseAuthority": "hackelia-micrantha/musicpkg-community",
       "distributionMode": "source",
-      "canonicalRepository": "hackelia-micrantha/musicpkg",
-      "notes": "Authoritative for published interoperability contracts; private musicpkg remains canonical project/implementation authority and staging source."
+      "canonicalRepository": "hackelia-micrantha/contentpkg",
+      "notes": "Authoritative for published interoperability contracts; private contentpkg remains canonical engineering/project authority and MUSICPKG staging source."
     },
     {
       "repository": "hackelia-micrantha/modolia",
