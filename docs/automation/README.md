@@ -100,8 +100,9 @@ Rollout order: qualify Dubnium
 positive/denial/stale/replay evidence, including the approved Invokrum
 reviewer-profile/lock required for the path tracked by
 [meta review fallback #123](https://github.com/hackelia-micrantha/.github/issues/123).
-Other #123 migration follow-ups are not automatically a dependency gate;
-then implement and pin a thin `workflow_call` entry point, exercise one
+Other #123 migration follow-ups are not automatically a dependency gate.
+After the reviewer path qualifies, implement and pin a thin `workflow_call`
+entry point, exercise one
 private and one public non-required caller, verify stable check identity and
 fork/JIT source-exposure behavior, and only then consider a repository-owned
 required check. No deployment, permission expansion, new billing or merge
