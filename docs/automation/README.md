@@ -53,6 +53,69 @@ Callers should pin reusable workflows to a reviewed immutable commit SHA or immu
 
 Permissions can only be maintained or reduced across a reusable workflow chain. A caller remains responsible for granting the minimum permissions required by its complete workflow.
 
+## Independent PR-review workflow boundary (planned, not active)
+
+The shared workflow entry point for reusable independent code review belongs under
+`.github/workflows/` in `hackelia-micrantha/.github`, with a small, repository-owned caller workflow
+and an immutable reviewed `uses:` reference. This is distribution/wiring,
+not a second code-review implementation. The existing Mise/Nix CI workflows
+remain unchanged.
+
+- `hackelia-micrantha/.github` owns the declarative entry point, review
+  policy/profile references, starter template if justified by an actual pilot,
+  immutable workflow version and adoption guidance. No bespoke reviewer
+  executor, schema validator or host credential belongs here.
+- `hackelia-micrantha/actions` is an existing **private** adapter and
+  conformance implementation for Envuscator and runner-selector policy. Its
+  authority over generic organization-wide code-review adapters is **not yet
+  assigned**: the repository catalogue and repository-health exclusion record
+  must be reconciled through a separate accepted ownership decision before
+  routing such implementation there. Public callers cannot consume its
+  private actions or reusable workflows. If a generic adapter is later
+  assigned there, publish only a reviewed minimal public facade or use an
+  approved immutable runner-owned client; do not expose private source or
+  require broad personal access tokens.
+- `ryjen/dubnium` owns the authenticated, bounded, read-only reviewer
+  execution, trusted GitHub source/actor/run/attempt rebinding, Supervisor
+  inference and durable private result. Invokrum owns exact prompt/lock
+  composition; Keylix supplies cryptographic sender binding and proof-of-
+  possession primitives, **not** identity-provider policy or application
+  authorization. Trusted host/GitHub provenance verification establishes the
+  authenticated source and principal; Anthesis governs capability admission
+  and approvals. An ordinary JIT runner conveys review intent, never host
+  execution authority.
+
+**Do not activate a required review status check yet.** The existing Dubnium
+GitHub intake currently yields `snapshot_only_not_a_review`: it is not a
+qualified independent review. Future workflow activation requires a physically
+verified, authorized end-to-end reviewer and an attributable durable receipt
+bound to the exact candidate head, patch/source identity, reviewer mechanism,
+approved profile and result/disposition. The workflow must fail closed on
+unavailable, partial, stale, untrusted, or insufficient review; a snapshot,
+model assertion or green build is not a clean independent review.
+
+The reviewer context must be non-author and read-only, with no PR code
+execution under host or write authority. Separate narrowly authorized
+publication, if introduced, may publish informational findings or a verified
+check result; it must not allow model output to mint GitHub approval, merge,
+release or risk-acceptance authority. GitHub's built-in required approving
+review remains separate from a status check and is not automatically replaced.
+Preserve the existing review policy, branch rules and repository-local gates.
+
+Rollout order: qualify Dubnium
+[#1637](https://github.com/ryjen/dubnium/issues/1637) and
+[#1725](https://github.com/ryjen/dubnium/issues/1725) with exact-head
+positive/denial/stale/replay evidence, including the approved Invokrum
+reviewer-profile/lock required for the path tracked by
+[meta review fallback #123](https://github.com/hackelia-micrantha/.github/issues/123).
+Other #123 migration follow-ups are not automatically a dependency gate.
+After the reviewer path qualifies, implement and pin a thin `workflow_call`
+entry point, exercise one
+private and one public non-required caller, verify stable check identity and
+fork/JIT source-exposure behavior, and only then consider a repository-owned
+required check. No deployment, permission expansion, new billing or merge
+authority is implied by this plan.
+
 ## Repository registry
 
 `metadata/repositories.json` is an advisory machine-readable projection of the canonical [repository responsibility catalogue](../architecture/repository-catalogue.md).
