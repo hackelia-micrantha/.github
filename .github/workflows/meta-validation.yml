@@ -142,6 +142,36 @@ jobs:
             tests/fixtures/micrantha-prompt-pack-golden.json \
             "$RUNNER_TEMP/micrantha-prompt-pack-evidence"
 
+      # Temporary diagnostic for regenerating goldens on this prompt-only branch.
+      # Remove after the verified fixture is updated.
+      - name: Emit generated golden fixture on drift
+        if: failure()
+        run: |
+          python - <<'PY'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+          root = Path(os.environ["RUNNER_TEMP"]) / "micrantha-prompt-pack-evidence"
+          profiles = {}
+          for path in sorted(root.iterdir()):
+              if not path.is_dir():
+                  continue
+              profiles[path.name] = {
+                  "context_sha256": hashlib.sha256((path / "context.md").read_bytes()).hexdigest(),
+                  "inspect": json.loads((path / "inspect.json").read_text(encoding="utf-8")),
+                  "lock": json.loads((path / "invokrum.lock").read_text(encoding="utf-8")),
+              }
+          fixture = {
+              "format": "micrantha.prompt-pack-golden/v1",
+              "invokrum_version": "0.2.1",
+              "profiles": profiles,
+          }
+          print("BEGIN_GENERATED_GOLDEN")
+          print(json.dumps(fixture, separators=(",", ":"), sort_keys=True))
+          print("END_GENERATED_GOLDEN")
+          PY
+
       - name: Prove digest-pinned installed-root composition
         run: |
           python tools/verify_prompt_pack_installed_root.py \
