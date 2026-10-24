@@ -132,6 +132,36 @@ Choose **Keep**, **Simplify**, **Optimize**, or **Defer**. If an optimization la
 
 Proactive work is appropriate for known security/correctness requirements, explicit performance or capacity contracts, demonstrated asymptotic limits, or a credible near-term change whose later migration cost is materially greater. An active incident is not required. This is a risk-shaped review heuristic, **not** a blanket benchmark quota, mandatory scoring framework, or automatic merge blocker. In review and execution loops, check for drift from the requested outcome, repeated non-convergent optimization (swirl), duplicated mechanisms, and retained superseded complexity.
 
+## Shared outcome-driven anti-slop guardrail
+
+Apply this review heuristic to proposed and generated code, tests, architecture, UI, documentation, prompts, issues, and plans. The objective is to prevent **low-value output that adds ownership cost without advancing the accepted outcome**. The label *slop* is not itself a finding or severity.
+
+Before creating or accepting a material addition, ask:
+
+1. **Outcome:** What accepted user, operational, or engineering need does this serve? A useful prototype or creative artifact may have an exploratory outcome.
+2. **Necessity:** Can an existing mechanism, smaller edit, or no change satisfy that need? Avoid duplicate artifacts, speculative integrations, and unnecessary layers.
+3. **Substance:** Does it actually implement, demonstrate, explain, or decide something? Distinguish tested behavior from stubs, mock data, future intent, and unverified claims. Explicitly scoped scaffolding and honest demos are valid.
+4. **Proportionality:** Does its value justify complexity, dependencies, review burden, runtime cost, security exposure, and future maintenance? Necessary security, accessibility, resilience, validation, and maintainability are not waste simply because they add work.
+5. **Evidence:** What appropriate proof or acceptance criterion supports the result? Do not manufacture tests, metrics, certainty, or work items merely to fill a template.
+
+Choose **Keep**, **Simplify**, **Remove**, **Defer**, or **Repair** within the authorized scope. For review findings, identify the exact artifact or behavior, observed evidence, consequence, and smallest adequate correction. Prefer fixing canonical causes over layering on more prose, infrastructure, tickets, or prompts.
+
+**Severity follows impact, not taste.** Material false-completeness claims, unmet accepted requirements, unsafe behavior, or missing required evidence can block acceptance under existing review policy. Merely generic wording, stylistic preference, unusual visual design, or an optional simplification cannot become a merge blocker without a concrete negative consequence. Never delete accepted requirements, meaningful tests, threat controls, or relevant documentation under a superficial simplicity argument.
+
+Representative calibration cases (reasoning examples, **not** an automated detector or completed model evaluation):
+
+| Case | Expected disposition | Reason |
+| --- | --- | --- |
+| Dashboard presents fabricated metrics as current production data | Repair | False claim about delivered behavior |
+| Explicitly labeled prototype uses fixture data to test navigation | Keep | Honest, bounded exploratory outcome |
+| Duplicate wrapper/service adds no contract, isolation, or behavior | Simplify or remove | Lifecycle burden without value |
+| Authentication boundary adds code to enforce least privilege | Keep | Justified security property |
+| Planning produces multiple new epics instead of finishing an authorized cutover | Simplify | Work tracking displaces the actual outcome |
+| README repeats generic prose but omits real installation limitations | Repair | Readers lack actionable, accurate information |
+| Accessible, functional UI has an unconventional aesthetic | Keep | Style alone is not evidence of a defect |
+
+Do not introduce a numeric slop score, mandatory new artifact type, heuristic lint gate, or universal content-length quota. Reuse existing evidence, review, optimization, and delivery contracts; if a pattern proves mechanically decidable, propose a focused check through normal separately authorized promotion.
+
 ## Shared validation and static-analysis contract
 
 For prompts that plan, implement, review, merge, complete, or release software, verify validation as a layered system rather than a generic “tests pass” claim.
