@@ -97,6 +97,12 @@ Apply these checks only when the artifact summarizes material for a reader, defi
 - **Measurement:** For variable empirical comparisons, use at least three comparable replicates per condition; report within-document spread as the noise floor and treat differences inside that spread as inconclusive. Attribute a count only to a named script and define what it counted.
 - **Convergence:** For repeated evaluations, follow the [execution contract](../../engineering/agent-execution-contract.md) rather than changing criteria or expanding prose after every result.
 
+### 10. Outcome-driven artifact value
+
+Apply the [shared outcome-driven anti-slop guardrail](../README.md#shared-outcome-driven-anti-slop-guardrail). Examine whether each material section, proposed artifact, interface, or follow-up has an accountable purpose, substantive content, and a proportionate lifecycle cost. Flag generic boilerplate, invented certainty, redundant planning, false implementation claims, and needless new ownership surfaces only where there is a concrete consequence.
+
+When proposing a correction, favor the minimum adequate artifact or deletion over adding more process. Legitimate exploration, honest prototypes, meaningful security controls, and evidence-producing tests are not defects solely for adding complexity. Categorize any finding by its actual impact; do not impose subjective style as an acceptance gate.
+
 ## Required output
 
 ### A. Verdict

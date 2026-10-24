@@ -128,6 +128,8 @@ Flag unnecessary indirection, duplicate mechanisms, leaky abstractions, partial 
 
 Apply the [shared evidence-gated optimization guardrail](../README.md#shared-evidence-gated-optimization-guardrail) to optimization-driven complexity. Check the constraint, proportionate evidence, simpler alternatives, lifecycle burden, and proposed verification. Flag unjustified speculative scope without inventing a universal benchmark gate.
 
+Apply the [shared outcome-driven anti-slop guardrail](../README.md#shared-outcome-driven-anti-slop-guardrail) across implementation, tests, UI, documentation, and proposed infrastructure. Examine whether added artifacts materially serve the accepted outcome; challenge false completeness, redundant scaffolding, generic generated filler, speculative scope, and tests that only create the appearance of coverage. Cite specific changed lines and effects, and recommend the smallest sufficient correction. A subjective style objection or optional simplification is not a blocker; classify severity through the existing correctness, security, completeness, and validation gates. Explicitly labeled prototypes and justified security/operability complexity must remain valid.
+
 Recommend QART or an ADR only when the decision cannot safely remain implicit.
 
 ### 6. Documentation and delivery
