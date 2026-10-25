@@ -6,13 +6,13 @@ labels: ""
 assignees: ""
 ---
 
-## Explain it to a 5 year old
+## Explain it to a human
 
-In 1–3 everyday sentences, explain the problem and why a design choice is needed.
+In 1–3 plain-language sentences, explain the problem and why a design choice is needed.
 
 ## What needs to change
 
-State the decision or design outcome needed, current limitation, and material constraints. Distinguish proposals from accepted requirements. Link a QART/RFC/spec when alternatives or technical detail require broader review.
+State the decision or design outcome needed, current limitation, affected architectural responsibilities/contracts/trust boundaries, and material constraints. Distinguish proposals from accepted requirements. Link a QART/RFC/spec when alternatives or technical detail require broader review.
 
 ## Done when
 
