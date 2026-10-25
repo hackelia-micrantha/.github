@@ -54,33 +54,44 @@ When prioritizing engineering work, explicitly look for **avoidable recurring sp
 
 Apply this check during issue grooming, milestone selection, project/portfolio status reviews, and next-slice selection. Prefer concise impact facts in the existing priority rationale rather than inventing a parallel financial score, special label, or new workflow for every expense.
 
+### Issue simplicity and update discipline
+
+Every new or materially groomed issue **begins its body** with **"Explain it to a 5 year old"** (normally `## Explain it to a 5 year old`; GitHub issue forms render their own heading level). In one to three plain-language sentences, explain the problem, why it matters, and the outcome. Keep this accurate and professional, not patronizing; do not put the prefix in issue titles or repeat it in each comment. Existing issues are updated opportunistically, not mass-rewritten for formatting.
+
+**Default mental model: Why + Outcome + Done + Links.** A reader should grasp the issue within about 30 seconds and an implementer should still know what counts as complete. Prefer one short outcome paragraph, two to five observable criteria, and a compact tracking block; roughly 300 words is a *soft readability target*, never a cap on material constraints or security evidence. Omit irrelevant sections instead of generating boilerplate. For genuinely complex work, keep the issue as the index and link the authoritative QART/RFC/ADR, specification, PR, CI result, or child issues. Preserve any necessary security, failure, compatibility, rollback, evidence, and authority requirements.
+
+**One current state, minimal comments.** Keep status, blockers, remaining work, and the smallest useful evidence links in the existing issue body. Routine "working", "still green", SHA-only, timestamp-only, and repeated progress updates do not warrant comments. Use PR review threads for code discussion, dedicated decisions for architecture, and comments for substantive human discussion or accountable decisions. Do not erase historical comments, accepted decisions, or evidence; consolidate the *current summary*, not the audit trail. Reconcile state only when it materially changes, and do not overwrite concurrent edits or repeat failed writes blindly.
+
+**Funnel rather than duplicate.** Reuse the existing owning issue and canonical milestone/epic/roadmap. Link external authoritative detail instead of copying logs, long CI timelines, architectural deliberation, or PR descriptions into issue bodies. Do not create a new issue, status tracker, template variation, or automation merely to summarize another artifact. Preserve distinct independently executable outcomes instead of combining unrelated work to reduce counts.
+
 ### Required issue fields
 
-Issues entering the active queue should contain:
+Issues entering the active queue should contain this **compact equivalent**, using the exact first heading and only applicable optional fields:
 
 ```markdown
-## Priority
+## Explain it to a 5 year old
 
-P1 — one-sentence repository-global rationale.
+What is wrong, why does it matter, and what will be better?
 
-## Outcome
+## What needs to change
 
-What observable result changes when this issue is complete?
+One observable outcome and only material scope/constraints.
 
-## Dependencies
+## Done when
 
-- Ready: ...
-- Blocked by: ...
-- Unlocks: ...
+- [ ] Verifiable behavior, including important failure/security paths.
+- [ ] Required validation evidence is linked.
 
-## Acceptance criteria
+## Tracking
 
-- [ ] Verifiable result
-
-## Non-goals
-
-- Explicitly excluded work
+- Priority: P1 — one-sentence repository-global rationale.
+- Status: Ready / Blocked / In progress / Review.
+- Blocked by: [link + unblock condition, if relevant].
+- Not included: [material boundary, if relevant].
+- Evidence: [authoritative PR, CI, spec, decision, or dependency links].
 ```
+
+The **content** remains required, but headings for optional tracking details may be omitted or adapted by repository-local forms. Blocking remains a status, not priority; non-goals and dependency boundaries must stay explicit when material.
 
 Use organization-standard labels when available:
 
