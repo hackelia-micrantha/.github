@@ -1,18 +1,43 @@
 name: "Feature request"
-description: "Propose an enhancement or new capability"
+description: "Propose a bounded user or operator capability"
 title: "[feat]: "
 labels: ["type:feature", "status:needs-grooming"]
 body:
   - type: markdown
     attributes:
       value: |
-        Feature requests are welcome. Please focus on the problem, constraints, and tradeoffs.
+        Describe the result, not a speculative implementation plan. Link existing designs and related requests.
+
+  - type: textarea
+    id: eli5
+    attributes:
+      label: Explain it to a 5 year old
+      description: In 1–3 everyday sentences, say who needs what and why.
+    validations:
+      required: true
+
+  - type: textarea
+    id: change
+    attributes:
+      label: What needs to change
+      description: One observable capability, its intended user, and any important boundary or non-goal.
+    validations:
+      required: true
+
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when
+      description: Two to five verifiable results when sufficient. Include meaningful negative/security cases.
+      placeholder: "- [ ] ..."
+    validations:
+      required: true
 
   - type: dropdown
     id: priority
     attributes:
       label: Priority
-      description: How soon should this consume limited engineering capacity? See CONTRIBUTING.md for the priority model.
+      description: Repository-global urgency, not effort or readiness (see CONTRIBUTING.md).
       options:
         - P0 — interrupt (active break or dangerous exposure)
         - P1 — next (unlocks milestone or closes significant risk)
@@ -23,43 +48,10 @@ body:
       required: true
 
   - type: textarea
-    id: outcome
+    id: tracking
     attributes:
-      label: Outcome
-      description: What observable result changes when this request is complete?
-      placeholder: "When this is delivered, …"
-    validations:
-      required: true
-
-  - type: textarea
-    id: problem
-    attributes:
-      label: Problem statement
-      description: What problem are you trying to solve? Who is it for?
-    validations:
-      required: true
-
-  - type: textarea
-    id: proposal
-    attributes:
-      label: Proposed solution
-      description: What do you want to happen? Include UX/API sketch if relevant.
-    validations:
-      required: true
-
-  - type: textarea
-    id: alternatives
-    attributes:
-      label: Alternatives considered
-      description: What else did you consider? Why isn’t it enough?
-    validations:
-      required: false
-
-  - type: textarea
-    id: risks
-    attributes:
-      label: Risks / tradeoffs
-      description: Security, performance, compatibility, operational concerns.
+      label: Tracking (if applicable)
+      description: Blockers, important tradeoffs, non-goals, and links to existing decisions or issues.
     validations:
       required: false
 
@@ -68,5 +60,5 @@ body:
     attributes:
       label: Checklist
       options:
-        - label: I checked existing issues and discussions for similar requests.
+        - label: I checked for an existing issue or discussion covering this outcome.
           required: true
