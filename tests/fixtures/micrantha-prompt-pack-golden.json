@@ -157,7 +157,7 @@
       }
     },
     "issue-grooming": {
-      "context_sha256": "537fb707eec4502b448dd920633a451e1ad3f2d4c7106503ec1729f144599d7d",
+      "context_sha256": "b275db73498157cf0fd7d588852039e276595485eb8b4a59fa5a65174305149f",
       "inspect": {
         "command": "inspect",
         "entries": [
@@ -174,25 +174,25 @@
             "source": "docs/prompts/overlays/cross-project-execution.md"
           },
           {
-            "byte_length": 11050,
+            "byte_length": 12484,
             "class": "workflow",
             "overlay": "issue-grooming",
             "source": "docs/prompts/issues/issue-grooming.md"
           }
         ],
         "format": "invokrum.cli/v1",
-        "output_bytes": 47902,
+        "output_bytes": 49336,
         "pack": "micrantha-meta-prompts",
         "profile": "issue-grooming",
         "schema": "invokrum.dev/v1",
-        "source_bytes": 47898
+        "source_bytes": 49332
       },
       "lock": {
         "format": "invokrum.lock/v1",
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "5dfe1426292d60640d621377ba3020e28231c27da3cd0ab0d9fb64f55eb8c156",
+          "engine_inputs_digest": "5a551dfa1560a0bbaf931455227b6177878de3863048b906224054ab9ffd9a2a",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -221,16 +221,16 @@
               "class": "workflow",
               "id": "issue-grooming",
               "source": "docs/prompts/issues/issue-grooming.md",
-              "byte_length": 11050,
-              "digest": "1e863345162da118eee0370c1c1450c2e4bd99770559714eb698666eccbe4f76"
+              "byte_length": 12484,
+              "digest": "feecf0531000fe1f7d3de484d8c77ca49ee9df24a8b14ae93380f26664ed9e0a"
             }
           ],
           "output": {
-            "byte_length": 47902,
-            "digest": "537fb707eec4502b448dd920633a451e1ad3f2d4c7106503ec1729f144599d7d"
+            "byte_length": 49336,
+            "digest": "b275db73498157cf0fd7d588852039e276595485eb8b4a59fa5a65174305149f"
           }
         },
-        "manifest_digest": "119fe6c92579cbca38f90583da12c5e53033b27ddbb16dad51b9cd990ea2d887"
+        "manifest_digest": "4c2fc8e958b9c46b5966b7a5f66474b474ffe733f52299c98385cee6a88ba3a9"
       }
     },
     "merge-gate-review": {
