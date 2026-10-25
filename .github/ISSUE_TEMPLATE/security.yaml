@@ -10,10 +10,10 @@ body:
         Use SECURITY.md for private disclosure. Public content must remain safe to publish.
 
   - type: textarea
-    id: eli5
+    id: human
     attributes:
-      label: Explain it to a 5 year old
-      description: In 1–3 plain-language, non-sensitive sentences, describe the risk and why it matters.
+      label: Explain it to a human
+      description: In 1–3 plain-language, public-safe sentences, describe the risk and why it matters; omit exploit specifics.
     validations:
       required: true
 

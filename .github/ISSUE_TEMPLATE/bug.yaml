@@ -9,10 +9,10 @@ body:
         Keep this short and link existing evidence. Redact secrets and personal data from public reports.
 
   - type: textarea
-    id: eli5
+    id: human
     attributes:
-      label: Explain it to a 5 year old
-      description: In 1–3 everyday sentences, say what is wrong, why it matters, and what should be better.
+      label: Explain it to a human
+      description: In 1–3 plain-language sentences, say what is wrong, why it matters, and what should be better.
     validations:
       required: true
 
@@ -20,7 +20,7 @@ body:
     id: change
     attributes:
       label: What needs to change
-      description: Describe expected versus actual behavior and the affected version or environment.
+      description: Describe expected versus actual behavior, affected interface/component and version or environment; include only material constraints.
       placeholder: "When I ..., I expected ..., but ..."
     validations:
       required: true
@@ -40,7 +40,7 @@ body:
     id: done
     attributes:
       label: Done when
-      description: Observable fix or regression check, including important failure behavior.
+      description: Observable fix and regression behavior; link unit, contract, integration or system evidence where material.
       placeholder: "- [ ] ..."
     validations:
       required: false

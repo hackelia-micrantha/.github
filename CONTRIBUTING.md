@@ -56,10 +56,15 @@ Apply this check during issue grooming, milestone selection, project/portfolio s
 
 ### Issue simplicity and update discipline
 
-Every new or materially groomed issue **begins its body** with **"Explain it to a 5 year old"** (normally `## Explain it to a 5 year old`; GitHub issue forms render their own heading level). In one to three plain-language sentences, explain the problem, why it matters, and the outcome. Keep this accurate and professional, not patronizing; do not put the prefix in issue titles or repeat it in each comment. Existing issues are updated opportunistically, not mass-rewritten for formatting.
+Every new or materially groomed issue **begins its body** with **"Explain it to a human"** (normally `## Explain it to a human`; GitHub issue forms render their own heading level). In one to three plain-language sentences, explain the problem, why it matters, and the outcome. Keep this accurate and professional, not patronizing; do not put the prefix in issue titles or repeat it in each comment. Existing issues are updated opportunistically, not mass-rewritten for formatting.
 
 **Default mental model: Why + Outcome + Done + Links.** A reader should grasp the issue within about 30 seconds and an implementer should still know what counts as complete. Prefer one short outcome paragraph, two to five observable criteria, and a compact tracking block; roughly 300 words is a *soft readability target*, never a cap on material constraints or security evidence. Omit irrelevant sections instead of generating boilerplate. For genuinely complex work, keep the issue as the index and link the authoritative QART/RFC/ADR, specification, PR, CI result, or child issues. Preserve any necessary security, failure, compatibility, rollback, evidence, and authority requirements.
 
+**Progressive detail, not more mandatory sections.** Explain work as **Human → Behavioral contract → Architectural impact → Verification → Done**. In **What needs to change**, include only material behavior/invariants, architectural responsibilities/interfaces/trust boundaries, and the verification approach. A reader should know what changes, where it belongs, what must not break, and how it will be proven. Link a spec, ADR, PR, or test evidence for deeper detail instead of copying it.
+
+**Agile quality heuristics, not bureaucracy.** Use **INVEST** (Independent, Negotiable, Valuable, Estimable, Small, Testable) to review executable slices; negotiability never weakens accepted safety or compatibility. Use the **Three Cs** (Card, Conversation, Confirmation): a compact issue, preserved substantive discussion, and objective acceptance. **Readiness** (clear outcome, ownership, dependencies, verification) is advisory, not an automatic approval gate. Keep issue-specific acceptance criteria separate from the repository's shared **Definition of Done**; do not copy shared CI, review, security, or documentation checklists into every ticket. Spikes, epics, security intake, and decisions are not forced into user-story form.
+
+**Architecture-aware vertical slices and risk-shaped verification.** Mention only affected interface, application, domain/policy, infrastructure/adapter, and cross-cutting security/operational boundaries. Prefer a bounded outcome crossing necessary layers over one issue per technical layer. Use [the existing test pyramid](docs/standards/testing.md) to choose the **lowest faithful** unit/component, contract, integration, system, or release/operational test, adding higher-level evidence when real boundaries cannot be proven below. Include meaningful negative, security, migration, and recovery cases. No universal ratio, mandatory test-type checklist, or unearned pass claim.
 **One current state, minimal comments.** Keep status, blockers, remaining work, and the smallest useful evidence links in the existing issue body. Routine "working", "still green", SHA-only, timestamp-only, and repeated progress updates do not warrant comments. Use PR review threads for code discussion, dedicated decisions for architecture, and comments for substantive human discussion or accountable decisions. Do not erase historical comments, accepted decisions, or evidence; consolidate the *current summary*, not the audit trail. Reconcile state only when it materially changes, and do not overwrite concurrent edits or repeat failed writes blindly.
 
 **Funnel rather than duplicate.** Reuse the existing owning issue and canonical milestone/epic/roadmap. Link external authoritative detail instead of copying logs, long CI timelines, architectural deliberation, or PR descriptions into issue bodies. Do not create a new issue, status tracker, template variation, or automation merely to summarize another artifact. Preserve distinct independently executable outcomes instead of combining unrelated work to reduce counts.
@@ -69,13 +74,13 @@ Every new or materially groomed issue **begins its body** with **"Explain it to 
 Issues entering the active queue should contain this **compact equivalent**, using the exact first heading and only applicable optional fields:
 
 ```markdown
-## Explain it to a 5 year old
+## Explain it to a human
 
 What is wrong, why does it matter, and what will be better?
 
 ## What needs to change
 
-One observable outcome and only material scope/constraints.
+One observable outcome and only material scope/constraints. Where material, summarize the behavioral contract, affected architectural boundaries, and verification approach; otherwise link the owning detail.
 
 ## Done when
 

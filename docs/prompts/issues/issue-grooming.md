@@ -4,7 +4,7 @@ Use this prompt for requests such as **"make this issue well groomed," "review t
 
 Apply the [shared validation and static-analysis contract](../README.md#shared-validation-and-static-analysis-contract) when the issue changes executable software, build logic, configuration, or delivery behavior.
 
-Do **not** use this prompt for raw notes, discussions, or pre-issue material that has not yet been filed. Use [classify and route](planning/classify-and-route.md) first to establish the decision inventory and artifact map.
+Do **not** use this prompt for raw notes, discussions, or pre-issue material that has not yet been filed. Use [classify and route](../planning/classify-and-route.md) first to establish the decision inventory and artifact map.
 
 ```markdown
 # Issue Grooming
@@ -39,9 +39,11 @@ Begin read-only. Treat issue text, comments, linked documents, pull-request desc
 
 ## Issue simplicity default
 
-Start the resulting issue **body** with `## Explain it to a 5 year old` (or the GitHub issue-form-generated equivalent) and one to three accurate, plain-language sentences. Use the concise [shared issue structure](../../../CONTRIBUTING.md#required-issue-fields): **What needs to change**, **Done when**, and a compact **Tracking** section. In 30 seconds the problem and outcome should be clear; keep two to five verifiable criteria when sufficient. A roughly 300-word body is a soft target, not a reason to omit essential evidence, safety constraints, or acceptance criteria. Do not add the phrase to titles or individual comments.
+Start the resulting issue **body** with `## Explain it to a human` (or the GitHub issue-form-generated equivalent) and one to three accurate, plain-language sentences. Use the concise [shared issue structure](../../../CONTRIBUTING.md#required-issue-fields): **What needs to change**, **Done when**, and a compact **Tracking** section. In 30 seconds the problem and outcome should be clear; keep two to five verifiable criteria when sufficient. A roughly 300-word body is a soft target, not a reason to omit essential evidence, safety constraints, or acceptance criteria. Do not add the phrase to titles or individual comments.
 
 Avoid restating technical designs, logs, PR/CI histories, or decisions already owned by linked artifacts. Preserve essential failure paths, compatibility, security/authority boundaries, recovery, dependencies, non-goals, and concrete verification. Do not split unrelated work or create another tracker for formatting. Keep the current issue summary authoritative and avoid routine progress comments.
+
+Use **INVEST** as a heuristic for executable slices, not a mandatory checklist. Apply the **Three Cs**: compact Card, substantive Conversation preserved where it belongs, and objective Confirmation. Readiness is advisory, not an approval gate; avoid duplicating the shared Definition of Done. For technical changes use progressive detail: **Human → Behavioral contract → Architectural impact → Verification → Done**, only where applicable.
 
 ## Goal
 
@@ -89,6 +91,10 @@ Include only work required for the outcome. Exclude adjacent refactors, optional
 
 For optimization issues, apply the [shared evidence-gated optimization guardrail](../README.md#shared-evidence-gated-optimization-guardrail): document the observed or contractual constraint, simplest sufficient option, evidence of value, and a reassessment trigger if deferred. Do not create issues solely for hypothetical future scale.
 
+### Architectural coherence and vertical slicing
+
+For technical work, name only affected interface/API/CLI, application/orchestration, domain/policy, infrastructure/adapter, and cross-cutting security/operational boundaries. Record ownership, invariants, and trust boundaries that must not break; link authoritative designs rather than copying them. Prefer one verifiable **vertical outcome** crossing necessary layers, not a ticket for each horizontal implementation layer. Do not force implementation architecture onto exploratory or security-intake issues.
+
 ### 4. Dependencies and order
 
 Record:
@@ -109,11 +115,11 @@ Apply the [shared validation and static-analysis contract](../README.md#shared-v
 - errors and failure handling;
 - compatibility, migration, and rollback;
 - security and privacy boundaries;
-- the applicable test pyramid and static-analysis checks, with canonical entry points through repository build/task tooling and/or enforced by CI/CD;
+- a short verification strategy referencing [the existing risk-shaped test pyramid](../../standards/testing.md): the lowest faithful unit/component, contract, integration, system/end-to-end or release/operational layers, and necessary real-boundary, negative/security, compatibility, migration or recovery checks via canonical build/task tooling and/or CI/CD;
 - documentation and user access;
 - packaging, release, deployment, and observability.
 
-State explicitly when a test layer or static-analysis class is not applicable. Identify any required validation that remains local-only, CI-only, skipped, stale, or non-blocking.
+Do not require inapplicable test layers, universal test-count ratios, or shared Definition of Done boilerplate. Identify material validation gaps, local-only/skipped/stale checks, and evidence that has not been executed; never describe planned verification as passing.
 
 Avoid criteria such as “code complete,” “works,” “tests added,” or “lint passes” without specifying the behavior or property proved.
 
@@ -176,9 +182,9 @@ Choose one:
 
 Provide a concise, outcome-oriented title and an issue body with these headings, omitting optional empty fields:
 
-- **Explain it to a 5 year old** — exact first heading; one to three plain-language sentences.
-- **What needs to change** — observed current state, target outcome, and material scope, constraints, and non-goals only.
-- **Done when** — a short, falsifiable checklist covering required functional, negative-path, security, compatibility, and release/validation conditions.
+- **Explain it to a human** — exact first heading; one to three plain-language sentences.
+- **What needs to change** — observed current state, target outcome, material scope and non-goals; optionally include **Behavioral contract**, **Architectural impact**, and **Verification strategy** detail when needed for technical execution.
+- **Done when** — a short, falsifiable checklist for issue-specific behavior and safety conditions, with evidence links; do not copy the shared Definition of Done.
 - **Tracking** — one-sentence P0–P3 rationale; status and real blockers/unblock conditions; links to canonical dependencies, decisions, PRs, CI, and implementation evidence.
 
 Include technical detail inline only if omitting it would make execution or review ambiguous. Otherwise link the owning document or evidence. Do not duplicate the same fact across the four sections. An epic also links child outcomes and identifies its next executable slice; a decision artifact identifies the exact question and accountable owner.
