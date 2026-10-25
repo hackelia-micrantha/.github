@@ -1,18 +1,55 @@
 name: "Bug report"
-description: "Report a defect in behavior"
+description: "Report a reproducible defect"
 title: "[bug]: "
 labels: ["type:bug", "status:needs-grooming"]
 body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to report a bug. Please include enough detail that we can reproduce and fix it.
+        Keep this short and link existing evidence. Redact secrets and personal data from public reports.
+
+  - type: textarea
+    id: eli5
+    attributes:
+      label: Explain it to a 5 year old
+      description: In 1–3 everyday sentences, say what is wrong, why it matters, and what should be better.
+    validations:
+      required: true
+
+  - type: textarea
+    id: change
+    attributes:
+      label: What needs to change
+      description: Describe expected versus actual behavior and the affected version or environment.
+      placeholder: "When I ..., I expected ..., but ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: How to reproduce
+      description: Smallest reproduction and relevant redacted error evidence. Link long logs or traces.
+      placeholder: |
+        1.
+        2.
+    validations:
+      required: true
+
+  - type: textarea
+    id: done
+    attributes:
+      label: Done when
+      description: Observable fix or regression check, including important failure behavior.
+      placeholder: "- [ ] ..."
+    validations:
+      required: false
 
   - type: dropdown
     id: priority
     attributes:
       label: Priority
-      description: How soon should this consume limited engineering capacity? See CONTRIBUTING.md for the priority model.
+      description: Repository-global urgency, not severity or blocked status (see CONTRIBUTING.md).
       options:
         - P0 — interrupt (active break or dangerous exposure)
         - P1 — next (unlocks milestone or closes significant risk)
@@ -23,79 +60,10 @@ body:
       required: true
 
   - type: textarea
-    id: outcome
+    id: tracking
     attributes:
-      label: Outcome
-      description: What observable result changes when this issue is complete?
-      placeholder: "When this is fixed, …"
-    validations:
-      required: true
-
-  - type: textarea
-    id: summary
-    attributes:
-      label: Summary
-      description: What happened and what did you expect?
-      placeholder: "When I…, I expected…, but…"
-    validations:
-      required: true
-
-  - type: textarea
-    id: repro
-    attributes:
-      label: Reproduction steps
-      description: Minimal steps to reproduce (ideally a minimal repo or snippet).
-      placeholder: |
-        1.
-        2.
-        3.
-    validations:
-      required: true
-
-  - type: textarea
-    id: logs
-    attributes:
-      label: Logs / output
-      description: Relevant logs, stack traces, or console output (redact secrets).
-      render: text
-    validations:
-      required: false
-
-  - type: input
-    id: version
-    attributes:
-      label: Version / commit
-      description: What version, tag, or commit hash are you on?
-      placeholder: "v1.2.3 / abcdef1"
-    validations:
-      required: false
-
-  - type: dropdown
-    id: platform
-    attributes:
-      label: Platform
-      multiple: true
-      options:
-        - Linux
-        - macOS
-        - Windows
-        - Android
-        - iOS
-        - Web
-        - Other
-    validations:
-      required: false
-
-  - type: textarea
-    id: environment
-    attributes:
-      label: Environment details
-      description: Runtime, tooling, and environment info.
-      placeholder: |
-        - OS:
-        - Runtime (node/go/jvm/etc):
-        - Package manager:
-        - Container / k8s:
+      label: Tracking (if applicable)
+      description: Version, blocker, non-goals, and authoritative links only. No repeated logs.
     validations:
       required: false
 
@@ -104,7 +72,7 @@ body:
     attributes:
       label: Checklist
       options:
-        - label: I searched existing issues and didn’t find a duplicate.
+        - label: I searched for an existing issue with the same outcome.
           required: true
-        - label: I redacted any secrets from logs and examples.
+        - label: I redacted secrets and personal data.
           required: true
