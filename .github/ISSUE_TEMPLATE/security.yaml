@@ -1,19 +1,35 @@
 name: "Security report (private preferred)"
-description: "Report a security vulnerability (do not include sensitive details here)"
+description: "Report a security concern without publicly exposing exploit details"
 title: "[security]: "
 labels: ["type:security", "status:needs-grooming"]
 body:
   - type: markdown
     attributes:
       value: |
-        ⚠️ Please do NOT include exploit details, secrets, or sensitive information in a public issue.
-        Use the instructions in SECURITY.md for private disclosure.
+        Do NOT include exploit steps, payloads, credentials, sensitive data, or private findings in a public issue.
+        Use SECURITY.md for private disclosure. Public content must remain safe to publish.
+
+  - type: textarea
+    id: eli5
+    attributes:
+      label: Explain it to a 5 year old
+      description: In 1–3 plain-language, non-sensitive sentences, describe the risk and why it matters.
+    validations:
+      required: true
+
+  - type: textarea
+    id: change
+    attributes:
+      label: What needs to change
+      description: The observable security property needed, without exploit details.
+    validations:
+      required: true
 
   - type: dropdown
     id: priority
     attributes:
       label: Priority
-      description: How soon should this consume limited engineering capacity? Security does not automatically mean P0 — see CONTRIBUTING.md.
+      description: Security is not automatically P0 (see CONTRIBUTING.md).
       options:
         - P0 — interrupt (credible, immediate exposure or failure)
         - P1 — next (significant security or operability gap)
@@ -24,28 +40,18 @@ body:
       required: true
 
   - type: textarea
-    id: outcome
+    id: tracking
     attributes:
-      label: Outcome
-      description: What observable security property changes when this is resolved?
-      placeholder: "When this is resolved, …"
+      label: Tracking (public-safe only)
+      description: Link public-safe evidence or state the private disclosure channel; omit sensitive details.
     validations:
-      required: true
-
-  - type: textarea
-    id: highlevel
-    attributes:
-      label: High-level summary (non-sensitive)
-      description: A brief description without exploit steps or payloads.
-    validations:
-      required: true
+      required: false
 
   - type: input
     id: contact
     attributes:
-      label: Contact info
-      description: Optional — how should we reach you privately?
-      placeholder: "email or preferred handle"
+      label: Contact (optional)
+      description: Preferred private contact channel, if safe to make public.
     validations:
       required: false
 
@@ -54,5 +60,5 @@ body:
     attributes:
       label: Confirmation
       options:
-        - label: I understand detailed vulnerability reports should be sent privately per SECURITY.md.
+        - label: I understand that detailed security findings should be submitted privately via SECURITY.md.
           required: true

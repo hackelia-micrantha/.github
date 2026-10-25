@@ -18,13 +18,14 @@ Use for `groom this issue`, `make an issue`, `update issues`, or whenever an exe
 ## Workflow
 
 1. Verify that an issue is the right artifact; route unresolved alternatives to QART, broad proposals to RFC, unknown feasibility to a spike, and accepted decisions to ADR where appropriate.
-2. State the user/operator/system outcome rather than implementation activity alone.
+2. Begin the issue body with the exact heading **Explain it to a 5 year old** and one to three accurate plain-language sentences; state the user/operator/system outcome rather than implementation activity alone.
 3. Bound in-scope and out-of-scope work.
 4. Add acceptance criteria that can be objectively verified.
 5. Identify dependencies, blockers, compatibility/security implications, and required docs.
 6. Define the smallest trustworthy validation layers and exact evidence expected.
 7. Assign priority from current impact and dependency value rather than age.
-8. Avoid combining unrelated outcomes merely to reduce issue count; avoid one issue per observation when one coherent outcome covers them.
+8. Use the compact **What needs to change / Done when / Tracking** format in `CONTRIBUTING.md`; link authoritative details instead of duplicating technical design, logs, decisions, and CI histories. Prefer in-place status edits over routine progress comments, without losing human discussion or historical evidence.
+9. Avoid combining unrelated outcomes merely to reduce issue count; avoid one issue per observation when one coherent outcome covers them.
 
 ## Evidence
 
