@@ -18,11 +18,11 @@ Use for `groom this issue`, `make an issue`, `update issues`, or whenever an exe
 ## Workflow
 
 1. Verify that an issue is the right artifact; route unresolved alternatives to QART, broad proposals to RFC, unknown feasibility to a spike, and accepted decisions to ADR where appropriate.
-2. Begin the issue body with the exact heading **Explain it to a 5 year old** and one to three accurate plain-language sentences; state the user/operator/system outcome rather than implementation activity alone.
-3. Bound in-scope and out-of-scope work.
+2. Begin the issue body with the exact heading **Explain it to a human** and one to three accurate plain-language sentences; state the user/operator/system outcome rather than implementation activity alone.
+3. Bound in-scope and out-of-scope work. Use INVEST as a heuristic for executable vertical slices, not a required field checklist or a reason to split issues by technical layer.
 4. Add acceptance criteria that can be objectively verified.
-5. Identify dependencies, blockers, compatibility/security implications, and required docs.
-6. Define the smallest trustworthy validation layers and exact evidence expected.
+5. Identify dependencies, blockers, compatibility/security implications, and required docs. Name affected interface, application, domain/policy, adapter, and cross-cutting boundaries only when material.
+6. Reference `docs/standards/testing.md`; choose the lowest faithful test-pyramid layers, real integration/operational boundaries, and exact evidence expected. Separate issue-specific acceptance from shared Definition of Done checks.
 7. Assign priority from current impact and dependency value rather than age.
 8. Use the compact **What needs to change / Done when / Tracking** format in `CONTRIBUTING.md`; link authoritative details instead of duplicating technical design, logs, decisions, and CI histories. Prefer in-place status edits over routine progress comments, without losing human discussion or historical evidence.
 9. Avoid combining unrelated outcomes merely to reduce issue count; avoid one issue per observation when one coherent outcome covers them.
