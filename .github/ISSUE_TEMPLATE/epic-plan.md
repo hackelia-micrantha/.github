@@ -6,13 +6,13 @@ labels: ""
 assignees: ""
 ---
 
-## Explain it to a 5 year old
+## Explain it to a human
 
-In 1–3 everyday sentences, explain the larger problem, why it matters, and what success looks like.
+In 1–3 plain-language sentences, explain the larger problem, why it matters, and what success looks like.
 
 ## What needs to change
 
-Describe the larger observable result, essential boundaries, and non-goals. Link the authoritative design or decisions rather than repeating them. An epic coordinates work; it is not itself executable.
+Describe the larger observable result, essential architectural and safety boundaries, and non-goals. Link authoritative design/decisions rather than repeating them. An epic coordinates **vertical outcomes**, not tickets for each technical layer; it is not itself executable.
 
 ## Done when
 
