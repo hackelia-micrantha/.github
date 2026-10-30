@@ -196,6 +196,21 @@ Compounding is useful only if it improves later work. Where the evidence exists,
 
 Do not optimize these metrics in isolation. Fewer review findings is not success if checks were weakened, evidence disappeared, or behavior became less observable.
 
+## Verified delivery value and research inputs (2026-10)
+
+The durable Compound loop should improve **consumer-verified delivery**, not maximize generated code, PRs, prompts, or process artifacts. This is a *measurement lens*, not another required gate or policy service.
+
+For a material delivery review, when source evidence exists distinguish:
+
+1. exact proposed candidate and accepted implementation/review/security/test evidence;
+2. consumer-reachable release, integration, or operational effect (if applicable);
+3. actual user adoption, downstream use, verified operational outcome, or billed-resource retirement;
+4. attributable model/tool/CI/sandbox, human review, rework and incident costs **when measured**; explicitly say `unknown` where not measured.
+
+No change is "production-qualified" merely because generated tests, CI, or a PR passed. Preserve the [existing completion contract](../prompts/reviews/implementation-completeness.md) and [cost-of-delay guardrail](../../CONTRIBUTING.md#financial-impact-and-cost-of-delay-guardrail); never reduce verification to improve a `Verification Tax` ratio. Model claims and prior successful runs cannot authorize release or characterize actual spend.
+
+Research context and owned next steps are in [October 2026 evidence reconciliation](research-synthesis-2026-10-memory-delivery.md). The developer field-trial task effect is not a release effect; the September 2026 NBER matched-study abstract shows substantial attenuation from coding activity to releases and aggregate app use, **but its full revised robustness methods remain unreviewed**. Do not import these population estimates as local baselines. Existing [meta #144](https://github.com/hackelia-micrantha/.github/issues/144), Dubnium Run Ledger and Anthesis budgets own any conditional measurement.
+
 ## Project ownership
 
 The organization practice composes with existing project responsibilities:
