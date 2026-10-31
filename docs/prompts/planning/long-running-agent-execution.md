@@ -42,6 +42,19 @@ Select this **outcome-driven mode** when the operator explicitly requests a comp
 7. **Gate consequential effects.** Check exact subject identity, fresh evidence, unresolved blockers, independent review/policy, and **separate explicit authorization** before merge, release, publish, deploy, delete, permissions/credentials, external communication, or consequential closure. If blocked, continue independent useful work; never treat permission to implement or "proceed" as effect authority. Verify every authorized effect by external read-back.
 8. **Recover and close out.** Use the existing compact run ledger for exact revisions, completed versus missing evidence, current gate, uncertain effects, retry usage, and next eligible transition. Do not depend on chat continuity or claim autonomous work after the session ends. Reconcile existing issues/docs only within authorized scope; run a bounded Compound assessment *after* the outcome decision, without inventing learning artifacts.
 
+### CI completion and durable wake-up
+
+A pending check is a **waiting transition**, not a terminal delivery result. During an interactive session, gather independent useful evidence instead of ending at `CI pending`. If the owning execution runtime supports durable continuation, checkpoint the existing run and register a bounded wake-up mechanism; a prompt or ChatGPT conversation alone cannot guarantee a future wake-up.
+
+- Record the run ID, repository, pull request/work item, exact candidate SHA, required check identities, relevant workflow run IDs/attempts, last authoritative observation, waiting reason, active gates, and consumed retry budget in the existing run ledger. Do not create a second execution ledger or controller.
+- Prefer authenticated CI completion events with deduplication and reconciliation against authoritative provider state. Use bounded polling as a fallback, with backoff and timeout/stall classification. Webhook payloads are observations, never authorization.
+- On wake-up, recover -> reconcile -> continue: verify that each required check applies to the **current exact candidate** and is conclusively complete; distinguish pending, queued, skipped, cancelled, timed-out, stale, failed, and successful states. Do not treat one green workflow as the entire required gate.
+- For a genuine source/test failure, inspect deterministic diagnostics, repair within the accepted task, revalidate the changed head, and re-request required independent evidence. For infrastructure/transient failures, use the existing bounded operational retry budget, not code churn. Do not rerun non-idempotent effects blindly.
+- If a session or connector cannot register a durable wake-up, explicitly report the precise handoff and blocked transition. Never imply that interactive ChatGPT will autonomously resume after ending.
+- Acceptance proof for runtime support: start a run with CI pending, end the interactive worker, receive a CI completion event, restart/recover, and show that the **same run** advances only under its original authority and exact-head gates. Include duplicate events, stale SHA, missing checks, restart, and failed CI cases.
+
+This clarifies existing execution/recovery semantics; it does not delegate effect authority, create a new orchestration framework, or redefine completion.
+
 ### Terminal outcome classification
 
 Choose the first accurate state; do not equate individual milestones with completion:
