@@ -126,6 +126,7 @@ After each completed review, provide a compact result that stands on its own:
 - **Paper/source and verdict** with link and date.
 - **Three to five material findings**, with evidence level and the largest limitations.
 - **Project integration ledger**: relevant projects, already-covered contracts, exact changed issue/doc links, new issues if truly needed, and explicit skipped or deferred actions.
+- **Repository documentation ledger**: exact inspected owning paths and coverage per direct project; verified changed PR/commit links, deferred experiment gates, and explicit no-change/blocked reasons. An issue-only reconciliation is incomplete when a justified documentation change is outstanding.
 - **Tracker state**: which sheet/tab/stable source record changed, whether identity-bound queue advancement was independently verified, or which atomic/single-writer gate blocked it; current next item only when reliably known.
 - **Validation and authority**: what was actually executed/read back; what was not verified; any blockers requiring human action.
 
