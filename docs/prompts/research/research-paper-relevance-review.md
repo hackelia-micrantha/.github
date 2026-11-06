@@ -158,6 +158,18 @@ For cross-repository findings:
 
 If repository ownership itself is unclear or contested, recommend the [Cross-Repository Boundary Review](../architecture/cross-repository-boundaries.md) before creating implementation work.
 
+### 7a. Select concrete repository-documentation targets
+
+For each directly affected project, locate and inspect its **existing canonical repository docs** (architecture, security threat model, operations/runbook, contract/spec, RFC/ADR, or owning topical guide). Do not stop at an issue, tracker note or cross-project research review. Map each material finding to one exact path and classify that target as:
+
+- `already-current`: state the exact file and supporting passage;
+- `update-now`: identify the smallest factual/non-normative revision and a reviewable PR when mutations are authorized;
+- `defer-until-experiment`: state the unresolved evidence, owning issue and the promotion gate;
+- `blocked`: report missing access, conflicting owner/docs or mutation gate;
+- `not-applicable`: provide a short reason without inventing a doc.
+
+Preserve source/version, certainty and reproduction qualifications near any cited finding. Distinguish proposed fixtures from executed tests and avoid changing normative policy on the strength of a preprint. Update one owner doc instead of copying rules into downstream repositories; consumer docs should contain only independently relevant integration/qualification detail. Verify changed doc links, frontmatter, indexes and exact branch head. An issue update alone does **not** satisfy an `update-now` documentation target.
+
 ### 8. Select the smallest responsible artifacts
 
 Use the library's artifact-selection rules. In particular:
