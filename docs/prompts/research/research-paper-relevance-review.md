@@ -249,6 +249,10 @@ For each material implication, report current implementation/design evidence and
 | Action | Classification | Owner | Outcome / success criterion | Priority | Confidence | Cost/risk |
 | --- | --- | --- | --- | --- | --- | --- |
 
+### Repository documentation dispositions
+
+Provide the **exact target repository and document path for every direct project**, current covering evidence, one explicit `already-current` / `update-now` / `defer-until-experiment` / `blocked` / `not-applicable` disposition, and the verified PR/commit or blocker. Distinguish research notes and issue updates from accepted repository documentation. Do not mark an `update-now` target complete with an issue comment alone.
+
 ### Artifact routing
 
 Identify issue, spike, QART, RFC, ADR, specification, documentation, security-review, or no-artifact outcomes. Consolidate aggressively.
