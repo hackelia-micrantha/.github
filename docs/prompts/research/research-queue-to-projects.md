@@ -76,6 +76,23 @@ Do not transform benchmark percentages into deployment guarantees. Separate code
 - Respect organization priority and active blockers. Do not inflate P1/P0, introduce a second supervisor/policy engine, require more CI minutes, make blanket scanner mandates or promote experiments solely because a paper is new.
 - For upstream contributions, check whether the user or another contributor already commented; avoid duplicates. Prepare a narrow test or argument and only submit externally if allowed.
 
+### 4a. Target authoritative repository documentation for every material finding
+
+**Issues are not a substitute for durable repository documentation.** For each *directly affected* project, resolve the actual documentation topology on the current default branch and any active docs PR before selecting artifacts. Check repository `docs/README.md`, documentation maps/indexes where present, relevant architecture/security/operations/spec/RFC/ADR files, and source implementation when it changes a documented claim. Do not assume all repositories use the same doc paths.
+
+Record an explicit **repository documentation target** for each materially affected project, including:
+
+| Project / repository | Exact existing doc path (or proposed location) | Current claim / evidence | Finding and needed delta | Disposition | Change / blocker |
+| --- | --- | --- | --- | --- | --- |
+| <owner> | <repo + path> | <verified source> | <smallest supported revision> | `already-current` / `update-now` / `defer-until-experiment` / `blocked` / `not-applicable` | <exact PR, commit, or reason> |
+
+- Inspect existing material before writing. An `update-now` disposition requires a reviewable documentation diff/PR (or a concrete failure/authority blocker), **not merely an issue comment promising docs later**. Record `already-current` only when a specific doc and the covering passage were inspected. `defer-until-experiment` must identify its owning issue and qualifying evidence.
+- Put normative semantics in the *owning* architecture/RFC/spec/security docs only when independently supported by the current accepted design and authorized review; a new paper alone never amends normative policy. A research finding may instead warrant a clearly non-normative dated evidence/limitations note in the relevant project doc.
+- Follow the established owner document and link to the private, version-pinned research review when permitted. Do not copy private analysis into a public/community repository or mirror identical normative text across consumers. Avoid global README edits or new `research.md` landing pages where an existing topical doc owns the concept.
+- When findings affect a runtime consumer, distinguish what its own docs should say (mechanism, limitation, qualification) from the governance semantics owned upstream. If existing doc coverage is sufficient, record an explicit no-change determination rather than adding citation noise.
+- Check referenced links, frontmatter/TOC/doc indexes and applicable local documentation validation. Independently read back exact branch/commit and PR for each change. Classify proposed/open/merged/deployed accurately.
+- A source review is **documentation-reconciled** only when each direct project has a documented disposition and each justified `update-now` target has a verified PR/change or stated blocker. This is separate from tracker status advancement and independent experiment completion.
+
 ### 5. Apply and verify changes in dependency order
 
 When authorized, execute:
