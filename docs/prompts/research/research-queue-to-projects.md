@@ -38,6 +38,14 @@ Optional parameters:
 - Preserve chronological source/version identity and record a review date. Do not claim exclusive ownership of a row or that a parallel session has not modified it.
 - If an item has already been fully reviewed and integrated, verify the record; remove or complete its obsolete queue pointer **only** through the identity-bound admission rule in step 5. Otherwise leave the queue unchanged and report the item as already reviewed without duplicating work.
 
+**Tracker admission and count preflight** (read-only unless the operator authorized the exact write):
+
+- Check the live `Papers` header and bounded native cell metadata before relying on column offsets or writing candidate rows. In the current schema, `L:P` are 0–5 numerical ratings, `Q` is a numerical priority score, `R` is a finite recommendation, `S` is a finite review status, and review basis/reproduction/disposition are separate provenance fields. Validate each field against the *observed header and validation rules*. Never interpret shifted text as a score or a recommendation as review status. Legacy numeric-looking strings may be read and flagged; new writes must satisfy the destination's typed admission rule.
+- Model `New`, `Triaged`, `Reviewed`, and `Deferred` as separate states; version suffixes (e.g., `Reviewed v2`) belong in version/provenance metadata, **not** a new status. Compute pending counts from canonical paper state, not ranked-queue length, recommendation, model narration, or notes. Flag ambiguous legacy states instead of silently counting them.
+- Native Sheet dropdown/number validation is a *human-entry guard*, not authorization or atomic protection for API writes. For every authorized intake or status mutation, check expected source identity, current version/status, exact destination headers, numeric types, finite states, and allowed recommendations **before** submitting a bounded write; reject/quarantine malformed source data without partially shifting fields. Read back the exact source-keyed record afterward. An unconditional API update plus readback is **not** compare-and-swap.
+- Compare canonical pending papers against the operator-ranked `Reading Queue` as **two different views**. For every ranked URL, resolve *live* `Papers` score, recommendation and review status by stable source identity: the queue may mix formula-backed rows with stale copied literals. Never treat a literal queue status as canonical or re-review an already reviewed source. Report eligible `Read Now` sources omitted from the ranked queue as advisory discrepancies. Do not automatically admit, re-rank, delete, advance or repair queue projections without the existing identity-bound writer gate. Preserve explicit operator priorities.
+
+
 ### 2. Choose the highest-information-gain eligible item
 
 - Default to the **current queue rank** and operator-specified priority; use paper relevance, unresolved security/correctness questions, active project dependencies and evidence quality to break ties.
@@ -67,6 +75,23 @@ Do not transform benchmark percentages into deployment guarantees. Separate code
 - A checklist or test name is not proof: where a security/supply-chain claim depends on enforcement, include an appropriate falsifying case, independent observable effect and exact-source evidence. Distinguish a tool/script **existing** from a trusted CI path **executing** it, and a valid permit from observed action/effect correspondence.
 - Respect organization priority and active blockers. Do not inflate P1/P0, introduce a second supervisor/policy engine, require more CI minutes, make blanket scanner mandates or promote experiments solely because a paper is new.
 - For upstream contributions, check whether the user or another contributor already commented; avoid duplicates. Prepare a narrow test or argument and only submit externally if allowed.
+
+### 4a. Target authoritative repository documentation for every material finding
+
+**Issues are not a substitute for durable repository documentation.** For each *directly affected* project, resolve the actual documentation topology on the current default branch and any active docs PR before selecting artifacts. Check repository `docs/README.md`, documentation maps/indexes where present, relevant architecture/security/operations/spec/RFC/ADR files, and source implementation when it changes a documented claim. Do not assume all repositories use the same doc paths.
+
+Record an explicit **repository documentation target** for each materially affected project, including:
+
+| Project / repository | Exact existing doc path (or proposed location) | Current claim / evidence | Finding and needed delta | Disposition | Change / blocker |
+| --- | --- | --- | --- | --- | --- |
+| <owner> | <repo + path> | <verified source> | <smallest supported revision> | `already-current` / `update-now` / `defer-until-experiment` / `blocked` / `not-applicable` | <exact PR, commit, or reason> |
+
+- Inspect existing material before writing. An `update-now` disposition requires a reviewable documentation diff/PR (or a concrete failure/authority blocker), **not merely an issue comment promising docs later**. Record `already-current` only when a specific doc and the covering passage were inspected. `defer-until-experiment` must identify its owning issue and qualifying evidence.
+- Put normative semantics in the *owning* architecture/RFC/spec/security docs only when independently supported by the current accepted design and authorized review; a new paper alone never amends normative policy. A research finding may instead warrant a clearly non-normative dated evidence/limitations note in the relevant project doc.
+- Follow the established owner document and link to the private, version-pinned research review when permitted. Do not copy private analysis into a public/community repository or mirror identical normative text across consumers. Avoid global README edits or new `research.md` landing pages where an existing topical doc owns the concept.
+- When findings affect a runtime consumer, distinguish what its own docs should say (mechanism, limitation, qualification) from the governance semantics owned upstream. If existing doc coverage is sufficient, record an explicit no-change determination rather than adding citation noise.
+- Check referenced links, frontmatter/TOC/doc indexes and applicable local documentation validation. Independently read back exact branch/commit and PR for each change. Classify proposed/open/merged/deployed accurately.
+- A source review is **documentation-reconciled** only when each direct project has a documented disposition and each justified `update-now` target has a verified PR/change or stated blocker. This is separate from tracker status advancement and independent experiment completion.
 
 ### 5. Apply and verify changes in dependency order
 
@@ -101,6 +126,7 @@ After each completed review, provide a compact result that stands on its own:
 - **Paper/source and verdict** with link and date.
 - **Three to five material findings**, with evidence level and the largest limitations.
 - **Project integration ledger**: relevant projects, already-covered contracts, exact changed issue/doc links, new issues if truly needed, and explicit skipped or deferred actions.
+- **Repository documentation ledger**: exact inspected owning paths and coverage per direct project; verified changed PR/commit links, deferred experiment gates, and explicit no-change/blocked reasons. An issue-only reconciliation is incomplete when a justified documentation change is outstanding.
 - **Tracker state**: which sheet/tab/stable source record changed, whether identity-bound queue advancement was independently verified, or which atomic/single-writer gate blocked it; current next item only when reliably known.
 - **Validation and authority**: what was actually executed/read back; what was not verified; any blockers requiring human action.
 
