@@ -153,13 +153,20 @@ At each meaningful loop boundary:
 
 Do not keep expanding scope merely because additional improvements are possible.
 
-## 10. Preserve a minimal coherent change surface
+## 10. Priority, scope, and complexity guardrails
 
-Prefer the smallest coherent project-level change that satisfies the requested outcome.
+Before substantial new work, identify the current approved milestone, the user/operational outcome or material risk, what already exists, the smallest viable change, and how completion will be observed. If the priority is unclear, inspect the current authoritative roadmap and work items rather than inventing a new initiative.
 
-Avoid unrelated cleanup, speculative abstraction, premature repository/service creation, duplicate capability, or broad shared-contract changes justified only by one local implementation detail.
+- **Finish before expanding.** Prefer repairing, validating, reviewing, merging, or closing in-flight work. Keep concurrent work small. "Proceed" or "deliver to done" continues the agreed scope; neither authorizes adjacent features, services, or infrastructure.
+- **Simplify first.** Prefer deleting, consolidating, reusing, or directly implementing over adding agents, abstractions, gateways, wrappers, scripts, CI jobs, dependencies, or repositories. A new mechanism needs a demonstrated recurring need or material risk and an explicit maintenance-cost trade-off.
+- **Challenge drift and slop.** Flag duplication, speculative architecture, test-only scaffolding, redundant documentation, nonconverging optimization, and open-ended follow-ups. Recommend stop, defer, or delete when benefit is unproven. Do not create an issue for every observation.
+- **Keep meaningful quality gates.** Preserve required security, correctness, operational safety, independent review, and project-local contracts. Prefer observable behavior and failure-mode coverage to brittle implementation-coupled tests or duplicated gate machinery.
+- **Report evidence.** State the delivered outcome, actual changes, verification, remaining blockers, and any deliberately deferred work; do not mistake activity, merged code, or queued CI for user-reachable value.
+- **Respect effect authority.** Significant scope expansion, recurring spending, irreversible changes, production activation, or weakening a required gate needs the applicable explicit authorization.
 
-Capture useful but non-blocking architectural follow-up separately rather than folding it into the current mutation without need.
+Use normal task planning and review to apply these principles. Do not create a separate framework, checklist artifact, automation, or enforcement service solely to implement them.
+
+Capture useful but non-blocking follow-up separately only when it is concrete and valuable; avoid expanding the current mutation without need.
 
 ## 11. Preserve evidence quality
 
