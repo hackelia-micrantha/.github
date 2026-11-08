@@ -2,6 +2,10 @@
 
 This file defines the default agent-selection behavior for work performed in this repository. Other Micrantha repositories do not automatically inherit this file; they should adopt or reference these organization defaults explicitly and may tighten them with repository-local policy.
 
+## Priority and complexity discipline
+
+For substantial Micrantha/Ryjen engineering, apply the [shared priority, scope, and complexity guardrails](docs/prompts/overlays/cross-project-execution.md#10-priority-scope-and-complexity-guardrails), including when no reusable skill or prompt was explicitly selected. Treat them as a decision discipline, not independent effect authority or a mechanically enforced CI gate. Repository-local policies may strengthen them but should not duplicate this normative guidance.
+
 ## Cross-project scope
 
 Whenever a reusable engineering prompt or skill is selected, also apply the [Micrantha / Ryjen cross-project execution overlay](docs/prompts/overlays/cross-project-execution.md).
