@@ -4,7 +4,7 @@
 
 ## Scope and non-goals
 
-<!-- What is included in this change? What is explicitly excluded? -->
+<!-- What is included/excluded? What existing solution was reused, simplified, or removed instead of adding new tooling or abstractions? Briefly justify material new complexity where applicable. -->
 
 ## Validation
 
