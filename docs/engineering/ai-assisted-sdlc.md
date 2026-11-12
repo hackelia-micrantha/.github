@@ -146,6 +146,12 @@ A deterministic failed check is stronger evidence than contradictory reviewer co
 
 Where independent verification is required, independence is a trust property. Different persona names, sessions, or model aliases are insufficient by themselves.
 
+### Security of repository examples (research note, 2026-11-11)
+
+[Sun et al., *Coding Agents Propagate Vulnerabilities in Code Bases* (arXiv:2611.11455v1)](https://arxiv.org/html/2611.11455v1) compared identical coding tasks against secure and insecure neighboring code. Across 96 synthetic backend tasks and 20 paired real C/C++ tasks, agents produced less secure code when security-relevant analogues were insecure; generic security reminders reduced but did not eliminate this effect. The authors' experiments are source-reported and have not been reproduced for Micrantha.
+
+**Evaluation implication, not a new gate:** familiar repository code and style are not evidence that a reused *security-relevant behavior* is safe. For a consequential change, existing tests/review should examine the concrete invariant at the new call site (for example authorization, validation, or memory bounds), including a negative case when warranted, rather than treat matching precedent, functional success, or model self-review as a substitute. The paper studies one implementation step; it does not demonstrate cumulative degradation of our repositories, nor justify another scanner, agent, mandatory CI job, or authority path.
+
 ## Repository contribution-policy conformance
 
 A correct patch and a compliant contribution are **different claims**. Repository-owned rules can govern final artifacts (format, tests, commit metadata, disclosures) or **intermediate behavior** (required commands, approval order, prohibited effects). Checking only the final diff cannot establish the second class.
