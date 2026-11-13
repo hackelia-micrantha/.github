@@ -55,10 +55,22 @@ A pending check is a **waiting transition**, not a terminal delivery result. Dur
 
 This clarifies existing execution/recovery semantics; it does not delegate effect authority, create a new orchestration framework, or redefine completion.
 
+### Before yielding control
+
+Do not equate **nothing runnable in this interactive worker right now** with **the requested outcome is delivered**. After any PR creation, CI dispatch, pending review, or completed repair, re-evaluate the accepted task graph:
+
+1. If another safe, authorized and dependency-ready transition exists, **execute it now** (including independent security/semantic review, focused tests, and evidence reconciliation) rather than answering with a generic status.
+2. If only external waits remain, **suspend the blocked transitions**, preserve exact candidate/check/attempt identities, consumed budgets, first safe post-wake action and the event/owner that can wake them. Label the outcome **waiting/handoff**, not completed or unconditionally blocked. Do not busy-poll or invent unrelated tasks.
+3. If the next step requires separate effect authority, **stop at that precise authority gate**, preserving already-completed evidence and stating the exact decision required.
+4. If the target outcome is actually achieved, verify the consumer-observable result and close out. A green isolated job or opened PR is not enough.
+
+For a reported premature stop, diagnose **which boundary actually interrupted progress** (interactive-session/runtime limit, tool/transport failure, CI queue/admission, failed validation, missing review/evidence, exhausted budget, or effect-authority gate) before changing prompts or CI. A prompt does not provide durable resumption; route that requirement to the existing Dubnium run-ledger/wake consumer instead of adding another scheduler.
+
 ### Terminal outcome classification
 
 Choose the first accurate state; do not equate individual milestones with completion:
 
+- **Waiting — external event (non-terminal handoff):** no independent authorized work remains in the current session; the exact pending transition, required evidence, owner/wake condition and first post-wake action are checkpointed. The run is not delivered and requires the existing runtime to resume, or a future explicit session to reconcile.
 - **Complete — verified:** the exact requested consumer outcome and applicable acceptance evidence are verified.
 - **Complete for stated maturity:** the declared prototype/incubating/etc. scope is verified and bounded enhancements are explicitly non-blocking.
 - **Ready — authority required:** all feasible pre-effect gates are satisfied, but the requested next consequential effect lacks explicit authority.
