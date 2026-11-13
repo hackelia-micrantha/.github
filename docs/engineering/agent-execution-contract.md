@@ -365,6 +365,23 @@ When one or more transitions are waiting on CI, external review, or another asyn
 
 The scheduler loop changes **which already-authorized transition runs next**, not effect authority or approval semantics. Loop iterations must make progress in work completed, evidence, or a causal hypothesis; a repeated identical status check is not progress. Multiple pending tasks must not consume the same scarce runner capacity or mutate the same worktree concurrently. Interactive sessions do not self-restart; durable event-driven continuation belongs to the owning runtime.
 
+### Diagnose early handoffs before adding automation
+
+A report that a Deliver-to-Done run ended early is a **symptom**, not evidence of a defective prompt or insufficient CI capacity. First classify the last attempted transition from authoritative observations:
+
+| Observation | Appropriate disposition |
+| --- | --- |
+| Another independent, authorized transition is ready | Continue it during the current worker/session; ending here is premature |
+| Only CI/build/reviewer evidence is pending | Persist the exact waiting transition and wake condition; end the interactive worker as a **handoff**, not as delivery |
+| CI did not start or the runner disappeared | Investigate admission, queue/capacity, and durable diagnostics; do not rewrite application code solely to force a rerun |
+| CI executed and failed | Classify product/test, trust/policy, or infrastructure failure with actual logs/evidence before repair |
+| The next effect lacks authority | Escalate that *specific* effect, not the entire task; preserve independent work and its evidence |
+| Outcome has required evidence and observable read-back | Mark verified completion at the stated maturity |
+
+When evaluating improvements, compare comparable project/run cohorts using **manual continuation prompts per verified milestone**, **verified or actionable-terminal completion rate**, **CI queue versus execution versus diagnosis latency**, **interrupted-run recovery without duplicate effects**, and **stale/missing required-check acceptance incidents**. Preserve exact candidate, test scope, runner conditions, and task complexity in comparisons. These are diagnostic measures, not new mandatory evidence artifacts, universal thresholds, or new promotion gates.
+
+Do not optimize away mandatory checks based on an AI classification. Deterministic, reviewed affected-target selection may reduce unnecessary work only where the final required gate proves sufficient exact-candidate coverage; unknown or high-risk changes must fall back to the accepted full validation set.
+
 ## Loop classes
 
 Use explicit loop classes so repetition has a reason:
