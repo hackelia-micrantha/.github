@@ -1,133 +1,172 @@
 # How Micrantha projects fit together
 
-Micrantha is a portfolio of **separately owned projects** with shared engineering infrastructure, optional SDKs, and some concrete cross-project consumers. It is not one deployable application or a mandatory dependency stack. This page maps *relationships*, not simply repository proximity.
+Micrantha has **28 registered project identities** across five functional categories. Each project owns a distinct contract; the organization is not one mandatory deployable stack. This map is a *navigation and relationship guide*, not a second project registry, a live service topology, or a release-status dashboard.
 
-Start with the [organization profile](../../profile/README.md#project-families), then drill into the [responsibility catalogue](./repository-catalogue.md), public project surfaces, and implementation evidence linked below. [Canonical project identities and explicitly declared relationships](https://github.com/hackelia-micrantha/hackelia-micrantha/blob/main/registry/projects.yaml) live in the Micrantha meta registry; this page does not replace it.
+**Drill-down path:** [organization profile](../../profile/README.md#project-families) → category below → project entry → linked owner documentation and implementation evidence. The [repository responsibility catalogue](./repository-catalogue.md) explains deeper ownership boundaries. Canonical project identity, lifecycle, and declared relationships remain in the private Micrantha meta registry, accessible to authorized maintainers; public descriptions here do not override it.
 
-**Reading the edges:** solid arrows in the governed-engineering graph are registry declarations (not runtime-completion evidence). Other solid arrows indicate documented or owner-reported *use*, qualified in the text. Dashed arrows indicate architectural lineage, optional/planned integrations, or conceptual overlap. A project can be important without an arrow.
+**How to read the evidence:** **Registry-declared** means a named relationship exists in the canonical registry, not that it is deployed. **Source-observed** means a bounded implementation or adoption is visible in the cited source. **Owner-reported** reflects current operator intent/use without independent runtime qualification. **Planned** and **conceptual** are not implemented dependencies. **Independent** means no ecosystem dependency is asserted.
 
-## At a glance
+## At a glance: all 28 registered projects
 
 ```mermaid
 flowchart TB
-    subgraph Ops["Engineering operations"]
-      Rep["Repora<br/>repository + CI configuration"] -->|"operator capability"| Gate["Dubnium Capability Gateway"]
-      Key["Keylix<br/>MCP sender proof"] -->|"identity evidence"| Gate
-      Hyp["Hyperion<br/>development / testing"] -. "support environment" .-> Gate
-    end
-    subgraph Mobile["Mobile and field"]
-      Blue["Bluebell<br/>KMP foundations"] -. "architecture lineage" .-> Eyes["EyesPie<br/>machine vision"]
-      Myo["Myosotis<br/>local field tools"] -. "prototype relationship" .-> Eyes
-    end
-    subgraph Presence["Shared presentation and independent work"]
-      Fort["Fortunes Service"] -->|"site fortune / footer"| Web["Micrantha web"]
-      Phyl["Phyllotaxis<br/>UI consistency"] -. "planned adoption" .-> Web
-      Out["Outermesh<br/>security learning"] -. "narrative overlap" .-> Ent["Entanglement of Ages"]
-    end
+    Portfolio["Micrantha<br/>28 registered project identities"]
+    Gov["Governed engineering · 9<br/>Anthesis · Dubnium · Calathea<br/>Invokrum · Modolia · Keylix<br/>Sandcastle · Testule · Governance Lab"]
+    Ops["Infrastructure & repository operations · 5<br/>Repora · Hyperion · .github<br/>Micrantha meta · Micrantha Web"]
+    Mobile["Mobile & field systems · 9<br/>Achillea · Amaryllis · Bluebell<br/>Digitalis · Envuscator · EyesPie<br/>Mobuild · Morifolium · Myosotis"]
+    Design["Shared design · 1<br/>Phyllotaxis"]
+    Creative["Products, learning & creative work · 4<br/>Fortunes · Outermesh<br/>CONTENTPKG/MUSICPKG · Entanglement of Ages"]
+
+    Portfolio --> Gov
+    Portfolio --> Ops
+    Portfolio --> Mobile
+    Portfolio --> Design
+    Portfolio --> Creative
 ```
 
-This is a **selective relationship map**, not a complete runtime topology. For additional declared governed-engineering relationships see below. For mobile components and creative/distribution products, follow their sections rather than interpreting omission as nonexistence.
+These are **portfolio groupings, not dependency edges**. For actual cross-category relationships, inspect the project tables and the more specific diagrams below.
 
-Jump to [governed engineering](#governed-engineering), [infrastructure and repository operations](#infrastructure-and-repository-operations), [mobile and edge](#mobile-and-edge), [frontends and independent projects](#frontends-and-independent-projects), or [relationship maturity](#relationship-maturity-and-open-reconciliation).
+| Category | Projects | Drill down |
+| --- | ---: | --- |
+| Governed engineering and SDLC | 9 | [Execution, authorization and evidence](#governed-engineering-and-sdlc-9) |
+| Infrastructure, repository operations and portfolio | 5 | [Operations and public surfaces](#infrastructure-repository-operations-and-portfolio-5) |
+| Mobile and field systems | 9 | [Mobile integration and application boundaries](#mobile-and-field-systems-9) |
+| Shared interface and design system | 1 | [Design-system adoption](#shared-interface-and-design-system-1) |
+| Products, learning and creative work | 4 | [Independent projects and real crossovers](#products-learning-and-creative-work-4) |
 
-## Governed engineering
+## Governed engineering and SDLC (9)
 
-The following **solid edges** are the nine directed relationships declared in the canonical registry; they identify a project-level integration or testing contract, not proof that a production effect path is deployed.
+**Nine registry-declared edges** establish intended project relationships among this family. The solid edges below represent registry declarations, **not proof of production integrations**. Keylix and Repora have important additional relationships described in their entries, but those are not counted as new canonical registry edges.
 
 ```mermaid
 flowchart LR
-    Cal["Calathea<br/>prioritization"] -->|"integrates with"| Dub["Dubnium<br/>runtime / execution"]
-    Mod["Modolia<br/>model selection"] -->|"integrates with"| Dub
-    Mod -->|"integrates with"| Ant["Anthesis<br/>governance"]
-    Inv["Invokrum<br/>context identity"] -->|"integrates with"| Ant
-    Sand["Sandcastle<br/>workspace checkpoints"] -->|"integrates with"| Dub
+    Cal["Calathea"] -->|"integrates with"| Dub["Dubnium"]
+    Mod["Modolia"] -->|"integrates with"| Dub
+    Mod -->|"integrates with"| Ant["Anthesis"]
+    Inv["Invokrum"] -->|"integrates with"| Ant
+    Sand["Sandcastle"] -->|"integrates with"| Dub
     Sand -->|"integrates with"| Ant
-    Test["Testule<br/>verification contracts"] -->|"integrates with"| Dub
+    Test["Testule"] -->|"integrates with"| Dub
     Test -->|"integrates with"| Ant
-    Lab["Anthesis Governance Lab<br/>adversarial fixtures"] -->|"tests"| Ant
+    Lab["Governance Lab"] -->|"tests"| Ant
 ```
 
-| Project | What it owns / relationship | Evidence and drill-down |
-| --- | --- | --- |
-| Dubnium | Local runtime, bounded execution, Supervisor, Gateway and operations; execution receipts are not governance authority | [Public concepts](https://github.com/hackelia-micrantha/dubnium-community) |
-| Anthesis | Policy, approvals, governed-action decisions, provenance and trusted-state transitions | [Contracts](https://github.com/hackelia-micrantha/anthesis-community) |
-| Calathea | Work/portfolio prioritization, which does not authorize execution | [Reusable core](https://github.com/hackelia-micrantha/calathea-community) |
-| Invokrum | Reproducible prompt/context identity, not execution or permission | [Contracts](https://github.com/hackelia-micrantha/invokrum-community) |
-| Modolia | Model eligibility/selection; provider execution remains outside it | [Contracts](https://github.com/hackelia-micrantha/modolia-community) |
-| Sandcastle | Checkpoint/workspace lineage, not semantic correctness | [Contracts](https://github.com/hackelia-micrantha/sandcastle-community) |
-| Testule | Testability requirements and normalized evidence, not a second test runner | [Contracts](https://github.com/hackelia-micrantha/testule-community) |
-| Anthesis Governance Lab | Independent adversarial conformance evaluation | [Testbed](https://github.com/ryjen/anthesis-governance-lab) |
-| Keylix | OAuth/DPoP sender binding for MCP-facing Gateway requests; **sender proof is neither authentication policy nor authorization** | [Public integration contracts](https://github.com/hackelia-micrantha/keylix-community) |
-| Repora | Repository and CI/CD configuration management exposed to the engineering environment as a bounded operator capability (operator-reported use); independent reconciliation and effect permissions still apply | [Repo control tool](https://github.com/hackelia-micrantha/repora) |
+| Registered project | Owns | Relationship / maturity | Project drill-down |
+| --- | --- | --- | --- |
+| **Anthesis** | Policy, approvals, governed-action interpretation, provenance and promotion | Registry target of Invokrum, Modolia, Sandcastle, Testule and Governance Lab. May provide optional **remote** Myosotis governance; that does not override device-local policy (**planned**). | [Anthesis contracts](https://github.com/hackelia-micrantha/anthesis-community) |
+| **Dubnium** | Local AI/executor environment, Supervisor and Capability Gateway; runtime evidence | Registry target of Calathea, Modolia, Sandcastle and Testule; Keylix verifier and Repora repoctl compositions have bounded source evidence. No inferred effect authority. | [Dubnium public architecture](https://github.com/hackelia-micrantha/dubnium-community) |
+| **Calathea** | Local-first deterministic prioritization and portfolio/work selection | Integrates with Dubnium (**registry-declared**); prioritization is advisory, not approval. | [Calathea reusable core](https://github.com/hackelia-micrantha/calathea-community) |
+| **Invokrum** | Reproducible prompt/context composition, attestation and invocation identity | Integrates with Anthesis (**registry-declared**); Keylix may supply sender binding at ingress (**integration contract**, not general authorization). | [Invokrum contracts](https://github.com/hackelia-micrantha/invokrum-community) |
+| **Modolia** | Deterministic model-surface eligibility and route decisions | Integrates with Dubnium and Anthesis (**registry-declared**); execution/provider effects remain owned elsewhere. | [Modolia contracts](https://github.com/hackelia-micrantha/modolia-community) |
+| **Keylix** | OAuth/DPoP sender-constrained proofs and MCP HTTP adapter semantics | Integrates at Dubnium's MCP-facing Capability Gateway (**source-observed sender-binding client**); proof does **not** confer caller authorization or deployment qualification. | [Keylix public security contracts](https://github.com/hackelia-micrantha/keylix-community) |
+| **Sandcastle** | Mutable-workspace checkpoints, identity and recovery lineage | Integrates with Dubnium and Anthesis (**registry-declared**); checkpoint evidence alone is not verified task success. | [Sandcastle contracts](https://github.com/hackelia-micrantha/sandcastle-community) |
+| **Testule** | Testability plans, verification contracts and normalized test evidence | Integrates with Anthesis and Dubnium (**registry-declared**); doesn't supplant native test runners or independent acceptance. | [Testule contracts](https://github.com/hackelia-micrantha/testule-community) |
+| **Anthesis Governance Lab** | Independent adversarial and deterministic governance tests | Tests Anthesis (**registry-declared**); not a production policy enforcement engine. | [Governance testbed](https://github.com/ryjen/anthesis-governance-lab) |
 
-**Authority boundary:** Keylix sender binding, Repora plans, Invokrum contexts, Modolia routes, Sandcastle checkpoints, Testule results and Dubnium run evidence do not confer Anthesis approval or authorize a Gateway effect. Repora's actual Gateway action admission, and Keylix verifier deployment/qualification, must be checked against the current runtime before claiming any given end-to-end production integration. See [governed execution boundaries](./repository-catalogue.md#governed-agentic-execution).
+**Authority boundary:** Keylix sender proof, Repora repository plans, Invokrum context identities, Modolia routes, Sandcastle checkpoints, Testule receipts and Dubnium run evidence are not substitutes for current authorized Gateway effects and applicable Anthesis decisions. Consult the [governed-execution responsibility contract](./repository-catalogue.md#governed-agentic-execution).
 
-## Infrastructure and repository operations
-
-| Project / surface | Current role and limits | Drill down |
-| --- | --- | --- |
-| Hyperion | Operator-reported **development and testing** infrastructure; not externally exposed at present. GitOps owns workload convergence, while Dubnium owns its local execution/runtime boundary. Do not infer public ingress or production hosting from environment names. | [Infrastructure contracts](https://github.com/hackelia-micrantha/hyperion-community) |
-| Repora | Repository topology, CI/CD posture/configuration and controlled reconciliation through reviewable plans; repository metadata is not authorization | [Repo control](https://github.com/hackelia-micrantha/repora) |
-| .github | Shared guidance, prompts, security conventions and contributor standards, not repository-local implementation | [Standards](../standards/README.md) |
-| Micrantha meta | Canonical project identity, lifecycle, declared relationships and portfolio coordination | [Registry](https://github.com/hackelia-micrantha/hackelia-micrantha/blob/main/registry/projects.yaml) |
-| Micrantha Web | Public portfolio presentation and site features; projects remain their own sources of truth | [Website repository](https://github.com/hackelia-micrantha/web) |
-
-## Mobile and edge
-
-These are *related* technologies but not one shared runtime. In particular, a KMP architecture lineage or testbed relationship does not mean the current application imports that project's SDK.
-
-```mermaid
-flowchart TB
-    Blue["Bluebell<br/>KMP foundation"] -. "architecture lineage; not required runtime" .-> Eyes["EyesPie<br/>KMP machine-vision game"]
-    Myo["Myosotis<br/>device-local field research"] -. "machine-vision prototype link" .-> Eyes
-    Ant["Anthesis<br/>remote governance"] -. "optional external authority layer" .-> Myo
-    Dig["Digitalis<br/>mobile customer security"] -. "possible integration" .-> Eyes
-    Mor["Morifolium<br/>mobile SDLC golden path"] -->|"task-interface convention adopted"| Eyes
-    Amy["Amaryllis<br/>developer React Native AI SDK"] -. "parallel mobile AI stack" .-> Blue
-    Mob["Mobuild<br/>build/security coordination"] -->|"current product line"| Env["Envuscator<br/>build-time protection"]
-    Ach["Achillea<br/>RN feature/content platform direction"] -->|"current product consumer"| Aster["Asterwild<br/>local v0.1 game"]
-```
-
-| Project | Relationship / actual boundary | Status and drill-down |
-| --- | --- | --- |
-| Bluebell | KMP architectural foundation for EyesPie; current EyesPie Wayfinder intentionally avoids the historical broad Bluebell runtime dependency | [EyesPie architecture](https://github.com/ryjen/eyespie/blob/main/ARCHITECTURE.md) |
-| EyesPie | Local-authoritative, machine-vision game and prototype relevant to Myosotis field-tool research | [Current implementation](https://github.com/ryjen/eyespie) |
-| Myosotis | **Local-first** field research: device-owned consent, policy, execution and audit. Anthesis may provide *optional remote governance* without overriding local enforcement; EyesPie is a related machine-vision prototype, not a verified SDK consumer | [Protocol and SDK plans](https://github.com/hackelia-micrantha/myosotis-community) |
-| Amaryllis | Independent **developer-facing React Native** on-device AI SDK, adjacent to Bluebell/EyesPie but not a KMP dependency | [SDK](https://github.com/hackelia-micrantha/amaryllis) |
-| Digitalis | Mobile security/attestation and protected configuration for customers; **optional future EyesPie adoption**, not current EyesPie infrastructure | [Public contracts](https://github.com/hackelia-micrantha/digitalis-community) |
-| Envuscator / Mobuild | Envuscator protects mobile build-time configuration; Mobuild coordinates engine, provider adapters, entitlement, distribution and customer-runner boundaries. It is **not** Digitalis attestation | [Envuscator documentation](https://github.com/hackelia-micrantha/envuscator-community) |
-| Morifolium | Mobile SDLC golden-path work; EyesPie adopted its narrow `mise run ci` convention in a validated second-consumer exercise. **Operator reports the broader project has gone stale**, while its registry still says incubating; reassess before promising active delivery or changing canonical lifecycle | [Adoption evidence](https://github.com/hackelia-micrantha/morifolium/blob/main/docs/adoption/eyespie.md) |
-| Achillea / Asterwild | Owner's broader direction includes **feature-enabled downloads for React Native**. Its *current* repository contract instead focuses on local Asterwild/Pentalpha SDK/game packages; no downloadable-feature runtime is claimed shipped. Reconcile the product/platform roadmap before changing the canonical description | [Public Achillea surface](https://github.com/hackelia-micrantha/achillea-community) |
-
-## Frontends and independent projects
+## Infrastructure, repository operations and portfolio (5)
 
 ```mermaid
 flowchart LR
-    Ph["Phyllotaxis<br/>shared UI design system"]
-    Ph -. "planned site adoption" .-> Web["Micrantha web"]
-    Ph -. "planned frontend adoption" .-> Env["Envuscator"]
-    Ph -. "planned frontend adoption" .-> Dig["Digitalis"]
-    Ph -. "planned frontend adoption" .-> Amy["Amaryllis"]
-    Ph -. "future mobile design language" .-> Mobile["Mobile apps"]
-    Fort["Fortunes Service"] -->|"fortune/footer content"| Web
-    Out["Outermesh"] -. "security + narrative crossover" .-> EOA["Entanglement of Ages"]
+    Rep["Repora<br/>repo + CI/CD configurations"] -->|"operator capability"| Gate["Dubnium Capability Gateway"]
+    Key["Keylix<br/>MCP sender binding"] -->|"proof evidence"| Gate
+    Hyper["Hyperion<br/>private dev/test"] -. "separate supporting infrastructure" .-> Gate
+    Meta["Micrantha meta<br/>project registry"] -->|"public projection"| Site["Micrantha Web"]
+    Standards[".github<br/>standards"] -. "shared guidance" .-> Meta
 ```
 
-| Project | Relationship / purpose | Drill down |
-| --- | --- | --- |
-| Phyllotaxis | Planned shared look and feel across Micrantha frontends, starting with **Web, Envuscator, Digitalis and Amaryllis**, and eventually mobile apps. Current implementation is a React-oriented UI package; mobile consistency does **not** imply a shipped native-mobile component library | [Public design contracts](https://github.com/hackelia-micrantha/phyllotaxis-community) |
-| Fortunes Service | Serves fortune content used by the Micrantha web experience, including footer placement reported by the owner; web has a server-side Fortunes API adapter | [Web integration source](https://github.com/hackelia-micrantha/web/blob/main/app/services/fortune.server.ts) |
-| Outermesh | Security-learning project with crossover into book-writing and themes explored in Entanglement of Ages; **conceptual overlap**, not a code/release dependency | [Project](https://github.com/hackelia-micrantha/outermesh) |
-| CONTENTPKG / MUSICPKG | Research into distributing music and, eventually, books in an owner-respecting way. MUSICPKG has published draft interoperability contracts; BOOKPKG is **proposed**, not a released Entanglement of Ages publishing integration | [Published MUSICPKG specification](https://github.com/hackelia-micrantha/musicpkg-community) |
-| Entanglement of Ages | Author's creative exploration of humanity; its writing and marketing authority are independent from software platform and security-tooling authority | [Public marketing](https://github.com/ryjen/entanglement-of-ages-marketing) |
+Solid arrows here describe **owner-reported usage/source-observed integration at limited scope**, not new registry declarations or a blanket production deployment claim.
+
+| Registered project | Owns | Relationship / maturity | Project drill-down |
+| --- | --- | --- | --- |
+| **Repora** | Repository topology, read-only CI/CD posture, reviewed configuration plans and controlled reconciliation | Used as a repository and CI/CD management capability (**owner-reported**); Dubnium includes a repoctl operator-tool composition (**source-observed**). Exact Gateway effect admission still requires runtime evidence; repository labels don't authorize mutations. | [Repora](https://github.com/hackelia-micrantha/repora) |
+| **Hyperion** | Reproducible K3s environments, IaC and Flux/GitOps workloads | Currently hosts **development/testing** work and is **not externally exposed** (**owner-reported**). Distinct from Dubnium workstation/runtime authority. | [Hyperion public concepts](https://github.com/hackelia-micrantha/hyperion-community) |
+| **Micrantha GitHub Configuration (`.github`)** | Organization-wide prompts, engineering/security standards, templates and public profile | Shared guidance for repositories, **not** implicit project-local runtime policy or CI inheritance. This integration map lives here. | [Organization standards](../standards/README.md) |
+| **Micrantha meta** | Canonical project identities, relationship metadata, portfolio/skill coordination | Authoritative registry (private); contributes reviewed data for public presentation. Does **not** execute project work. | [Public responsibility catalogue](./repository-catalogue.md) |
+| **Micrantha Web** | Public website and portfolio presentation, including site-specific product integration | Consumes Fortunes content (**source-observed**) and is a planned first Phyllotaxis frontend consumer. | [Web application source](https://github.com/hackelia-micrantha/web) |
+
+The meta repository's existing architecture diagram describes **governance and data ownership**, not this runtime integration map. The two views answer different questions.
+
+## Mobile and field systems (9)
+
+```mermaid
+flowchart TB
+    Blue["Bluebell<br/>KMP architecture"] -. "historical / conceptual foundation" .-> Eyes["EyesPie<br/>local machine vision"]
+    Myo["Myosotis<br/>local-first field research"] -. "machine-vision prototype" .-> Eyes
+    Ant["Anthesis"] -. "optional remote governance" .-> Myo
+    Dig["Digitalis<br/>customer mobile security"] -. "optional future consumer" .-> Eyes
+    Mor["Morifolium<br/>SDLC conventions"] -->|"validated task-interface adoption"| Eyes
+    Amy["Amaryllis<br/>developer RN AI SDK"] -. "parallel mobile platform" .-> Blue
+    Mob["Mobuild<br/>product coordination"] -->|"current product line"| Env["Envuscator<br/>build-time hardening"]
+    Ach["Achillea<br/>React Native platform direction"] -->|"current product"| Aster["Asterwild<br/>Pentalpha v0.1"]
+```
+
+A solid arrow in this graph needs the **specific evidence and qualification in the table**, not the broader meaning of a registry `integrates_with` relationship.
+
+| Registered project | Owns | Relationship / maturity | Project drill-down |
+| --- | --- | --- | --- |
+| **Achillea** | Reusable mobile gameplay/feature SDK and intended feature-enabled React Native downloads | Asterwild is its first current consumer; its **implemented v0.1** focuses on local Pentalpha. Feature-download direction is broader **owner intent**, not a shipped SDK capability. | [Achillea public product surface](https://github.com/hackelia-micrantha/achillea-community) |
+| **Amaryllis** | Developer-facing React Native on-device AI SDK, offline multimodal interaction and governed UI primitives | Related to Bluebell/EyesPie as a **parallel React Native approach**, not an EyesPie SDK dependency; intended Phyllotaxis visual consistency is **planned**. | [Amaryllis SDK](https://github.com/hackelia-micrantha/amaryllis) |
+| **Bluebell** | Reusable Kotlin Multiplatform architecture and SDK primitives | Architectural **foundation/lineage** for EyesPie. Current EyesPie Wayfinder does *not* require importing the older Bluebell runtime graph. | [Bluebell KMP SDK](https://github.com/hackelia-micrantha/bluebell) · [EyesPie architecture](https://github.com/ryjen/eyespie/blob/main/ARCHITECTURE.md) |
+| **Digitalis** | Customer-oriented mobile attestation and protected-configuration delivery | May integrate with EyesPie (**optional, unimplemented there**). Distinct from Envuscator's static build-time hardening; Phyllotaxis UI adoption is planned. | [Digitalis public concepts](https://github.com/hackelia-micrantha/digitalis-community) |
+| **Envuscator** | Mobile build-time configuration obfuscation, native engine and release verification | Product line coordinated by Mobuild; customer builds stay on customer-controlled runners. Phyllotaxis UI consistency is planned for its frontend, not its engine. | [Envuscator documentation](https://github.com/hackelia-micrantha/envuscator-community) |
+| **EyesPie** | Device-local KMP machine-vision game, signed portable data and matching | Myosotis-related **field-vision prototype**; Bluebell architectural lineage, demonstrated Morifolium task convention; Digitalis is optional, not installed. | [EyesPie code and architecture](https://github.com/ryjen/eyespie) |
+| **Mobuild** | Cross-repository mobile build/security architecture and component coordination | Currently coordinates Envuscator and its engine/provider/entitlement/public distribution boundaries; it is not a second hosted customer build service. | [Mobuild boundary in catalogue](./repository-catalogue.md#additional-registered-project-boundaries) |
+| **Morifolium** | Versioned mobile SDLC golden-path conventions and reference project | `mise run ci` convention was adopted into EyesPie with recorded evidence (**verified narrow adoption**). **Owner reports the project stale**; registry still says incubating, so lifecycle reconciliation remains open. | [Evidence of EyesPie adoption](https://github.com/hackelia-micrantha/morifolium/blob/main/docs/adoption/eyespie.md) |
+| **Myosotis** | **Local-first field research** protocols/SDK for governed device capabilities, consent, execution and audit | EyesPie is a machine-vision prototype relationship; Anthesis can add optional **remote** governance, without superseding device-local authority. No verified live coupling is claimed. | [Myosotis field protocol](https://github.com/hackelia-micrantha/myosotis-community) |
+
+## Shared interface and design system (1)
+
+```mermaid
+flowchart LR
+    Ph["Phyllotaxis<br/>Chroma · Venation · Lamina"]
+    Ph -. "planned UI adoption" .-> Web["Micrantha Web"]
+    Ph -. "planned UI adoption" .-> Env["Envuscator frontend"]
+    Ph -. "planned UI adoption" .-> Dig["Digitalis frontend"]
+    Ph -. "planned UI adoption" .-> Amy["Amaryllis UI"]
+    Ph -. "longer-term consistency" .-> Native["Mobile applications"]
+```
+
+| Registered project | Owns | Relationship / maturity | Project drill-down |
+| --- | --- | --- | --- |
+| **Phyllotaxis** | Micrantha-wide design language and reusable UI substrate | **Intended** to standardize most Micrantha frontend look and feel, starting with **Web, Envuscator, Digitalis and Amaryllis**, eventually extending to mobile apps. This does not imply existing adoption or a shipped native UI library. | [Public design requirements and contracts](https://github.com/hackelia-micrantha/phyllotaxis-community) |
+
+## Products, learning and creative work (4)
+
+```mermaid
+flowchart LR
+    Fort["Fortunes Service"] -->|"site fortune content"| Web["Micrantha Web"]
+    Out["Outermesh<br/>security learning"] -. "themes and writing crossover" .-> EOA["Entanglement of Ages"]
+    Content["CONTENTPKG / MUSICPKG<br/>owned media distribution"] -. "possible future book distribution" .-> EOA
+```
+
+The Fortunes-to-Web edge is supported by an actual server-side API consumer. The other edges describe **creative/product intent**, not dependencies or shipping integrations.
+
+| Registered project | Owns | Relationship / maturity | Project drill-down |
+| --- | --- | --- | --- |
+| **Fortunes Service** | UNIX-fortunes service and web/Slack delivery | Fortune text appears in the Micrantha Web experience (including the footer, **owner-reported**); the site has a **source-observed** server-side Fortunes API consumer. | [Fortunes Service](https://github.com/hackelia-micrantha/fortunes-service) · [Web adapter](https://github.com/hackelia-micrantha/web/blob/main/app/services/fortune.server.ts) |
+| **Outermesh** | Educational security-simulation game and software-engineering learning | Crosses into writing/security education and themes explored in Entanglement of Ages (**conceptual**, not code-level dependency). | [Public responsibility catalogue](./repository-catalogue.md#additional-registered-project-boundaries) |
+| **CONTENTPKG / MUSICPKG** | Research and formats for owner-respecting distribution of music and potentially books | MUSICPKG v0.2 has published **draft** interoperability contracts; BOOKPKG remains **proposed**. No Entanglement of Ages release integration is established. | [MUSICPKG specification and conformance](https://github.com/hackelia-micrantha/musicpkg-community) |
+| **Entanglement of Ages** | Creative exploration of the author's view of humanity, story and publishing | Thematic overlap with Outermesh and potential future book-distribution interest; authoritative writing and publishing decisions are independent of those software projects. | [Public marketing](https://github.com/ryjen/entanglement-of-ages-marketing) |
 
 ## Relationship maturity and open reconciliation
 
-- **Declared in registry:** governed-engineering edges in the second graph. These are *project relationships*, not proof of installed adapters or successful effect execution.
-- **Observed in source:** Keylix Gateway adapter, Dubnium repoctl composition, the Micrantha Web Fortunes API call and the Morifolium/EyesPie task-adoption record. Each observation has the scope stated above.
-- **Owner-reported current use:** Repora as a repository/CI configuration capability, Hyperion for private development/testing, and Fortunes in the site's footer. Runtime exposure and exact revisions require separate operational evidence.
-- **Planned/optional:** Phyllotaxis adoption, mobile Digitalis adoption, optional remote Anthesis governance for Myosotis, and Achillea downloadable-feature direction.
-- **Conceptual/lineage:** Bluebell's EyesPie KMP foundations, Myosotis/EyesPie research overlap, React Native/KMP SDK adjacency, and Outermesh/Entanglement of Ages themes. These are not package dependencies.
-- **Needs project-owner reconciliation:** Achillea's current local-game focus versus downloadable-feature ambition; Morifolium's stale operating state versus incubating registry lifecycle. Do not rewrite project contracts or manufacture new `integrates_with` entries merely to draw an arrow.
+Use this distinction when reading any diagram:
 
-For concrete adoption and compatibility, follow the **consuming project's** architecture, version pins, tests and release evidence. The canonical meta registry owns project identity and declared relationships; this reviewed public document is a human-facing integration guide, not another registry or approval authority.
+| State | Meaning | Example |
+| --- | --- | --- |
+| **Registry-declared** | Intended canonical relationship, not proof of deployed integration | Testule → Dubnium; Modolia → Anthesis |
+| **Source-observed** | Bounded code, package/adapter or adoption evidence exists | Fortunes API adapter in Web; Morifolium task convention in EyesPie; Keylix Gateway client |
+| **Owner-reported** | Current use or direction reported by the project owner but not independently live-verified here | Repora as a repo/CI management capability; Hyperion as private dev/test |
+| **Planned or optional** | Intentionally compatible or targeted, but not accepted as a current dependency | Phyllotaxis frontends, Digitalis → EyesPie, Anthesis remote → Myosotis |
+| **Conceptual / lineage** | Shared ideas, historical foundation or domain overlap | Bluebell ↔ EyesPie; Outermesh ↔ Entanglement of Ages |
+| **Independent** | No cross-project dependency asserted | CONTENTPKG and most product release paths |
+
+Two **owner-contract reconciliations** remain intentionally unresolved: Achillea's broader downloadable-feature direction versus its current local-game release slice, and Morifolium's stale operating state versus its incubating registry lifecycle. They should be decided in the owning project before updating canonical metadata; neither justifies inventing implementation edges.
+
+### Scope and exclusions
+
+All **28 projects in the current registry** are covered exactly once in the five category tables above. This page does **not** reclassify every auxiliary/community repository as a project, nor include excluded/unclassified repositories as if they had approved project identities. The [inventory boundary](https://github.com/hackelia-micrantha/.github/blob/main/docs/architecture/repository-catalogue.md#unclassified-or-newly-created-repositories) explains why some additional repositories or workstreams do not appear here. Any new project identity or relationship requires its own canonical review.
+
+For **implemented integrations**, consult the consuming repository's version pins, architecture, CI/evidence, and operational status. Neither a diagram, an identity signature, a passing test, nor a public project label grants runtime action authority.
