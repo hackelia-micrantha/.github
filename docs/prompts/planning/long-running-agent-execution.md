@@ -70,6 +70,7 @@ For a reported premature stop, diagnose **which boundary actually interrupted pr
 
 Choose the first accurate state; do not equate individual milestones with completion:
 
+- **Waiting — external event (non-terminal handoff):** no independent authorized work remains in the current session; the exact pending transition, required evidence, owner/wake condition and first post-wake action are checkpointed. The run is not delivered and requires the existing runtime to resume, or a future explicit session to reconcile.
 - **Complete — verified:** the exact requested consumer outcome and applicable acceptance evidence are verified.
 - **Complete for stated maturity:** the declared prototype/incubating/etc. scope is verified and bounded enhancements are explicitly non-blocking.
 - **Ready — authority required:** all feasible pre-effect gates are satisfied, but the requested next consequential effect lacks explicit authority.
