@@ -146,7 +146,20 @@ For active repositories with executable CI, the repository must own its CI/build
 
 The flake is the authoritative declaration of project-specific tooling and should expose stable CI entry points through checks, packages, apps, or—when a derivation is not a practical interface—a bounded CI development shell. Mise may remain the task and orchestration interface; the flake owns the reproducible environment in which those tasks execute.
 
-**Single binary-toolchain authority:** `flake.nix` plus the committed `flake.lock` (or the repository's explicitly documented equivalent lock policy) own project executable versions and dependency resolution for both CI and supported local development. `mise.toml` may expose task names, arguments, and environment selection, but **must not independently pin or install the same project binaries through `[tools]` / `mise install`** when they are already supplied by the flake. Supply `mise` itself from the flake if it is used as the task runner. Do not duplicate project-tool installation in workflows or runner images as an alternative to the flake. Language-specific dependency lockfiles and explicitly justified pre-flake host prerequisites remain separate, bounded inputs; this rule does not move deployments or mutation authority into Nix. During migration, identify any transitional duplicate bootstrap by owner and removal gate; do not count a passive operator-only flake or an unqualified runner environment as conformance.
+**Single binary-toolchain authority:** use the repository's `flake.nix` and committed
+`flake.lock` (or an explicitly documented equivalent lock policy) for project
+executable versions and resolution in CI and supported local development.
+
+- `mise.toml` may own task names, arguments, and environment selection, but
+  **must not independently pin or install the same project binaries** through
+  `[tools]` / `mise install` when those binaries are flake-owned. The flake
+  should provide `mise` itself when it is used for task orchestration.
+- Do not replicate flake-owned project-tool installation in workflows or
+  shared runner images. Language dependency lockfiles and justified pre-flake
+  host/platform capabilities are distinct, bounded inputs.
+- An interim duplicate installer must have an owner and explicit removal
+  gate. A passive operator-only flake that CI does not consume is not
+  compliance. Flake ownership does not grant deployment or mutation authority.
 
 - Prefer `nix flake check`, `nix build .#...`, or explicit flake-owned apps/checks/packages over imperative toolchain installation in workflows.
 - Keep repository-specific compilers, SDKs, linters, formatters, browsers, generators, package managers, and test utilities in the project flake rather than the shared runner image when they can be represented reproducibly there.
