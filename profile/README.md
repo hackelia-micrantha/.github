@@ -56,23 +56,19 @@ Shared standards, architecture guidance, and the public responsibility map live 
 
 ## Project families
 
-Micrantha is easier to understand as overlapping project families than as one dependency graph. Projects retain their own implementation authority. The descriptions below summarize project scope, not a guarantee that every capability is released or integrated. Follow each public repository for current availability, licensing, and maturity; community repositories may publish contracts and artifacts without implementation source.
+The ecosystem has several independently useful families, with **specific, declared links rather than one required stack**. This condensed view highlights registered relationships in the governed-engineering group; arrows do not establish released or operational integrations. [Explore the full integration map](../docs/architecture/ecosystem-integration.md) for mobile/edge, infrastructure, standalone projects, component responsibilities, and drill-down links.
 
 ```mermaid
-flowchart TB
-  A[Governed agentic systems]
-  T[Developer + repository tooling]
-  I[Infrastructure]
-  M[Mobile + edge]
-  S[Shared engineering substrate]
-  L[Labs + conformance]
-
-  A --- T
-  A --- I
-  T --- S
-  S --- M
-  L -. challenges .-> A
-  L -. challenges .-> M
+flowchart LR
+    Cal["Calathea<br/>prioritization"] -->|"integrates with"| Dub["Dubnium<br/>execution"]
+    Mod["Modolia<br/>model selection"] -->|"integrates with"| Dub
+    Mod -->|"integrates with"| Anth["Anthesis<br/>governance"]
+    Inv["Invokrum<br/>context identity"] -->|"integrates with"| Anth
+    Test["Testule<br/>verification"] -->|"integrates with"| Dub
+    Test -->|"integrates with"| Anth
+    Sand["Sandcastle<br/>checkpoints"] -->|"integrates with"| Dub
+    Sand -->|"integrates with"| Anth
+    Lab["Governance Lab"] -->|"tests"| Anth
 ```
 
 ### Governed agentic systems
