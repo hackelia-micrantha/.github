@@ -6,7 +6,7 @@ Micrantha is an engineering studio and software ecosystem focused on secure, obs
 
 Core areas include **platform engineering**, **mobile systems**, **infrastructure automation**, **developer tooling**, and **governed agentic development**, with an emphasis on data sovereignty and user-controlled systems.
 
-🌐 [micrantha.com](https://micrantha.com) · [Collaborate](#looking-for-collaborators) · [Projects](#project-families) · [Engineering standards](#engineering-standards) · [Contributing](https://github.com/hackelia-micrantha/.github/blob/main/CONTRIBUTING.md)
+🌐 [micrantha.com](https://micrantha.com) · [Collaborate](#looking-for-collaborators) · [Projects](#project-families) · [Integration map](../docs/architecture/ecosystem-integration.md) · [Engineering standards](#engineering-standards) · [Contributing](https://github.com/hackelia-micrantha/.github/blob/main/CONTRIBUTING.md)
 
 ---
 
