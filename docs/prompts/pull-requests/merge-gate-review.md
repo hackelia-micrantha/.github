@@ -14,7 +14,7 @@ Do **not** use this prompt to investigate CI failures — use [CI failure triage
 
 Compact invocation:
 
-> Review **[REPOSITORY] PR [#NUMBER]** for merge: freshly re-read all related issue(s), current acceptance criteria, and material issue discussion; verify the stated outcome against the diff, surrounding code, and validation evidence; classify findings as blocker, material follow-up, suggestion, or question; check applicable test-pyramid layers and CI gates; choose exactly one decision (merge, fix before merge, blocked, supersede, or deeper review); then, after the decision, identify only material reusable lessons that could be caught or prevented automatically next time.
+> Review **[REPOSITORY] PR [#NUMBER]** for merge: freshly re-read all related issue(s), current acceptance criteria, and material issue discussion; verify the stated outcome against the diff, surrounding code, and validation evidence; classify findings as blocker, material follow-up, suggestion, or question; check risk-bearing hard-coded strings/numbers and applicable test-pyramid layers and CI gates; choose exactly one decision (merge, fix before merge, blocked, supersede, or deeper review); then, after the decision, identify only material reusable lessons that could be caught or prevented automatically next time.
 
 ```markdown
 # Pull-Request Merge-Gate Review
@@ -123,6 +123,8 @@ Check consistency with:
 - established contracts, terminology, patterns, and dependency direction;
 - current milestone and product maturity;
 - operational ownership and observability expectations.
+
+**Hard-coded strings and numbers:** inspect changed literals and relevant surrounding uses for unexplained or duplicated domain values, including timeouts, retry limits, thresholds, identifiers, status/mode codes, security scopes, paths, endpoints, and environment-specific settings. Apply the [shared named-value and enum guardrail](../README.md#shared-named-value-and-enum-guardrail): prefer appropriately scoped typed constants, closed domain types, validated configuration, or explicit external-contract mappings when warranted. Report a finding only when a concrete correctness, security, compatibility, drift, or maintainability risk exists; do not request mechanical extraction of self-evident arithmetic, simple indices, or expressive test fixtures.
 
 Flag unnecessary indirection, duplicate mechanisms, leaky abstractions, partial migrations, or architecture decisions hidden inside implementation changes.
 
