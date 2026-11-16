@@ -20,11 +20,12 @@ Use for `review PR`, `review this change`, or before a merge-readiness decision 
 1. Establish the intended outcome and review the actual diff, not only the PR description.
 2. Check correctness, error handling, concurrency/state behavior, data handling, compatibility, and failure paths relevant to the change.
 3. Review architecture and ownership boundaries; flag unnecessary coupling, duplication, or hidden policy decisions.
-4. Review security: untrusted input, authorization, secrets, privilege, process/environment boundaries, supply-chain impact, and safe failure.
-5. Verify tests and static analysis cover changed behavior at the smallest trustworthy layers; distinguish exact-head evidence from stale or unrelated runs.
-6. Check migrations, docs, packaging, observability, operational impact, and rollback where applicable.
-7. Reconcile unresolved review threads and identify scope that should be split rather than accepted as review debt.
-8. Produce findings ordered by severity/merge impact with concrete evidence and remediation.
+4. Check hard-coded strings and numbers against the [shared named-value and enum guardrail](../../docs/prompts/README.md#shared-named-value-and-enum-guardrail): look for unexplained or repeated behavior-bearing literals, environment-specific values, and unsafe string/numeric state codes; distinguish justified protocol literals and simple local/test values from concrete drift, security, correctness, or maintainability risks.
+5. Review security: untrusted input, authorization, secrets, privilege, process/environment boundaries, supply-chain impact, and safe failure.
+6. Verify tests and static analysis cover changed behavior at the smallest trustworthy layers; distinguish exact-head evidence from stale or unrelated runs.
+7. Check migrations, docs, packaging, observability, operational impact, and rollback where applicable.
+8. Reconcile unresolved review threads and identify scope that should be split rather than accepted as review debt.
+9. Produce findings ordered by severity/merge impact with concrete evidence and remediation.
 
 ## External review publication
 

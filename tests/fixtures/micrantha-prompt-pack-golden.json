@@ -234,7 +234,7 @@
       }
     },
     "merge-gate-review": {
-      "context_sha256": "6342ee685e666fb20ddd6d0fd6a9ba92f150b036717881c27e9fcd7d07788864",
+      "context_sha256": "022e62816d46f4414459e07131a19baf0d984cb2d7f09c96ba5ad7187a1c6268",
       "inspect": {
         "command": "inspect",
         "entries": [
@@ -251,25 +251,25 @@
             "source": "docs/prompts/overlays/cross-project-execution.md"
           },
           {
-            "byte_length": 16153,
+            "byte_length": 16956,
             "class": "workflow",
             "overlay": "merge-gate-review",
             "source": "docs/prompts/pull-requests/merge-gate-review.md"
           }
         ],
         "format": "invokrum.cli/v1",
-        "output_bytes": 54779,
+        "output_bytes": 55582,
         "pack": "micrantha-meta-prompts",
         "profile": "merge-gate-review",
         "schema": "invokrum.dev/v1",
-        "source_bytes": 54775
+        "source_bytes": 55578
       },
       "lock": {
         "format": "invokrum.lock/v1",
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "cbcf0b485378cbfd2e2a0a6045e5f8f874d280f4ad409cad43c6d4b33c6f76a0",
+          "engine_inputs_digest": "9d24491acbb3ffa601d34baf75b28b54210b66b48586cf95cb4a76599fa0a8cb",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -298,16 +298,16 @@
               "class": "workflow",
               "id": "merge-gate-review",
               "source": "docs/prompts/pull-requests/merge-gate-review.md",
-              "byte_length": 16153,
-              "digest": "01f530cbe7b02c2dfe9e43e82b445c34827da2ae0c1e96744b9caf47970cac31"
+              "byte_length": 16956,
+              "digest": "cb87a36121c3e094312867353132775766d06733f49f4ac46326f9eeb670212e"
             }
           ],
           "output": {
-            "byte_length": 54779,
-            "digest": "6342ee685e666fb20ddd6d0fd6a9ba92f150b036717881c27e9fcd7d07788864"
+            "byte_length": 55582,
+            "digest": "022e62816d46f4414459e07131a19baf0d984cb2d7f09c96ba5ad7187a1c6268"
           }
         },
-        "manifest_digest": "83d8dd4ddf7cfff7b21e6d2d916720f1997026dfe582fb5a4d288b256ac44553"
+        "manifest_digest": "c9cdf8100f0a6024465b67b7860bcf516dcad13f92b370f87152c42edced905a"
       }
     },
     "qart-analysis": {
