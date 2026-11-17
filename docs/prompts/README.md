@@ -116,6 +116,29 @@ For software implementation, refactoring, and code review, **do not introduce un
 4. **Avoid ceremonial abstractions.** Obvious language idioms (such as `0`, `1`, `true`, `false`, `null`), local arithmetic, and expressive test data can remain inline where naming would impair clarity. This is not a ban on all literals or a quota for constants and enums.
 5. **Review the semantics.** Flag unexplained or repeated domain literals when they create concrete drift, correctness, security, or maintainability risk. Verify replacements preserve behavior, units, defaults, and compatibility rather than requesting mechanical extraction.
 
+## Shared typed-result guardrail
+
+For implementation, refactoring, and code review, **return cohesive named result types instead of long positional lists of related domain values**. In Go, prefer `(Result, error)` for fallible operations and `Result` for infallible operations; use equivalent language-native result types elsewhere.
+
+- Review signatures with three or more return values, including errors. Consolidate related domain outputs into a named struct, record, or equivalent typed result by default. Named return variables alone do not remove positional coupling at call sites.
+- Preserve idiomatic pairs (such as Go's `(value, ok)`), required interfaces (such as `io.Reader.Read`), and external callback signatures. Retain small, clear independent tuples where a wrapper adds no semantic value; justify exceptions for broad signatures.
+- Keep errors explicit. Prefer value structs in Go unless pointer semantics are warranted; define which results, if any, remain valid on error. Do not conceal errors or unrelated values in generic containers.
+- Check callers, API compatibility, zero-value and partial-result semantics, and error propagation when migrating. Apply to new or materially changed functions; avoid indiscriminate legacy rewrites.
+- Treat return count as a review trigger, not an unconditional lint or merge failure. Cite concrete ambiguity, correctness, or maintenance risk and propose the smallest cohesive result type.
+
+Example: prefer `func inspectRunner(id string) (RunnerStatus, error)` to `func inspectRunner(id string) (string, bool, int, time.Time, error)`; the result type gives each domain value a meaningful name.
+
+## Shared clean architecture and dependency-injection guardrail
+
+Follow [implementation design heuristics](../engineering/agent-execution-contract.md#implementation-design-heuristics) and apply Clean Architecture and SOLID principles to new and materially changed software, using language-native equivalents rather than imposing object-oriented patterns.
+
+- Separate domain/application policy from transport, persistence, framework, runtime and external-service details. Keep dependency direction toward the policy-owning boundary. Keep responsibilities cohesive and contracts narrow; prefer composition over inheritance and speculative generalization.
+- Inject effectful or variable dependencies explicitly through constructors, functions, or equivalent language idioms; assemble concrete implementations in a composition root or boundary adapter. Keep glue responsible for wiring, configuration and lifecycle, not domain decisions. Avoid global mutable dependencies, hidden service locators, and constructors that silently acquire external resources.
+- Design testable seams at real effect boundaries (storage, network, clock, randomness, process execution, etc.). Exercise business behavior with controlled dependencies and validate real adapters with proportionate integration/contract tests. Do not introduce interfaces or mocks for every concrete type or replace meaningful integration evidence with mock-only tests.
+- Keep authorization, validation, error propagation and resource ownership explicit across injected boundaries. Dependency injection must not enable bypassing mandatory security checks or silently substitute privileged implementations.
+- Prefer simple manual wiring; use a DI framework only when justified by existing architecture or demonstrated complexity. Do not mandate a universal directory layout, additional layers, or wholesale migrations of working code.
+- In review, identify concrete boundary violations, hidden effects, coupling, or testing limitations. Request the smallest behavior-preserving repair; classify severity through existing review gates rather than treating pattern compliance as an automatic merge blocker.
+
 ## Shared evidence-gated optimization guardrail
 
 For software, architecture, infrastructure, CI/CD, and engineering review work, prefer the simplest correct, secure, maintainable solution that meets accepted requirements and credible near-term constraints. Optimization is not an independent objective.

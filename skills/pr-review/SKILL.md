@@ -19,7 +19,7 @@ Use for `review PR`, `review this change`, or before a merge-readiness decision 
 
 1. Establish the intended outcome and review the actual diff, not only the PR description.
 2. Check correctness, error handling, concurrency/state behavior, data handling, compatibility, and failure paths relevant to the change.
-3. Review architecture and ownership boundaries; flag unnecessary coupling, duplication, or hidden policy decisions.
+3. Review architecture and ownership boundaries; flag unnecessary coupling, duplication, or hidden policy decisions. Apply the [shared typed-result guardrail](../../docs/prompts/README.md#shared-typed-result-guardrail) and [shared clean architecture and dependency-injection guardrail](../../docs/prompts/README.md#shared-clean-architecture-and-dependency-injection-guardrail): inspect positional result contracts, dependency direction, composition, explicit effects and test seams; preserve idioms and avoid ceremonial abstractions.
 4. Check hard-coded strings and numbers against the [shared named-value and enum guardrail](../../docs/prompts/README.md#shared-named-value-and-enum-guardrail): look for unexplained or repeated behavior-bearing literals, environment-specific values, and unsafe string/numeric state codes; distinguish justified protocol literals and simple local/test values from concrete drift, security, correctness, or maintainability risks.
 5. Review security: untrusted input, authorization, secrets, privilege, process/environment boundaries, supply-chain impact, and safe failure.
 6. Verify tests and static analysis cover changed behavior at the smallest trustworthy layers; distinguish exact-head evidence from stale or unrelated runs.

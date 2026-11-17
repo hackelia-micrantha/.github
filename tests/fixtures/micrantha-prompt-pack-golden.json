@@ -3,12 +3,12 @@
   "invokrum_version": "0.2.1",
   "profiles": {
     "classify-and-route": {
-      "context_sha256": "f6cbcd66b886b73ea9c5fe423bff27baadf1d56d1ff1dc0aa68a64a5bfcce2f5",
+      "context_sha256": "546fde9b84c820e1db2ded1fd7a4ec75506eb25dd86a8c4af9afbef912690f58",
       "inspect": {
         "command": "inspect",
         "entries": [
           {
-            "byte_length": 26714,
+            "byte_length": 30522,
             "class": "foundation",
             "overlay": "shared-engineering-contracts",
             "source": "docs/prompts/README.md"
@@ -27,18 +27,18 @@
           }
         ],
         "format": "invokrum.cli/v1",
-        "output_bytes": 44973,
+        "output_bytes": 48781,
         "pack": "micrantha-meta-prompts",
         "profile": "classify-and-route",
         "schema": "invokrum.dev/v1",
-        "source_bytes": 44969
+        "source_bytes": 48777
       },
       "lock": {
         "format": "invokrum.lock/v1",
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "043115241e73a8efe7f41b01caa5a4bd6b88c4f843d4b4ff8b1f16ee8c67e1a6",
+          "engine_inputs_digest": "028af9b205292cdcaa864d82d5111fbba92138643a0fa18cff03464a9dc62cc4",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -53,8 +53,8 @@
               "class": "foundation",
               "id": "shared-engineering-contracts",
               "source": "docs/prompts/README.md",
-              "byte_length": 26714,
-              "digest": "4542ddf69379674da4eb9a9a0c3f3c2df8bd4632b564fb23ac714ae1dff16729"
+              "byte_length": 30522,
+              "digest": "64c97ee1510d75e8842e7e6fed074be19d65ff9397e1075c82e1dc41c434f330"
             },
             {
               "class": "scope",
@@ -72,20 +72,20 @@
             }
           ],
           "output": {
-            "byte_length": 44973,
-            "digest": "f6cbcd66b886b73ea9c5fe423bff27baadf1d56d1ff1dc0aa68a64a5bfcce2f5"
+            "byte_length": 48781,
+            "digest": "546fde9b84c820e1db2ded1fd7a4ec75506eb25dd86a8c4af9afbef912690f58"
           }
         },
-        "manifest_digest": "49b37cc74dc123a61d897d1b5bc835d509b16ffc373d1ebdd858bd09a24b16cf"
+        "manifest_digest": "53b7476dd2cb07cf60b860475547d1da7b022b22b457fc42150d2f85b511cc28"
       }
     },
     "engineering-artifact-review": {
-      "context_sha256": "85e1ea0c5d86fcb2b0d74807b225201fcec424a80360fe0adbd4b272810bdc56",
+      "context_sha256": "dce8fb4f21cb76d94d67637f8ac97e4517526a12bec22b51073b72e757fce803",
       "inspect": {
         "command": "inspect",
         "entries": [
           {
-            "byte_length": 26714,
+            "byte_length": 30522,
             "class": "foundation",
             "overlay": "shared-engineering-contracts",
             "source": "docs/prompts/README.md"
@@ -104,18 +104,18 @@
           }
         ],
         "format": "invokrum.cli/v1",
-        "output_bytes": 47396,
+        "output_bytes": 51204,
         "pack": "micrantha-meta-prompts",
         "profile": "engineering-artifact-review",
         "schema": "invokrum.dev/v1",
-        "source_bytes": 47392
+        "source_bytes": 51200
       },
       "lock": {
         "format": "invokrum.lock/v1",
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "8ab91734ef30fce0f7c8ab8199a00f26288543e3184ceb3e30ccdbf3b78e675a",
+          "engine_inputs_digest": "e00868383aa662ae8c36830bcb76c7376a6f0fb06dd3b34cc32d10f8411b93af",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -130,8 +130,8 @@
               "class": "foundation",
               "id": "shared-engineering-contracts",
               "source": "docs/prompts/README.md",
-              "byte_length": 26714,
-              "digest": "4542ddf69379674da4eb9a9a0c3f3c2df8bd4632b564fb23ac714ae1dff16729"
+              "byte_length": 30522,
+              "digest": "64c97ee1510d75e8842e7e6fed074be19d65ff9397e1075c82e1dc41c434f330"
             },
             {
               "class": "scope",
@@ -149,20 +149,20 @@
             }
           ],
           "output": {
-            "byte_length": 47396,
-            "digest": "85e1ea0c5d86fcb2b0d74807b225201fcec424a80360fe0adbd4b272810bdc56"
+            "byte_length": 51204,
+            "digest": "dce8fb4f21cb76d94d67637f8ac97e4517526a12bec22b51073b72e757fce803"
           }
         },
-        "manifest_digest": "4e67b02c6b75ca494226b54871b7eed109efbbb666c32292d3f82a2a1a35f1d4"
+        "manifest_digest": "8f4998853aef27778f30d4655beebf27bba10fbf9512440dd84e2971d130c966"
       }
     },
     "issue-grooming": {
-      "context_sha256": "5fc3ace53525e7eb5967825722a08ef75676e00aac8b71f2244855e3124d6492",
+      "context_sha256": "9482a5f0b72f81405d3a8740b04076a584e7e7a5cc3dd209a055d25dc7daf16a",
       "inspect": {
         "command": "inspect",
         "entries": [
           {
-            "byte_length": 26714,
+            "byte_length": 30522,
             "class": "foundation",
             "overlay": "shared-engineering-contracts",
             "source": "docs/prompts/README.md"
@@ -181,18 +181,18 @@
           }
         ],
         "format": "invokrum.cli/v1",
-        "output_bytes": 51110,
+        "output_bytes": 54918,
         "pack": "micrantha-meta-prompts",
         "profile": "issue-grooming",
         "schema": "invokrum.dev/v1",
-        "source_bytes": 51106
+        "source_bytes": 54914
       },
       "lock": {
         "format": "invokrum.lock/v1",
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "385b3499df434264c0eaf4e068dbbc65cfc367a99279030b79f2f28e7a98babf",
+          "engine_inputs_digest": "e9dcfce28a0af86bc7856d2d7f5dad94cedb9db05e09df3a7f9a348cf7c3435b",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -207,8 +207,8 @@
               "class": "foundation",
               "id": "shared-engineering-contracts",
               "source": "docs/prompts/README.md",
-              "byte_length": 26714,
-              "digest": "4542ddf69379674da4eb9a9a0c3f3c2df8bd4632b564fb23ac714ae1dff16729"
+              "byte_length": 30522,
+              "digest": "64c97ee1510d75e8842e7e6fed074be19d65ff9397e1075c82e1dc41c434f330"
             },
             {
               "class": "scope",
@@ -226,20 +226,20 @@
             }
           ],
           "output": {
-            "byte_length": 51110,
-            "digest": "5fc3ace53525e7eb5967825722a08ef75676e00aac8b71f2244855e3124d6492"
+            "byte_length": 54918,
+            "digest": "9482a5f0b72f81405d3a8740b04076a584e7e7a5cc3dd209a055d25dc7daf16a"
           }
         },
-        "manifest_digest": "31ccc66bd11547b1e78bb96309d6e9a3107eb3da35ea99e5011a85bfb2d6728c"
+        "manifest_digest": "6d1adc5ac9c6e890dbc6a38fee44a49a1b332ad49f38893ae8328f040df40c45"
       }
     },
     "merge-gate-review": {
-      "context_sha256": "022e62816d46f4414459e07131a19baf0d984cb2d7f09c96ba5ad7187a1c6268",
+      "context_sha256": "80e60d27692b54cb07402f2a2ffbf0cfff677a8025ee18740aec8a78383a3676",
       "inspect": {
         "command": "inspect",
         "entries": [
           {
-            "byte_length": 26714,
+            "byte_length": 30522,
             "class": "foundation",
             "overlay": "shared-engineering-contracts",
             "source": "docs/prompts/README.md"
@@ -251,25 +251,25 @@
             "source": "docs/prompts/overlays/cross-project-execution.md"
           },
           {
-            "byte_length": 16956,
+            "byte_length": 17499,
             "class": "workflow",
             "overlay": "merge-gate-review",
             "source": "docs/prompts/pull-requests/merge-gate-review.md"
           }
         ],
         "format": "invokrum.cli/v1",
-        "output_bytes": 55582,
+        "output_bytes": 59933,
         "pack": "micrantha-meta-prompts",
         "profile": "merge-gate-review",
         "schema": "invokrum.dev/v1",
-        "source_bytes": 55578
+        "source_bytes": 59929
       },
       "lock": {
         "format": "invokrum.lock/v1",
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "9d24491acbb3ffa601d34baf75b28b54210b66b48586cf95cb4a76599fa0a8cb",
+          "engine_inputs_digest": "777715d76729c960fa5041b490071eaeca6a9370424a62c2f1ca0a8d2b34bae5",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -284,8 +284,8 @@
               "class": "foundation",
               "id": "shared-engineering-contracts",
               "source": "docs/prompts/README.md",
-              "byte_length": 26714,
-              "digest": "4542ddf69379674da4eb9a9a0c3f3c2df8bd4632b564fb23ac714ae1dff16729"
+              "byte_length": 30522,
+              "digest": "64c97ee1510d75e8842e7e6fed074be19d65ff9397e1075c82e1dc41c434f330"
             },
             {
               "class": "scope",
@@ -298,25 +298,25 @@
               "class": "workflow",
               "id": "merge-gate-review",
               "source": "docs/prompts/pull-requests/merge-gate-review.md",
-              "byte_length": 16956,
-              "digest": "cb87a36121c3e094312867353132775766d06733f49f4ac46326f9eeb670212e"
+              "byte_length": 17499,
+              "digest": "9c0dc2b4356f252beecf1066f39ec8e6eba2a7979e1d1dd5f477d1cbd8d4cbd3"
             }
           ],
           "output": {
-            "byte_length": 55582,
-            "digest": "022e62816d46f4414459e07131a19baf0d984cb2d7f09c96ba5ad7187a1c6268"
+            "byte_length": 59933,
+            "digest": "80e60d27692b54cb07402f2a2ffbf0cfff677a8025ee18740aec8a78383a3676"
           }
         },
-        "manifest_digest": "c9cdf8100f0a6024465b67b7860bcf516dcad13f92b370f87152c42edced905a"
+        "manifest_digest": "3c1eb92917d6abdfedf6d8a3518c8ae40e959dbbc12f848c0ba30c527e89323d"
       }
     },
     "qart-analysis": {
-      "context_sha256": "a034cc854a91d512f3809fb258a3757ef2bdef7a250292f424b4f07df8640871",
+      "context_sha256": "8b4cd3acae26f638393f818f5da6ea157d876fcf3548dddee751ff84bb547c94",
       "inspect": {
         "command": "inspect",
         "entries": [
           {
-            "byte_length": 26714,
+            "byte_length": 30522,
             "class": "foundation",
             "overlay": "shared-engineering-contracts",
             "source": "docs/prompts/README.md"
@@ -335,18 +335,18 @@
           }
         ],
         "format": "invokrum.cli/v1",
-        "output_bytes": 49497,
+        "output_bytes": 53305,
         "pack": "micrantha-meta-prompts",
         "profile": "qart-analysis",
         "schema": "invokrum.dev/v1",
-        "source_bytes": 49493
+        "source_bytes": 53301
       },
       "lock": {
         "format": "invokrum.lock/v1",
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "03e30e0202aeeeb8e5b973dc62013467f2226a2c768b553c5a4068e65da7a1af",
+          "engine_inputs_digest": "75ac4ecf0698afcb5284c09df0196c4e3bcce0facaa236854c954b4898bacd2c",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -361,8 +361,8 @@
               "class": "foundation",
               "id": "shared-engineering-contracts",
               "source": "docs/prompts/README.md",
-              "byte_length": 26714,
-              "digest": "4542ddf69379674da4eb9a9a0c3f3c2df8bd4632b564fb23ac714ae1dff16729"
+              "byte_length": 30522,
+              "digest": "64c97ee1510d75e8842e7e6fed074be19d65ff9397e1075c82e1dc41c434f330"
             },
             {
               "class": "scope",
@@ -380,20 +380,20 @@
             }
           ],
           "output": {
-            "byte_length": 49497,
-            "digest": "a034cc854a91d512f3809fb258a3757ef2bdef7a250292f424b4f07df8640871"
+            "byte_length": 53305,
+            "digest": "8b4cd3acae26f638393f818f5da6ea157d876fcf3548dddee751ff84bb547c94"
           }
         },
-        "manifest_digest": "812fd5891e11b44b8a9b311d7b5fe46fdf53f4e51306de5406635e349f16b0dd"
+        "manifest_digest": "9eb265c48a1f6bec54800072c264641771b7f13574714dc7886239939e1c08e5"
       }
     },
     "qats-analysis": {
-      "context_sha256": "a034cc854a91d512f3809fb258a3757ef2bdef7a250292f424b4f07df8640871",
+      "context_sha256": "8b4cd3acae26f638393f818f5da6ea157d876fcf3548dddee751ff84bb547c94",
       "inspect": {
         "command": "inspect",
         "entries": [
           {
-            "byte_length": 26714,
+            "byte_length": 30522,
             "class": "foundation",
             "overlay": "shared-engineering-contracts",
             "source": "docs/prompts/README.md"
@@ -412,18 +412,18 @@
           }
         ],
         "format": "invokrum.cli/v1",
-        "output_bytes": 49497,
+        "output_bytes": 53305,
         "pack": "micrantha-meta-prompts",
         "profile": "qats-analysis",
         "schema": "invokrum.dev/v1",
-        "source_bytes": 49493
+        "source_bytes": 53301
       },
       "lock": {
         "format": "invokrum.lock/v1",
         "canonicalization": "invokrum.canonical-json/v1",
         "digest_algorithm": "sha256",
         "manifest": {
-          "engine_inputs_digest": "89d787b3ac83d6cea09dec16a50b7e256cdd4cd90d866b0167d8cebf0021e10c",
+          "engine_inputs_digest": "0d1438c7f4aa0e62dfc0df226053f65f4446102306654a4cc346ac70d6ef1dee",
           "pack": {
             "id": "micrantha-meta-prompts",
             "schema": "invokrum.dev/v1",
@@ -438,8 +438,8 @@
               "class": "foundation",
               "id": "shared-engineering-contracts",
               "source": "docs/prompts/README.md",
-              "byte_length": 26714,
-              "digest": "4542ddf69379674da4eb9a9a0c3f3c2df8bd4632b564fb23ac714ae1dff16729"
+              "byte_length": 30522,
+              "digest": "64c97ee1510d75e8842e7e6fed074be19d65ff9397e1075c82e1dc41c434f330"
             },
             {
               "class": "scope",
@@ -457,11 +457,11 @@
             }
           ],
           "output": {
-            "byte_length": 49497,
-            "digest": "a034cc854a91d512f3809fb258a3757ef2bdef7a250292f424b4f07df8640871"
+            "byte_length": 53305,
+            "digest": "8b4cd3acae26f638393f818f5da6ea157d876fcf3548dddee751ff84bb547c94"
           }
         },
-        "manifest_digest": "a14c0bb578c391acce2ea66295366f509c6ab16ee2a60b12fe1f771fe0c9ed43"
+        "manifest_digest": "4e6139910a4c8096c3aaabc10fa6e45fe6d3b2a83361cc4be1d8033a70cece34"
       }
     }
   }
