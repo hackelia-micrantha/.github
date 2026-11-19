@@ -207,20 +207,20 @@ For a material delivery review, when source evidence exists distinguish:
 3. actual user adoption, downstream use, verified operational outcome, or billed-resource retirement;
 4. attributable model/tool/CI/sandbox, human review, rework and incident costs **when measured**; explicitly say `unknown` where not measured.
 
-No change is "production-qualified" merely because generated tests, CI, or a PR passed. Preserve the [existing completion contract](../prompts/reviews/implementation-completeness.md) and [cost-of-delay guardrail](../../CONTRIBUTING.md#financial-impact-and-cost-of-delay-guardrail); never reduce verification to improve a `Verification Tax` ratio. Model claims and prior successful runs cannot authorize release or characterize actual spend.
+No change is "production-qualified" merely because generated tests, CI, or a PR passed. Preserve the completion requirements and [cost-of-delay guardrail](../../CONTRIBUTING.md#financial-impact-and-cost-of-delay-guardrail); never reduce verification to improve a `Verification Tax` ratio. Model claims and prior successful runs cannot authorize release or characterize actual spend.
 
-Research context and owned next steps are in [October 2026 evidence reconciliation](research-synthesis-2026-10-memory-delivery.md). The developer field-trial task effect is not a release effect; the September 2026 NBER matched-study abstract shows substantial attenuation from coding activity to releases and aggregate app use, **but its full revised robustness methods remain unreviewed**. Do not import these population estimates as local baselines. Existing [meta #144](https://github.com/hackelia-micrantha/.github/issues/144), Dubnium Run Ledger and Anthesis budgets own any conditional measurement.
+Research evidence should be qualified for its actual population, intervention and measured outcome. Coding activity is not evidence of release, adoption or financial impact. Do not import external estimates as local baselines.
 
 ## Project ownership
 
 The organization practice composes with existing project responsibilities:
 
 - **Micrantha `.github`** owns shared engineering guidance, prompts, and organization-wide workflow expectations.
-- **`hackelia-micrantha/hackelia-micrantha`** tracks cross-project adoption without becoming a second normative source.
+- Ecosystem coordination may track cross-project adoption without becoming a second normative source.
 - **Dubnium** owns runtime capture of exact run/review/candidate evidence and may emit non-authoritative candidate-learning artifacts from governed agent runs.
 - **Anthesis** owns governance semantics for promotion when a candidate would affect trusted persistent instructions, policy, approval, or other governance-relevant state.
 - **Sandcastle** may provide immutable candidate/checkpoint state for independent evaluation; checkpoint existence is evidence, not semantic truth or authority.
-- **ops-cadence** may measure recurrence and prevention effectiveness from read-only evidence; it does not promote or authorize learnings.
+- Read-only measurement consumers may measure recurrence and prevention effectiveness; they do not promote or authorize learnings.
 
 ## Existing contracts remain authoritative
 

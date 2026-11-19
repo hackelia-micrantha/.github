@@ -1,6 +1,6 @@
 # Release-readiness evidence boundary
 
-This document describes the executable evidence boundary used by `tools/release_readiness.py`. The normative policy remains in:
+This document specifies the normalized evidence boundary for release readiness. The normative policy remains in:
 
 - `docs/standards/source-exposure-and-distribution.md`;
 - `docs/standards/releases.md`;
@@ -21,10 +21,10 @@ repository-owned release/build tooling
             v
 metadata/release-readiness.schema.json
             +
-metadata/repositories.json
+reviewed repository posture
             |
             v
-tools/release_readiness.py
+release-readiness verifier
   -> posture/readiness decision
 ```
 
@@ -124,21 +124,7 @@ The repository-owned producer should retain enough local/CI diagnostics to expla
 
 ## Verification
 
-Run from a checkout of this repository:
-
-```bash
-python tools/release_readiness.py path/to/release-readiness.json
-```
-
-Use another registry only for explicit fixture/testing work:
-
-```bash
-python tools/release_readiness.py \
-  --registry metadata/repositories.json \
-  path/to/release-readiness.json
-```
-
-A successful result means the supplied candidate evidence is mechanically consistent with the declared repository posture and cross-project release invariants represented by the checker. It does **not** grant release, signing, deployment, governance, or runtime authority.
+Compare candidate evidence with reviewed repository posture and the [release-readiness evidence schema](../../metadata/release-readiness.schema.json). Validate producer facts using the project's supported test and release mechanisms. A successful result means the supplied evidence is consistent with the applicable invariants; it grants no release, signing, deployment or runtime authority.
 
 ## Deliberate boundary
 

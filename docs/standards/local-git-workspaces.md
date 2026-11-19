@@ -67,7 +67,7 @@ This performs cleanup after the *sequence*, not between a build and a test that 
 
 ## Audit and incremental adoption
 
-Use `python3 tools/check_cleanup_finalizers.py --json /path/to/repository` to **flag possible** missing or premature CI cleanup finalizers without installing Mise. The scanner uses only Python’s standard library and recognizes Make, Cargo, Go, Gradle, npm, Yarn, Mise, and Nix-style commands. It is an **advisory static heuristic**, not a YAML interpreter or a substitute for artifact, ownership, and failure-path review. Use `--strict` only on a deliberately qualified repository; CI jobs that use `nix build --no-link` and create no local output may document an explicit `# cleanup: no-local-outputs` exception. Each finding must be confirmed before changing a workflow or deleting files.
+Use advisory static checks to flag possible missing or premature CI cleanup finalizers; confirm actual artifact, ownership and failure-path behavior before changing a workflow or deleting files. A heuristic is not authority to clean a worktree.
 
 ## Lifecycle and retention
 
@@ -100,4 +100,4 @@ git -C "$repo" worktree remove "$repo/.worktrees/issue-1234" # clean + closed on
 git -C "$repo" merge-base --is-ancestor "fix/1234" "origin/main" && git -C "$repo" branch -d "fix/1234" # only for ancestry-integrated branches
 ```
 
-Use the [local-workspace hygiene prompt](../prompts/planning/local-workspace-hygiene.md) for an evidence-first cleanup or agent bootstrap.
+Use evidence-first cleanup and isolated task bootstrap according to the requirements above.

@@ -1,6 +1,6 @@
 # Contributing to [REPOSITORY NAME]
 
-This repository follows the [Micrantha organization contributing guidelines](../../CONTRIBUTING.md) and refines them where its operating model requires it. Any override below is explicit, discoverable, and no weaker than an applicable organization-wide security or legal requirement.
+This repository follows the [Micrantha organization contributing guidelines](https://github.com/hackelia-micrantha/.github/blob/main/CONTRIBUTING.md) and refines them where its operating model requires it. Any override below is explicit, discoverable, and no weaker than an applicable organization-wide security or legal requirement.
 
 ## Local overrides
 

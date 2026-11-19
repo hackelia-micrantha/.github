@@ -28,12 +28,12 @@ The invariant specifies **what must remain true**; the scenario expresses **a re
 | --- | --- | --- |
 | Organization testing expectations, archetypes, documentation | `hackelia-micrantha/.github` | No new execution framework or universal DSL mandate |
 | Application/domain invariant and expected effect | Owning product repository, grounded in requirements and threat model | Reviewable by domain/security owners, not inferred as authoritative from implementation |
-| Recurring governed failure-mode catalogue and policy-facing mappings | Anthesis gotcha registry [#219](https://github.com/hackelia-micrantha/anthesis/issues/219) | Registry/finding signals are not enforcement authority |
-| Versioned scenario, data, environment and composition semantics | Testule [#7](https://github.com/hackelia-micrantha/testule/issues/7) | Reuse `TestPlan`, `TestabilityContract`, `TestScenario`, `Evidence`; no new `SecurityInvariant` core type without a demonstrated gap |
-| Independent verifier requirement and evidence gaps | Testule [#30](https://github.com/hackelia-micrantha/testule/issues/30); Anthesis [#199](https://github.com/hackelia-micrantha/anthesis/issues/199) | Testule describes evidence; Anthesis decides whether it meets governed policy requirements |
-| AI-assisted invariant falsification and oracle qualification | Testule [#57](https://github.com/hackelia-micrantha/testule/issues/57) | Proposed properties/tests are untrusted until reviewed and reproduced; a failed assertion may indict the oracle |
+| Recurring governed failure-mode catalogue and policy-facing mappings | Governance failure-mode catalogue | Registry/finding signals are not enforcement authority |
+| Versioned scenario, data, environment and composition semantics | Testability contract owner | Reuse `TestPlan`, `TestabilityContract`, `TestScenario`, `Evidence`; no new `SecurityInvariant` core type without a demonstrated gap |
+| Independent verifier requirement and evidence gaps | Verification and governance owners | Testule describes evidence; Anthesis decides whether it meets governed policy requirements |
+| AI-assisted invariant falsification and oracle qualification | Testability contract owner | Proposed properties/tests are untrusted until reviewed and reproduced; a failed assertion may indict the oracle |
 | Native test/fuzz/mutation execution | Native toolchain and authorized bounded runtime | Not a Testule or Anthesis host-action bypass |
-| Initial application proof | Dubnium [#1687](https://github.com/ryjen/dubnium/issues/1687) | No-effect Gateway pilot, not physical-host production qualification |
+| Initial application proof | Bounded representative fixture | No-effect Gateway pilot, not physical-host production qualification |
 
 A stable identifier/reference to a reviewed invariant may be reused by different projects. Reuse the *meaning and provenance*, not fixture code that presumes one product's identities or persistence model. Preserve versioning: materially changed expectations receive a new revision, not a silent edit that retroactively changes old evidence.
 
@@ -82,7 +82,7 @@ Separate these classes in any report: **specification/fixture-only**, **executed
 
 ## Smallest useful proof and evaluation
 
-Start with [Dubnium #1687](https://github.com/ryjen/dubnium/issues/1687), reusing existing Go Gateway fixture/conformance tests. Pick one policy-denial invariant, express it as reviewer-readable behaviour, and add *only missing* negative oracles. Compare native table-driven tests against a thin declarative scenario representation; do not add a new interpreter solely to parse the example.
+Start with an existing native boundary fixture and conformance test suite. Pick one policy-denial invariant, express it as reviewer-readable behaviour, and add *only missing* negative oracles. Compare native table-driven tests against a thin declarative scenario representation; do not add a new interpreter solely to parse the example.
 
 Prove:
 - existing production/fixture authority, no-effect cutover, and CI gates remain unchanged;
@@ -100,4 +100,4 @@ Prove:
 - Which security invariants require physical-state observation beyond contract/component tests, and how are those requirements declared and gated without introducing a privileged CI bypass?
 - Can deliberate oracle mutations and alternate secure implementations establish useful falsification confidence at acceptable maintenance cost?
 
-Resolve these through existing owner issues: Testule #7/#30/#57 and Anthesis #199/#219. Escalate schema changes only if the bounded consumer demonstrates that the existing contracts cannot express the requirement.
+Resolve these through the owning contracts. Escalate schema changes only if the bounded consumer demonstrates that the existing contracts cannot express the requirement.

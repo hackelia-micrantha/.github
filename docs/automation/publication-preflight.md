@@ -2,30 +2,7 @@
 
 Status: proposed / rollout-by-review
 
-The `tools/publication_preflight.py` command is a **read-only current-tree
-preflight** for public-source publication. Run it before publishing a new repository,
-publishing a private-to-public projection, or modifying its reviewed publication
-surface.
-
-```sh
-python tools/publication_preflight.py --root /path/to/checkout
-python tools/publication_preflight.py --root /path/to/checkout --strict
-```
-
-The checker reads Git-tracked paths only (`git ls-files --cached`), flags risky
-file types and recognizable credential patterns, and emits JSON containing only
-paths, severity, and rule IDs. It prints **no matching contents or token values**.
-
-- **Block:** committed runtime environment/configuration, private-key/signing
-  artifacts, recognized token patterns, literal PEM private-key headers, and
-  hardcoded high-value credential assignments.
-- **Review:** database files, backup copies, downloadable résumé files, tracked
-  symlinks and oversized textual files that were not inspected.
-- Default exit status 1 if any blocking finding exists; `--strict` also fails
-  on review findings. Status 2 means indeterminate scanning/tool failure; never
-  interpret it as a pass.
-- A review finding requires a conscious, attributable publication decision. It
-  does not automatically imply that data is sensitive or prohibited.
+Current-tree publication preflight inspects tracked files for recognizable credential patterns, restricted key/configuration formats and review-worthy material. A blocking finding prevents publication; ambiguous findings require accountable classification. Unreadable or uninspected content is indeterminate rather than clean. Emit only bounded findings and never matching secret values. The preflight complements, rather than replaces, reviewed exact output paths, semantic disclosure classification and independently qualified publication authority.
 
 ## Non-goals and trust boundaries
 
@@ -51,7 +28,7 @@ A matching filename or `git ls-files` check cannot make these decisions.
 
 ## CI and rollout
 
-The Micrantha meta-repository unit tests exercise the preflight rules. Before
+Before
 making the check mandatory for project release or promotion, integrate it into
 a **reviewed** candidate pipeline, verify coverage and false-positive behavior,
 and classify the target repository as public code, community contract, static

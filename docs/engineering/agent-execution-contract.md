@@ -29,7 +29,7 @@ For coding, refactoring, and code-review transitions, use repository-accepted ar
 
 These are **heuristics, not mandatory class hierarchies or pattern quotas**. Prefer the simplest correct and secure design for current requirements and credible change points; avoid speculative interfaces, unnecessary indirection, and pattern-for-pattern's-sake code. Do not impose object-oriented idioms on functional, procedural, or data-oriented implementations. In reviews, identify an observable correctness, testability, maintainability, or extension cost before requesting refactoring; preserve behavior and verify the change. Explain consequential pattern choices and trade-offs briefly, without design-document ceremony for routine code.
 
-For meaningful domain values, apply the [shared named-value and enum guardrail](../prompts/README.md#shared-named-value-and-enum-guardrail) and [shared typed-result guardrail](../prompts/README.md#shared-typed-result-guardrail) during implementation and review. Apply the [shared clean architecture and dependency-injection guardrail](../prompts/README.md#shared-clean-architecture-and-dependency-injection-guardrail) to keep policy independent of infrastructure, compose effectful dependencies explicitly at boundaries, and make behavior testable without unnecessary abstractions.
+Use language-native design and maintain clear policy, dependency and effect boundaries. Verify correctness, behavior, compatibility and security at the appropriate layer.
 
 ## UI state and presentation architecture
 
@@ -96,7 +96,7 @@ run: tidyfs-release-review-2026-09-12
 goal: qualify PR 80 for merge
 state: re-review
 subject:
-  repository: ryjen/tidyfs
+  repository: example-org/example-project
   pr: 80
   head: af81c72
 last_verified:

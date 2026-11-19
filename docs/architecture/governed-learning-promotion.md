@@ -135,74 +135,9 @@ Policy promotion must retain:
 - supersession/revocation lineage;
 - distinction between policy definition and effect-time authorization.
 
-## Cross-project ownership
+## Separation of responsibilities
 
-### Micrantha `.github`
-
-Owns:
-
-- the Plan -> Work -> Review -> Compound engineering practice;
-- shared prompts and review guidance;
-- organization-wide expectations for candidate-learning handling.
-
-It does not own project runtime state or domain policy.
-
-### `hackelia-micrantha/hackelia-micrantha`
-
-Owns:
-
-- rollout/adoption coordination;
-- cross-project status and dependency tracking.
-
-It does not become a second copy of the normative practice or project implementation backlog.
-
-### Dubnium
-
-Owns runtime mechanics such as:
-
-- exact run, task, issue/PR, source, candidate, and review/evaluation references;
-- bounded reversible execution (`ryjen/dubnium#413`);
-- durable run state and lineage (`ryjen/dubnium#414`);
-- independently verified task-state transitions (`ryjen/dubnium#891`);
-- normalized observation ingress (`ryjen/dubnium#898`);
-- optional emission and persistence of non-authoritative candidate-learning records.
-
-Dubnium does not decide that a learning is governance-authoritative merely because the run succeeded.
-
-### Anthesis
-
-Owns governance meaning for promotion where a learning affects trusted persistent control, especially:
-
-- evidence/provenance interpretation;
-- policy and approval requirements;
-- exact promotion-decision binding;
-- stale/revoked/superseded authority semantics;
-- assurance requirements for persistent agent guidance or policy changes.
-
-Relevant existing work includes `hackelia-micrantha/anthesis#26`, `#55`, `#198`, and `#202`.
-
-Anthesis should add only the minimum profile/amendment needed; it should not become the runtime memory store or task scheduler.
-
-### Sandcastle
-
-Owns immutable workspace/candidate/checkpoint mechanics where stronger evaluation isolation is useful.
-
-Existing checkpoint and verifier-separation work can support a promotion evaluation by ensuring the evaluator observes the exact proposed artifact rather than mutable producer state.
-
-Sandcastle does not decide whether the candidate is semantically correct, trusted, or authorized.
-
-### ops-cadence
-
-May act as a read-only measurement consumer:
-
-- stable finding identity;
-- prior-run comparison;
-- repeated-finding detection;
-- promoted-control recurrence analysis;
-- source health and blind spots;
-- trends in review iterations and automatically prevented findings.
-
-It does not promote learnings, mutate prompts/policy, or own production schedule semantics outside its existing Dubnium integration contract.
+Shared specifications define the practice and candidate-learning invariants. Coordination may track adoption but is not a second normative authority. A runtime owns exact execution and lineage observations; a context composer owns immutable invocation identity; a governance authority evaluates evidence and separately authorizes persistent control changes; a checkpoint provider preserves state identity; a read-only measurement consumer observes recurrence. None may silently promote candidate guidance or assume another component's authority.
 
 ## Relationship to existing state and evidence
 
@@ -324,15 +259,9 @@ pr_to_merge_elapsed
 
 Every metric should state source coverage and blind spots. A lower finding count is not positive if reviews stopped running, identifiers changed, or evidence collection degraded.
 
-## Rollout sequence
+## Adoption
 
-1. Add shared engineering guidance and a reusable Compound review prompt in `.github`.
-2. Update shared review/merge prompts to surface candidate learnings without auto-promoting them.
-3. Add a Dubnium candidate-learning output attached to existing run/review evidence.
-4. Define the minimum Anthesis promotion profile for trusted persistent guidance/policy targets.
-5. Reuse Sandcastle exact candidate/evaluator isolation where the promotion class requires stronger evaluation.
-6. Add read-only recurrence/prevention measurement to ops-cadence Engineering Portfolio Review.
-7. Run one end-to-end fixture demonstrating finding -> candidate -> validation -> promotion -> later prevention.
+Qualify one bounded finding-to-candidate-to-validation-to-promotion scenario, including an independently observed later result. Extend existing component contracts incrementally; do not create a parallel runtime, evidence store or promotion authority.
 
 ## Non-goals
 
