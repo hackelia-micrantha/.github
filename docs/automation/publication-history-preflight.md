@@ -2,30 +2,7 @@
 
 Status: opt-in, read-only evidence collection.
 
-`tools/publication_history_preflight.py` complements the existing current-tree
-publication preflight. Run it locally against a **full Git clone** with the relevant
-branches and tags fetched. It examines all blobs reachable through local refs,
-including files removed in later commits, and writes an access-controlled JSON report.
-
-```sh
-python tools/publication_history_preflight.py \
-  --repo /path/to/full-clone \
-  --output /secure/path/publication-history-report.json
-```
-
-A local report is created with mode `0600` and never overwritten. Standard output
-contains only summary counts. Finding entries record the rule, path, and example
-object identifier, **not** matching secret values.
-
-Exit status:
-- `0`: all reachable blobs within limits inspected and no blocking pattern found;
-  human-review findings may still exist, and this is not publication approval.
-- `1`: blocking credential patterns or risky committed paths found.
-- `2`: indeterminate scan or an uninspected oversized blob. Never treat as green.
-
-Limits are bounded by `--max-objects`, `--max-blob-bytes`, and
-`--max-total-bytes`. Increase them intentionally where oversized artifacts
-would otherwise make completeness indeterminate.
+Historical publication assessment complements current-tree review. Inspect all relevant reachable branch, tag and other authorized ref objects within deliberate resource limits, from a verified complete clone. Retain structured findings, coverage, and indeterminate results in a private permissioned report with no matching secrets. A report with review findings is not clearance; absent refs, unreadable objects and oversized uninspected blobs block qualification.
 
 ## Required safeguards
 
@@ -49,7 +26,6 @@ The local `git rev-list --objects --all` path is representative and may not
 enumerate every filename used for the same blob across history. Use commit/path
 analysis to reconstruct all affected references before rewriting.
 
-This is not enabled as a broad GitHub CI job: it must not upload private
-findings or spend runner budget on entire repository histories. Follow the
+Do not expose private findings through public CI, or run unbounded repository history scanning. Follow the
 Micrantha security standard, private incident process, and the repository's
 publication owner.

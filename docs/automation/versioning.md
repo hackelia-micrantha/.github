@@ -23,11 +23,9 @@ This revision contains the reusable Mise and Nix workflows with read-only permis
 
 Pilot evidence:
 
-- **Repora / Nix** — the shared Nix workflow passed on PR #163 and again on `main` after merge, using the same immutable shared-workflow revision. The pilot also exposed and repaired a repository-local workflow-policy assumption: caller jobs that delegate via top-level `uses:` cannot own `timeout-minutes`; the called reusable workflow must own the runtime bound.
-- **Repora / Mise** — the shared Mise workflow passed on PR #164 and again on `main` after merge, using repository-owned `mise run test`, GitHub-hosted execution, read-only permissions, and a 15-minute delegated timeout. This supplies repeatable PR/default-branch evidence for the Mise workflow family without depending on private runner availability.
-- **Anthesis / Mise trust boundary** — PR #235 separately proved that the same shared Mise workflow can preserve the existing `runner-anthesis` self-hosted boundary, direct-fork rejection, read-only permissions, and a 15-minute delegated timeout. Its repository-local required CI remains independently gated by Anthesis JIT capacity and is not required to establish the already-complete shared-workflow repeatability evidence above.
+Both reusable workflow families have been exercised by representative callers on the same immutable candidate, including hosted and restricted self-hosted execution. Detailed caller-specific operational evidence remains with the responsible maintainers. The called workflow owns the delegated-job timeout; callers own their task logic and trust boundaries.
 
-Both reusable workflow families therefore have repeatable caller evidence on the same immutable candidate. Publication and verification of the convenience tag `automation-v1.0.0` is the only remaining release action. Until that tag exists, callers should continue using the immutable candidate SHA.
+Publication and verification of the convenience tag `automation-v1.0.0` is the remaining release action identified by this pilot. Until a reviewed tag exists, callers should continue using the immutable candidate SHA.
 
 ## Compatibility policy
 

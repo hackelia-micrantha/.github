@@ -6,8 +6,6 @@ Tracks: #60
 
 Related:
 
-- `ryjen/dubnium#766` — Dubnium events/observability/telemetry program
-- `ryjen/dubnium#772` — Dubnium OpenTelemetry/Grafana integration
 - `hackelia-micrantha/dubnium-community#54` — public CloudEvents Event Contract v1
 - `ryjen/eyespie#304` — first mobile/backendless implementation
 - `hackelia-micrantha/bluebell#5` — later KMP extraction

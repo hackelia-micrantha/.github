@@ -5,8 +5,7 @@ This document maps the Micrantha **Plan -> Work -> Review -> Compound -> Repeat*
 It complements:
 
 - `docs/engineering/compound-engineering.md`;
-- `docs/architecture/governed-learning-promotion.md`;
-- `docs/prompts/reviews/compound-review.md`.
+- `docs/architecture/governed-learning-promotion.md`.
 
 The central design rule is:
 
@@ -24,7 +23,7 @@ outer Compound loop
   reviewed/terminal outcome -> candidate learning -> validate -> promote -> future run
 ```
 
-The inner loop belongs to the runtime orchestrator. In Dubnium this is tracked by `ryjen/dubnium#1346`: verifier, completion, and execution feedback may produce a new bounded task-context/invocation revision while preserving exact intent, authority, budget, source, candidate, and evidence lineage. A repair/replan iteration is not itself a promoted learning.
+The inner loop belongs to the runtime orchestrator. Verifier, completion, and execution feedback may produce a new bounded task-context/invocation revision while preserving exact intent, authority, budget, source, candidate, and evidence lineage. A repair/replan iteration is not itself a promoted learning.
 
 The outer loop is the Compound path defined by this document. It begins only when a reusable lesson is considered for future runs. Durable prompt/context guidance then follows the existing candidate -> Invokrum exact composition/evaluation -> separately authorized promotion path.
 
@@ -276,16 +275,9 @@ Prefer a deterministic control over a reminder when the behavior is mechanically
 7. Events and metrics cannot mint or resurrect authority.
 8. Future runs consume exact promoted revisions and record them separately from the observations that originally motivated them.
 
-## Recommended implementation sequence
+## Adoption
 
-1. Wire the shared Compound review prompt into Micrantha workflow discovery.
-2. Extend Dubnium run/evidence state with non-authoritative candidate-learning records.
-3. Make Dubnium context assembly distinguish historical memory from exact promoted guidance references.
-4. Define Invokrum candidate-pack/overlay evaluation and promoted-lock consumption semantics.
-5. Define the minimum Anthesis promotion profile for trusted persistent guidance/policy.
-6. Reuse Sandcastle/Testule/native verification when the target class needs stronger evaluation.
-7. Add optional scheduled recurrence/staleness review after enough runtime evidence exists.
-8. Add event/measurement projections only after canonical state is stable.
+Separate historical observations from promoted references. Qualify the existing runtime, context, governance and verification boundaries with one representative durable-learning scenario before expanding measurement or automation.
 
 ## Non-goals
 
