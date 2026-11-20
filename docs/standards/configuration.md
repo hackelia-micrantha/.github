@@ -100,6 +100,33 @@ They MUST remain bounded by the same authority ceiling as the underlying operati
 
 Defaults are non-authoritative fallback values. A default MUST NOT silently create authority merely because no stronger configuration was supplied.
 
+## Runtime product feature flags
+
+When a runtime feature decision is justified, projects SHOULD use [OpenFeature](https://openfeature.dev/) as the default provider-neutral evaluation contract. This standard does not require runtime flags, a new SDK, or a remote service for applications that do not need them. Prefer ordinary typed configuration for static choices and build-time options for compile-time variation. Use an appropriate supported client or server SDK; document reviewed exceptions when the target or required integration is unsupported.
+
+### Composition before conditionals
+
+- Resolve typed flag decisions at an appropriate composition, routing, feature-registry, or capability-selection boundary, then pass the selected implementation or immutable decision into the relevant scope.
+- Keep domain logic independent of provider SDKs, flag keys, network calls, and repeated conditional checks. A flag may select a strategy or feature module; it SHOULD NOT require parallel implementations scattered across the application. A local conditional is acceptable when it is genuinely simpler and remains confined to one owned decision boundary.
+- Prefer a stable decision for an in-flight operation, session, or experiment exposure where consistency matters. Define when changed configuration becomes effective; avoid mid-operation changes that produce inconsistent state.
+- Libraries and reusable feature modules SHOULD accept explicit host-owned configuration or interfaces rather than silently initializing global flag providers. A downloadable feature still requires independent compatibility, artifact integrity, admission, and authorization checks.
+
+### Provider and decision lifecycle
+
+- Use explicit, typed safe defaults; define missing, invalid, stale, offline, and provider-error behavior. Provider availability MUST NOT prevent safe baseline functionality unless the owning product contract explicitly requires otherwise.
+- Keep provider selection and credentials in the owning application/deployment configuration. Prefer local or existing providers where adequate. A shared hosted flag service, generic wrapper, migration program, or new network dependency requires a separate demonstrated need.
+- Namespace keys by product/feature and document an accountable owner, purpose, default, lifecycle and retirement condition. Remove obsolete temporary rollout and experiment flags together with dead code; distinguish long-lived operational controls.
+- Use [OpenFeature evaluation details](https://openfeature.dev/specification/sections/flag-evaluation/) and provider lifecycle signals where supported for diagnosis; do not treat provider metadata as proof of an authorized effect.
+
+### Authority, privacy and experiments
+
+- A flag value is product configuration, never a permission, entitlement, trusted identity, approval, or capability grant. Neither a provider error, cache, local override nor a permissive variant may widen an authoritative ceiling. Protected effects MUST still pass the owning authorization and effect-time checks.
+- Use the minimum reviewed [evaluation context](https://openfeature.dev/specification/sections/evaluation-context/). Do not include credentials, raw personal or sensitive content, protected attributes without a justified and approved purpose, or unrestricted request data. Review provider egress, retention, targeting identifiers and diagnostics; avoid high-cardinality or identifying telemetry.
+- Experiment assignment, exposure, and outcome interpretation remain product-owned. Where sticky assignment is required, define its stable scope and version; correlate actual exposure with bounded outcome events only under an approved measurement policy. An experiment does not replace functional, security, accessibility, or performance validation. OpenFeature's [tracking API](https://openfeature.dev/specification/sections/tracking/) is optional and is not itself an experiment platform or evidence of conversion outcomes.
+- Verify both enabled and baseline behavior, defaults on missing/error/stale provider states, consistent decision lifetimes, privacy-safe context, and denial of unauthorized effects independently of flag values. Use deterministic local/fake providers in tests; avoid requiring live remote infrastructure for ordinary conformance checks.
+
+Adopt opportunistically when a concrete feature rollout or experiment requires it; do not displace existing release gates or mandate retrofits solely for uniformity. Consult the [SDK compatibility overview](https://openfeature.dev/docs/reference/sdks/sdk-compatibility/) before selecting a runtime SDK.
+
 ## Precedence and authority ceilings
 
 For ordinary values within one authority class, prefer the conventional precedence:
