@@ -226,7 +226,7 @@ Do not force every agent to reconstruct organization architecture from repositor
 Use the existing responsibility model:
 
 - `.github` owns shared engineering guidance and cross-repository responsibility boundaries;
-- `hackelia-micrantha/hackelia-micrantha` may coordinate adoption/research without becoming a second normative source;
+- ecosystem coordination may track adoption and research without becoming a second normative source;
 - repository-local issues, ADRs, RFCs, tests, and code remain authoritative for repository-owned behavior;
 - Anthesis owns policy, approval, evidence sufficiency, and governed lifecycle semantics;
 - Dubnium owns bounded runtime execution, durable run state, recovery, and runtime evidence;

@@ -92,15 +92,9 @@ All active work items should follow the priority standard in [`CONTRIBUTING.md`]
 - [RFC template](templates/rfc.md)
 - [ADR template](templates/adr.md)
 
-## Related prompts
+## Related guidance
 
-- [Classify and route engineering work](../prompts/planning/classify-and-route.md)
-- [Issue grooming](../prompts/issues/issue-grooming.md)
-- [QART decision analysis](../prompts/decisions/qart-analysis.md)
-- [RFC development](../prompts/decisions/rfc-development.md)
-- [QART-to-ADR conversion](../prompts/decisions/qart-to-adr.md)
-- [Next executable slice](../prompts/planning/next-executable-slice.md)
-- [Engineering artifact review](../prompts/reviews/engineering-artifact-review.md)
+Use the decision templates above and the applicable project-owned contribution, review and delivery requirements.
 
 ## Grooming standard
 

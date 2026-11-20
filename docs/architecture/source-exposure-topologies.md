@@ -245,7 +245,7 @@ Avoid:
 
 ## Rollout
 
-Machine-readable rollout is tracked by `.github#66`; ecosystem classification is tracked by `hackelia-micrantha/hackelia-micrantha#35`.
+Each project's reviewed distribution posture and release evidence govern its selected topology.
 
 The migration order should be evidence-driven:
 

@@ -6,8 +6,7 @@ Companion guidance:
 
 - `compound-engineering.md`;
 - `../architecture/governed-learning-promotion.md`;
-- `../architecture/compound-learning-runtime.md`;
-- `../prompts/reviews/compound-review.md`.
+- `../architecture/compound-learning-runtime.md`.
 
 ## Routing rule
 
