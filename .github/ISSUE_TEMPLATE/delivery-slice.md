@@ -1,82 +1,31 @@
 ---
 name: Engineering delivery slice
-about: Deliver a bounded cross-cutting implementation, integration, migration, infrastructure, or refactoring outcome
+about: Deliver a bounded integration, migration, infrastructure, or implementation outcome
 title: "[delivery]: "
 labels: ""
 assignees: ""
 ---
 
-> Use the bug, feature, or security form when one of those describes the work directly. Use this form for a bounded engineering outcome that crosses concerns or implements an already-understood decision.
+## Explain it to a human
 
-## Outcome
+In 1–3 plain-language sentences: what's wrong, why it matters, and what will be better?
 
-Describe what will be observably true when this slice is complete.
+## What needs to change
 
-## Priority
+State one observable vertical outcome and only essential scope, constraints, or non-goals. When material, summarize the **behavioral contract**, **affected architectural interfaces/trust boundaries**, and **verification strategy** (lowest faithful test-pyramid layers and real-boundary evidence). Link existing designs rather than copying them.
 
-P0 / P1 / P2 / P3 — give a one-sentence repository-global rationale. Record blocking separately under **Dependencies**.
+## Done when
 
-## Context and evidence
+- [ ] [Observable result, including relevant failure or security behavior]
+- [ ] [Required compatibility, migration, or recovery property if applicable]
+- [ ] [Applicable unit/contract/integration/system or release evidence proves the outcome; omit irrelevant layers]
 
-Summarize the current state, relevant implementation evidence, constraints, and links to issues, QART analyses, RFCs, ADRs, specifications, or pull requests.
+## Tracking
 
-## Scope
+- **Priority:** P0 / P1 / P2 / P3 — one-sentence repository-global rationale.
+- **Status:** Ready / Blocked / In progress / Review.
+- **Blocked by:** [Link + unblock condition, if relevant]
+- **Not included:** [Material non-goal, if relevant]
+- **Evidence:** [PR / CI / issue / decision / spec links]
 
-### In scope
-
-- Required behavior or deliverable
-
-### Non-goals
-
-- Adjacent or follow-up work intentionally excluded
-
-## Requirements and constraints
-
-- Functional behavior:
-- Compatibility or migration:
-- Security or trust boundaries:
-- Reliability and recovery:
-- Operability and observability:
-- Performance or capacity:
-
-Remove dimensions that do not materially apply.
-
-## Acceptance criteria
-
-- [ ] Primary outcome is demonstrably complete.
-- [ ] Relevant failure and edge behavior is defined and verified.
-- [ ] Required compatibility, migration, or rollback behavior is verified.
-- [ ] Security and authorization boundaries are preserved or strengthened.
-- [ ] Documentation and operational guidance are current.
-
-Replace generic checks with concrete, observable criteria.
-
-## Validation
-
-- Unit or component tests:
-- Contract or integration tests:
-- End-to-end or manual demonstration:
-- Security or negative-path tests:
-- Migration, compatibility, or rollback evidence:
-- CI or release evidence:
-
-## Dependencies
-
-- **Ready:**
-- **Blocked by:**
-- **Unlocks:**
-- **Related:**
-
-## Delivery notes
-
-- Expected files or components:
-- Rollout or deployment:
-- Rollback or recovery:
-- Remaining follow-up:
-
-## Definition of done
-
-- [ ] Acceptance criteria are satisfied with evidence.
-- [ ] Required checks pass without weakening relevant gates.
-- [ ] The outcome is integrated, documented, and usable where applicable.
-- [ ] Remaining work is explicitly deferred or tracked separately.
+Keep only applicable fields. Follow [the shared issue standard](../../CONTRIBUTING.md#issue-simplicity-and-update-discipline); update current state here, not through routine progress comments.

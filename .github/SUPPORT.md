@@ -10,9 +10,9 @@ Micrantha repositories are at varying maturity levels. Support expectations diff
 
 ## Getting help
 
-- **Bug reports and feature requests.** Use the issue templates in the relevant repository. Follow the [contribution guidelines](CONTRIBUTING.md) for required fields (priority, outcome, acceptance criteria).
+- **Bug reports and feature requests.** Use the issue templates in the relevant repository. Follow the [contribution guidelines](https://github.com/hackelia-micrantha/.github/blob/main/CONTRIBUTING.md) for required fields (priority, outcome, acceptance criteria).
 - **Security reports.** Follow the [security policy](SECURITY.md). Do not file public issues for vulnerabilities.
-- **Engineering methodology questions.** The [engineering work-item guide](docs/engineering/work-items.md) and [prompts](docs/prompts/README.md) explain how Micrantha structures decisions, planning, and delivery.
+- **Engineering methodology questions.** The [engineering work-item guide](https://github.com/hackelia-micrantha/.github/blob/main/docs/engineering/work-items.md) explains how Micrantha structures decisions, planning, and delivery.
 - **General inquiries.** Contact the organization owner through the profile README.
 
 ## What is not support
@@ -23,4 +23,4 @@ Micrantha repositories are at varying maturity levels. Support expectations diff
 
 ## Contributing
 
-The best way to get something fixed or built is often to contribute it. See [CONTRIBUTING](CONTRIBUTING.md) for priority, grooming, and pull-request expectations.
+The best way to get something fixed or built is often to contribute it. See [CONTRIBUTING](https://github.com/hackelia-micrantha/.github/blob/main/CONTRIBUTING.md) for priority, grooming, and pull-request expectations.

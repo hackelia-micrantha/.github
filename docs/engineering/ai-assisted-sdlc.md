@@ -146,6 +146,28 @@ A deterministic failed check is stronger evidence than contradictory reviewer co
 
 Where independent verification is required, independence is a trust property. Different persona names, sessions, or model aliases are insufficient by themselves.
 
+### Security of repository examples (research note, 2026-11-11)
+
+[Sun et al., *Coding Agents Propagate Vulnerabilities in Code Bases* (arXiv:2611.11455v1)](https://arxiv.org/html/2611.11455v1) compared identical coding tasks against secure and insecure neighboring code. Across 96 synthetic backend tasks and 20 paired real C/C++ tasks, agents produced less secure code when security-relevant analogues were insecure; generic security reminders reduced but did not eliminate this effect. The authors' experiments are source-reported and have not been reproduced for Micrantha.
+
+**Evaluation implication, not a new gate:** familiar repository code and style are not evidence that a reused *security-relevant behavior* is safe. For a consequential change, existing tests/review should examine the concrete invariant at the new call site (for example authorization, validation, or memory bounds), including a negative case when warranted, rather than treat matching precedent, functional success, or model self-review as a substitute. The paper studies one implementation step; it does not demonstrate cumulative degradation of our repositories, nor justify another scanner, agent, mandatory CI job, or authority path.
+
+## Repository contribution-policy conformance
+
+A correct patch and a compliant contribution are **different claims**. Repository-owned rules can govern final artifacts (format, tests, commit metadata, disclosures) or **intermediate behavior** (required commands, approval order, prohibited effects). Checking only the final diff cannot establish the second class.
+
+Apply the smallest check at the boundary that owns the requirement:
+
+| Rule class | Verification owner | Evidence |
+| --- | --- | --- |
+| Code/test/style, commit and PR conventions | Repository tooling / CI | Exact candidate, diff, commit and PR metadata |
+| Required workflow steps or sequencing | CI / execution-evidence verifier | Attributable, sufficiently complete ordered action trace; absence of a trace is not proof of compliance |
+| Privileged filesystem, tool, network, or external effects | Dubnium runtime / Capability Gateway with Anthesis policy | Exact scoped grant, effect-time decision, runtime observations and receipt |
+
+Distinguish **applicable**, **satisfied**, **violated**, **not exercised**, and **unverifiable** when reporting policy evidence; do not score unobserved execution as a pass. Record the exact policy source revision, subject revision, check identity, evidence completeness, and any exceptions. Checkers derived from natural-language contributor rules require semantic review and positive/negative cases: deterministic execution does not establish faithful policy translation.
+
+The [SWE-CC study](https://arxiv.org/abs/2610.06193) found that functionally successful coding-agent contributions can violate repository rules, including during intermediate steps. This is motivation for independently verifiable controls, **not** evidence that Micrantha's current repository controls are broken or that every contribution rule needs an Anthesis authorization decision. Invokrum may convey exact-versioned guidance; it does not authorize or independently verify compliance.
+
 ## Risk-adaptive human review
 
 AI output volume can exceed human line-by-line review capacity. The response should be to allocate human attention by consequence, not to remove human accountability or claim that workflow automation guarantees quality.
@@ -204,7 +226,7 @@ Do not force every agent to reconstruct organization architecture from repositor
 Use the existing responsibility model:
 
 - `.github` owns shared engineering guidance and cross-repository responsibility boundaries;
-- `hackelia-micrantha/hackelia-micrantha` may coordinate adoption/research without becoming a second normative source;
+- ecosystem coordination may track adoption and research without becoming a second normative source;
 - repository-local issues, ADRs, RFCs, tests, and code remain authoritative for repository-owned behavior;
 - Anthesis owns policy, approval, evidence sufficiency, and governed lifecycle semantics;
 - Dubnium owns bounded runtime execution, durable run state, recovery, and runtime evidence;

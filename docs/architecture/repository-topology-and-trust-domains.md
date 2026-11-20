@@ -33,9 +33,9 @@ One hosted representation of a logical repository, identified by provider, provi
 Examples:
 
 ```text
-github:hackelia-micrantha/repora
-forgejo:canforge:hackelia-micrantha/dubnium
-forgejo:dubnium:hackelia-micrantha/dubnium
+github:example-org/tool
+forgejo:example-primary:example-org/tool
+forgejo:example-staging:example-org/tool
 ```
 
 ### Trust domain
@@ -180,16 +180,16 @@ public base + private overlay -> internal product
 
 Deferred as a standard executable pattern until a concrete project needs it.
 
-## Cross-project ownership
+## Separation of responsibilities
 
-| Concern | Owner |
+| Concern | Owning boundary |
 | --- | --- |
-| Repository identity, endpoint topology, relationship planning/apply | Repora |
-| Forgejo service, storage, networking, credentials, backups | Dubnium / hosting system |
-| Effect-time authorization, approval, policy, evidence sufficiency | Anthesis |
-| Workspace/checkpoint state, lineage, integrity observations | Sandcastle |
-| Public/private/IP/disclosure classification | Owning project |
-| Testing/semantic verification requirements | Testule / owning project as applicable |
+| Repository identity, endpoint topology and relationship planning | Repository-management component |
+| Hosting, storage, networking, credentials and recovery | Hosting owner |
+| Effect-time authorization and evidence sufficiency | Governance authority |
+| Checkpoint lineage and state integrity | Workspace-state owner |
+| Public/private classification | Owning project |
+| Testing and semantic verification | Verification owner |
 
 ## Security invariants
 
@@ -204,52 +204,22 @@ Deferred as a standard executable pattern until a concrete project needs it.
 9. **Forward projection does not imply inverse import.** Ambiguous or generated transforms are non-importable unless an explicit deterministic reverse mapping exists.
 10. **Recovery is explicitly scoped and independently verified.** A copy on the same machine is not sufficient proof of recoverability, and Git recovery does not imply forge/application recovery.
 
-## Initial Micrantha reference topology
-
-The first reference scenario is Dubnium:
+## Illustrative topology
 
 ```text
-Agent/Sandcastle
-  -> Dubnium Forgejo staging
-  -> Repora promotion
-  -> private canonical endpoint (initially existing canonical; future CanForge candidate)
-  -> Repora projection
-  -> hackelia-micrantha/dubnium-community
-  -> public contributions imported as proposals
+untrusted agent workspace
+  -> staging repository
+  -> reviewed promotion to canonical repository
+  -> reviewed public projection
+  -> public contributions imported only as proposals
 
-private canonical
-  -> mirror/archive
-  -> independent backup
+canonical repository
+  -> scoped archive
+  -> independently verified recovery
 ```
 
-CanForge should be modeled as a Forgejo installation/endpoint, not as a bespoke Repora provider type. Vanilla Forgejo remains the architectural compatibility target so CanForge is an integration target rather than a dependency.
-
-## Recommended adoption sequence
-
-For the initial Repora workstream:
-
-1. define repository/endpoint/trust-domain semantics and keep classification separate from authority;
-2. generalize canonical role semantics;
-3. support generic Forgejo installations without making any particular installation required;
-4. prove deterministic private-to-public projection first;
-5. add staging-to-canonical promotion after the lower-risk projection mechanics are understood;
-6. add public contribution import only after projection mappings can explicitly describe invertibility;
-7. add archive coverage independently;
-8. defer overlays until a concrete consumer exists.
-
-This is implementation guidance, not semantic coupling between the relationship types.
-
-## Related work
-
-- `hackelia-micrantha/repora#149` — repository topology/trust-domain epic.
-- `hackelia-micrantha/repora#147` — local workspace manifests/bootstrap.
-- `hackelia-micrantha/repora#30` — optional Anthesis pre-apply integration.
-- `ryjen/dubnium#248` — sovereign Git hosting.
-- `ryjen/dubnium#528` / `#536` — private/public product boundary and publication gate.
-- `ryjen/dubnium#922` — constrained Forgejo staging endpoint.
-- `hackelia-micrantha/anthesis#203` — effect-time authority freshness/state dependencies.
-- `hackelia-micrantha/sandcastle#19` — checkpoint state identity for stale-state/TOCTOU detection.
+Adopt deterministic projection first, then separately qualify promotion, import and recovery as required. A provider-specific implementation is not a dependency of this topology.
 
 ## Adoption rule
 
-Do not create topology issues in every repository preemptively. Adopt these patterns when a project gains a second endpoint, trust domain, public/private split, staging boundary, or recovery requirement. The executable model should remain centralized in Repora rather than reimplemented per project.
+Do not create topology issues in every repository preemptively. Adopt these patterns when a project gains a second endpoint, trust domain, public/private split, staging boundary, or recovery requirement. Avoid duplicating the executable topology model across projects.

@@ -1,5 +1,7 @@
 # QART: <bounded decision question>
 
+QATS (Questions, Alternatives, Trade-offs, Suggestions) is an alternative presentation of this same QART decision matrix, not a separate document type. Preserve the canonical QART title, status, evidence, recommendation, accepted trade-offs, decision outcome, and ADR links. For QATS-facing output, present trade-offs before suggestions without changing decision or approval semantics.
+
 ## Status
 
 Draft | Investigating | Ready for decision | Decided | Deferred | Superseded

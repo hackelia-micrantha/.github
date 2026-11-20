@@ -15,7 +15,7 @@ Priority is **not** severity, size, status, confidence, or architectural importa
 | Priority | Meaning | Typical examples |
 | --- | --- | --- |
 | **P0 — interrupt** | Active work must be displaced because a critical repository capability, security boundary, release path, or required validation gate is currently broken or dangerously exposed. | exploitable vulnerability; data or secret exposure; required branch gate unavailable; production or release blocker; corruption or irreversible-loss risk |
-| **P1 — next** | The issue belongs in the repository's small next-up queue. It materially unlocks the current product milestone, removes a high-leverage dependency, or closes a significant security or operability gap. | current milestone blocker; contract required by an active integration; security architecture prerequisite; external-trial readiness |
+| **P1 — next** | The issue belongs in the repository's small next-up queue. It materially unlocks the current product milestone, prevents verified near-term financial loss, enables near-term revenue, removes a high-leverage dependency, or closes a significant security or operability gap. | current milestone blocker; ready migration retiring a billable resource; material revenue unblock; security architecture prerequisite |
 | **P2 — planned** | Important work with clear value, but it does not displace the current P0/P1 queue. It should be groomed enough to schedule when capacity opens. | bounded architectural improvement; adoption documentation; performance work without an active outage; dependency modernization |
 | **P3 — later / explore** | Valid work without a current delivery commitment, or work that remains exploratory, duplicated, or insufficiently defined. | research spike; optional integration; speculative abstraction; source issue awaiting consolidation |
 
@@ -32,8 +32,8 @@ Priority is **not** severity, size, status, confidence, or architectural importa
 
 Use judgment rather than a false-precision score. Record the factors that materially drove the decision:
 
-1. **Impact** — security, correctness, operability, user value, or delivery effect.
-2. **Urgency** — cost of waiting; active failure versus future risk.
+1. **Impact** — security, correctness, operability, user value, delivery effect, or financial consequences (avoided expense, revenue enabled, or budget/credit loss).
+2. **Urgency** — cost of waiting, including recurring financial burn, billing/renewal dates, expiring credits, and active failure versus future risk.
 3. **Dependency leverage** — how much ready work the issue unlocks or blocks.
 4. **Readiness** — whether scope, dependencies, acceptance criteria, and ownership are clear.
 5. **Risk of change** — blast radius, reversibility, migration risk, and verification cost.
@@ -41,33 +41,62 @@ Use judgment rather than a false-precision score. Record the factors that materi
 
 A high-impact but poorly understood issue may need a bounded P1/P2 investigation before implementation. A low-risk, ready issue should not leapfrog a more consequential blocker merely because it is easy.
 
+### Financial impact and cost-of-delay guardrail
+
+When prioritizing engineering work, explicitly look for **avoidable recurring spend, imminent payment or renewal deadlines, expiring credits, and near-term revenue blockers**. A nearly finished migration that retires a paid resource is delivery work with a measurable cost of delay, not speculative performance optimization.
+
+- **Establish the exposure:** identify the current billed service/commitment, actual or supported estimated recurring amount and currency, next billing or renewal date if known, and the consequence of doing nothing. Do not treat a list price or an unverified deployment as a paid invoice.
+- **Compare net outcomes:** estimate post-change run rate and savings, one-time migration/verification/operational costs, break-even horizon where relevant, and confidence. Treat sunk cost separately from future avoidable spend; don't invent precision when costs are unknown.
+- **Account for time:** state what continued delay costs and the earliest *safely achievable* date savings or revenue can begin. Re-evaluate when a cutover becomes ready or a billing deadline approaches; a migration that is nearly complete may outrank lower-value new features.
+- **Prioritize proportionately:** verified, actionable, near-term savings or a material revenue unblock generally warrant **P1** ahead of optional polish, exploratory architecture, and speculative optimizations. A payment deadline or ordinary recurring bill alone does **not** justify P0; reserve P0 for genuinely critical, immediate financial impact under the normal interrupt standard. Unproven savings or substantial readiness/safety gaps may instead warrant P2 or a bounded investigation.
+- **Take the shortest safe path:** consider immediate reversible cost containment and finishing an existing near-ready migration before building an additional platform. Do not shortcut correctness, security, data integrity, service continuity, migration verification, independent review, or required release gates to save money.
+- **Verify the saving:** define production cutover, rollback/recovery, provider billing cessation/cancellation, and the evidence needed to declare expenses actually avoided. Merge or deployment alone is not proof that recurring charges stopped. Any paid-plan change, destructive teardown, cancellation, or spending commitment still needs explicit effect authority.
+
+Apply this check during issue grooming, milestone selection, project/portfolio status reviews, and next-slice selection. Prefer concise impact facts in the existing priority rationale rather than inventing a parallel financial score, special label, or new workflow for every expense.
+
+### Issue simplicity and update discipline
+
+Every new or materially groomed issue **begins its body** with **"Explain it to a human"** (normally `## Explain it to a human`; GitHub issue forms render their own heading level). In one to three plain-language sentences, explain the problem, why it matters, and the outcome. Keep this accurate and professional, not patronizing; do not put the prefix in issue titles or repeat it in each comment. Existing issues are updated opportunistically, not mass-rewritten for formatting.
+
+**Default mental model: Why + Outcome + Done + Links.** A reader should grasp the issue within about 30 seconds and an implementer should still know what counts as complete. Prefer one short outcome paragraph, two to five observable criteria, and a compact tracking block; roughly 300 words is a *soft readability target*, never a cap on material constraints or security evidence. Omit irrelevant sections instead of generating boilerplate. For genuinely complex work, keep the issue as the index and link the authoritative QART/RFC/ADR, specification, PR, CI result, or child issues. Preserve any necessary security, failure, compatibility, rollback, evidence, and authority requirements.
+
+**Progressive detail, not more mandatory sections.** Explain work as **Human → Behavioral contract → Architectural impact → Verification → Done**. In **What needs to change**, include only material behavior/invariants, architectural responsibilities/interfaces/trust boundaries, and the verification approach. A reader should know what changes, where it belongs, what must not break, and how it will be proven. Link a spec, ADR, PR, or test evidence for deeper detail instead of copying it.
+
+**Agile quality heuristics, not bureaucracy.** Use **INVEST** (Independent, Negotiable, Valuable, Estimable, Small, Testable) to review executable slices; negotiability never weakens accepted safety or compatibility. Use the **Three Cs** (Card, Conversation, Confirmation): a compact issue, preserved substantive discussion, and objective acceptance. **Readiness** (clear outcome, ownership, dependencies, verification) is advisory, not an automatic approval gate. Keep issue-specific acceptance criteria separate from the repository's shared **Definition of Done**; do not copy shared CI, review, security, or documentation checklists into every ticket. Spikes, epics, security intake, and decisions are not forced into user-story form.
+
+**Architecture-aware vertical slices and risk-shaped verification.** Mention only affected interface, application, domain/policy, infrastructure/adapter, and cross-cutting security/operational boundaries. Prefer a bounded outcome crossing necessary layers over one issue per technical layer. Use [the existing test pyramid](docs/standards/testing.md) to choose the **lowest faithful** unit/component, contract, integration, system, or release/operational test, adding higher-level evidence when real boundaries cannot be proven below. Include meaningful negative, security, migration, and recovery cases. No universal ratio, mandatory test-type checklist, or unearned pass claim.
+**One current state, minimal comments.** Keep status, blockers, remaining work, and the smallest useful evidence links in the existing issue body. Routine "working", "still green", SHA-only, timestamp-only, and repeated progress updates do not warrant comments. Use PR review threads for code discussion, dedicated decisions for architecture, and comments for substantive human discussion or accountable decisions. Do not erase historical comments, accepted decisions, or evidence; consolidate the *current summary*, not the audit trail. Reconcile state only when it materially changes, and do not overwrite concurrent edits or repeat failed writes blindly.
+
+**Funnel rather than duplicate.** Reuse the existing owning issue and canonical milestone/epic/roadmap. Link external authoritative detail instead of copying logs, long CI timelines, architectural deliberation, or PR descriptions into issue bodies. Do not create a new issue, status tracker, template variation, or automation merely to summarize another artifact. Preserve distinct independently executable outcomes instead of combining unrelated work to reduce counts.
+
 ### Required issue fields
 
-Issues entering the active queue should contain:
+Issues entering the active queue should contain this **compact equivalent**, using the exact first heading and only applicable optional fields:
 
 ```markdown
-## Priority
+## Explain it to a human
 
-P1 — one-sentence repository-global rationale.
+What is wrong, why does it matter, and what will be better?
 
-## Outcome
+## What needs to change
 
-What observable result changes when this issue is complete?
+One observable outcome and only material scope/constraints. Where material, summarize the behavioral contract, affected architectural boundaries, and verification approach; otherwise link the owning detail.
 
-## Dependencies
+## Done when
 
-- Ready: ...
-- Blocked by: ...
-- Unlocks: ...
+- [ ] Verifiable behavior, including important failure/security paths.
+- [ ] Required validation evidence is linked.
 
-## Acceptance criteria
+## Tracking
 
-- [ ] Verifiable result
-
-## Non-goals
-
-- Explicitly excluded work
+- Priority: P1 — one-sentence repository-global rationale.
+- Status: Ready / Blocked / In progress / Review.
+- Blocked by: [link + unblock condition, if relevant].
+- Not included: [material boundary, if relevant].
+- Evidence: [authoritative PR, CI, spec, decision, or dependency links].
 ```
+
+The **content** remains required, but headings for optional tracking details may be omitted or adapted by repository-local forms. Blocking remains a status, not priority; non-goals and dependency boundaries must stay explicit when material.
 
 Use organization-standard labels when available:
 
@@ -88,11 +117,12 @@ Issue-body priority text remains the durable explanation; labels support filteri
 
 Priority narrows the queue but does not fully determine execution order. Within a priority level, order work by:
 
-1. active incident or security containment;
-2. dependency chain and unblock value;
-3. readiness and available ownership;
-4. shortest safe path to a verifiable milestone;
-5. change risk and rollback capability.
+1. active incident, security, or data-loss containment;
+2. verified avoidable financial loss and time-sensitive cost/revenue outcomes, evaluated against safe readiness;
+3. dependency chain and unblock value;
+4. readiness and available ownership;
+5. shortest safe path to a verifiable milestone;
+6. change risk and rollback capability.
 
 Prefer a small queue:
 
@@ -111,6 +141,7 @@ Review priority when any of these occur:
 - a dependency becomes ready or blocked;
 - an implementation slice merges;
 - the current milestone changes;
+- a recurring charge is discovered, a cancellation/renewal date approaches, or a ready migration can end avoidable spend;
 - an issue proves broader, riskier, or less valuable than expected;
 - duplicate work or a stronger consolidation parent is identified;
 - an issue has had no meaningful activity across multiple planning cycles.

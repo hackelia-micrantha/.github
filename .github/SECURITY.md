@@ -4,7 +4,7 @@ Micrantha takes security seriously. For a repository-specific security policy, s
 
 ## Supported versions
 
-Security updates are applied to the latest release or active development branch of each repository. Experimental and prototype repositories may not receive dedicated security patches — their maturity is disclosed in the [repository catalogue](docs/architecture/repository-catalogue.md).
+Security updates are applied to the latest release or active development branch of each repository. Experimental and prototype repositories may not receive dedicated security patches — their maturity is disclosed in the [repository catalogue](https://github.com/hackelia-micrantha/.github/blob/main/docs/architecture/repository-catalogue.md).
 
 ## Reporting a vulnerability
 
@@ -19,7 +19,7 @@ To report a vulnerability in a Micrantha repository:
 ## What to expect
 
 - **Acknowledgment** within a reasonable period.
-- **Triage** against the organization [security engineering standard](docs/standards/security.md) and the affected repository's maturity and risk model.
+- **Triage** against the organization [security engineering standard](https://github.com/hackelia-micrantha/.github/blob/main/docs/standards/security.md) and the affected repository's maturity and risk model.
 - **Coordination** on disclosure timeline, affected versions, and remediation or mitigation.
 - **Credit** where appropriate and agreed.
 
@@ -39,4 +39,4 @@ Issues outside these boundaries may still be valid but are handled as ordinary d
 
 ## Security exceptions
 
-Accepted residual risk follows the [security exception](docs/standards/security.md#security-exceptions) format: scoped, time-bounded, attributable to a human decision owner, and reviewed before expiry.
+Accepted residual risk follows the [security exception](https://github.com/hackelia-micrantha/.github/blob/main/docs/standards/security.md#security-exceptions) format: scoped, time-bounded, attributable to a human decision owner, and reviewed before expiry.

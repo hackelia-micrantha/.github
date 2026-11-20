@@ -68,6 +68,12 @@ Require:
 - security response and patch expectations;
 - archived or superseded documentation preserved and linked when it exists.
 
+## Reader utility and editorial restraint
+
+Start with the reader's question and useful next action, not a length or coverage target. Keep supporting mechanism smaller than the substantive guidance. Before adding a field, category, check, exception, or study, name the reader decision or system branch that uses it and the observed failure or open decision it answers; otherwise remove or consolidate. Avoid default word, bullet, and item quotas; use a justified ceiling only where needed.
+
+Delete superseded live guidance in the same change rather than layering instructions. Preserve historical decisions/evidence in their established records with successor links. Treat a change that only adds prose, or a document that grows on every review round, as a prompt to prove reader value or cut material.
+
 ## Public claims
 
 Classify claims consistently:

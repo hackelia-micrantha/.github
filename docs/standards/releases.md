@@ -119,7 +119,7 @@ Security fixes should minimize disclosure risk while preserving enough informati
 
 ## Release readiness
 
-Use the organization [release-readiness prompt](../prompts/releases/release-readiness.md) or an equivalent gate for material releases. At minimum confirm:
+Use an evidence-based release-readiness gate for material releases. At minimum confirm:
 
 - version identity is correct;
 - required checks ran on the release revision;
