@@ -146,6 +146,21 @@ For active repositories with executable CI, the repository must own its CI/build
 
 The flake is the authoritative declaration of project-specific tooling and should expose stable CI entry points through checks, packages, apps, or—when a derivation is not a practical interface—a bounded CI development shell. Mise may remain the task and orchestration interface; the flake owns the reproducible environment in which those tasks execute.
 
+**Single binary-toolchain authority:** use the repository's `flake.nix` and committed
+`flake.lock` (or an explicitly documented equivalent lock policy) for project
+executable versions and resolution in CI and supported local development.
+
+- `mise.toml` may own task names, arguments, and environment selection, but
+  **must not independently pin or install the same project binaries** through
+  `[tools]` / `mise install` when those binaries are flake-owned. The flake
+  should provide `mise` itself when it is used for task orchestration.
+- Do not replicate flake-owned project-tool installation in workflows or
+  shared runner images. Language dependency lockfiles and justified pre-flake
+  host/platform capabilities are distinct, bounded inputs.
+- An interim duplicate installer must have an owner and explicit removal
+  gate. A passive operator-only flake that CI does not consume is not
+  compliance. Flake ownership does not grant deployment or mutation authority.
+
 - Prefer `nix flake check`, `nix build .#...`, or explicit flake-owned apps/checks/packages over imperative toolchain installation in workflows.
 - Keep repository-specific compilers, SDKs, linters, formatters, browsers, generators, package managers, and test utilities in the project flake rather than the shared runner image when they can be represented reproducibly there.
 - Treat irreducible host or platform capabilities—such as an operating-system kernel, hardware/device access, vendor-controlled platform tooling, or host services required before the flake can take control—as explicit external CI inputs. Constrain and attest their identity/version where practical; do not treat them as ambient convenience dependencies.
