@@ -94,7 +94,7 @@ This is a curated directory of public project surfaces, not an inventory of all 
 ### Labs and conformance
 
 - **[Anthesis Governance Lab](https://github.com/ryjen/anthesis-governance-lab)** — executable public scenarios and adversarial fixtures for deterministic governance evaluation. Evaluating declared effects does not prove enforcement in an external runtime.
-- **[MUSICPKG](https://github.com/hackelia-micrantha/musicpkg-community)** — experimental owner-bound digital music format aimed at durable offline ownership and purchaser-controlled recovery. The public v0.2 Working Draft includes specifications, test vectors, and a bounded Rust reference conformance harness; complete package verification and end-to-end playback remain future work.
+- **[CONTENTPKG](https://github.com/hackelia-micrantha/contentpkg-community)** — research into self-contained digital ownership using encrypted content packages and compact blockchain-backed ownership evidence. MUSICPKG, its first specialization, explores durable offline music ownership and purchaser-controlled recovery. The public MUSICPKG v0.2 Working Draft includes specifications, test vectors, and a bounded Rust reference conformance harness; complete production package verification and end-to-end playback remain unestablished.
 
 ### Creative work
 
