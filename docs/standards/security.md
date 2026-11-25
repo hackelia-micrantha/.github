@@ -4,6 +4,21 @@ This standard defines engineering controls for Micrantha repositories. It comple
 
 Security is a system property created by architecture, implementation, delivery, operations, and governance. A security label or scan does not prove that a trust boundary is correct.
 
+## Secure software lifecycle
+
+Use the eight [ISC2 CSSLP domains](https://www.isc2.org/certifications/csslp/csslp-certification-exam-outline) as a coverage reference and [NIST SSDF 1.1 (SP 800-218)](https://csrc.nist.gov/pubs/sp/800/218/final) as a secure-development practice reference. Apply this standard proportionately to the supported product, maturity, data, privileges, and exposure. These references do not establish certification or compliance by themselves.
+
+- **Concepts:** identify assets and security objectives, including confidentiality, integrity, availability, authentication, authorization, accountability, privacy, and non-repudiation where required.
+- **Lifecycle management:** assign security ownership, review material risks at lifecycle transitions, and define security acceptance and maintenance responsibilities.
+- **Requirements:** derive security requirements and abuse cases from credible threats, business constraints, and applicable legal or contractual obligations.
+- **Architecture and design:** identify trust boundaries, minimize the trusted computing base and attack surface, and apply the design principles below.
+- **Implementation:** use language-appropriate secure coding practices, explicit effect boundaries, and qualified reusable components.
+- **Testing:** verify material security requirements, including denial and failure behavior; use applicable verification standards such as [OWASP ASVS](https://owasp.org/projects/asvs/) or [MASVS](https://mas.owasp.org/) for relevant application surfaces.
+- **Deployment, operations, and maintenance:** establish secure configuration, monitoring, vulnerability remediation, recovery, credential revocation, and retirement or end-of-support plans as applicable.
+- **Supply chain:** assess component and supplier trust, provenance, supported versions, update paths, and downstream release integrity.
+
+Trace material threats to requirements, implementing controls, verification evidence, and residual-risk decisions using existing engineering artifacts. Record applicability separately from verification and risk disposition. An accepted exception does not establish that a control is verified; missing or stale evidence is not a pass.
+
 ## Security ownership
 
 Each repository should identify the owner of material security decisions, residual-risk acceptance, incident response, and release blocking. Organization-wide authority follows [`GOVERNANCE.md`](../../GOVERNANCE.md).
@@ -27,6 +42,14 @@ Perform or refresh focused threat analysis when a change materially affects:
 Use the smallest artifact that resolves the risk: issue analysis, QART slice, threat model, RFC, ADR, or focused security review.
 
 ## Core requirements
+
+### Secure design principles
+
+- Design security into the system and use safe defaults without relying on optional hardening by consumers.
+- Apply complete mediation at material authority boundaries; validate authorization for the actual resource, operation, and current context.
+- Prefer economy of mechanism, narrow interfaces, minimized shared mechanisms, and open design rather than secrecy of the mechanism.
+- Use defense in depth where independent controls materially reduce risk; avoid redundant mechanisms that share the same failure mode.
+- Make secure behavior usable and recovery explicit; minimize the consequences of failure and avoid weakening controls during degraded operation.
 
 ### Least privilege and authority
 
@@ -153,6 +176,10 @@ Security tools support review but do not replace architecture analysis, manual i
 - Preserve enough evidence for diagnosis without spreading sensitive material.
 - Track remediation, credential rotation, release impact, disclosure, and prevention work separately when needed.
 - Convert incident learning into tests, controls, documentation, or decisions.
+
+## Operational security and retirement
+
+For supported deployments and distributed artifacts, identify responsibility for security updates, affected-version tracking, incident containment, recovery, revocation, and end-of-support communication. When retiring a component, account for remaining data, backups, access grants, credentials, dependencies, and consumers; verify the applicable removal or transition outcome. Do not claim that a merged fix remediates deployed exposure without evidence of the affected deployment state.
 
 ## Security exceptions
 
