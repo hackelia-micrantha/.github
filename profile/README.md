@@ -6,7 +6,7 @@ Micrantha is an engineering studio and software ecosystem focused on secure, obs
 
 Core areas include **platform engineering**, **mobile systems**, **infrastructure automation**, **developer tooling**, and **governed agentic development**, with an emphasis on data sovereignty and user-controlled systems.
 
-🌐 [micrantha.com](https://micrantha.com) · [Collaborate](#looking-for-collaborators) · [Projects](#project-families) · [Integration map](../docs/architecture/ecosystem-integration.md) · [Engineering standards](#engineering-standards) · [Contributing](https://github.com/hackelia-micrantha/.github/blob/main/CONTRIBUTING.md)
+🌐 [micrantha.com](https://micrantha.com) · [Collaborate](#looking-for-collaborators) · [Projects](#project-families) · [Integration map](../docs/architecture/ecosystem-integration.md) · [Security](#software-security-and-supply-chain-integrity) · [Engineering standards](#engineering-standards) · [Contributing](https://github.com/hackelia-micrantha/.github/blob/main/CONTRIBUTING.md)
 
 ---
 
@@ -99,6 +99,27 @@ This is a curated directory of public project surfaces, not an inventory of all 
 ### Creative work
 
 - **[Entanglement of Ages](https://github.com/ryjen/entanglement-of-ages-marketing)** — the multi-book creative project, presented through its separately reviewed public marketing surface.
+
+---
+
+## Software security and supply-chain integrity
+
+Micrantha treats security as a property of the software lifecycle: from development and dependency selection to compilation, distribution, execution, and retirement. Its engineering standards emphasize explicit trust boundaries, least privilege, reproducibility where practical, cryptographic artifact verification, adversarial validation, and long-term cryptographic survivability.
+
+Several projects address complementary aspects of software protection:
+
+| Project | Security technique and direction |
+| --- | --- |
+| [Envuscator](https://github.com/hackelia-micrantha/envuscator-community) | Build-specific configuration obfuscation; research into seeded binary diversification to increase the cost of automated reverse engineering. |
+| [CONTENTPKG](https://github.com/hackelia-micrantha/contentpkg-community) | Encrypted content packaging and verifiable ownership; research into encrypted envelopes for controlled executable distribution. |
+| [Keylix](https://github.com/hackelia-micrantha/keylix-community) | Cryptographic sender binding and proof of possession, including OAuth DPoP, to constrain credential use. |
+| [Anthesis](https://github.com/hackelia-micrantha/anthesis-community) | Deterministic policy, bounded authorization, approvals, and attributable evidence for consequential effects, including release actions where integrated. |
+| [Digitalis](https://github.com/hackelia-micrantha/digitalis-community) | Mobile application trust, platform attestation, and backend-authoritative security decisions. |
+| [Dubnium](https://github.com/hackelia-micrantha/dubnium-community) | Reproducible engineering environments and bounded execution; research into independent binary security qualification and AI-assisted adversarial evaluation. |
+
+These are complementary techniques, not a claim of a deployed, integrated protection stack. Encryption protects confidentiality before authorized decryption; signing and provenance support authenticity and integrity verification; diversification and obfuscation may increase analysis cost but do not guarantee executable secrecy on an untrusted host. Research directions are not delivered capabilities or certifications.
+
+See the [security engineering](https://github.com/hackelia-micrantha/.github/blob/main/docs/standards/security.md), [cryptographic survivability](https://github.com/hackelia-micrantha/.github/blob/main/docs/standards/cryptographic-survivability.md), [release](https://github.com/hackelia-micrantha/.github/blob/main/docs/standards/releases.md), and [source exposure and distribution](https://github.com/hackelia-micrantha/.github/blob/main/docs/standards/source-exposure-and-distribution.md) standards.
 
 ---
 
